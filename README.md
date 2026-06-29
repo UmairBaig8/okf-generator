@@ -252,15 +252,15 @@ Each pair is in chat format compatible with most fine-tuning pipelines.
 Install the skill so Claude Code auto-loads it when the context matches:
 
 ```bash
-# 1. Copy skill to Claude Code's skills directory
-cp SKILL.md ~/.config/opencode/skills/okf-generator/SKILL.md
+mkdir -p ~/.config/opencode/skills/okf-generator && \
+  curl -sL -o ~/.config/opencode/skills/okf-generator/SKILL.md \
+  https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/SKILL.md
+```
 
-# 2. (Optional) Add to AGENTS.md for session reminders
-cat >> AGENTS.md << 'EOF'
-## OKF Knowledge Bundle
-Before working on any class or function, look it up:
-  okf lookup --bundle ./okf_bundle <ConceptName>
-EOF
+Or via pip (auto-installs the skill too):
+
+```bash
+pip install okf-generator && okf install-skill
 ```
 
 Once installed, Claude Code automatically triggers the skill on phrases like:
