@@ -146,8 +146,6 @@ Look for issues tagged `good first issue` on GitHub. Some ideas:
 
 - **New language**: Add parser for C#, Swift, Kotlin, PHP, Scala
 - **Fuzzy search**: Improve scoring for camelCase / snake_case queries
-- **CHANGELOG**: Set up conventional changelog
-- **CI**: Add GitHub Actions workflow for automated PyPI release
 - **Docs**: Add a `docs/` site with mkdocs or sphinx
 - **CLI**: Add `okf --version` flag
 - **Performance**: Parallelize the scan phase for large codebases
