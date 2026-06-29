@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/banner.svg" alt="okf-generator banner" width="100%"/>
+<img src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.svg" alt="okf-generator banner" width="100%"/>
 
 <br/>
 
