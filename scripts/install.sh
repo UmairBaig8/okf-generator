@@ -11,7 +11,7 @@ fi
 pip3 install --quiet --upgrade okf-generator[llm]
 
 mkdir -p "$SKILL_DIR"
-SKILL_URL="https://raw.githubusercontent.com/umairbaig/okf-generator/main/SKILL.md"
+SKILL_URL="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/SKILL.md"
 if ! [ -f "$SKILL_DIR/SKILL.md" ] && command -v curl &>/dev/null; then
     curl -fsSL "$SKILL_URL" -o "$SKILL_DIR/SKILL.md"
 fi

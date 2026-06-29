@@ -53,19 +53,17 @@ Usage:
 
 import ast
 import subprocess
-import hashlib
 import json
 import logging
 import os
 import re
 import sys
 import time
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from textwrap import dedent
-from typing import Optional
 
 import yaml  # PyYAML
 from tqdm import tqdm
@@ -359,18 +357,18 @@ class PythonParser:
             default = ""
             if d_idx >= 0:
                 try:    default = ast.unparse(args.defaults[d_idx])
-                except: default = "..."
+                except Exception: default = "..."
             annotation = ""
             if arg.annotation:
                 try:    annotation = ast.unparse(arg.annotation)
-                except: pass
+                except Exception: pass
             params.append({"name": arg.arg, "annotation": annotation, "default": default})
         return params
 
     def _returns(self, node) -> str:
         if node.returns:
             try:    return ast.unparse(node.returns)
-            except: pass
+            except Exception: pass
         return ""
 
     def _sig(self, node, params, ret) -> str:
@@ -418,9 +416,9 @@ class JSTSParser(TreeSitterParser):
 
     def parse_file(self, path: Path, repo_root: Path) -> list[Concept]:
         self._path_ext = path.suffix.lower()
+        self.__class__._lang_obj = None   # reset lang cache every parse to avoid TS→JS cross-contamination
         if self._path_ext in {".ts", ".tsx"}:
             self.LANGUAGE = "typescript"
-            self.__class__._lang_obj = None   # reset so _lang() picks right grammar
         else:
             self.LANGUAGE = "javascript"
         return super().parse_file(path, repo_root)
@@ -560,7 +558,7 @@ class GoParser(TreeSitterParser):
                     name    = _node_text(name_node)
                     doc     = _prev_comment(node, src_bytes)
                     is_iface = type_node and type_node.type == "interface_type"
-                    ctype   = "Class" if is_iface else "Class"
+                    ctype   = "Interface" if is_iface else "Class"
                     sig     = f"type {name} struct" if not is_iface else f"type {name} interface"
                     # collect field/method names
                     methods = [
@@ -925,7 +923,12 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
 
     if concept.signature:
         lines.append("## Signature\n")
-        lines.append(f"```python\n{concept.signature}\n```\n")
+        lang_fence = "python"
+        for t in concept.tags:
+            if t.startswith("lang:"):
+                lang_fence = t.removeprefix("lang:")
+                break
+        lines.append(f"```{lang_fence}\n{concept.signature}\n```\n")
 
     if concept.docstring:
         lines.append("## Docstring\n")
@@ -1084,7 +1087,6 @@ def render_summary(
     # ── Group by domain → module → concepts ──────────────────────────────
     # domain  = first path segment  (e.g. "StockAI")
     # module  = resource path without extension (e.g. "StockAI/RnD/python/connectors/economic_data")
-    from collections import defaultdict
     domains: dict[str, dict[str, list[Concept]]] = defaultdict(lambda: defaultdict(list))
 
     for c in concepts:
@@ -1288,7 +1290,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
             max_tokens=300,
             temperature=0.1,
         )
-        raw = resp.choices[0].message.content.strip()
+        raw = (resp.choices[0].message.content or "").strip()
 
         # strip markdown fences if model wraps anyway
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
@@ -1362,19 +1364,8 @@ def scan_codebase(root: Path) -> list[Concept]:
 # ---------------------------------------------------------------------------
 
 def _concept_output_path(concept: Concept, output_dir: Path) -> Path:
-    """Map concept_id to output .md path, mirroring the source tree.
-
-    concept_id examples:
-      StockAI/RnD/python/connectors/economic_data          → .../economic_data.md  (Module)
-      StockAI/RnD/python/connectors/economic_data/WorldBankConnector → .../WorldBankConnector.md
-    """
-    parts = concept.concept_id.split("/")
-    if concept.type == "Module":
-        # module lives AT the directory level as <stem>.md
-        return output_dir.joinpath(*parts).with_suffix(".md")
-    else:
-        # function/class lives inside the module directory
-        return output_dir.joinpath(*parts).with_suffix(".md")
+    """Map concept_id to output .md path, mirroring the source tree."""
+    return output_dir.joinpath(*concept.concept_id.split("/")).with_suffix(".md")
 
 
 def write_bundle(

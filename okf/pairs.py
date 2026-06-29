@@ -236,13 +236,14 @@ def _system(lang: str, role: str) -> str:
 def _lang(concept: dict) -> str:
     tags = concept.get("tags") or []
     for t in tags:
-        if t in {"python", "javascript", "typescript", "go", "java", "rust"}:
-            return t
+        stripped = t.removeprefix("lang:")
+        if stripped in {"python", "javascript", "typescript", "go", "java", "rust"}:
+            return stripped
     return "python"
 
 
 def _sig(concept: dict) -> str:
-    return concept["sections"].get("signature", "").replace("```python", "").replace("```", "").strip()
+    return re.sub(r"```\w*\n?", "", concept["sections"].get("signature", "")).strip()
 
 
 def _methods(concept: dict) -> str:
@@ -420,7 +421,7 @@ def llm_codegen(concept: dict, client, model: str) -> dict | None:
     resp = call_with_retry(_call)
     if not resp:
         return None
-    instruction = resp.choices[0].message.content.strip()
+    instruction = (resp.choices[0].message.content or "").strip()
     if not instruction:
         return None
 
@@ -464,7 +465,7 @@ def llm_qa(concept: dict, client, model: str, n: int = 3) -> list[dict]:
     if not resp:
         return []
 
-    raw_pairs = extract_json_array(resp.choices[0].message.content)
+    raw_pairs = extract_json_array(resp.choices[0].message.content or "")
     lang = _lang(concept)
     result = []
     for p in raw_pairs:

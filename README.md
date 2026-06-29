@@ -6,7 +6,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&color=7c3aed&label=PyPI)](https://pypi.org/project/okf-generator/)
 [![Python](https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square&color=06b6d4)](https://pypi.org/project/okf-generator/)
-[![Tests](https://img.shields.io/github/actions/workflow/status/umairbaig/okf-generator/ci.yml?style=flat-square&label=tests&color=4ade80)](https://github.com/umairbaig/okf-generator/actions)
+[![Tests](https://img.shields.io/github/actions/workflow/status/UmairBaig8/okf-generator/ci.yml?style=flat-square&label=tests&color=4ade80)](https://github.com/UmairBaig8/okf-generator/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![OKF v0.1](https://img.shields.io/badge/OKF-v0.1-7c3aed?style=flat-square)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-orange?style=flat-square&logo=anthropic)](SKILL.md)
@@ -53,7 +53,7 @@ okf lookup WorldBankConnector
 **One-liner — paste into any terminal:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/umairbaig/okf-generator/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh | bash
 ```
 
 This installs `okf-generator[llm]` + the Claude Code skill in one shot.  
@@ -261,7 +261,7 @@ Each pair is in chat format compatible with most fine-tuning pipelines.
 Install the skill in one step:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/umairbaig/okf-generator/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh | bash
 ```
 
 Or via pip:
@@ -280,7 +280,7 @@ Once installed, Claude Code automatically triggers the skill on phrases like:
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ```bash
-git clone https://github.com/umairbaig/okf-generator
+git clone https://github.com/UmairBaig8/okf-generator
 cd okf-generator
 pip install -e ".[dev]"
 pytest tests/

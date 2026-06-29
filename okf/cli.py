@@ -28,7 +28,8 @@ def _install_skill():
         if alt.exists():
             src = alt
         else:
-            print("SKILL.md not found — reinstall okf-generator (v0.1.6+)", file=sys.stderr)
+            from okf import __version__
+            print(f"SKILL.md not found — reinstall okf-generator (v{__version__}+)", file=sys.stderr)
             sys.exit(1)
     else:
         src = SKILL_SOURCE
