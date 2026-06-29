@@ -692,7 +692,6 @@ def main():
             log.warning("openai not installed — static pairs only")
 
     # --- Process ---
-    all_pairs = []
     stats = {"total": 0, "errors": 0}
     type_counts: dict[str, int] = {}
 

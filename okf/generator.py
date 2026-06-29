@@ -58,7 +58,6 @@ import logging
 import os
 import re
 import sys
-import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -123,8 +122,8 @@ def _prev_comment(node, src_bytes: bytes) -> str:
             raw = chunk[begin:].decode(errors="replace").strip()
             # strip /* */ and leading * from each line
             lines = raw.lstrip("/").lstrip("*").rstrip("*/").strip().splitlines()
-            cleaned = [l.strip().lstrip("*").strip() for l in lines]
-            return "\n".join(l for l in cleaned if l)
+            cleaned = [x.strip().lstrip("*").strip() for x in lines]
+            return "\n".join(x for x in cleaned if x)
 
     # Line comments: // /// # --
     lines = chunk.splitlines()
@@ -356,31 +355,40 @@ class PythonParser:
             d_idx   = i - def_off
             default = ""
             if d_idx >= 0:
-                try:    default = ast.unparse(args.defaults[d_idx])
-                except Exception: default = "..."
+                try:
+                    default = ast.unparse(args.defaults[d_idx])
+                except Exception:
+                    default = "..."
             annotation = ""
             if arg.annotation:
-                try:    annotation = ast.unparse(arg.annotation)
-                except Exception: pass
+                try:
+                    annotation = ast.unparse(arg.annotation)
+                except Exception:
+                    pass
             params.append({"name": arg.arg, "annotation": annotation, "default": default})
         return params
 
     def _returns(self, node) -> str:
         if node.returns:
-            try:    return ast.unparse(node.returns)
-            except Exception: pass
+            try:
+                return ast.unparse(node.returns)
+            except Exception:
+                pass
         return ""
 
     def _sig(self, node, params, ret) -> str:
         parts  = []
         for p in params:
             s = p["name"]
-            if p["annotation"]: s += f": {p['annotation']}"
-            if p["default"]:    s += f" = {p['default']}"
+            if p["annotation"]:
+                s += f": {p['annotation']}"
+            if p["default"]:
+                s += f" = {p['default']}"
             parts.append(s)
         prefix = "async def" if isinstance(node, ast.AsyncFunctionDef) else "def"
-        sig    = f"{prefix} {node.name}({', '.join(parts)})"
-        if ret: sig += f" -> {ret}"
+        sig = f"{prefix} {node.name}({', '.join(parts)})"
+        if ret:
+            sig += f" -> {ret}"
         return sig
 
 
@@ -792,7 +800,9 @@ def _get_parser(ext: str):
     if ext in {".js", ".jsx", ".mjs", ".cjs"}:
         return JSTSParser()
     if ext in {".ts", ".tsx"}:
-        p = JSTSParser(); p._path_ext = ext; return p
+        p = JSTSParser()
+        p._path_ext = ext
+        return p
     if ext in {".go"}:
         return GoParser()
     if ext in {".java"}:
@@ -1120,8 +1130,10 @@ def render_summary(
         "okf_version": "0.1",
         "timestamp":   ts,
     }
-    if git.get("repo"):   fm["git_repo"]   = git["repo"]
-    if git.get("branch"): fm["git_branch"] = git["branch"]
+    if git.get("repo"):
+        fm["git_repo"] = git["repo"]
+    if git.get("branch"):
+        fm["git_branch"] = git["branch"]
 
     lines = [
         "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",

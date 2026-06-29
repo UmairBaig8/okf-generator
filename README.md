@@ -4,9 +4,9 @@
 
 <br/>
 
-[![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&color=7c3aed&label=PyPI)](https://pypi.org/project/okf-generator/)
-[![Python](https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square&color=06b6d4)](https://pypi.org/project/okf-generator/)
-[![Tests](https://img.shields.io/github/actions/workflow/status/UmairBaig8/okf-generator/ci.yml?style=flat-square&label=tests&color=4ade80)](https://github.com/UmairBaig8/okf-generator/actions)
+[![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI)](https://pypi.org/project/okf-generator/)
+[![Python](https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square)](https://pypi.org/project/okf-generator/)
+[![Tests](https://img.shields.io/github/actions/workflow/status/UmairBaig8/okf-generator/ci.yml?style=flat-square&label=tests)](https://github.com/UmairBaig8/okf-generator/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![OKF v0.1](https://img.shields.io/badge/OKF-v0.1-7c3aed?style=flat-square)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-orange?style=flat-square&logo=anthropic)](SKILL.md)

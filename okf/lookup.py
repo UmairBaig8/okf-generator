@@ -140,13 +140,20 @@ def _score(concept: dict, tokens: list[str]) -> float:
     score = 0.0
     for tok in tokens:
         t = tok.lower()
-        if t == title:                        score += 1.0   # exact title match
-        elif title.startswith(t):             score += 0.8   # prefix match
-        elif t in title:                      score += 0.6   # substring in title
-        elif t in concept_id:                 score += 0.4   # in path
-        elif t in resource:                   score += 0.35  # in source file
-        elif t in description:                score += 0.3   # in description
-        elif t in tags:                       score += 0.2   # in tags
+        if t == title:
+            score += 1.0   # exact title match
+        elif title.startswith(t):
+            score += 0.8   # prefix match
+        elif t in title:
+            score += 0.6   # substring in title
+        elif t in concept_id:
+            score += 0.4   # in path
+        elif t in resource:
+            score += 0.35  # in source file
+        elif t in description:
+            score += 0.3   # in description
+        elif t in tags:
+            score += 0.2   # in tags
         # fuzzy: count matching chars / token length
         else:
             matches = sum(1 for ch in t if ch in title)
@@ -234,8 +241,8 @@ def fmt_detail(concept: dict) -> str:
     doc = concept["sections"].get("docstring", "")
     if doc:
         doc_lines = doc.strip().splitlines()
-        lines.append(f"\n  Docstring:")
-        for dl in doc_lines[:8]:          # cap at 8 lines for readability
+        lines.append("\n  Docstring:")
+        for dl in doc_lines[:8]:
             lines.append(f"    {dl}")
         if len(doc_lines) > 8:
             lines.append(f"    ... ({len(doc_lines)-8} more lines)")
@@ -243,7 +250,7 @@ def fmt_detail(concept: dict) -> str:
     # Parameters
     params = concept["sections"].get("parameters", "")
     if params:
-        lines.append(f"\n  Parameters:")
+        lines.append("\n  Parameters:")
         for row in params.splitlines():
             if "|" in row and "---" not in row and "Name" not in row:
                 cols = [c.strip().strip("`") for c in row.split("|") if c.strip()]
@@ -359,7 +366,7 @@ def main():
     )
 
     if not results:
-        print(f"No concepts found", file=sys.stderr)
+        print("No concepts found", file=sys.stderr)
         if tokens:
             print(f"Query: {' '.join(tokens)}", file=sys.stderr)
         sys.exit(1)
@@ -378,7 +385,7 @@ def main():
         if len(results) == 1:
             print(fmt_detail(results[0]))
         else:
-            print(f"Tip: run with exact name for full detail, e.g.:")
+            print("Tip: run with exact name for full detail, e.g.:")
             print(f"  python okf_lookup.py --bundle {args.bundle} \"{results[0]['title']}\"")
         return
 
