@@ -249,8 +249,21 @@ Each pair is in chat format compatible with most fine-tuning pipelines.
 
 ## Claude Skill
 
-Install `SKILL.md` to trigger the full pipeline from natural language inside Claude:
+Install the skill so Claude Code auto-loads it when the context matches:
 
+```bash
+# 1. Copy skill to Claude Code's skills directory
+cp SKILL.md ~/.config/opencode/skills/okf-generator/SKILL.md
+
+# 2. (Optional) Add to AGENTS.md for session reminders
+cat >> AGENTS.md << 'EOF'
+## OKF Knowledge Bundle
+Before working on any class or function, look it up:
+  okf lookup --bundle ./okf_bundle <ConceptName>
+EOF
+```
+
+Once installed, Claude Code automatically triggers the skill on phrases like:
 > *"Index my codebase"* → generates OKF bundle  
 > *"Look up WorldBankConnector"* → returns exact concept  
 > *"Generate training pairs from my bundle"* → outputs JSONL  
