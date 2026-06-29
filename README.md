@@ -50,15 +50,24 @@ okf lookup WorldBankConnector
 
 ## Installation
 
+**One-liner — paste into any terminal:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/umairbaig/okf-generator/main/scripts/install.sh | bash
+```
+
+This installs `okf-generator[llm]` + the Claude Code skill in one shot.  
+*Requirements: Python 3.11+ with pip.*
+
+Or manually:
+
 ```bash
 # Core (extraction only — no LLM required)
 pip install okf-generator
 
 # With LLM enrichment + training pair generation
-pip install okf-generator[llm]
+pip install "okf-generator[llm]"
 ```
-
-**Requirements:** Python 3.11+
 
 ## Quick Start
 
@@ -249,15 +258,13 @@ Each pair is in chat format compatible with most fine-tuning pipelines.
 
 ## Claude Skill
 
-Install the skill so Claude Code auto-loads it when the context matches:
+Install the skill in one step:
 
 ```bash
-mkdir -p ~/.config/opencode/skills/okf-generator && \
-  curl -sL -o ~/.config/opencode/skills/okf-generator/SKILL.md \
-  https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/umairbaig/okf-generator/main/scripts/install.sh | bash
 ```
 
-Or via pip (auto-installs the skill too):
+Or via pip:
 
 ```bash
 pip install okf-generator && okf install-skill

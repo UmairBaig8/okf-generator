@@ -68,6 +68,7 @@ from textwrap import dedent
 from typing import Optional
 
 import yaml  # PyYAML
+from tqdm import tqdm
 
 log = logging.getLogger("okf_gen")
 

@@ -47,7 +47,7 @@ All features via single `okf` CLI (installed from PyPI).
 ```bash
 pip install okf-generator
 # With LLM enrichment:
-pip install okf-generator[llm]
+pip install "okf-generator[llm]"
 ```
 
 ---

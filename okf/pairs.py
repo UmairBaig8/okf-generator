@@ -710,6 +710,7 @@ def main():
                         pairs = future.result()
                         for p in pairs:
                             f.write(json.dumps(p, ensure_ascii=False) + "\n")
+                            f.flush()
                             type_counts[p["type"]] = type_counts.get(p["type"], 0) + 1
                             stats["total"] += 1
                     except Exception as e:
@@ -721,6 +722,7 @@ def main():
                     pairs = process_concept(concept, client, model, link_map, qa_n, pair_types)
                     for p in pairs:
                         f.write(json.dumps(p, ensure_ascii=False) + "\n")
+                        f.flush()
                         type_counts[p["type"]] = type_counts.get(p["type"], 0) + 1
                         stats["total"] += 1
                 except Exception as e:
