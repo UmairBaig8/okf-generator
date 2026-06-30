@@ -7,19 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- SQL parser (`.sql`) — extracts `CREATE TABLE`/`VIEW`/`FUNCTION`/`PROCEDURE`/`INDEX` as concepts via a dialect-tolerant regex scanner (no LLM, no fragile tree-sitter-sql grammar dependency). Preceding `--` and `/* */` comments become the concept description.
-
-### Fixed
-- `migrations/` is no longer in the default `SKIP_DIRS` — most SQL lives there, and skipping it silently dropped an entire codebase domain.
-- Empty/unsupported source directories no longer hard-exit (`sys.exit(1)`) — `okf generate` on an empty folder now writes a valid (empty) bundle instead of failing.
-- Directories that contain no extractable concepts (genuinely empty folders, or folders with only unsupported file types) no longer disappear from the bundle — they still get an `index.md` and show up in their parent's subdirectory listing.
-- `write_summary` no longer crashes (`IndexError`) when a bundle has zero domains.
-
 ### Planned
 - C# / Swift / Kotlin parsers
 - `okf --version` flag
 - mkdocs documentation site
+
+---
+
+## [0.1.9] — 2026-06-30
+
+### Added
+- SQL parser (`.sql`) — extracts `CREATE TABLE`/`VIEW`/`FUNCTION`/`PROCEDURE`/`INDEX` as concepts via a dialect-tolerant regex scanner (no LLM, no fragile tree-sitter-sql grammar dependency). Preceding `--` and `/* */` comments become the concept description.
+- `CODE_OF_CONDUCT.md`, `SECURITY.md` — community and security documentation.
+
+### Changed
+- Banner SVG updated — added SQL pill, language count bumped to 7.
+- CI: Python 3.13 added to test matrix.
+- CI: Auto GitHub Release on tag push via `publish.yml`.
+- `pyproject.toml` — repository URL casing fix, added `Changelog` URL.
+- `CONTRIBUTING.md` — deduplicated good-first-issues list.
+- Various formatting cleanup in `lookup.py`, `pairs.py`, `generator.py`.
+
+### Fixed
+- `migrations/` removed from default `SKIP_DIRS` — most SQL lives in migrations, and skipping it silently dropped an entire codebase domain.
+- Empty/unsupported source directories no longer hard-exit (`sys.exit(1)`) — `okf generate` on an empty folder now writes a valid (empty) bundle instead of failing.
+- Directories with no extractable concepts no longer disappear from the bundle — they still get an `index.md` and show up in parent subdirectory listings.
+- `write_summary` no longer crashes (`IndexError`) when a bundle has zero domains.
 
 ---
 
@@ -122,7 +135,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.8...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.9...HEAD
+[0.1.9]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.9
 [0.1.8]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.8
 [0.1.7]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.7
 [0.1.6]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.6

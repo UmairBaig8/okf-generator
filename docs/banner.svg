@@ -81,7 +81,7 @@
     <text x="0" y="66" fill="#4ade80">&#x2714;</text>
     <text x="16" y="66" fill="#64748b"> 10,645 concepts indexed</text>
     <text x="0" y="88" fill="#4ade80">&#x2714;</text>
-    <text x="16" y="88" fill="#64748b"> 6 languages, zero config</text>
+    <text x="16" y="88" fill="#64748b"> 7 languages, zero config</text>
     <text x="0" y="110" fill="#4ade80">&#x2714;</text>
     <text x="16" y="110" fill="#64748b"> OKF v0.1 conformant</text>
   </g>
@@ -129,6 +129,9 @@
     <!-- Ruby -->
     <rect x="312" y="0" width="54" height="26" rx="13" fill="#1e293b" stroke="#ec4899" stroke-width="1"/>
     <text x="339" y="17" font-family="sans-serif" font-size="12" fill="#f472b6" text-anchor="middle">Ruby</text>
+    <!-- SQL -->
+    <rect x="378" y="0" width="50" height="26" rx="13" fill="#1e293b" stroke="#a3e635" stroke-width="1"/>
+    <text x="403" y="17" font-family="sans-serif" font-size="12" fill="#bef264" text-anchor="middle">SQL</text>
   </g>
 
   <!-- OKF version tag -->
