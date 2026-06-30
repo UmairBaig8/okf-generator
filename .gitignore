@@ -2,3 +2,4 @@ __pycache__
 .DS_Store
 dev_wspace
 .okf_lookup_cache.json
+uv.lock
