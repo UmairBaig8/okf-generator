@@ -10,11 +10,14 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![OKF v0.1](https://img.shields.io/badge/OKF-v0.1-7c3aed?style=flat-square)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-orange?style=flat-square&logo=anthropic)](SKILL.md)
+[![OpenCode](https://img.shields.io/badge/OpenCode-ready-7c3aed?style=flat-square)](https://github.com/anthropics/opencode)
+[![Cursor](https://img.shields.io/badge/Cursor-ready-6c47ff?style=flat-square)](https://cursor.sh)
+[![Windsurf](https://img.shields.io/badge/Windsurf-ready-2563eb?style=flat-square)](https://codeium.com/windsurf)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 
-**Index any codebase into a structured OKF v0.1 knowledge bundle — then look up exact concepts for AI agents like OpenCode.**
+**Index any codebase into a structured OKF v0.1 knowledge bundle — then look up exact concepts for any AI coding agent.**
 
-[Installation](#installation) · [Quick Start](#quick-start) · [CLI Reference](#cli-reference) · [OpenCode Integration](#opencode-integration) · [Contributing](#contributing)
+[Installation](#installation) · [Quick Start](#quick-start) · [CLI Reference](#cli-reference) · [AI Agent Integration](#ai-agent-integration) · [Contributing](#contributing)
 
 </div>
 
@@ -44,9 +47,9 @@ okf lookup WorldBankConnector
 - **OKF v0.1 conformant** — type, description, resource, tags, timestamp
 - **Domain/resource-path layout** — bundle mirrors your source tree exactly
 - **Resumable LLM enrichment** — enrich descriptions with any OpenAI-compat endpoint; safe to interrupt and rerun
-- **OpenCode integration** — `AGENTS.md` + custom commands for pinpoint context injection
+- **Any AI agent** — OpenCode, Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and more
 - **Training data pipeline** — convert bundle to JSONL pairs (codegen, QA, doc, summarize, crosslink)
-- **Claude Skill** — install `SKILL.md` to trigger the full pipeline from natural language
+- **Claude Skill included** — install `SKILL.md` to trigger the full pipeline from natural language
 
 ## Installation
 
@@ -211,24 +214,65 @@ okf generate ./my_project ./okf_bundle
 
 Enrichment is **resumable** — interrupt and rerun freely. Already-enriched concepts are skipped.
 
-## OpenCode Integration
+## AI Agent Integration
+
+okf-generator works with **any AI coding agent** — the output is plain markdown files that every agent can read.
+
+### OpenCode / Claude Code
 
 ```bash
-# 1. Tell OpenCode about the bundle (auto-loaded every session)
+# Tell your agent about the bundle
 cat >> AGENTS.md << 'EOF'
 ## OKF Knowledge Bundle
 Before working on any class or function, look it up:
   okf lookup --bundle ./okf_bundle <ConceptName>
 EOF
 
-# 2. Add a custom command
+# Add a custom command (OpenCode)
 mkdir -p .opencode/commands
 echo "RUN okf lookup --bundle ./okf_bundle \$NAME" > .opencode/commands/lookup.md
 ```
 
-Then in OpenCode: `/lookup NAME=WorldBankConnector`
+Then: `/lookup NAME=WorldBankConnector`
 
-See [docs/opencode-integration.md](references/opencode-integration.md) for full setup.
+### Cursor / Windsurf / Cline
+
+Add to `.cursorrules` or agent instructions:
+
+```
+Before editing a function or class, run:
+  okf lookup --bundle ./okf_bundle <Name>
+To see dependencies:
+  okf lookup --bundle ./okf_bundle --type Dependency
+```
+
+### GitHub Copilot
+
+Reference OKF bundle files in your `/.github/copilot-instructions.md`:
+
+```markdown
+Project knowledge is indexed in ./okf_bundle/
+  - okf lookup <Name> returns full concept context
+  - okf lookup --type Dependency returns dependency info
+```
+
+### Any agent with RUN capability
+
+```bash
+# Prime full context
+cat ./okf_bundle/SUMMARY.md
+
+# Look up a specific concept
+okf lookup --bundle ./okf_bundle WorldBankConnector
+
+# List dependencies
+okf lookup --bundle ./okf_bundle --type Dependency
+
+# JSON for programmatic agent use
+okf lookup --bundle ./okf_bundle --json WorldBankConnector
+```
+
+See [docs/opencode-integration.md](references/opencode-integration.md) for full OpenCode setup.
 
 ## Python API
 
@@ -275,7 +319,9 @@ pip install okf-generator && okf install-skill
 Once installed, Claude Code automatically triggers the skill on phrases like:
 > *"Index my codebase"* → generates OKF bundle  
 > *"Look up WorldBankConnector"* → returns exact concept  
-> *"Generate training pairs from my bundle"* → outputs JSONL  
+> *"Generate training pairs from my bundle"* → outputs JSONL
+
+The same `.md` output works with **any** agent — no vendor lock-in. Point Cursor, Windsurf, Cline, or Copilot at your bundle and they get the same structured knowledge.  
 
 ## Contributing
 
