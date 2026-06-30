@@ -8,7 +8,10 @@ what kinds of contributions are most useful, and how to submit them.
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Running Tests](#running-tests)
+- [Integration Test Spec](#integration-test-spec)
 - [Adding a Language Parser](#adding-a-language-parser)
+- [Adding a Manifest Parser](#adding-a-manifest-parser)
+- [Releasing](#releasing)
 - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Code Style](#code-style)
 - [Reporting Issues](#reporting-issues)
@@ -42,17 +45,40 @@ okf --help
 ## Running Tests
 
 ```bash
-# Run all tests
+# Run all unit tests (70+ tests)
 pytest tests/ -v
 
 # Run a specific test file
 pytest tests/test_generator.py -v
+pytest tests/test_lookup.py -v
+pytest tests/test_manifest_scanner.py -v
 
 # Run with coverage
 pytest tests/ --cov=okf --cov-report=term-missing
+
+# Run the full integration test spec (end-to-end CLI tests)
+# See TEST.md for detailed instructions
 ```
 
-All PRs must pass the full test suite. If you add a new feature, please add tests.
+All PRs must pass the full test suite. If you add a new feature, please add tests in the appropriate file:
+- `tests/test_generator.py` — scanner and bundle generation tests
+- `tests/test_lookup.py` — concept search tests
+- `tests/test_manifest_scanner.py` — manifest parser tests
+
+New fixture files go in `tests/fixtures/`. Use `tests/fixtures/complex/` to add languages/manifests to the comprehensive test suite.
+
+## Integration Test Spec
+
+[`TEST.md`](TEST.md) is a step-by-step integration spec that exercises every CLI command against real codebases. It covers:
+
+- All 7 languages (Python, JS, TS, Go, Java, Rust, Ruby)
+- All 12 manifest types (pip, npm, cargo, go, composer, maven, rubygems, gradle, swiftpm, clojars, hex)
+- Lookup cache (miss, hit, bypass, corrupt, invalidation)
+- Edge cases (empty dir, non-existent path, unsupported-only files)
+- Static pair generation, summary regeneration
+- Production checklist (gitignore, version consistency, stale files)
+
+Run it before any major change or release. See `TEST.md` for full instructions.
 
 ## Adding a Language Parser
 
@@ -109,7 +135,31 @@ Adding support for a new language is one of the most impactful contributions.
 
 **Good languages to add next:** C/C++, C#, Swift, Kotlin, Scala, PHP
 
-## Submitting a Pull Request
+## Adding a Manifest Parser
+
+Manifest parsers live in `okf/manifest_scanner.py` and follow a simple pattern:
+
+1. Add the filename to `MANIFEST_HANDLERS` dict
+2. Write a `parse_<format>(path: Path) -> list[dict]` function returning deps with `name`, `ecosystem`, `version`, `dev` keys
+3. Add test cases in `tests/test_manifest_scanner.py`
+4. Add a fixture file to `tests/fixtures/complex/` (so the e2e `test_complex_all_manifest_ecosystems` test covers it)
+
+**Requirements:**
+- Zero external deps (stdlib only: `re`, `json`, `xml.etree.ElementTree`, `tomllib`)
+- Mark `dev=True` for dev/test-only dependencies
+- Handle edge cases: comments, version ranges, platform entries (like `ext-*`, `php`)
+
+**Good manifests to add next:** `Cargo.lock`, `yarn.lock`, `poetry.lock`, `packages.config`, `*.csproj`
+
+## Releasing
+
+See [`RELEASE.md`](RELEASE.md) for the full release process.
+
+Before a release, run the complete test suite and integration spec:
+```bash
+pytest tests/ -q      # 70+ unit tests
+# Then follow TEST.md  # full integration spec
+```
 
 1. Ensure `pytest tests/ -v` passes with no failures
 2. Keep commits focused — one logical change per commit
@@ -119,9 +169,11 @@ Adding support for a new language is one of the most impactful contributions.
 **Commit message format:**
 ```
 feat: add C# tree-sitter parser
+feat(manifest): add Cargo.lock parser
 fix: handle __init__.py in nested packages
-docs: update OpenCode integration guide
-test: add fuzzy search edge cases
+docs: broaden AI agent integration guide
+test: add manifest parser edge cases
+chore: bump v0.1.11
 ```
 
 ## Code Style
