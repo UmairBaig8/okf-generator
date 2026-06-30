@@ -1,4 +1,4 @@
-[![okf-generator banner](docs/banner.svg)](docs/banner.svg)
+[![okf-generator banner](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.svg)](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.svg)
 
 [![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI)](https://pypi.org/project/okf-generator/)
 [![Downloads](https://img.shields.io/pypi/dm/okf-generator?style=flat-square)](https://pypi.org/project/okf-generator/)
@@ -46,7 +46,7 @@ okf lookup WorldBankConnector
 
 No re-reading the file. No guessing. No LLM call required to get the answer.
 
-![Before and after comparison](docs/before_after.svg)
+![Before and after comparison](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/before_after.svg)
 
 ## Demo
 
@@ -61,7 +61,7 @@ No re-reading the file. No guessing. No LLM call required to get the answer.
   converts far better than static text — most visitors decide whether to
   keep reading based on whether they can SEE it work.
 -->
-![demo](docs/demo.gif)
+![demo](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/demo.gif)
 
 ## How it compares
 
