@@ -81,7 +81,7 @@ New fixture files go in `tests/fixtures/`. Use `tests/fixtures/complex/` to add 
 Run it before any major change or release. See `TEST.md` for full instructions.
 
 **Using with AI agents:** Hand `TEST.md` to any LLM-powered coding agent with:
-> "Run TEST.md in dev_wspace and produce OKF_TEST_REPORT.md"
+> "Run TEST.md and produce OKF_TEST_REPORT.md"
 
 The spec is formatted as a self-contained script — each phase has exact bash commands and verification criteria. The agent executes it and writes a structured report.
 
