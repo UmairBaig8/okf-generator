@@ -14,6 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.10] — 2026-06-30
+
+### Added
+- Lookup cache — `load_bundle()` now auto-caches parsed concepts to `.okf_lookup_cache.json`. Subsequent lookups skip re-parsing all `.md` files unless bundle changed (mtime fingerprint). ~1.8x faster on 220-concept bundle, scales better on larger bundles.
+- `--no-cache` flag to bypass cache for debugging.
+
+### Changed
+- `.gitignore` — ignores `.okf_lookup_cache.json`.
+
+---
+
 ## [0.1.9] — 2026-06-30
 
 ### Added
@@ -135,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.10
 [0.1.9]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.9
 [0.1.8]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.8
 [0.1.7]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.7

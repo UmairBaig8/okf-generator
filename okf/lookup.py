@@ -48,6 +48,8 @@ import re
 import sys
 from pathlib import Path
 
+CACHE_VERSION = 1
+
 import yaml
 
 
@@ -110,7 +112,37 @@ def _parse_md(path: Path, bundle_dir: Path) -> dict | None:
     }
 
 
-def load_bundle(bundle_dir: Path) -> list[dict]:
+def _cache_path(bundle_dir: Path) -> Path:
+    return bundle_dir / ".okf_lookup_cache.json"
+
+
+def _fingerprint(bundle_dir: Path) -> dict:
+    """Cheap fingerprint: {relpath: mtime_ns} for every .md file, skipping reserved names."""
+    reserved = {"index.md", "log.md", "SUMMARY.md"}
+    fp = {}
+    for md in bundle_dir.rglob("*.md"):
+        if md.name in reserved:
+            continue
+        rel = str(md.relative_to(bundle_dir))
+        fp[rel] = md.stat().st_mtime_ns
+    return fp
+
+
+def load_bundle(bundle_dir: Path, use_cache: bool = True) -> list[dict]:
+    cache_file = _cache_path(bundle_dir)
+    current_fp = _fingerprint(bundle_dir)
+
+    if use_cache and cache_file.exists():
+        try:
+            cached = json.loads(cache_file.read_text(encoding="utf-8"))
+            if (
+                cached.get("version") == CACHE_VERSION
+                and cached.get("fingerprint") == current_fp
+            ):
+                return cached["concepts"]
+        except Exception:
+            pass
+
     reserved = {"index.md", "log.md", "SUMMARY.md"}
     concepts = []
     for md in sorted(bundle_dir.rglob("*.md")):
@@ -119,6 +151,19 @@ def load_bundle(bundle_dir: Path) -> list[dict]:
         c = _parse_md(md, bundle_dir)
         if c:
             concepts.append(c)
+
+    if use_cache:
+        try:
+            cache_file.write_text(
+                json.dumps(
+                    {"version": CACHE_VERSION, "fingerprint": current_fp, "concepts": concepts},
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+
     return concepts
 
 
@@ -327,6 +372,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json",      action="store_true", help="JSON output")
     p.add_argument("--full",      action="store_true", help="Show raw .md file content")
     p.add_argument("--min-score", type=float, default=0.1, help="Minimum relevance score 0-1 (default: 0.1)")
+    p.add_argument("--no-cache", action="store_true", help="Bypass and skip writing the lookup cache")
     return p
 
 
@@ -348,7 +394,7 @@ def main():
             sys.exit(1)
 
     # Load
-    concepts = load_bundle(bundle_dir)
+    concepts = load_bundle(bundle_dir, use_cache=not args.no_cache)
     if not concepts:
         print(f"ERROR: No concepts found in {bundle_dir}", file=sys.stderr)
         sys.exit(1)

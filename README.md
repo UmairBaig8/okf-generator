@@ -165,6 +165,7 @@ Options:
   --json            JSON output for programmatic use
   --full            Raw .md file content
   --min-score N     Minimum relevance score 0-1 (default: 0.1)
+  --no-cache        Bypass and skip writing the lookup cache
 ```
 
 ### `okf pairs`
