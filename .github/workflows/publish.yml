@@ -65,7 +65,7 @@ jobs:
           /tmp/smoke_venv/bin/okf generate tests/fixtures/complex /tmp/smoke_bundle
           /tmp/smoke_venv/bin/okf lookup --bundle /tmp/smoke_bundle --type Dependency --compact | grep -q "Dependency"
           /tmp/smoke_venv/bin/okf lookup --bundle /tmp/smoke_bundle --tag lang:python --compact | grep -q "Function"
-          /tmp/smoke_venv/bin/okf lookup --bundle /tmp/smoke_bundle --json "" | python3 -c "import json,sys; d=json.load(sys.stdin); assert len(d) > 50"
+          /tmp/smoke_venv/bin/okf lookup --bundle /tmp/smoke_bundle --json --limit 200 "" | python3 -c "import json,sys; d=json.load(sys.stdin); assert len(d) > 50"
 
           # Smoke: pairs (static), summarize
           /tmp/smoke_venv/bin/okf pairs /tmp/smoke_bundle /tmp/smoke_pairs.jsonl
