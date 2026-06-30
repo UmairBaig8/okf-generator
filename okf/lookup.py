@@ -48,9 +48,9 @@ import re
 import sys
 from pathlib import Path
 
-CACHE_VERSION = 1
-
 import yaml
+
+CACHE_VERSION = 1
 
 
 # ---------------------------------------------------------------------------

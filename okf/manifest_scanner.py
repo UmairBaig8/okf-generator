@@ -469,4 +469,4 @@ def parse_mix_exs(path: Path) -> list[dict[str, Any]]:
         opts = opts or ""
         dev = bool(re.search(r":(dev|test)", opts))
         deps.append({"name": name, "ecosystem": "hex", "version": version, "dev": dev})
-    return deps 
+    return deps
