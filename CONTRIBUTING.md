@@ -80,6 +80,11 @@ New fixture files go in `tests/fixtures/`. Use `tests/fixtures/complex/` to add 
 
 Run it before any major change or release. See `TEST.md` for full instructions.
 
+**Using with AI agents:** Hand `TEST.md` to any LLM-powered coding agent with:
+> "Run TEST.md in dev_wspace and produce OKF_TEST_REPORT.md"
+
+The spec is formatted as a self-contained script — each phase has exact bash commands and verification criteria. The agent executes it and writes a structured report.
+
 ## Adding a Language Parser
 
 Adding support for a new language is one of the most impactful contributions.
@@ -160,6 +165,11 @@ Before a release, run the complete test suite and integration spec:
 pytest tests/ -q      # 70+ unit tests
 # Then follow TEST.md  # full integration spec
 ```
+
+**Using with AI agents:** Hand `RELEASE.md` to an LLM-powered coding agent with:
+> "Follow RELEASE.md to cut a new release"
+
+The agent will: bump version, update changelog, commit, tag, and push — everything the CI pipeline needs to publish automatically.
 
 1. Ensure `pytest tests/ -v` passes with no failures
 2. Keep commits focused — one logical change per commit
