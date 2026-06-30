@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- SQL parser (`.sql`) — extracts `CREATE TABLE`/`VIEW`/`FUNCTION`/`PROCEDURE`/`INDEX` as concepts via a dialect-tolerant regex scanner (no LLM, no fragile tree-sitter-sql grammar dependency). Preceding `--` and `/* */` comments become the concept description.
+
+### Fixed
+- `migrations/` is no longer in the default `SKIP_DIRS` — most SQL lives there, and skipping it silently dropped an entire codebase domain.
+- Empty/unsupported source directories no longer hard-exit (`sys.exit(1)`) — `okf generate` on an empty folder now writes a valid (empty) bundle instead of failing.
+- Directories that contain no extractable concepts (genuinely empty folders, or folders with only unsupported file types) no longer disappear from the bundle — they still get an `index.md` and show up in their parent's subdirectory listing.
+- `write_summary` no longer crashes (`IndexError`) when a bundle has zero domains.
+
 ### Planned
 - C# / Swift / Kotlin parsers
 - `okf --version` flag

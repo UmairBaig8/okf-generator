@@ -39,7 +39,7 @@ okf lookup WorldBankConnector
 
 ## Features
 
-- **6 languages** — Python (stdlib AST), JS/TS/Go/Java/Rust/Ruby (tree-sitter)
+- **7 languages** — Python (stdlib AST), JS/TS/Go/Java/Rust/Ruby (tree-sitter), SQL (dialect-tolerant regex)
 - **Zero LLM required** for extraction — deterministic, fast, offline-capable
 - **OKF v0.1 conformant** — type, description, resource, tags, timestamp
 - **Domain/resource-path layout** — bundle mirrors your source tree exactly
@@ -192,6 +192,7 @@ Environment variables:
 | Java | tree-sitter | Classes, methods, constructors, Javadoc |
 | Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///` |
 | Ruby | tree-sitter | Defs, classes, modules, `#` comments |
+| SQL | regex (dialect-tolerant) | `CREATE TABLE`/`VIEW`/`FUNCTION`/`PROCEDURE`/`INDEX`, preceding `--`/`/* */` comments |
 
 ## LLM Enrichment
 

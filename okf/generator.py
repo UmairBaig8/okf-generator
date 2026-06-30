@@ -34,7 +34,8 @@ Concept frontmatter (OKF v0.1 conformant):
 
 Supported languages:
   Python       full AST — functions, classes, params, return types, docstrings
-  JS/TS/Go/Java/Rust  file-level Module concepts (extend SimpleFileParser)
+  JS/TS/Go/Java/Rust/Ruby  tree-sitter — functions, classes, methods, doc comments
+  SQL          dialect-tolerant regex — tables, views, functions/procedures, indexes
 
 Config via env vars:
   OKF_API_KEY      API key for LLM enrichment
@@ -791,6 +792,158 @@ class RubyParser(TreeSitterParser):
 
 
 # ---------------------------------------------------------------------------
+# SQL parser (regex-based — no SQL dialect has a single stable tree-sitter
+# grammar across Postgres/MySQL/SQLite/T-SQL, so we use a deterministic,
+# dialect-tolerant statement scanner instead, in keeping with the
+# zero-LLM / offline-capable extraction philosophy used elsewhere).
+# ---------------------------------------------------------------------------
+
+class SQLParser:
+    LANGUAGE   = "sql"
+    EXTENSIONS = {".sql"}
+
+    # CREATE [OR REPLACE] [TEMP|TEMPORARY] <KIND> [IF NOT EXISTS] <name> ...
+    _STMT_RE = re.compile(
+        r"""CREATE
+            (?:\s+OR\s+REPLACE)?
+            (?:\s+(?:TEMP|TEMPORARY))?
+            \s+(?P<kind>TABLE|VIEW|MATERIALIZED\s+VIEW|FUNCTION|PROCEDURE|INDEX|UNIQUE\s+INDEX|TYPE|TRIGGER)
+            (?:\s+IF\s+NOT\s+EXISTS)?
+            \s+(?P<name>[`"\[]?[\w$.]+[`"\]]?)
+        """,
+        re.IGNORECASE | re.VERBOSE,
+    )
+
+    _KIND_TO_TYPE = {
+        "TABLE": "Table", "VIEW": "View", "MATERIALIZED VIEW": "View",
+        "FUNCTION": "Function", "PROCEDURE": "Function",
+        "INDEX": "Index", "UNIQUE INDEX": "Index",
+        "TYPE": "Type", "TRIGGER": "Trigger",
+    }
+
+    def parse_file(self, path: Path, repo_root: Path) -> list[Concept]:
+        rel    = str(path.relative_to(repo_root))
+        ts     = _ts(path)
+        res_id = str(path.relative_to(repo_root).with_suffix("")).replace(os.sep, "/")
+
+        try:
+            src = path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            return []
+
+        stripped = self._strip_comments(src)
+        module_title = path.stem
+        module = Concept(
+            type="Module", title=module_title,
+            description=f"sql file: {path.name}",
+            resource=rel, tags=[self.LANGUAGE, module_title],
+            timestamp=ts, concept_id=res_id,
+        )
+
+        symbols = []
+        for m in self._STMT_RE.finditer(stripped):
+            kind = re.sub(r"\s+", " ", m.group("kind").upper())
+            ctype = self._KIND_TO_TYPE.get(kind, "Table")
+            name  = m.group("name").strip("`\"[]")
+            lineno = stripped.count("\n", 0, m.start()) + 1
+            doc    = self._preceding_comment(src, m.start())
+            statement_end = self._statement_end(stripped, m.start())
+            sig = re.sub(r"\s+", " ", stripped[m.start():statement_end]).strip()
+            if len(sig) > 200:
+                sig = sig[:200] + " ..."
+
+            res_path = re.sub(r"\.[^/]+$", "", rel).replace(os.sep, "/")
+            cid = f"{res_path}/{_safe_id(name)}"
+            symbols.append(Concept(
+                type=ctype, title=name,
+                description=_first_line(doc) or f"{ctype} defined in {path.name}",
+                docstring=doc, signature=sig,
+                resource=rel, tags=[self.LANGUAGE, ctype.lower()],
+                timestamp=ts, source_lines=(lineno, 0),
+                concept_id=cid, related=[res_id],
+            ))
+            module.related.append(cid)
+
+        return [module] + symbols
+
+    @staticmethod
+    def _strip_comments(src: str) -> str:
+        """Blank out comments while preserving line numbers/offsets."""
+        out = []
+        i, n = 0, len(src)
+        in_block = in_line = in_str = False
+        str_ch = ""
+        while i < n:
+            c = src[i]
+            nxt = src[i+1] if i + 1 < n else ""
+            if in_block:
+                out.append(" " if c != "\n" else "\n")
+                if c == "*" and nxt == "/":
+                    out.append(" ")
+                    i += 2
+                    in_block = False
+                    continue
+                i += 1
+                continue
+            if in_line:
+                out.append(c if c == "\n" else " ")
+                if c == "\n":
+                    in_line = False
+                i += 1
+                continue
+            if in_str:
+                out.append(c)
+                if c == str_ch and src[i-1:i] != "\\":
+                    in_str = False
+                i += 1
+                continue
+            if c == "-" and nxt == "-":
+                in_line = True
+                out.append("  ")
+                i += 2
+                continue
+            if c == "/" and nxt == "*":
+                in_block = True
+                out.append("  ")
+                i += 2
+                continue
+            if c in ("'", '"'):
+                in_str = True
+                str_ch = c
+                out.append(c)
+                i += 1
+                continue
+            out.append(c)
+            i += 1
+        return "".join(out)
+
+    @staticmethod
+    def _preceding_comment(src: str, pos: int) -> str:
+        """Grab the `-- ...` or `/* ... */` block immediately above a statement."""
+        before = src[:pos].rstrip()
+        lines, doc = before.splitlines(), []
+        for line in reversed(lines):
+            s = line.strip()
+            if s.startswith("--"):
+                doc.insert(0, s.lstrip("- ").strip())
+            elif s == "" and doc:
+                break
+            elif s.endswith("*/") or s.startswith("/*") or s.startswith("*"):
+                doc.insert(0, s.strip("/* ").rstrip("*/ ").strip())
+            else:
+                break
+        return "\n".join(doc)
+
+    @staticmethod
+    def _statement_end(stripped: str, start: int) -> int:
+        semi = stripped.find(";", start)
+        nl   = stripped.find("\n", start)
+        candidates = [x for x in (semi, ) if x != -1]
+        end = min(candidates) if candidates else (nl if nl != -1 else len(stripped))
+        return min(end, len(stripped))
+
+
+# ---------------------------------------------------------------------------
 # Parser registry
 # ---------------------------------------------------------------------------
 
@@ -811,6 +964,8 @@ def _get_parser(ext: str):
         return RustParser()
     if ext in {".rb"}:
         return RubyParser()
+    if ext in {".sql"}:
+        return SQLParser()
     return None
 
 
@@ -825,7 +980,7 @@ SKIP_DIRS = {
     "node_modules", ".venv", "venv", "env", ".env", "dist", "build",
     ".tox", "htmlcov", ".eggs", "vendor", "target", "coverage",
     ".next", ".nuxt", "__snapshots__", ".cache", "tmp", "temp", "logs",
-    "migrations", "static", "media", "assets",
+    "static", "media", "assets",
 }
 
 # Suffix-based skip patterns (replaces broken glob strings in sets)
@@ -1209,7 +1364,10 @@ def render_summary(
     lines.append("RUN cat ./okf_bundle/SUMMARY.md")
     lines.append("")
     lines.append("# Prime specific domain")
-    lines.append(f"RUN cat ./okf_bundle/{sorted(domains.keys())[0]}/index.md")
+    if domains:
+        lines.append(f"RUN cat ./okf_bundle/{sorted(domains.keys())[0]}/index.md")
+    else:
+        lines.append("RUN cat ./okf_bundle/<domain>/index.md")
     lines.append("")
     lines.append("# Find a concept")
     lines.append("RUN find ./okf_bundle -name '<ConceptName>.md' | xargs cat")
@@ -1331,10 +1489,34 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
 # Scanner
 # ---------------------------------------------------------------------------
 
+def _walk_source_dirs(root: Path) -> set[str]:
+    """All non-hidden, non-skipped directories under root (relative posix paths,
+    '' for root itself). Used so directories with no parseable concepts —
+    including genuinely empty ones — still appear in the bundle layout."""
+    dirs = {""}
+    for path in root.rglob("*"):
+        if not path.is_dir():
+            continue
+        rel_parts = path.relative_to(root).parts
+        if any(
+            part.startswith(".") or
+            part in SKIP_DIRS or
+            any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES)
+            for part in rel_parts
+        ):
+            continue
+        dirs.add("/".join(rel_parts))
+    return dirs
+
+
 def scan_codebase(root: Path) -> list[Concept]:
     git = _git_info(root)
     if git:
         log.info(f"Git: repo={git.get('repo','?')} branch={git.get('branch','?')}")
+
+    if not root.exists() or not root.is_dir():
+        log.warning(f"Source directory does not exist or is not a directory: {root}")
+        return []
 
     concepts = []
     all_paths = sorted(root.rglob("*"))
@@ -1368,6 +1550,9 @@ def scan_codebase(root: Path) -> list[Concept]:
             log.debug(f"Parsed {path}: {len(file_concepts)} concepts")
         except Exception as e:
             log.warning(f"Failed to parse {path}: {e}")
+
+    if not concepts:
+        log.warning(f"No recognized source files found under {root} — bundle will be empty.")
     return concepts
 
 
@@ -1385,6 +1570,7 @@ def write_bundle(
     output_dir: Path,
     bundle_name: str,
     log_entries: list[str],
+    source_dirs: set[str] | None = None,
 ):
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1420,15 +1606,7 @@ def write_bundle(
         if rel not in dir_tree:
             dir_tree[rel] = {"subdirs": set(), "concepts": []}
 
-    for c in concepts:
-        out_path = _concept_output_path(c, output_dir)
-        rel_dir = str(out_path.parent.relative_to(output_dir)).replace(os.sep, "/")
-        if rel_dir == ".":
-            rel_dir = ""
-        _ensure_dir(rel_dir)
-        dir_tree[rel_dir]["concepts"].append(c)
-
-        # register every ancestor dir
+    def _register_ancestors(rel_dir: str):
         parts = rel_dir.split("/") if rel_dir else []
         for i in range(len(parts)):
             parent = "/".join(parts[:i]) if i > 0 else ""
@@ -1436,6 +1614,23 @@ def write_bundle(
             _ensure_dir(parent)
             _ensure_dir(child)
             dir_tree[parent]["subdirs"].add(child)
+
+    for c in concepts:
+        out_path = _concept_output_path(c, output_dir)
+        rel_dir = str(out_path.parent.relative_to(output_dir)).replace(os.sep, "/")
+        if rel_dir == ".":
+            rel_dir = ""
+        _ensure_dir(rel_dir)
+        dir_tree[rel_dir]["concepts"].append(c)
+        _register_ancestors(rel_dir)
+
+    # ── 2b. Register directories with no concepts at all (empty folders, or
+    #        folders containing only files in unsupported formats) so they
+    #        still show up in the navigation instead of disappearing ───────
+    for rel_dir in (source_dirs or set()):
+        rel_dir = rel_dir.replace(os.sep, "/")
+        _ensure_dir(rel_dir)
+        _register_ancestors(rel_dir)
 
     # ── 3. Write index.md at every directory level ────────────────────────
     for rel_dir, node in dir_tree.items():
@@ -1529,8 +1724,10 @@ def main():
     log.info(f"Found {len(concepts)} concepts")
 
     if not concepts:
-        log.error("No concepts found. Check that your source directory contains supported files.")
-        sys.exit(1)
+        log.warning(
+            "No concepts found — the source directory is empty or has no "
+            "recognized source files. Writing an empty bundle anyway."
+        )
 
     # --- Optional LLM enrichment (resumable) ---
     enrich = os.environ.get("OKF_ENRICH") == "1"
@@ -1605,7 +1802,10 @@ def main():
         f"  LLM enrichment: {'enabled' if enrich else 'disabled'}",
     ]
 
-    by_type = write_bundle(concepts, output_dir, bundle_name, log_entries)
+    by_type = write_bundle(
+        concepts, output_dir, bundle_name, log_entries,
+        source_dirs=_walk_source_dirs(source_dir),
+    )
 
     # --- Write SUMMARY.md ---
     git = _git_info(source_dir)

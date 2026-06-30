@@ -159,3 +159,96 @@ def test_write_summary_standalone(tmp_path):
     content = out.read_text()
     assert "sample" in content
     assert "## Stats" in content
+
+
+# ── SQL parser ──────────────────────────────────────────────────────────────
+
+def test_sql_parser_extracts_table_view_function_index():
+    from okf.generator import scan_codebase
+    concepts = scan_codebase(FIXTURES)
+    sql_concepts = [c for c in concepts if "lang:sql" in c.tags]
+    titles_by_type = {c.type: c.title for c in sql_concepts}
+    assert titles_by_type.get("Table") == "users"
+    assert titles_by_type.get("View") == "active_users"
+    assert titles_by_type.get("Function") == "days_since_signup"
+    assert titles_by_type.get("Index") == "idx_users_email"
+
+
+def test_sql_parser_captures_preceding_comment_as_description():
+    from okf.generator import scan_codebase
+    concepts = scan_codebase(FIXTURES)
+    users_table = next(c for c in concepts if c.type == "Table" and c.title == "users")
+    assert "registered users" in users_table.description.lower()
+
+
+def test_sql_files_get_module_concept():
+    from okf.generator import scan_codebase
+    concepts = scan_codebase(FIXTURES)
+    modules = [c for c in concepts if c.type == "Module" and "lang:sql" in c.tags]
+    assert len(modules) == 1
+    assert modules[0].title == "0001_init"
+
+
+# ── Empty folder handling ────────────────────────────────────────────────────
+
+def test_scan_empty_directory_returns_no_concepts_without_crashing(tmp_path):
+    from okf.generator import scan_codebase
+    empty_dir = tmp_path / "empty_project"
+    empty_dir.mkdir()
+    concepts = scan_codebase(empty_dir)
+    assert concepts == []
+
+
+def test_scan_nonexistent_directory_returns_empty_list(tmp_path):
+    from okf.generator import scan_codebase
+    concepts = scan_codebase(tmp_path / "does_not_exist")
+    assert concepts == []
+
+
+def test_write_bundle_on_empty_codebase_still_creates_valid_bundle(tmp_path):
+    from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
+    source = tmp_path / "src"
+    source.mkdir()
+    out = tmp_path / "bundle"
+    concepts = scan_codebase(source)
+    write_bundle(
+        concepts=concepts,
+        output_dir=out,
+        bundle_name="empty",
+        log_entries=["empty run"],
+        source_dirs=_walk_source_dirs(source),
+    )
+    write_summary("empty", concepts, out, {})
+    assert (out / "index.md").exists()
+    assert (out / "log.md").exists()
+    assert (out / "SUMMARY.md").exists()
+
+
+def test_write_bundle_includes_empty_subfolders(tmp_path):
+    """A subfolder with no parseable concepts (e.g. only .txt files, or
+    genuinely empty) should still get an index.md and show up in its
+    parent's subdirectory listing instead of vanishing from the bundle."""
+    from okf.generator import scan_codebase, write_bundle, _walk_source_dirs
+    source = tmp_path / "src"
+    (source / "with_code").mkdir(parents=True)
+    (source / "with_code" / "main.py").write_text("def foo():\n    pass\n")
+    (source / "truly_empty").mkdir(parents=True)
+    (source / "only_docs").mkdir(parents=True)
+    (source / "only_docs" / "notes.txt").write_text("just notes, no code")
+
+    out = tmp_path / "bundle"
+    concepts = scan_codebase(source)
+    write_bundle(
+        concepts=concepts,
+        output_dir=out,
+        bundle_name="src",
+        log_entries=["test"],
+        source_dirs=_walk_source_dirs(source),
+    )
+
+    root_index = (out / "index.md").read_text()
+    assert "truly_empty" in root_index
+    assert "only_docs" in root_index
+    assert "with_code" in root_index
+    assert (out / "truly_empty" / "index.md").exists()
+    assert (out / "only_docs" / "index.md").exists()
