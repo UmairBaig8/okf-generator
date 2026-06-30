@@ -15,7 +15,7 @@ CLI:
     okf summarize ./okf_bundle
 """
 
-__version__ = "0.1.10"
+__version__ = "0.1.11"
 __author__  = "Umair Baig"
 __license__ = "MIT"
 

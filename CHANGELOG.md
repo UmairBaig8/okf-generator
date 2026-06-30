@@ -14,6 +14,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.11] — 2026-06-30
+
+### Added
+- Manifest scanner (`okf/manifest_scanner.py`) — 12 parsers: `requirements.txt`, `pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `composer.json`, `pom.xml`, `Gemfile`, `build.gradle`, `Package.swift`, `project.clj`, `mix.exs`. Each dependency becomes a `Dependency` concept with ecosystem/version/dev-flag metadata.
+- `_dependencies/{ecosystem}/{name}.md` folder structure in bundles — organized by ecosystem (pip, npm, cargo, etc.) with navigable `index.md` per subfolder.
+- `SUMMARY.md` now has a **Dependencies** section with compact ecosystem counts and a link to `_dependencies/index.md`.
+- Publish smoke test — CI installs the published wheel from PyPI, runs `generate` + `lookup` + `pairs` + `summarize` end-to-end.
+- `RELEASE.md` — release checklist.
+- `TEST.md` — full integration test spec (AI-agent-executable).
+- `CLAUDE.md` — Claude Code project context.
+
+### Changed
+- Bundle `index.md` pluralization: `## Dependencies` (not `## Dependencys`).
+- `CONTRIBUTING.md` — new sections for manifest parsers, integration spec, AI agent usage.
+- README broadened from "OpenCode" to **any AI agent** — Cursor, Windsurf, Cline, Copilot badges + per-agent integration instructions.
+- `AGENTS.md` — comprehensive agent instructions with custom commands.
+
+### Fixed
+- Manifest concept tags now preserve `ecosystem:`, `manifest:`, `version:` tags alongside standardised `lang:`/`type:`/`module:` tags.
+- `parse_mix_exs` return typo (`depsreview` → `deps`).
+
+---
+
 ## [0.1.10] — 2026-06-30
 
 ### Added
@@ -146,7 +169,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.10...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.11...HEAD
+[0.1.11]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.11
 [0.1.10]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.10
 [0.1.9]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.9
 [0.1.8]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.8
