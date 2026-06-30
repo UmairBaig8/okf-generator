@@ -1,4 +1,4 @@
-[![okf-generator banner](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.svg)](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.svg)
+[![okf-generator banner](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner_v2.svg)](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner_v2.svg)
 
 [![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI)](https://pypi.org/project/okf-generator/)
 [![Downloads](https://img.shields.io/pypi/dm/okf-generator?style=flat-square)](https://pypi.org/project/okf-generator/)
