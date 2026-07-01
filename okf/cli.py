@@ -7,6 +7,7 @@ Commands:
   okf pairs      <bundle_dir> [output_file]  Convert bundle to training pairs
   okf summarize  <bundle_dir>                Regenerate SUMMARY.md only
   okf install    [agent]                     Install agent integration (claude, opencode, copilot, cursor, windsurf, cline, all)
+  okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
 
 Run `okf <command> --help` for per-command options.
 """
@@ -201,6 +202,10 @@ def main():
 
     elif cmd == "diff":
         from okf.diff import main as _main
+        _main()
+
+    elif cmd == "visualize":
+        from okf.visualize import main as _main
         _main()
 
     else:

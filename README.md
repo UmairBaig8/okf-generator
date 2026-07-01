@@ -213,6 +213,7 @@ okf --version           Show version
 | `pairs` | `okf pairs <bundle_dir> [output_file]` |
 | `summarize` | `okf summarize <bundle_dir>` |
 | `install` | `okf install [claude \| opencode \| copilot \| cursor \| windsurf \| cline]` |
+| `visualize` | `okf visualize <bundle_dir> [output.html]` |
 
 See [docs/cli-reference.md](https://github.com/UmairBaig8/okf-generator/blob/main/docs/cli-reference.md) for full options, environment variables, and examples.
 

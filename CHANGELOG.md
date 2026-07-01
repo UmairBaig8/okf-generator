@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.21] — 2026-07-01
+
+### Added
+- `okf visualize <bundle_dir>` — generates a self-contained interactive HTML graph of any OKF bundle using D3.js force-directed layout. Color-coded by concept type, searchable, with relationship edges (calls, imports, related). No server or install required.
+
+### Changed
+- README restructured: demo GIF at top, feature cards, installation earlier, moved CLI reference and Python API to `docs/` subpages.
+- Banner updated to `docs/banner.png`.
+- New demo GIF with real `okf` output.
+
+---
+
 ## [0.1.20] — 2026-07-01
 
 ### Changed
@@ -265,7 +277,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.20...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.21...HEAD
+[0.1.21]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.21
 [0.1.20]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.20
 [0.1.19]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.19
 [0.1.18]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.18

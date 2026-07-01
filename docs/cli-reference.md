@@ -123,3 +123,20 @@ Install integration for AI coding agents.
 | `windsurf` | Creates `.windsurfrules` |
 | `cline` | Creates `.clinerules` |
 | `all` | Runs all of the above |
+
+---
+
+## `okf visualize`
+
+```bash
+okf visualize <bundle_dir> [output.html]
+```
+
+Generate an interactive HTML graph of an OKF bundle. Uses D3.js force-directed graph with:
+- Color-coded nodes by concept type (Class, Function, Module, Dependency, etc.)
+- Relationship edges (calls, called-by, imports, related)
+- Search/filter by name
+- Tooltip on hover showing description and resource
+- Pan/zoom
+
+Output is a self-contained HTML file (no server, no install).
