@@ -1585,7 +1585,7 @@ def _walk_source_dirs(root: Path) -> set[str]:
     return dirs
 
 
-def scan_codebase(root: Path) -> list[Concept]:
+def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]:
     git = _git_info(root)
     if git:
         log.info(f"Git: repo={git.get('repo','?')} branch={git.get('branch','?')}")
@@ -1594,17 +1594,22 @@ def scan_codebase(root: Path) -> list[Concept]:
         log.warning(f"Source directory does not exist or is not a directory: {root}")
         return []
 
+    exclude = exclude or []
     concepts = []
     all_paths = sorted(root.rglob("*"))
     log.info(f"Scanning {len(all_paths)} paths...")
 
     for path in all_paths:
+        rel = path.relative_to(root)
+        # per-run exclude patterns (e.g. --exclude tests, --exclude docs)
+        if any(part in exclude for part in rel.parts):
+            continue
         # skip hidden / vendor dirs (only check relative to root, not absolute prefix)
         if any(
             part.startswith(".") or
             part in SKIP_DIRS or
             any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES)
-            for part in path.relative_to(root).parts
+            for part in rel.parts
         ):
             continue
         if not path.is_file():
@@ -1813,6 +1818,16 @@ def main():
     source_dir = Path(sys.argv[1]).resolve()
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
 
+    # Parse --exclude flags (can be repeated)
+    exclude = []
+    i = 3
+    while i < len(sys.argv):
+        if sys.argv[i] == "--exclude" and i + 1 < len(sys.argv):
+            exclude.append(sys.argv[i + 1])
+            i += 2
+        else:
+            i += 1
+
     if not source_dir.exists():
         log.error(f"Source directory not found: {source_dir}")
         sys.exit(1)
@@ -1820,9 +1835,11 @@ def main():
     bundle_name = source_dir.name
     log.info(f"Scanning: {source_dir}")
     log.info(f"Output:   {output_dir}")
+    if exclude:
+        log.info(f"Excluding: {', '.join(exclude)}")
 
     # --- Scan ---
-    concepts = scan_codebase(source_dir)
+    concepts = scan_codebase(source_dir, exclude=exclude)
     log.info(f"Found {len(concepts)} concepts")
 
     if not concepts:

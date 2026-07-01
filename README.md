@@ -226,10 +226,11 @@ okf --version           Show version and exit
 [#okf-generate](#okf-generate)
 
 ```
-okf generate <source_dir> [output_dir]
+okf generate <source_dir> [output_dir] [--exclude <dir> ...]
 
 Options:
   --summarize <bundle_dir>   Regenerate SUMMARY.md only (no re-scan)
+  --exclude <dir>            Skip directories matching this name (repeatable)
 
 Environment variables (LLM enrichment):
   OKF_ENRICH=1               Enable LLM enrichment
@@ -331,7 +332,10 @@ Environment variables:
 | `pyproject.toml` | `tomllib` | PEP 621 deps + optional-dependencies + Poetry legacy |
 | `package.json` | `json` | npm/Node dependencies + devDependencies |
 | `Cargo.toml` | `tomllib` | Rust crate deps + dev/build-dependencies |
+| `Cargo.lock` | `tomllib` | Rust lockfile — pinned versions from `[[package]]` entries |
 | `go.mod` | regex | Go module deps + `// indirect` flag |
+| `go.sum` | regex | Go checksum lockfile — deduplicated module versions |
+| `poetry.lock` | `tomllib` | Python Poetry lockfile — `[[package]]` with dev category detection |
 | `composer.json` | `json` | PHP packages (skips `php`/`ext-*` platform entries) |
 | `pom.xml` | `xml.etree.ElementTree` | Maven dependencies + `test`/`provided` scope → dev |
 | `Gemfile` | regex | Ruby gems + `group :test/:development` → dev |

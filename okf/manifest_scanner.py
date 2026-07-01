@@ -39,7 +39,10 @@ MANIFEST_HANDLERS: dict[str, str] = {
     "pyproject.toml": "parse_pyproject_toml",
     "package.json": "parse_package_json",
     "Cargo.toml": "parse_cargo_toml",
+    "Cargo.lock": "parse_cargo_lock",
     "go.mod": "parse_go_mod",
+    "go.sum": "parse_go_sum",
+    "poetry.lock": "parse_poetry_lock",
     "composer.json": "parse_composer_json",
     "pom.xml": "parse_pom_xml",
     "Gemfile": "parse_gemfile",
@@ -450,6 +453,52 @@ def parse_project_clj(path: Path) -> list[dict[str, Any]]:
 _ELIXIR_DEP_RE = re.compile(
     r'\{\s*:(\w+)\s*,\s*"([^"]+)"(?:\s*,\s*([^}]*))?\}'
 )
+
+
+def parse_cargo_lock(path: Path) -> list[dict[str, Any]]:
+    """Rust/Cargo lockfile. [[package]] entries with name + version."""
+    data = tomllib.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    deps = []
+    for pkg in data.get("package", []):
+        name = pkg.get("name", "")
+        version = pkg.get("version", "")
+        if name:
+            deps.append({"name": name, "ecosystem": "cargo", "version": version, "dev": False})
+    return deps
+
+
+def parse_poetry_lock(path: Path) -> list[dict[str, Any]]:
+    """Python/Poetry lockfile. [[package]] entries with name + version."""
+    data = tomllib.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    deps = []
+    for pkg in data.get("package", []):
+        name = pkg.get("name", "")
+        version = pkg.get("version", "")
+        category = pkg.get("category", "")
+        if name:
+            deps.append({"name": name, "ecosystem": "pip", "version": version, "dev": category == "dev"})
+    return deps
+
+
+_GO_SUM_LINE_RE = re.compile(r"^(\S+)\s+(v\S+)\s+h1:")
+
+
+def parse_go_sum(path: Path) -> list[dict[str, Any]]:
+    """Go module checksum file. Skips /go.mod entries (go.mod checksums)."""
+    deps = []
+    seen = set()
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if "/go.mod" in line:
+            continue
+        m = _GO_SUM_LINE_RE.match(line)
+        if not m:
+            continue
+        key = m.group(1) + "@" + m.group(2)
+        if key in seen:
+            continue
+        seen.add(key)
+        deps.append({"name": m.group(1), "ecosystem": "go", "version": m.group(2), "dev": False})
+    return deps
 
 
 def parse_mix_exs(path: Path) -> list[dict[str, Any]]:

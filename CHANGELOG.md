@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.18] — 2026-07-01
+
+### Added
+- Lock file parsers: `Cargo.lock` (Rust), `go.sum` (Go), `poetry.lock` (Python Poetry) — each dependency becomes a `Dependency` concept alongside the existing manifest formats.
+- `okf generate --exclude <dir>` — skip directories per-run without editing `SKIP_DIRS`. Repeatable: `--exclude tests --exclude docs`.
+- `okf diff <old> <new>` CLI subcommand — compares two bundles via content hash, prints added/removed/changed concepts. Supports `--compact` and `--json`.
+
+### Fixed
+- `go.sum` parser: skips `/go.mod` checksum lines and deduplicates module+version pairs.
+
+---
+
 ## [0.1.17] — 2026-07-01
 
 ### Added
@@ -228,7 +240,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.17...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.18...HEAD
+[0.1.18]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.18
 [0.1.17]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.17
 [0.1.16]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.16
 [0.1.15]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.15
