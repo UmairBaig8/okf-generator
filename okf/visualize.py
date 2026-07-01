@@ -272,19 +272,20 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
                 link_set.add(key)
                 links.append({"source": caller_id, "target": src, "type": "called_by"})
 
-        # dependency → code: link dep to its used_by (body_extra or section)
-        if c["type"] == "Dependency" and schema:
-            dep_name = c["title"].lower()
-            # match dep name against module names in concept resources
-            for other in concepts:
-                if other["concept_id"] == src:
-                    continue
-                res = other.get("resource", "").lower()
-                if dep_name in res and other.get("type") == "Module":
-                    key = f"dep||{other['concept_id']}||{src}"
-                    if key not in link_set:
+        # dependency used_by edges from ## Used By section
+        if c["type"] == "Dependency":
+            for module_id in _extract_ids(sections.get("used by", "")):
+                key = f"usedby||{module_id}||{src}"
+                if key not in link_set and module_id in node_ids:
+                    link_set.add(key)
+                    links.append({"source": module_id, "target": src, "type": "imports"})
+            # also check body_extra if present
+            if schema and schema.get("used_by"):
+                for module_id in schema["used_by"]:
+                    key = f"usedby||{module_id}||{src}"
+                    if key not in link_set and module_id in node_ids:
                         link_set.add(key)
-                        links.append({"source": other["concept_id"], "target": src, "type": "imports"})
+                        links.append({"source": module_id, "target": src, "type": "imports"})
 
     return nodes, links
 
