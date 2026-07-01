@@ -22,6 +22,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <title>OKF Bundle — {bundle_name}</title>
 <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 * {{ margin:0; padding:0; box-sizing:border-box; }}
 body {{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f1a; color:#e2e8f0; overflow:hidden; height:100vh; }}
@@ -36,6 +37,18 @@ body {{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-seri
 #panel .section pre {{ background:#1a1a2e; padding:8px; border-radius:4px; font-size:12px; overflow-x:auto; color:#cbd5e1; }}
 #panel a {{ color:#7c3aed; text-decoration:none; }}
 #panel a:hover {{ text-decoration:underline; }}
+#panel .markdown-body {{ font-size:13px; color:#cbd5e1; }}
+#panel .markdown-body h1 {{ font-size:16px; color:#e2e8f0; margin:8px 0 4px; }}
+#panel .markdown-body h2 {{ font-size:14px; color:#e2e8f0; margin:8px 0 4px; }}
+#panel .markdown-body h3 {{ font-size:13px; color:#a78bfa; margin:6px 0 2px; }}
+#panel .markdown-body p {{ margin:4px 0; }}
+#panel .markdown-body code {{ background:#1a1a2e; padding:1px 4px; border-radius:3px; font-size:12px; }}
+#panel .markdown-body pre {{ background:#1a1a2e; padding:8px; border-radius:4px; font-size:12px; overflow-x:auto; }}
+#panel .markdown-body table {{ border-collapse:collapse; width:100%; font-size:12px; margin:4px 0; }}
+#panel .markdown-body th, #panel .markdown-body td {{ border:1px solid #2d2d4a; padding:4px 8px; text-align:left; }}
+#panel .markdown-body th {{ background:#1a1a2e; color:#94a3b8; }}
+#panel .markdown-body ul {{ margin:4px 0; padding-left:20px; }}
+#panel .markdown-body li {{ margin:2px 0; }}
 #topbar {{ position:fixed; top:0; left:0; right:0; height:48px; background:#0f0f1a; border-bottom:1px solid #2d2d4a; display:flex; align-items:center; padding:0 16px; gap:12px; z-index:100; }}
 #topbar .title {{ color:#94a3b8; font-size:13px; }}
 #topbar .title strong {{ color:#e2e8f0; }}
@@ -192,6 +205,23 @@ cy.on('tap', 'node', function(evt) {{
         html += `</div>`;
     }}
 
+    // Full markdown body (rendered)
+    if (d.body) {{
+        const bodyParts = d.body.split('---');
+        const mdBody = bodyParts.length >= 3 ? bodyParts.slice(2).join('---').trim() : d.body;
+        if (mdBody) {{
+            // Rewire markdown links to navigate within the viewer
+            const rewired = mdBody.replace(/\[([^\]]+)\]\(\/([^)]+)\.md\)/g, (match, text, path) => {{
+                const targetId = path;
+                if (nodeData[targetId]) {{
+                    return `[${{text}}](javascript:selectNode('${{targetId}}'))`;
+                }}
+                return match;
+            }});
+            html += `<div class="section"><h3>Body</h3><div class="markdown-body">${{marked.parse(rewired)}}</div></div>`;
+        }}
+    }}
+
     panel.innerHTML = html;
     panel.scrollTop = 0;
 }});
@@ -255,6 +285,7 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
             "resource": c.get("resource", ""),
             "sections": c.get("sections", {}),
             "deptable": deptable,
+            "body": c.get("raw", ""),
         })
 
     def _extract_ids(text: str) -> list[str]:
