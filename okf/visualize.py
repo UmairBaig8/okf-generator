@@ -9,6 +9,7 @@ concepts and their relationships (calls, called-by, related, dependencies).
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -156,37 +157,54 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
             "resource": c.get("resource", ""),
         })
 
+    def _extract_ids(text: str) -> list[str]:
+        """Extract concept IDs from a markdown section like `- [name](/some/path)`."""
+        if not text:
+            return []
+        ids = re.findall(r"\(/([^)]+)\.md\)", text)
+        return ids
+
     links = []
     link_set = set()
     for c in concepts:
         src = c["concept_id"]
-        for rel_id in c.get("related", []):
-            if rel_id in node_ids:
-                key = f"{src}||{rel_id}"
-                if key not in link_set:
-                    link_set.add(key)
-                    links.append({"source": src, "target": rel_id, "type": "related"})
+        sections = c.get("sections", {})
+        schema = c.get("body_extra", {})
 
-        # calls edges
-        for callee_id in c.get("calls", []):
-            if callee_id in node_ids:
-                key = f"{src}||{callee_id}||calls"
-                if key not in link_set:
-                    link_set.add(key)
-                    links.append({"source": src, "target": callee_id, "type": "calls"})
+        # related links from ## Related section
+        for rel_id in _extract_ids(sections.get("related", "")):
+            key = f"rel||{src}||{rel_id}"
+            if key not in link_set and rel_id in node_ids:
+                link_set.add(key)
+                links.append({"source": src, "target": rel_id, "type": "related"})
 
-        # dependency edges: import → dep matching
-        if c["type"] == "Dependency":
+        # calls edges from ## Calls section
+        for callee_id in _extract_ids(sections.get("calls", "")):
+            key = f"call||{src}||{callee_id}"
+            if key not in link_set and callee_id in node_ids:
+                link_set.add(key)
+                links.append({"source": src, "target": callee_id, "type": "calls"})
+
+        # called_by edges from ## Called By section
+        for caller_id in _extract_ids(sections.get("called by", "")):
+            key = f"cb||{caller_id}||{src}"
+            if key not in link_set and caller_id in node_ids:
+                link_set.add(key)
+                links.append({"source": caller_id, "target": src, "type": "called_by"})
+
+        # dependency → code: link dep to its used_by (body_extra or section)
+        if c["type"] == "Dependency" and schema:
             dep_name = c["title"].lower()
+            # match dep name against module names in concept resources
             for other in concepts:
                 if other["concept_id"] == src:
                     continue
-                for imp in other.get("imports", []):
-                    if dep_name in imp.lower():
-                        key = f"{other['concept_id']}||{src}||imports"
-                        if key not in link_set:
-                            link_set.add(key)
-                            links.append({"source": other["concept_id"], "target": src, "type": "imports"})
+                res = other.get("resource", "").lower()
+                if dep_name in res and other.get("type") == "Module":
+                    key = f"dep||{other['concept_id']}||{src}"
+                    if key not in link_set:
+                        link_set.add(key)
+                        links.append({"source": other["concept_id"], "target": src, "type": "imports"})
 
     return nodes, links
 
