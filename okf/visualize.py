@@ -150,7 +150,16 @@ cy.on('tap', 'node', function(evt) {{
 
     // Find sections from node data
     const sections = d.sections || {{}};
-    const sectionKeys = Object.keys(sections);
+    const deptable = d.deptable || {{}};
+
+    // Dependency table
+    if (Object.keys(deptable).length) {{
+        html += `<div class="section"><h3>Details</h3><table style="width:100%;font-size:12px">`;
+        for (const [k, v] of Object.entries(deptable)) {{
+            html += `<tr><td style="color:#94a3b8;padding:2px 4px">${{k}}</td><td style="padding:2px 4px">${{v}}</td></tr>`;
+        }}
+        html += `</table></div>`;
+    }}
 
     if (sections.signature) {{
         html += `<div class="section"><h3>Signature</h3><pre>${{sections.signature.replace(/```\w*\\n?/g,'')}}</pre></div>`;
@@ -230,11 +239,22 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
         if nid in node_ids:
             continue
         node_ids.add(nid)
+        raw_body = c.get("raw", "")
+        deptable = {}
+        if c["type"] == "Dependency" and "| Ecosystem |" in raw_body:
+            for line in raw_body.splitlines():
+                if line.startswith("| "):
+                    parts = [p.strip().strip("`") for p in line.split("|")[1:-1]]
+                    if len(parts) == 2 and parts[0] not in ("Field", "Ecosystem", "Version constraint", "Source manifest", "Dev dependency", "Used by"):
+                        deptable[parts[0]] = parts[1]
+                    elif len(parts) == 2:
+                        deptable[parts[0].lower()] = parts[1]
         nodes.append({
             "id": nid, "title": c["title"], "type": c["type"],
             "description": c.get("description", ""),
             "resource": c.get("resource", ""),
             "sections": c.get("sections", {}),
+            "deptable": deptable,
         })
 
     def _extract_ids(text: str) -> list[str]:
