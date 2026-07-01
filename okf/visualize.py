@@ -64,6 +64,7 @@ body {{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-seri
 </style>
 </head>
 <body>
+<div id="loading" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0f1a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#94a3b8;font-size:18px">Loading {concept_count} concepts...</div>
 <div id="topbar">
 <span class="title">OKF Bundle · <strong>{bundle_name}</strong> · {concept_count} concepts · {edge_count} edges</span>
 <input id="search" type="text" placeholder="Search concepts...">
@@ -104,11 +105,14 @@ const cy = cytoscape({{
         }}))
     ],
     style: [
-        {{ selector: 'node', style: {{ 'background-color': 'data(type)', 'label': 'data(label)', 'color': '#94a3b8', 'font-size': '10px', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': '4px', 'width': 'mapData(type, 0, 1, 8, 20)', 'height': 'mapData(type, 0, 1, 8, 20)', 'border-width': 1.5, 'border-color': '#1a1a2e', 'min-zoomed-font-size': 8 }} }},
-        {{ selector: 'edge', style: {{ 'width': 1, 'line-color': '#2d2d4a', 'target-arrow-color': '#2d2d4a', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.6 }} }}
+        {{ selector: 'node', style: {{ 'label': 'data(label)', 'color': '#94a3b8', 'font-size': '10px', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': '4px', 'width': 10, 'height': 10, 'border-width': 1.5, 'border-color': '#1a1a2e', 'min-zoomed-font-size': 8 }} }},
+        {{ selector: 'edge', style: {{ 'width': 0.8, 'line-color': '#2d2d4a', 'target-arrow-color': '#2d2d4a', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.5 }} }}
     ],
-    layout: {{ name: 'cose', nodeDimensionsIncludeLabels: true, animate: false }}
+    layout: {{ name: 'cose', nodeDimensionsIncludeLabels: true, animate: false, idealEdgeLength: 60, nodeRepulsion: 4000, gravity: 0.25 }}
 }});
+
+// Hide loading screen
+document.getElementById('loading').style.display = 'none';
 
 // Color nodes by type
 data.nodes.forEach(n => {{
