@@ -205,12 +205,14 @@ okf <command> --help    Show options for a specific command
 okf --version           Show version
 ```
 
-### generate   — `okf generate <source_dir> [output_dir]`
-### lookup     — `okf lookup <query>`
-### diff       — `okf diff <old_bundle> <new_bundle>`
-### pairs      — `okf pairs <bundle_dir> [output_file]`
-### summarize  — `okf summarize <bundle_dir>`
-### install    — `okf install [claude|opencode|copilot|cursor|windsurf|cline]`
+| Command | Usage |
+|---------|-------|
+| `generate` | `okf generate <source_dir> [output_dir]` |
+| `lookup` | `okf lookup <query>` |
+| `diff` | `okf diff <old_bundle> <new_bundle>` |
+| `pairs` | `okf pairs <bundle_dir> [output_file]` |
+| `summarize` | `okf summarize <bundle_dir>` |
+| `install` | `okf install [claude \| opencode \| copilot \| cursor \| windsurf \| cline]` |
 
 See [docs/cli-reference.md](https://github.com/UmairBaig8/okf-generator/blob/main/docs/cli-reference.md) for full options, environment variables, and examples.
 
