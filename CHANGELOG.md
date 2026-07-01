@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.22] — 2026-07-01
+
+### Fixed
+- `okf visualize`: edges now correctly extracted from `## Related`, `## Calls`, `## Called By`, and `## Used By` sections (was always 0).
+- `okf visualize`: dependency detail panel now shows ecosystem/version/dev table.
+- `okf visualize`: full markdown body rendering via `marked.js` with internal link rewiring.
+- `okf visualize`: CDN switched from `unpkg.com` (broken) to `cdn.jsdelivr.net`.
+
+### Changed
+- `okf visualize`: upgraded from D3.js to Cytoscape.js with 4 layouts (Graph, Circle, Grid, Tree), type filter, search, and detail panel.
+
+---
+
 ## [0.1.21] — 2026-07-01
 
 ### Added
@@ -277,7 +290,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.21...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.22...HEAD
+[0.1.22]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.22
 [0.1.21]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.21
 [0.1.20]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.20
 [0.1.19]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.19
