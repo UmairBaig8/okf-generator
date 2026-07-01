@@ -20,106 +20,185 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OKF Bundle — {bundle_name}</title>
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
 <style>
-* {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f1a; color: #e2e8f0; overflow: hidden; }}
-#graph {{ width: 100vw; height: 100vh; }}
-#tooltip {{ position: absolute; display: none; background: #1a1a2e; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; font-size: 13px; max-width: 350px; pointer-events: none; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }}
-#tooltip h3 {{ color: #a78bfa; margin-bottom: 4px; font-size: 15px; }}
-#tooltip p {{ color: #94a3b8; margin: 2px 0; }}
-#tooltip .type {{ display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 6px; }}
-#legend {{ position: absolute; bottom: 20px; left: 20px; background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 8px; padding: 12px; font-size: 12px; }}
-#legend h4 {{ color: #a78bfa; margin-bottom: 6px; font-size: 13px; }}
-.legend-item {{ display: flex; align-items: center; gap: 8px; margin: 3px 0; color: #94a3b8; }}
-.legend-dot {{ width: 12px; height: 12px; border-radius: 50%; }}
-#search {{ position: absolute; top: 20px; right: 20px; background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 8px; padding: 8px 12px; color: #e2e8f0; font-size: 14px; width: 220px; outline: none; }}
-#search:focus {{ border-color: #7c3aed; }}
-#stats {{ position: absolute; top: 20px; left: 20px; background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 8px; padding: 12px; font-size: 12px; color: #94a3b8; }}
-#stats strong {{ color: #e2e8f0; }}
+* {{ margin:0; padding:0; box-sizing:border-box; }}
+body {{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f1a; color:#e2e8f0; overflow:hidden; height:100vh; }}
+#container {{ display:flex; height:100vh; }}
+#graph {{ flex:1; height:100vh; }}
+#panel {{ width:420px; background:#16162a; border-left:1px solid #2d2d4a; overflow-y:auto; display:none; padding:20px; font-size:14px; line-height:1.6; }}
+#panel h2 {{ color:#a78bfa; font-size:18px; margin-bottom:4px; }}
+#panel .type-badge {{ display:inline-block; padding:2px 10px; border-radius:4px; font-size:11px; font-weight:600; margin-bottom:8px; }}
+#panel p {{ color:#94a3b8; margin:4px 0; }}
+#panel .section {{ margin-top:12px; }}
+#panel .section h3 {{ color:#e2e8f0; font-size:14px; margin-bottom:4px; }}
+#panel .section pre {{ background:#1a1a2e; padding:8px; border-radius:4px; font-size:12px; overflow-x:auto; color:#cbd5e1; }}
+#panel a {{ color:#7c3aed; text-decoration:none; }}
+#panel a:hover {{ text-decoration:underline; }}
+#topbar {{ position:fixed; top:0; left:0; right:0; height:48px; background:#0f0f1a; border-bottom:1px solid #2d2d4a; display:flex; align-items:center; padding:0 16px; gap:12px; z-index:100; }}
+#topbar .title {{ color:#94a3b8; font-size:13px; }}
+#topbar .title strong {{ color:#e2e8f0; }}
+#search {{ background:#1a1a2e; border:1px solid #2d2d4a; border-radius:6px; padding:6px 10px; color:#e2e8f0; font-size:13px; width:200px; outline:none; }}
+#search:focus {{ border-color:#7c3aed; }}
+.layout-btn {{ background:#1a1a2e; border:1px solid #2d2d4a; border-radius:4px; color:#94a3b8; padding:4px 10px; font-size:12px; cursor:pointer; }}
+.layout-btn:hover {{ border-color:#7c3aed; color:#e2e8f0; }}
+.layout-btn.active {{ background:#7c3aed20; border-color:#7c3aed; color:#a78bfa; }}
+#legend {{ position:fixed; bottom:16px; left:16px; background:#1a1a2e; border:1px solid #2d2d4a; border-radius:8px; padding:10px; font-size:11px; z-index:50; }}
+#legend h4 {{ color:#a78bfa; font-size:12px; margin-bottom:4px; }}
+.legend-item {{ display:flex; align-items:center; gap:6px; margin:2px 0; color:#94a3b8; }}
+.legend-dot {{ width:10px; height:10px; border-radius:50%; }}
+#type-filter {{ background:#1a1a2e; border:1px solid #2d2d4a; border-radius:4px; color:#94a3b8; padding:4px 8px; font-size:12px; outline:none; }}
 </style>
 </head>
 <body>
-<div id="stats">OKF Bundle · <strong>{bundle_name}</strong> · {concept_count} concepts · {edge_count} edges</div>
-<input id="search" type="text" placeholder="Search concepts..." oninput="filterGraph(this.value)">
-<div id="tooltip"></div>
+<div id="topbar">
+<span class="title">OKF Bundle · <strong>{bundle_name}</strong> · {concept_count} concepts · {edge_count} edges</span>
+<input id="search" type="text" placeholder="Search concepts...">
+<select id="type-filter">
+<option value="">All types</option>
+{filter_options}
+</select>
+<button class="layout-btn active" data-layout="cose">Graph</button>
+<button class="layout-btn" data-layout="circle">Circle</button>
+<button class="layout-btn" data-layout="grid">Grid</button>
+<button class="layout-btn" data-layout="breadthfirst">Tree</button>
+</div>
+<div id="container">
+<div id="graph"></div>
+<div id="panel"></div>
+</div>
 <div id="legend">
-<h4>Legend</h4>
+<h4>Types</h4>
 {legend_html}
 </div>
-<div id="graph"></div>
 <script>
 const data = {json_data};
-
 const colorMap = {{
 {color_map}
 }};
+const nodeData = {{}};
+data.nodes.forEach(n => {{ nodeData[n.id] = n; }});
 
-const typeLabels = {{
-{type_labels}
-}};
-
-const width = window.innerWidth;
-const height = window.innerHeight;
-
-const nodes = data.nodes.map(d => ({{ ...d }}));
-const links = data.links.map(d => ({{ ...d }}));
-
-const simulation = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(links).id(d => d.id).distance(80))
-    .force("charge", d3.forceManyBody().strength(-200))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collision", d3.forceCollide().radius(20));
-
-const svg = d3.select("#graph").append("svg")
-    .attr("width", width).attr("height", height);
-
-const g = svg.append("g");
-
-svg.call(d3.zoom().scaleExtent([0.1, 4]).on("zoom", (event) => {{
-    g.attr("transform", event.transform);
-}}));
-
-const link = g.append("g").selectAll("line").data(links).join("line")
-    .attr("stroke", "#2d2d4a").attr("stroke-width", 1).attr("stroke-opacity", 0.6);
-
-const node = g.append("g").selectAll("circle").data(nodes).join("circle")
-    .attr("r", d => d.type === "Function" ? 5 : d.type === "Class" ? 7 : d.type === "Dependency" ? 4 : 6)
-    .attr("fill", d => colorMap[d.type] || "#64748b")
-    .attr("stroke", "#1a1a2e").attr("stroke-width", 1.5)
-    .style("cursor", "pointer")
-    .call(d3.drag()
-        .on("start", (event, d) => {{ if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }})
-        .on("drag", (event, d) => {{ d.fx = event.x; d.fy = event.y; }})
-        .on("end", (event, d) => {{ if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }})
-    );
-
-const label = g.append("g").selectAll("text").data(nodes).join("text")
-    .text(d => d.title.length > 20 ? d.title.slice(0, 18) + "..." : d.title)
-    .attr("font-size", "10px").attr("dx", 10).attr("dy", 3)
-    .attr("fill", "#94a3b8").style("pointer-events", "none");
-
-const tooltip = d3.select("#tooltip");
-
-node.on("mouseover", (event, d) => {{
-    tooltip.style("display", "block")
-        .html(`<span class="type" style="background:${{colorMap[d.type]||'#64748b'}}20;color:${{colorMap[d.type]||'#64748b'}}">${{d.type}}</span><h3>${{d.title}}</h3><p>${{(d.description||'').slice(0,100)}}</p><p style="color:#64748b;font-size:11px;margin-top:4px">${{d.resource||''}}</p>`)
-        .style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 10) + "px");
-}}).on("mouseout", () => tooltip.style("display", "none"));
-
-simulation.on("tick", () => {{
-    link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
-    node.attr("cx", d => d.x).attr("cy", d => d.y);
-    label.attr("x", d => d.x).attr("y", d => d.y);
+const cy = cytoscape({{
+    container: document.getElementById('graph'),
+    elements: [
+        ...data.nodes.map(n => ({{
+            data: {{ id: n.id, label: n.title.length>25?n.title.slice(0,23)+'...':n.title, type: n.type, desc: n.description||'', resource: n.resource||'', full: n }},
+            classes: n.type
+        }})),
+        ...data.links.map(l => ({{
+            data: {{ source: l.source, target: l.target, type: l.type }}
+        }}))
+    ],
+    style: [
+        {{ selector: 'node', style: {{ 'background-color': 'data(type)', 'label': 'data(label)', 'color': '#94a3b8', 'font-size': '10px', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': '4px', 'width': 'mapData(type, 0, 1, 8, 20)', 'height': 'mapData(type, 0, 1, 8, 20)', 'border-width': 1.5, 'border-color': '#1a1a2e', 'min-zoomed-font-size': 8 }} }},
+        {{ selector: 'edge', style: {{ 'width': 1, 'line-color': '#2d2d4a', 'target-arrow-color': '#2d2d4a', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.6 }} }}
+    ],
+    layout: {{ name: 'cose', nodeDimensionsIncludeLabels: true, animate: false }}
 }});
 
-function filterGraph(query) {{
-    const q = query.toLowerCase();
-    node.attr("opacity", d => !q || d.title.toLowerCase().includes(q) || d.type.toLowerCase().includes(q) ? 1 : 0.15);
-    label.attr("opacity", d => !q || d.title.toLowerCase().includes(q) || d.type.toLowerCase().includes(q) ? 1 : 0.15);
-    link.attr("stroke-opacity", d => !q ? 0.6 : (d.source.title.toLowerCase().includes(q) || d.target.title.toLowerCase().includes(q) ? 0.6 : 0.05));
+// Color nodes by type
+data.nodes.forEach(n => {{
+    const color = colorMap[n.type] || '#64748b';
+    const el = cy.getElementById(n.id);
+    if (el.length) el.style({{ 'background-color': color, 'border-color': color }});
+}});
+
+// Type filter
+document.getElementById('type-filter').addEventListener('change', function() {{
+    const val = this.value;
+    cy.nodes().forEach(n => {{
+        if (!val || n.data('type') === val) {{
+            n.show(); n.connectedEdges().show();
+        }} else {{
+            n.hide(); n.connectedEdges().hide();
+        }}
+    }});
+}});
+
+// Search
+document.getElementById('search').addEventListener('input', function() {{
+    const q = this.value.toLowerCase();
+    cy.nodes().forEach(n => {{
+        const match = !q || n.data('label').toLowerCase().includes(q) || n.data('type').toLowerCase().includes(q) || (n.data('desc')||'').toLowerCase().includes(q);
+        if (match) {{ n.show(); n.connectedEdges().show(); }} else {{ n.hide(); n.connectedEdges().hide(); }}
+    }});
+}});
+
+// Layout switching
+document.querySelectorAll('.layout-btn').forEach(btn => {{
+    btn.addEventListener('click', function() {{
+        document.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        cy.layout({{ name: this.dataset.layout, animate: true, nodeDimensionsIncludeLabels: true, spacingFactor: 1.5 }}).run();
+    }});
+}});
+
+// Click node → show detail panel
+const panel = document.getElementById('panel');
+cy.on('tap', 'node', function(evt) {{
+    const n = evt.target;
+    const d = nodeData[n.id()];
+    if (!d) return;
+    panel.style.display = 'block';
+    const color = colorMap[d.type] || '#64748b';
+    let html = `<span class="type-badge" style="background:${{color}}20;color:${{color}}">${{d.type}}</span>`;
+    html += `<h2>${{d.title}}</h2>`;
+    if (d.description) html += `<p>${{d.description}}</p>`;
+    if (d.resource) html += `<p style="font-size:12px;color:#64748b">${{d.resource}}</p>`;
+
+    // Find sections from node data
+    const sections = d.sections || {{}};
+    const sectionKeys = Object.keys(sections);
+
+    if (sections.signature) {{
+        html += `<div class="section"><h3>Signature</h3><pre>${{sections.signature.replace(/```\w*\\n?/g,'')}}</pre></div>`;
+    }}
+    if (sections.docstring) {{
+        html += `<div class="section"><h3>Docstring</h3><pre>${{sections.docstring.slice(0,300)}}</pre></div>`;
+    }}
+    if (sections.parameters) {{
+        html += `<div class="section"><h3>Parameters</h3><pre>${{sections.parameters.slice(0,200)}}</pre></div>`;
+    }}
+    if (sections.returns) {{
+        html += `<div class="section"><h3>Returns</h3><pre>${{sections.returns}}</pre></div>`;
+    }}
+
+    // Related / Calls / Called By sections
+    for (const sk of ['related', 'calls', 'called by']) {{
+        if (sections[sk]) {{
+            html += `<div class="section"><h3>${{sk.charAt(0).toUpperCase()+sk.slice(1)}}</h3>${{sections[sk]}}</div>`;
+        }}
+    }}
+
+    // Cited by (reverse of related links)
+    const citedBy = data.links.filter(l => l.target === d.id).map(l => nodeData[l.source]).filter(Boolean);
+    if (citedBy.length) {{
+        html += `<div class="section"><h3>Cited by</h3>`;
+        citedBy.forEach(c => {{
+            const cc = colorMap[c.type] || '#64748b';
+            html += `<div style="margin:4px 0;font-size:13px"><span style="color:${{cc}};font-weight:600">${{c.type}}</span> <a href="#" onclick="selectNode('${{c.id}}');return false">${{c.title}}</a></div>`;
+        }});
+        html += `</div>`;
+    }}
+
+    panel.innerHTML = html;
+    panel.scrollTop = 0;
+}});
+
+function selectNode(id) {{
+    const n = cy.getElementById(id);
+    if (n.length) {{
+        cy.fit(n, 50);
+        n.trigger('tap');
+    }}
 }}
+
+// Click background → hide panel
+cy.on('tap', function(evt) {{
+    if (evt.target === cy) panel.style.display = 'none';
+}});
 </script>
 </body>
 </html>"""
@@ -155,6 +234,7 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
             "id": nid, "title": c["title"], "type": c["type"],
             "description": c.get("description", ""),
             "resource": c.get("resource", ""),
+            "sections": c.get("sections", {}),
         })
 
     def _extract_ids(text: str) -> list[str]:
@@ -209,6 +289,13 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
     return nodes, links
 
 
+def build_filter_options() -> str:
+    opts = []
+    for t in TYPE_COLORS:
+        opts.append(f'<option value="{t}">{t}</option>')
+    return "\n".join(opts)
+
+
 def build_legend() -> str:
     items = []
     for t, color in TYPE_COLORS.items():
@@ -243,6 +330,7 @@ def visualize(bundle_dir: Path) -> tuple[str, int, int]:
         edge_count=len(links),
         json_data=json_data,
         legend_html=build_legend(),
+        filter_options=build_filter_options(),
         color_map=build_color_map(),
         type_labels=build_type_labels(),
     )
