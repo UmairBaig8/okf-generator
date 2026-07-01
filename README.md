@@ -139,14 +139,17 @@ okf summarize ./okf_bundle
 
 [#how-it-works](#how-it-works)
 
+<!--- Mermaid diagram — renders on GitHub, not on PyPI --->
 ```mermaid
 flowchart LR
-    A[Your codebase] -->|okf generate| B[Scanners<br/>AST · tree-sitter · regex]
-    B --> C[Concepts<br/>Function · Class · Module · Dependency]
-    C --> D[OKF Bundle<br/>markdown + YAML frontmatter]
+    A[Your codebase] -->|okf generate| B[Scanners: AST / tree-sitter / regex]
+    B --> C[Concepts: Function / Class / Module / Dependency]
+    C --> D[OKF Bundle: markdown + YAML frontmatter]
     D -->|okf lookup| E[AI Agent]
     D -->|okf pairs| F[JSONL training data]
 ```
+
+> **Flowchart:** `okf generate` scans your codebase → produces concepts → writes an OKF bundle → consumed by AI agents via `okf lookup` or converted to training data via `okf pairs`.
 
 Extraction is fully deterministic and offline-capable — no LLM call is required to produce a usable bundle. LLM enrichment is an optional second pass that improves descriptions, and it's resumable: interrupt it anytime and rerun without redoing work already done.
 
