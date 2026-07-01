@@ -1,54 +1,51 @@
-# demo.tape — records docs/demo.gif
-#
-# Prerequisites before running:
-#   1. Install vhs: https://github.com/charmbracelet/vhs#installation
-#   2. Install okf-generator: pip install okf-generator
-#   3. Have a small sample project to scan — e.g. create ./demo_project/
-#      with a couple of .py files containing a class or two. Keep it
-#      small (3-5 files) so the output fits on screen without scrolling.
-#
-# Run with:
-#   vhs demo.tape
-#
-# Output: docs/demo.gif (auto-created relative to where you run vhs)
-
 Output docs/demo.gif
-
-Set Shell "bash"
 Set FontSize 16
 Set Width 1100
 Set Height 600
 Set Theme "Dracula"
 Set Padding 20
-Set TypingSpeed 60ms
+Set TypingSpeed 20ms
 
-# Make sure we start clean
+# Activate venv and cd to sample_repo
 Hide
 Type "source dev_wspace/.venv/bin/activate"
 Enter
-Type "cd /tmp/okf_demo"
+Type "cd /tmp/sample_repo"
 Enter
 Type "clear"
 Enter
 Show
+Sleep 400ms
 
-# Step 1: generate the bundle
+# Scene 1: generate
 Type "okf generate . ./okf_bundle"
-Sleep 500ms
+Sleep 300ms
 Enter
-Sleep 2s
+Sleep 3s
 
-# Step 2: look up a concept
-Type "okf lookup APIClient"
-Sleep 500ms
+# Scene 2: lookup a class
+Type "clear"
 Enter
-Sleep 2.5s
+Sleep 300ms
+Type "okf lookup PaymentService"
+Sleep 400ms
+Enter
+Sleep 3s
 
-# Step 3: filter by dependency
+# Scene 3: lookup dependencies
+Type "clear"
+Enter
+Sleep 300ms
 Type "okf lookup --type Dependency --compact"
-Sleep 500ms
+Sleep 400ms
 Enter
 Sleep 2.5s
 
-# Hold the final frame before looping
+# Scene 4: install for all agents
+Type "clear"
+Enter
+Sleep 300ms
+Type "okf install all"
+Sleep 400ms
+Enter
 Sleep 2s
