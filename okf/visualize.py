@@ -221,7 +221,11 @@ cy.on('tap', 'node', function(evt) {{
                 }}
                 return match;
             }});
-            html += `<div class="section"><h3>Body</h3><div class="markdown-body">${{marked.parse(rewired)}}</div></div>`;
+            try {{
+                html += `<div class="section"><h3>Body</h3><div class="markdown-body">${{marked.parse(rewired)}}</div></div>`;
+            }} catch(e) {{
+                html += `<div class="section"><h3>Body</h3><pre style="font-size:12px;color:#94a3b8">${{mdBody.slice(0,500)}}</pre></div>`;
+            }}
         }}
     }}
 
@@ -413,3 +417,4 @@ def main():
     print(f"Visualization written → {out}")
     print(f"  {n_nodes} concepts, {n_edges} edges")
     print(f"  Open in browser: file://{out}")
+    print(f"  Or serve via: python3 -m http.server --directory {out.parent} && open http://localhost:8000/{out.name}")
