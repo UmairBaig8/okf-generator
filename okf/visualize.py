@@ -230,8 +230,10 @@ cy.on('tap', 'node', function(evt) {{
         }}
     }}
 
-    panel.innerHTML = html;
-    panel.scrollTop = 0;
+    try {
+        panel.innerHTML = html;
+        panel.scrollTop = 0;
+    }} catch(e) {{ console.log('Panel render error:', e); }}
 }});
 
 function selectNode(id) {{

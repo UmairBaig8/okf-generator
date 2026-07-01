@@ -4,3 +4,5 @@ dev_wspace
 .okf_lookup_cache.json
 uv.lock
 .venv
+.github/.DS_Store
+.vscode/settings.json
