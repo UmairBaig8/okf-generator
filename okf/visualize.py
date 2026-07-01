@@ -230,7 +230,7 @@ cy.on('tap', 'node', function(evt) {{
         }}
     }}
 
-    try {
+    try {{
         panel.innerHTML = html;
         panel.scrollTop = 0;
     }} catch(e) {{ console.log('Panel render error:', e); }}
