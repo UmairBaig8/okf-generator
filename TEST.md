@@ -21,7 +21,7 @@ rm -rf "$WORK/.venv" "$WORK/okf_bundle" "$WORK/OKF_TEST_REPORT.md"
 python3 -m venv "$WORK/.venv"
 source "$WORK/.venv/bin/activate"
 pip install --quiet --upgrade pip
-pip install --quiet -e ".[llm]"
+pip install --quiet -e ".[dev,llm]"
 ```
 
 ### 0.3 Verify CLI

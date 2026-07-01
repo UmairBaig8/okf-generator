@@ -1,4 +1,4 @@
-[![okf-generator banner](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.png)](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner_v2.svg)
+[![okf-generator banner](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.png)](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/banner.png)
 
 [![PyPI version](https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI)](https://pypi.org/project/okf-generator/)
 [![Downloads](https://img.shields.io/pypi/dm/okf-generator?style=flat-square)](https://pypi.org/project/okf-generator/)
@@ -136,77 +136,6 @@ After scanning, a **cross-reference linker** builds two edge types:
 [#used-by--built-for](#used-by--built-for)
 
 `okf-generator` was originally built to index a large, multi-domain codebase (`StockAI`/`TrainLLMs`) spanning Python data connectors, ML pipelines, and SQL schemas — the kind of project where giving an agent the *whole* repo as context is both slow and unaffordable in tokens. If you're working in a sprawling codebase and tired of re-explaining your own code to your AI agent every session, this is the tool that problem was built to solve.
-
-## Installation
-
-[#installation](#installation)
-
-**One-liner — paste into any terminal:**
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh | bash
-```
-
-This installs `okf-generator[llm]` + the Claude Code skill in one shot.
-*Requirements: Python 3.11+ with pip.*
-
-Or manually:
-
-```bash
-# Core (extraction only — no LLM required)
-pip install okf-generator
-
-# With LLM enrichment + training pair generation
-pip install "okf-generator[llm]"
-```
-
-## Quick Start
-
-[#quick-start](#quick-start)
-
-```bash
-# 1. Generate a knowledge bundle from your codebase
-okf generate ./my_project ./okf_bundle
-
-# 2. Look up a concept (works instantly, zero LLM)
-okf lookup WorldBankConnector
-
-# 3. Find all concepts from one file
-okf lookup --file src/connectors/economic_data.py
-
-# 4. List all dependencies for a given ecosystem
-okf lookup --type Dependency --tag ecosystem:pip
-
-# 5. Generate training pairs from the bundle
-okf pairs ./okf_bundle ./train.jsonl
-
-# 6. Regenerate SUMMARY.md after enrichment
-okf summarize ./okf_bundle
-```
-
-## How it works
-
-[#how-it-works](#how-it-works)
-
-<!--- Mermaid diagram — renders on GitHub, not on PyPI --->
-```mermaid
-flowchart LR
-    A[Your codebase] -->|okf generate| B[Scanners: AST / tree-sitter / regex]
-    B --> C[Concepts: Function / Class / Module / Dependency]
-    C --> D[OKF Bundle: markdown + YAML frontmatter]
-    D -->|okf lookup| E[AI Agent]
-    D -->|okf pairs| F[JSONL training data]
-```
-
-> **Flowchart:** `okf generate` scans your codebase → produces concepts → writes an OKF bundle → consumed by AI agents via `okf lookup` or converted to training data via `okf pairs`.
-
-Extraction is fully deterministic and offline-capable — no LLM call is required to produce a usable bundle. LLM enrichment is an optional second pass that improves descriptions, and it's resumable: interrupt it anytime and rerun without redoing work already done.
-
-After scanning, a **cross-reference linker** runs across all concepts, building two edge types:
-- **Imports → Dependencies** — module-level `import`/`require` statements are matched against the dependency index, showing which dependencies each module uses (and which modules use each dependency).
-- **Calls → Callees** — function/method call sites are resolved to concept IDs, rendering **Calls** and **Called By** sections in each concept file.
-
-All 7 code languages participate (Python AST + JS/TS/Go/Java/Rust/Ruby tree-sitter). The linker is a single fast pass — no LLM, no external service.
 
 ## Bundle Layout
 

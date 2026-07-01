@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.20] — 2026-07-01
+
+### Changed
+- README restructured as landing page: demo GIF moved to top, feature cards, installation earlier, CLI reference and Python API moved to `docs/` subpages.
+- Banner updated to `docs/banner.png`.
+- Mermaid flowchart: removed `<br/>` tags for GitHub compatibility, added plain-text fallback.
+- Added system prompt template and token efficiency table for AI agent integrators.
+- TEST.md now installs with `[dev,llm]` extras (ruff available for lint step).
+
+---
+
 ## [0.1.19] — 2026-07-01
 
 ### Added
@@ -254,7 +265,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.19...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.20...HEAD
+[0.1.20]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.20
 [0.1.19]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.19
 [0.1.18]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.18
 [0.1.17]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.17
