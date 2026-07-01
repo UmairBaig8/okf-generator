@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.17] — 2026-07-01
+
+### Added
+- `okf --version` flag — prints version and exits.
+
+### Fixed
+- `source_lines` end was hardcoded to `0` in `_make_concept` — now uses `node.end_point` so every concept shows correct end line number.
+- SQL Function concepts now pass `node` to `_make_concept`, fixing their `source_lines` end (was `0`).
+
+### Changed
+- README: cross-reference linker documentation under "How it works". SQL parser updated from regex to tree-sitter. `--version` added to CLI reference.
+- `TEST.md`: added ruff lint check (Phase 1.1).
+
+---
+
 ## [0.1.16] — 2026-07-01
 
 ### Changed
@@ -213,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.16...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.17...HEAD
+[0.1.17]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.17
 [0.1.16]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.16
 [0.1.15]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.15
 [0.1.14]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.14
