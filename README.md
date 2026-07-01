@@ -212,7 +212,7 @@ okf --version           Show version
 ### summarize  — `okf summarize <bundle_dir>`
 ### install    — `okf install [claude|opencode|copilot|cursor|windsurf|cline]`
 
-See [docs/cli-reference.md](docs/cli-reference.md) for full options, environment variables, and examples.
+See [docs/cli-reference.md](https://github.com/UmairBaig8/okf-generator/blob/main/docs/cli-reference.md) for full options, environment variables, and examples.
 
 ## Supported Languages & Manifests
 
@@ -367,7 +367,7 @@ See [docs/opencode-integration.md](https://github.com/UmairBaig8/okf-generator/b
 
 [#python-api](#python-api)
 
-See [docs/python-api.md](docs/python-api.md) for the full API reference.
+See [docs/python-api.md](https://github.com/UmairBaig8/okf-generator/blob/main/docs/python-api.md) for the full API reference.
 
 ```python
 from okf.generator import scan_codebase, write_bundle, write_summary
