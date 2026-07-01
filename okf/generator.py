@@ -931,13 +931,14 @@ class SQLParser(TreeSitterParser):
                     "Function", name, doc, sig, resource, ts, parent_id,
                     inner.start_point[0]+1, node=inner, src_bytes=src_bytes))
             else:
+                cid = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
                 concepts.append(Concept(
                     type=ctype, title=name,
                     description=_first_line(doc) or f"{ctype} defined in {Path(resource).name}",
                     docstring=doc, signature=sig,
                     resource=resource, tags=[self.LANGUAGE, ctype.lower()],
                     timestamp=ts, source_lines=(inner.start_point[0]+1, inner.end_point[0]+1),
-                    concept_id=f"{re.sub(r'\.[^/]+$', '', resource).replace(os.sep, '/')}/{_safe_id(name)}",
+                    concept_id=f"{cid}/{_safe_id(name)}",
                     related=[parent_id],
                 ))
         return concepts

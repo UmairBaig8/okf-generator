@@ -32,7 +32,6 @@ See PATCH NOTES at bottom of file.  Short version:
 from __future__ import annotations
 
 import logging
-import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 
@@ -502,9 +501,9 @@ def _java_scoped_id_text(node) -> str:
     if node.type == "scoped_identifier":
         left = node.child_by_field_name("scope")
         right = node.child_by_field_name("name")
-        l = _java_scoped_id_text(left) if left else ""
+        scope = _java_scoped_id_text(left) if left else ""
         r = right.text.decode(errors="replace") if right else ""
-        return f"{l}.{r}" if l else r
+        return f"{scope}.{r}" if scope else r
     return node.text.decode(errors="replace") if node.text else ""
 
 
