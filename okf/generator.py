@@ -257,6 +257,7 @@ class TreeSitterParser:
         res_id = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
         cid    = f"{res_id}/{_safe_id(name)}"
         calls_raw = self._collect_calls(node, src_bytes) if node is not None else []
+        end_lineno = (node.end_point[0] + 1) if node is not None else 0
         return Concept(
             type=ctype,
             title=name,
@@ -266,7 +267,7 @@ class TreeSitterParser:
             resource=resource,
             tags=[self.LANGUAGE, ctype.lower()],
             timestamp=ts,
-            source_lines=(lineno, 0),
+            source_lines=(lineno, end_lineno),
             concept_id=cid,
             related=[parent_id],
             methods=methods or [],
@@ -928,7 +929,7 @@ class SQLParser(TreeSitterParser):
                 sig = f"{'CREATE OR REPLACE ' if any(c.type == 'keyword_replace' for c in inner.children) else 'CREATE '}{inner.type.upper().split('_')[1]} {name}({params})"
                 concepts.append(self._make_concept(
                     "Function", name, doc, sig, resource, ts, parent_id,
-                    inner.start_point[0]+1))
+                    inner.start_point[0]+1, node=inner, src_bytes=src_bytes))
             else:
                 concepts.append(Concept(
                     type=ctype, title=name,
