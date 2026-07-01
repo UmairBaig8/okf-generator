@@ -3,3 +3,4 @@ __pycache__
 dev_wspace
 .okf_lookup_cache.json
 uv.lock
+.venv
