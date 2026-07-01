@@ -5,8 +5,25 @@
 - All unit tests pass: `pytest tests/ -q` (70+ green)
 - Full integration spec passes: `TEST.md` (generate, lookup, pairs, summarize, edge cases)
 - CHANGELOG.md has an up-to-date `[Unreleased]` section
+- Ruff lint passes: `ruff check okf/ --select E,F,W --ignore E501`
 
 For a quick confidence check before starting, run `TEST.md` — it exercises every CLI command against AgentBox (TS/JS monorepo) and edge cases.
+
+## AI-Assisted Pre-Release Audit
+
+Hand this prompt to any LLM-powered coding agent before cutting a release:
+
+> **Act as an expert open-source maintainer. Audit this project for release readiness:**
+>
+> 1. **Code quality** — Run `ruff check okf/ --select E,F,W --ignore E501`. Report any errors.
+> 2. **Test coverage** — Run `pytest tests/ -q`. Report count and any failures.
+> 3. **Changelog completeness** — Read `CHANGELOG.md`. Compare `git log --oneline <last_tag>..HEAD` against the `[Unreleased]` section. Flag any missing entries.
+> 4. **Version consistency** — Verify `okf/__init__.py` and `pyproject.toml` have the same version string.
+> 5. **README freshness** — Scan `README.md`. Ensure new features are documented (CLI flags, manifest formats, language support). Flag undocumented additions.
+> 6. **Dead code check** — Identify any unused imports, orphaned files, or stale test fixtures.
+> 7. **Image rendering** — Verify all README images use absolute `raw.githubusercontent.com` URLs (not relative paths), so they render on PyPI.
+> 8. **Dependency audit** — Run `pip list --outdated` and flag any major-version-skewed dependencies.
+> 9. **Produce report** — Concise summary of issues found, severity (blocker/minor/nit), and suggested fixes.
 
 ## Steps
 
