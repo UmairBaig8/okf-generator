@@ -20,8 +20,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OKF Bundle — {bundle_name}</title>
-<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-<script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3/dist/cytoscape.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 * {{ margin:0; padding:0; box-sizing:border-box; }}
