@@ -464,37 +464,41 @@ okf pairs ./okf_bundle ./train.jsonl
 
 Each pair is in chat format compatible with most fine-tuning pipelines.
 
-## Claude Skill
+## Agent Installation
 
-[#claude-skill](#claude-skill)
+[#agent-installation](#agent-installation)
 
-Install the skill in one step:
+Install integration for any AI agent in one command:
+
+```bash
+# Install for all detected agents
+okf install all
+
+# Or pick specific agents
+okf install claude      # Claude Code skill
+okf install opencode    # OpenCode /lookup command
+okf install copilot     # GitHub Copilot instructions
+okf install cursor      # Cursor rules
+okf install windsurf    # Windsurf rules
+okf install cline       # Cline rules
+```
+
+**What each install does:**
+
+| Agent | Files created | Effect |
+|-------|---------------|--------|
+| Claude Code | `~/.config/opencode/skills/okf-generator/SKILL.md` | Auto-triggers on phrases like "index my codebase" |
+| OpenCode | `.opencode/commands/lookup.md` | `/lookup NAME=<ConceptName>` |
+| Copilot | `.github/copilot-instructions.md` | Auto-loaded in VS Code |
+| Cursor | `.cursorrules` | Auto-loaded by Cursor |
+| Windsurf | `.windsurfrules` | Auto-loaded by Windsurf |
+| Cline | `.clinerules` | Auto-loaded by Cline |
+
+Or via the one-liner installer:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh | bash
 ```
-
-Or via pip:
-
-```bash
-pip install okf-generator && okf install-skill
-```
-
-Once installed, Claude Code automatically triggers the skill on phrases like:
-> *"Index my codebase"* → generates OKF bundle
-> *"Look up WorldBankConnector"* → returns exact concept
-> *"Generate training pairs from my bundle"* → outputs JSONL
-
-The same `.md` output works with **any** agent — no vendor lock-in. Point Cursor, Windsurf, Cline, or Copilot at your bundle and they get the same structured knowledge.
-
-## See Also
-
-[#see-also](#see-also)
-
-Projects in the same ecosystem:
-
-- **[Bumblebee](https://github.com/perplexityai/bumblebee)** — Perplexity AI's supply-chain inventory scanner. Scans on-disk lockfiles and package metadata for exposure to known compromises. Complements okf-generator's dependency extraction with a security-focused lens.
-- **[tree-sitter](https://tree-sitter.github.io/tree-sitter/)** — Incremental parsing library. Powers 6 of 7 code language parsers in okf-generator.
 
 ## FAQ
 

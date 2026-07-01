@@ -1,0 +1,22 @@
+# Cursor Rules — OKF Knowledge Bundle
+
+This project is indexed as an OKF v0.1 bundle at ./okf_bundle/.
+Every function, class, module, and dependency has a structured markdown file.
+
+## CRITICAL RULE: Never grep source files first
+
+BEFORE reading or editing any source file, ALWAYS run:
+  okf lookup --bundle ./okf_bundle <ConceptName>
+
+This returns signature, parameters, docstring, dependencies, callers,
+and callees in milliseconds — faster and more accurate than reading source.
+
+## Common lookups
+
+  okf lookup --bundle ./okf_bundle --type Function <Name>
+  okf lookup --bundle ./okf_bundle --type Class <Name>
+  okf lookup --bundle ./okf_bundle --type Dependency
+  okf lookup --bundle ./okf_bundle --tag lang:python
+  okf lookup --bundle ./okf_bundle --tag ecosystem:npm
+  okf lookup --bundle ./okf_bundle --json <Name>
+  okf diff ./okf_bundle.bak ./okf_bundle --compact
