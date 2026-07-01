@@ -155,8 +155,9 @@ document.querySelectorAll('.layout-btn').forEach(btn => {{
 const panel = document.getElementById('panel');
 cy.on('tap', 'node', function(evt) {{
     const n = evt.target;
+    console.log('Clicked:', n.id());
     const d = nodeData[n.id()];
-    if (!d) return;
+    if (!d) {{ console.log('No data for', n.id()); return; }}
     panel.style.display = 'block';
     const color = colorMap[d.type] || '#64748b';
     let html = `<span class="type-badge" style="background:${{color}}20;color:${{color}}">${{d.type}}</span>`;
