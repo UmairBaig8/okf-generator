@@ -123,23 +123,37 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
                         link_set.add(key)
                         links.append({"source": module_id, "target": src, "type": "imports"})
 
-    # Bundle names: unique first path segments of concept_ids
-    bundles_set: set[str] = set()
+    # Detect sub-bundles: directories under bundle_dir that have SUMMARY.md
+    sub_bundles: list[str] = sorted(
+        d.name for d in bundle_dir.iterdir()
+        if d.is_dir() and (d / "SUMMARY.md").exists()
+    )
+
+    bundle_of_node: dict[str, str] = {}
     for n in nodes:
         cid = n["id"]
-        parts = cid.split("/")
-        if len(parts) > 1 and parts[0]:
-            bundles_set.add(parts[0])
-        elif parts[0]:
-            bundles_set.add(parts[0])
-    bundles = sorted(bundles_set, key=lambda x: (x == "_dependencies", x))
+        matched = next((sb for sb in sub_bundles if cid.startswith(sb + "/")), "")
+        bundle = matched if matched else bundle_dir.name
+        bundle_of_node[cid] = bundle
+
+    # If no sub-bundles detected, fall back to first-path-segment grouping
+    if not sub_bundles:
+        for n in nodes:
+            cid = n["id"]
+            seg = cid.split("/")[0] if cid else bundle_dir.name
+            bundle_of_node[n["id"]] = seg
+
+    bundles = sorted(set(bundle_of_node.values()),
+                     key=lambda x: (x == bundle_dir.name, x))
 
     # Count per bundle for landing stats
     bundle_counts: dict[str, int] = {}
+    for nid, b in bundle_of_node.items():
+        bundle_counts[b] = bundle_counts.get(b, 0) + 1
+
+    # Attach bundle to each node
     for n in nodes:
-        cid = n["id"]
-        seg = cid.split("/")[0] if cid else ""
-        bundle_counts[seg] = bundle_counts.get(seg, 0) + 1
+        n["bundle"] = bundle_of_node.get(n["id"], bundle_dir.name)
 
     return nodes, links, bundles, bundle_counts
 
