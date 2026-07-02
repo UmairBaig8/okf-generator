@@ -1455,7 +1455,7 @@ class CSharpParser(TreeSitterParser):
 
     def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
         concepts = []
-        for node in _find_all(root, "class_declaration", "method_declaration", "local_function_statement"):
+        for node in _find_all(root, "class_declaration", "struct_declaration", "interface_declaration", "method_declaration", "local_function_statement"):
             if node.type == "class_declaration":
                 name = _node_text(node.child_by_field_name("name"))
                 if not name:
@@ -1507,6 +1507,40 @@ class CSharpParser(TreeSitterParser):
                 cc.visibility = vis
                 cc.fields = cs_fields
                 concepts.append(cc)
+            elif node.type == "interface_declaration":
+                iname = _node_text(node.child_by_field_name("name"))
+                if not iname:
+                    continue
+                # Extract base_list
+                ibases = []
+                for child in node.children:
+                    if child.type == "base_list":
+                        for sub in child.children:
+                            if sub.type in ("identifier", "generic_name", "qualified_name", "name"):
+                                ibases.append(_node_text(sub))
+                # Extract methods
+                imethods = []
+                for child in node.children:
+                    if child.type == "declaration_list":
+                        for m in child.children:
+                            if m.type == "method_declaration":
+                                mn = m.child_by_field_name("name")
+                                if mn:
+                                    imethods.append(_node_text(mn))
+                ic = self._make_concept("Interface", iname, "", f"interface {iname}", resource, ts, parent_id, node.start_point[0]+1, methods=imethods, node=node, src_bytes=src_bytes)
+                ic.inheritance = ibases
+                concepts.append(ic)
+            elif node.type == "struct_declaration":
+                sname = _node_text(node.child_by_field_name("name"))
+                if not sname:
+                    continue
+                smethods = [
+                    _node_text(m.child_by_field_name("name"))
+                    for m in _find_all(node, "method_declaration")
+                    if m.child_by_field_name("name")
+                ]
+                sc = self._make_concept("Class", sname, "", f"struct {sname}", resource, ts, parent_id, node.start_point[0]+1, methods=smethods, node=node, src_bytes=src_bytes)
+                concepts.append(sc)
             elif node.type in ("method_declaration", "local_function_statement"):
                 name = _node_text(node.child_by_field_name("name"))
                 if not name:
