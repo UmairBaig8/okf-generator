@@ -322,15 +322,15 @@ Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as 
 
 | Language | Parser | Extracts |
 |---|---|---|
-| Python | stdlib `ast` | Functions, classes, params, return types, docstrings |
-| JavaScript / TypeScript | tree-sitter | Functions, arrow fns, classes, JSDoc |
-| Go | tree-sitter | Funcs, methods, structs, interfaces, GoDoc |
-| Java | tree-sitter | Classes, methods, constructors, Javadoc |
-| Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///` |
-| Ruby | tree-sitter | Defs, classes, modules, `#` comments |
+| Python | stdlib `ast` | Functions, classes, methods, params, return types, docstrings, decorators, inheritance, type params |
+| JavaScript / TypeScript | tree-sitter | Functions, arrow fns, classes, methods, JSDoc, generics, heritage (extends/implements) |
+| Go | tree-sitter | Funcs, methods, structs, interfaces, GoDoc, type params (Go 1.18+) |
+| Java | tree-sitter | Classes, methods, constructors, Javadoc, generics, inheritance (extends/implements), annotations |
+| Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///`, generics, attributes |
+| Ruby | tree-sitter | Defs, classes, modules, `#` comments, superclass |
 | C | tree-sitter | Functions, structs with `/**` doc comments |
-| C++ | tree-sitter | Functions, classes, structs, methods with `///` |
-| C# | tree-sitter | Classes, methods, top-level functions |
+| C++ | tree-sitter | Functions, classes, structs, methods, templates, base classes |
+| C# | tree-sitter | Classes, methods, generics, attributes, base types |
 | SQL | tree-sitter | Tables, views, functions, indexes, types, triggers |
 
 ### Manifest / Build Formats (17)

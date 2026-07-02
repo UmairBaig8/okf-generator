@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.27] — 2026-07-02
+
+### Added
+- **Generics/type params** — extraction for Java, TypeScript, Rust, Go (1.18+), C++ (templates), C#. Each concept's `type_params` field captures `[T]`, `[T, U extends Comparable]`, etc.
+- **Inheritance chain** — base class/interface extraction for Python, Java, TypeScript, C++, C#, Ruby. Each class concept shows `extends`/`implements`/inherits targets.
+- **Decorators/Attributes** — extraction for Python (`@decorator`), Java (`@Annotation`), C# (`[Attribute]`), Rust (`#[derive]`). Captured as structured `decorators` field.
+- **Method emission** — class methods now emitted as individual `Function` concepts for Python, JS/TS, C++ (Ruby already supported). ~2x more Function concepts from those languages.
+- 22 new tests covering Tier 1 extraction across all 10 languages with real-world code fixtures.
+- README language table updated with per-language extraction capabilities.
+
+### Changed
+- `Concept` dataclass: 3 new fields (`type_params`, `inheritance`, `decorators`).
+- Java modifiers now use child iteration (no field name in grammar).
+- C++ function methods no longer skipped — emitted as individual concepts.
+
+---
+
 ## [0.1.26] — 2026-07-02
 
 ### Added
@@ -361,7 +378,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.26...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.27...HEAD
+[0.1.27]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.27
 [0.1.26]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.26
 [0.1.25]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.25
 [0.1.24]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.24
