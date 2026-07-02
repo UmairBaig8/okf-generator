@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKF Bundle — demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  /* ---- color tokens (dark, default) ---- */
+  --bg:#0a0a0f; --surface:#131319; --surface-2:#191922; --surface-3:#1f1f2b;
+  --border:#26262f; --border-strong:#34343f;
+  --text:#f2f2f5; --text-2:#a3a3b5; --text-3:#6f6f82;
+  --accent:#7c6cff; --accent-strong:#9385ff; --accent-soft:rgba(124,108,255,.14);
+  --danger:#f87171; --danger-soft:rgba(248,113,113,.12);
+
+  /* type palette — harmonized saturation/lightness so nothing screams */
+  --t-class:#a78bfa; --t-function:#38bdf8; --t-module:#fbbf24; --t-dependency:#4ade80;
+  --t-table:#fb7185; --t-view:#fb923c; --t-index:#f472b6; --t-method:#c084fc;
+  --t-interface:#22d3ee; --t-type:#818cf8; --t-trigger:#f43f5e;
+
+  /* spacing scale */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px;
+
+  /* radius */
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:18px;
+
+  /* shadow */
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  --shadow-md:0 4px 16px rgba(0,0,0,.35);
+  --shadow-glow:0 0 0 1px var(--border), 0 8px 24px rgba(0,0,0,.35);
+
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+
+html[data-theme="light"] {
+  --bg:#f7f7fb; --surface:#ffffff; --surface-2:#f4f4f9; --surface-3:#ececf4;
+  --border:#e3e3ec; --border-strong:#d3d3e0;
+  --text:#131320; --text-2:#5c5c72; --text-3:#8a8aa0;
+  --accent:#6d5efc; --accent-strong:#5847e8; --accent-soft:rgba(109,94,252,.10);
+  --danger:#dc2626; --danger-soft:rgba(220,38,38,.08);
+  --shadow-sm:0 1px 2px rgba(20,20,40,.06);
+  --shadow-md:0 8px 24px rgba(20,20,40,.08);
+  --shadow-glow:0 0 0 1px var(--border), 0 8px 24px rgba(20,20,40,.08);
+}
+
+body {
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg); color:var(--text); height:100vh; overflow:hidden;
+  font-size:14px; line-height:1.5;
+  transition:background .18s var(--ease), color .18s var(--ease);
+}
+code, pre, .mono { font-family:'JetBrains Mono',ui-monospace,Menlo,monospace; }
+::selection { background:var(--accent); color:#fff; }
+:focus-visible { outline:2px solid var(--accent-strong); outline-offset:2px; border-radius:4px; }
+a { color:inherit; }
+button, select, input { font:inherit; }
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:99px; border:2px solid var(--bg); }
+::-webkit-scrollbar-track { background:transparent; }
+
+/* ---------------- topbar ---------------- */
+#topbar {
+  height:56px; background:var(--surface); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 var(--sp-5); gap:var(--sp-4);
+}
+#brand { display:flex; align-items:center; gap:var(--sp-3); }
+#brand-mark {
+  width:28px; height:28px; border-radius:8px; flex:none;
+  background:linear-gradient(135deg, var(--accent), #4f46e5);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:12px; color:#fff; letter-spacing:-.02em;
+  box-shadow:0 2px 8px rgba(124,108,255,.35);
+}
+#brand-text { display:flex; flex-direction:column; line-height:1.2; }
+#brand-text .name { font-weight:600; font-size:13.5px; }
+#brand-text .stats { font-size:11.5px; color:var(--text-3); }
+#topbar-spacer { flex:1; }
+#breadcrumb { font-size:12.5px; color:var(--text-3); max-width:38vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#breadcrumb .crumb { cursor:pointer; }
+#breadcrumb .crumb:hover { color:var(--text); text-decoration:underline; }
+#breadcrumb .sep { margin:0 6px; color:var(--border-strong); }
+#breadcrumb .current { color:var(--text); font-weight:500; }
+
+.icon-btn {
+  width:34px; height:34px; border-radius:var(--r-sm); background:transparent; border:1px solid transparent;
+  color:var(--text-2); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.icon-btn:hover { background:var(--surface-2); color:var(--text); border-color:var(--border); }
+.icon-btn svg { width:17px; height:17px; }
+
+/* ---------------- layout ---------------- */
+#layout { display:flex; height:calc(100vh - 56px); }
+
+#sidebar { width:300px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; flex:none; }
+
+.field-wrap { padding:var(--sp-3) var(--sp-3) 0; }
+.search-box { position:relative; }
+.search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
+#search {
+  width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:8px 10px 8px 30px; color:var(--text); font-size:13px; outline:none;
+  transition:border-color .15s var(--ease), background .15s var(--ease);
+}
+#search:focus { border-color:var(--accent); background:var(--surface); }
+#search::placeholder { color:var(--text-3); }
+#type-filter {
+  width:100%; margin-top:var(--sp-2); background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-sm);
+  color:var(--text-2); padding:7px 8px; font-size:12.5px; outline:none; cursor:pointer;
+}
+#type-filter:focus { border-color:var(--accent); }
+
+#tree { flex:1; overflow-y:auto; padding:var(--sp-2) var(--sp-2) var(--sp-2); margin-top:var(--sp-2); }
+.tree-folder { user-select:none; }
+.tree-folder-label {
+  display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:var(--r-sm); cursor:pointer;
+  font-size:12.5px; font-weight:500; color:var(--text-2); transition:background .12s var(--ease);
+}
+.tree-folder-label:hover { background:var(--surface-2); color:var(--text); }
+.tree-folder-label .caret { width:10px; height:10px; flex:none; transition:transform .15s var(--ease); color:var(--text-3); }
+.tree-folder.collapsed > .tree-folder-children { display:none; }
+.tree-folder.collapsed > .tree-folder-label .caret { transform:rotate(-90deg); }
+.tree-folder-children { padding-left:12px; border-left:1px solid var(--border); margin-left:13px; }
+.tree-leaf {
+  display:flex; align-items:center; gap:9px; padding:6px 8px 6px 11px; border-radius:var(--r-sm); cursor:pointer;
+  font-size:13px; color:var(--text); position:relative; transition:background .12s var(--ease);
+}
+.tree-leaf:hover { background:var(--surface-2); }
+.tree-leaf.active { background:var(--accent-soft); color:var(--accent-strong); font-weight:600; }
+.tree-leaf.active::before { content:''; position:absolute; left:-13px; top:0; bottom:0; width:2px; background:var(--accent); border-radius:2px; }
+.tree-leaf .dot { width:7px; height:7px; border-radius:50%; flex:none; }
+.tree-leaf .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hidden { display:none !important; }
+.visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+
+#legend { border-top:1px solid var(--border); padding:var(--sp-3); flex:none; }
+#legend-toggle {
+  display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-size:11px; color:var(--text-3);
+  text-transform:uppercase; letter-spacing:.05em; background:none; border:none; width:100%; font-weight:600;
+}
+#legend-toggle:hover { color:var(--text-2); }
+#legend-body { display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; margin-top:var(--sp-3); }
+#legend.collapsed #legend-body { display:none; }
+#legend.collapsed .caret { transform:rotate(-90deg); }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-2); }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex:none; }
+
+/* ---------------- main ---------------- */
+#main { flex:1; overflow-y:auto; padding:var(--sp-8); }
+.fade-in { animation:fadeIn .18s var(--ease); }
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+/* landing */
+.eyebrow { font-size:11.5px; font-weight:600; color:var(--accent-strong); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+#landing h1 { font-size:26px; font-weight:700; letter-spacing:-.02em; margin-bottom:6px; }
+#landing p.sub { color:var(--text-2); font-size:14px; margin-bottom:var(--sp-8); max-width:640px; }
+
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:var(--sp-3); margin-bottom:var(--sp-8); max-width:900px; }
+.stat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:var(--sp-4) var(--sp-5);
+  transition:border-color .15s var(--ease), transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+.stat-card:hover { border-color:var(--border-strong); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+.stat-card .n { font-size:26px; font-weight:700; letter-spacing:-.02em; }
+.stat-card .l { font-size:12px; color:var(--text-3); margin-top:2px; font-weight:500; }
+
+#landing .domains { max-width:900px; }
+#landing .domains h3 { font-size:12px; color:var(--text-3); margin-bottom:var(--sp-3); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+.domain-row {
+  display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:var(--r-md); cursor:pointer;
+  border:1px solid transparent; transition:background .12s var(--ease), border-color .12s var(--ease);
+}
+.domain-row:hover { background:var(--surface); border-color:var(--border); }
+.domain-row .name { font-size:13.5px; font-weight:500; }
+.domain-row .count { font-size:12px; color:var(--text-3); }
+.domain-row .bar-wrap { flex:1; margin:0 var(--sp-5); height:5px; background:var(--surface-2); border-radius:99px; overflow:hidden; }
+.domain-row .bar { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-strong)); border-radius:99px; }
+
+/* detail */
+#detail { max-width:1360px; }
+#detail-header { margin-bottom:var(--sp-6); }
+.type-badge {
+  display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:99px; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.04em; margin-bottom:var(--sp-3);
+}
+.type-badge .dot { width:6px; height:6px; border-radius:50%; }
+#detail h2 { font-size:24px; font-weight:700; letter-spacing:-.02em; margin-bottom:6px; }
+#detail p.desc { color:var(--text-2); font-size:14.5px; margin:6px 0; max-width:760px; }
+#detail p.resource {
+  font-size:12px; color:var(--text-3); margin-top:var(--sp-2); display:inline-flex; align-items:center; gap:6px;
+  background:var(--surface-2); border:1px solid var(--border); padding:4px 10px; border-radius:var(--r-sm);
+}
+
+#detail-grid { display:grid; grid-template-columns:1fr 380px; gap:var(--sp-6); align-items:start; }
+@media (max-width:1080px) { #detail-grid { grid-template-columns:1fr; } }
+#detail-right { position:sticky; top:0; display:flex; flex-direction:column; gap:var(--sp-5); }
+
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:var(--sp-5); }
+.card + .card { margin-top:var(--sp-5); }
+.card h3 {
+  font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+  margin-bottom:var(--sp-3); display:flex; align-items:center; gap:6px;
+}
+.card pre {
+  background:var(--surface-2); border:1px solid var(--border); padding:12px 14px; border-radius:var(--r-md);
+  font-size:12.5px; overflow-x:auto; color:var(--text-2); white-space:pre-wrap; word-break:break-word;
+}
+.card table { border-collapse:collapse; width:100%; font-size:13px; }
+.card th, .card td { border-bottom:1px solid var(--border); padding:8px 4px; text-align:left; }
+.card th { color:var(--text-3); font-weight:500; font-size:12px; }
+.card .empty-note { color:var(--text-3); font-size:13px; }
+
+.chip-list { display:flex; flex-wrap:wrap; gap:6px; }
+.chip {
+  display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:99px; font-size:12.5px;
+  background:var(--surface-2); border:1px solid var(--border); text-decoration:none; color:var(--text);
+  transition:border-color .12s var(--ease), background .12s var(--ease);
+  cursor:pointer;
+}
+.chip:hover { border-color:var(--accent); background:var(--accent-soft); }
+.chip .dot { width:6px; height:6px; border-radius:50%; flex:none; }
+
+.markdown-body { font-size:13.5px; color:var(--text-2); }
+.markdown-body h1, .markdown-body h2 { font-size:14px; color:var(--text); margin:10px 0 4px; font-weight:600; }
+.markdown-body code { background:var(--surface-2); padding:1px 5px; border-radius:4px; font-size:12px; }
+.markdown-body table { border-collapse:collapse; width:100%; font-size:12.5px; margin:6px 0; }
+.markdown-body th, .markdown-body td { border:1px solid var(--border); padding:5px 8px; }
+
+#ego-graph { height:280px; width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-md); }
+#ego-hint { font-size:11px; color:var(--text-3); margin-top:var(--sp-2); }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <div id="brand">
+    <div id="brand-mark">OK</div>
+    <div id="brand-text">
+      <span class="name">fresh_agentbox</span>
+      <span class="stats" id="topbar-stats">231 concepts · 521 edges</span>
+    </div>
+  </div>
+  <div id="topbar-spacer"></div>
+  <div id="breadcrumb"><span class="crumb current" onclick="showLanding()">Home</span></div>
+  <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+  </button>
+</div>
+<div id="layout">
+  <div id="sidebar">
+    <div class="field-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <label for="search" class="visually-hidden">Search concepts</label>
+        <input id="search" type="text" placeholder="Search concepts..." aria-label="Search concepts">
+      </div>
+      <label for="type-filter" class="visually-hidden">Filter by type</label>
+      <select id="type-filter" aria-label="Filter by type">
+        <option value="">All types</option>
+      </select>
+    </div>
+    <div id="tree"></div>
+    <div id="legend" class="collapsed">
+      <button id="legend-toggle" onclick="document.getElementById('legend').classList.toggle('collapsed')">
+        <span>Legend</span>
+        <svg class="caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <div id="legend-body"></div>
+    </div>
+  </div>
+  <div id="main">
+    <div id="landing"></div>
+    <div id="detail" class="hidden">
+      <div id="detail-header"></div>
+      <div id="detail-grid">
+        <div id="detail-left"></div>
+        <div id="detail-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// ============================================================
+// DUMMY DATA — stand-in for what visualize.py's build_graph() emits.
+// Once this template is approved, this block gets replaced by
+// the real {json_data} injection in okf/visualize.py.
+// ============================================================
+const TYPE_COLORS = {
+  Class:'#a78bfa', Function:'#38bdf8', Module:'#fbbf24', Dependency:'#4ade80',
+  Table:'#fb7185', View:'#fb923c', Index:'#f472b6', Method:'#c084fc',
+  Interface:'#22d3ee', Type:'#818cf8', Trigger:'#f43f5e',
+};
+
+const data = {
+  nodes: [
+    { id:'packages/api/src/services/logger/createLogger', title:'createLogger', type:'Function', description:'Creates a configured Logger instance with sane defaults.', resource:'packages/api/src/services/logger.ts',
+      sections:{ signature:'function createLogger(defaults: Record<string, unknown> = {}): Logger', source:'Lines 89–91 in `packages/api/src/services/logger.ts`',
+        related:'- [logger](/packages/api/src/services/logger.md)', 'called by':'- [requestIdMiddleware](/packages/api/src/middleware/requestIdMiddleware.md)\n- [requestLogger](/packages/api/src/middleware/requestLogger.md)\n- [SandboxManager](/packages/api/src/sandbox-manager/SandboxManager.md)\n- [TerminalRelay](/packages/api/src/terminal-relay/TerminalRelay.md)' },
+      body:'---\ntitle: createLogger\n---\n\n# createLogger\n\nCreates a configured Logger instance with sane defaults.\n\n## Signature\n\n```ts\nfunction createLogger(defaults: Record<string, unknown> = {}): Logger\n```\n\n## Docstring\n\nBuilds a Logger, merging caller-supplied defaults with the base config. Falls back to JSON output when `LOG_FORMAT=json`.\n' },
+    { id:'packages/api/src/services/logger/formatLog', title:'formatLog', type:'Function', description:'Formats a single log line as JSON or pretty text.', resource:'packages/api/src/services/logger.ts',
+      sections:{ signature:'function formatLog(level: string, msg: string, meta?: object): string' }, body:'---\ntitle: formatLog\n---\n\n# formatLog\n' },
+    { id:'packages/api/src/services/logger/JsonLogger', title:'JsonLogger', type:'Class', description:'Logger implementation that writes structured JSON lines.', resource:'packages/api/src/services/logger.ts',
+      sections:{ signature:'class JsonLogger implements Logger', related:'- [createLogger](/packages/api/src/services/logger/createLogger.md)' }, body:'---\ntitle: JsonLogger\n---\n\n# JsonLogger\n' },
+    { id:'packages/api/src/services/logger', title:'logger', type:'Module', description:'Structured logging service used across the API.', resource:'packages/api/src/services/logger.ts',
+      sections:{ related:'- [createLogger](/packages/api/src/services/logger/createLogger.md)\n- [formatLog](/packages/api/src/services/logger/formatLog.md)\n- [JsonLogger](/packages/api/src/services/logger/JsonLogger.md)' }, body:'---\ntitle: logger\n---\n\n# logger\n' },
+
+    { id:'packages/api/src/middleware/requestIdMiddleware', title:'requestIdMiddleware', type:'Function', description:'Attaches a unique request ID to every incoming request.', resource:'packages/api/src/middleware/requestIdMiddleware.ts',
+      sections:{ signature:'function requestIdMiddleware(req: Request, res: Response, next: NextFunction): void', calls:'- [createLogger](/packages/api/src/services/logger/createLogger.md)' }, body:'---\ntitle: requestIdMiddleware\n---\n\n# requestIdMiddleware\n' },
+    { id:'packages/api/src/middleware/requestLogger', title:'requestLogger', type:'Function', description:'Logs method, path, status, and latency for each request.', resource:'packages/api/src/middleware/requestLogger.ts',
+      sections:{ signature:'function requestLogger(req: Request, res: Response, next: NextFunction): void', calls:'- [createLogger](/packages/api/src/services/logger/createLogger.md)' }, body:'---\ntitle: requestLogger\n---\n\n# requestLogger\n' },
+
+    { id:'packages/api/src/sandbox-manager/SandboxManager', title:'SandboxManager', type:'Class', description:'Owns the lifecycle of sandbox VMs — create, warm, destroy.', resource:'packages/api/src/sandbox-manager/index.ts',
+      sections:{ signature:'class SandboxManager', calls:'- [createLogger](/packages/api/src/services/logger/createLogger.md)',
+        related:'- [WarmPool](/packages/api/src/warm-pool/WarmPool.md)\n- [mockProvider](/packages/api/src/sandbox-manager/mockProvider.md)',
+        methods:'- `create`\n- `destroy`\n- `list`' },
+      body:'---\ntitle: SandboxManager\n---\n\n# SandboxManager\n\nOwns the lifecycle of sandbox VMs — create, warm, destroy.\n\n## Methods\n\n- `create`\n- `destroy`\n- `list`\n' },
+    { id:'packages/api/src/sandbox-manager/mockProvider', title:'mockProvider', type:'Function', description:'In-memory sandbox provider used for local dev and tests.', resource:'packages/api/src/sandbox-manager/mockProvider.ts',
+      sections:{ related:'- [SandboxManager](/packages/api/src/sandbox-manager/SandboxManager.md)' }, body:'---\ntitle: mockProvider\n---\n\n# mockProvider\n' },
+
+    { id:'packages/api/src/terminal-relay/TerminalRelay', title:'TerminalRelay', type:'Class', description:'Relays terminal I/O between browser and sandbox over WebSocket.', resource:'packages/api/src/terminal-relay/index.ts',
+      sections:{ signature:'class TerminalRelay', calls:'- [createLogger](/packages/api/src/services/logger/createLogger.md)' }, body:'---\ntitle: TerminalRelay\n---\n\n# TerminalRelay\n' },
+    { id:'packages/api/src/warm-pool/WarmPool', title:'WarmPool', type:'Class', description:'Keeps a pool of pre-booted sandboxes ready for instant checkout.', resource:'packages/api/src/warm-pool/index.ts',
+      sections:{ related:'- [SandboxManager](/packages/api/src/sandbox-manager/SandboxManager.md)' }, body:'---\ntitle: WarmPool\n---\n\n# WarmPool\n' },
+
+    { id:'packages/api/src/services/billing/BillingService', title:'BillingService', type:'Class', description:'Handles usage metering and Stripe invoice sync.', resource:'packages/api/src/services/billing.ts',
+      sections:{ signature:'class BillingService', related:'- [stripe](/_dependencies/npm/stripe.md)' }, body:'---\ntitle: BillingService\n---\n\n# BillingService\n' },
+    { id:'packages/api/src/providers/aws-ec2/AwsEc2Provider', title:'AwsEc2Provider', type:'Class', description:'Implements SandboxProvider using real AWS EC2 instances.', resource:'packages/api/src/providers/aws-ec2.ts',
+      sections:{ signature:'class AwsEc2Provider implements SandboxProvider',
+        docstring:'AwsEc2Provider — implements SandboxProvider using real AWS EC2 instances.\nBYO (Bring Your Own AWS) — zero manual config required.\nOn first run, automatically discovers or creates VPC, subnet, security group, and IAM role.',
+        related:'- [mapEc2State](/packages/api/src/providers/aws-ec2/mapEc2State.md)\n- [@aws-sdk/client-ec2](/_dependencies/npm/@aws-sdk/client-ec2.md)\n- [@aws-sdk/client-ssm](/_dependencies/npm/@aws-sdk/client-ssm.md)\n- [@AgentBox/shared](/_dependencies/npm/@AgentBox/shared.md)' },
+      body:'---\ntitle: AwsEc2Provider\n---\n\n# AwsEc2Provider\n\nAwsEc2Provider — implements SandboxProvider using real AWS EC2 instances.\n\n## Docstring\n\nAwsEc2Provider — implements SandboxProvider using real AWS EC2 instances.\nBYO (Bring Your Own AWS) — zero manual config required.\n' },
+    { id:'packages/api/src/providers/aws-ec2/mapEc2State', title:'mapEc2State', type:'Function', description:'Maps AWS EC2 instance state to internal SandboxState enum.', resource:'packages/api/src/providers/aws-ec2.ts',
+      sections:{ related:'- [AwsEc2Provider](/packages/api/src/providers/aws-ec2/AwsEc2Provider.md)' }, body:'---\ntitle: mapEc2State\n---\n\n# mapEc2State\n' },
+
+    { id:'_dependencies/npm/stripe', title:'stripe', type:'Dependency', description:'Dependency from packages/api/package.json', resource:'packages/api/package.json',
+      sections:{ 'used by':'- [BillingService](/packages/api/src/services/billing/BillingService.md)' },
+      deptable:{ Ecosystem:'npm', 'Version constraint':'^14.0.0', 'Source manifest':'packages/api/package.json', 'Dev dependency':'no' },
+      body:'---\ntitle: stripe\n---\n\n# stripe\n' },
+    { id:'_dependencies/npm/@aws-sdk/client-ec2', title:'@aws-sdk/client-ec2', type:'Dependency', description:'Dependency from packages/api/package.json', resource:'packages/api/package.json',
+      sections:{ 'used by':'- [AwsEc2Provider](/packages/api/src/providers/aws-ec2/AwsEc2Provider.md)' },
+      deptable:{ Ecosystem:'npm', 'Version constraint':'^3.500.0', 'Source manifest':'packages/api/package.json', 'Dev dependency':'no' },
+      body:'---\ntitle: "@aws-sdk/client-ec2"\n---\n\n# @aws-sdk/client-ec2\n' },
+    { id:'_dependencies/npm/@aws-sdk/client-ssm', title:'@aws-sdk/client-ssm', type:'Dependency', description:'Dependency from packages/api/package.json', resource:'packages/api/package.json',
+      sections:{ 'used by':'- [AwsEc2Provider](/packages/api/src/providers/aws-ec2/AwsEc2Provider.md)' },
+      deptable:{ Ecosystem:'npm', 'Version constraint':'^3.500.0', 'Source manifest':'packages/api/package.json', 'Dev dependency':'no' },
+      body:'---\ntitle: "@aws-sdk/client-ssm"\n---\n\n# @aws-sdk/client-ssm\n' },
+    { id:'_dependencies/npm/@AgentBox/shared', title:'@AgentBox/shared', type:'Dependency', description:'Dependency from packages/api/package.json', resource:'packages/api/package.json',
+      sections:{ 'used by':'- [AwsEc2Provider](/packages/api/src/providers/aws-ec2/AwsEc2Provider.md)' },
+      deptable:{ Ecosystem:'npm', 'Version constraint':'workspace:*', 'Source manifest':'packages/api/package.json', 'Dev dependency':'no' },
+      body:'---\ntitle: "@AgentBox/shared"\n---\n\n# @AgentBox/shared\n' },
+
+    { id:'migrations/001_init/users', title:'users', type:'Table', description:'Stores registered users of the platform.', resource:'migrations/001_init.sql',
+      sections:{}, body:'---\ntitle: users\n---\n\n# users\n' },
+    { id:'migrations/001_init/active_users', title:'active_users', type:'View', description:'Active (non-deleted) users only.', resource:'migrations/001_init.sql',
+      sections:{ related:'- [users](/migrations/001_init/users.md)' }, body:'---\ntitle: active_users\n---\n\n# active_users\n' },
+  ],
+  links: [
+    { source:'packages/api/src/middleware/requestIdMiddleware', target:'packages/api/src/services/logger/createLogger', type:'calls' },
+    { source:'packages/api/src/middleware/requestLogger', target:'packages/api/src/services/logger/createLogger', type:'calls' },
+    { source:'packages/api/src/sandbox-manager/SandboxManager', target:'packages/api/src/services/logger/createLogger', type:'calls' },
+    { source:'packages/api/src/terminal-relay/TerminalRelay', target:'packages/api/src/services/logger/createLogger', type:'calls' },
+    { source:'packages/api/src/services/logger', target:'packages/api/src/services/logger/createLogger', type:'related' },
+    { source:'packages/api/src/services/logger', target:'packages/api/src/services/logger/formatLog', type:'related' },
+    { source:'packages/api/src/services/logger', target:'packages/api/src/services/logger/JsonLogger', type:'related' },
+    { source:'packages/api/src/sandbox-manager/SandboxManager', target:'packages/api/src/warm-pool/WarmPool', type:'related' },
+    { source:'packages/api/src/sandbox-manager/SandboxManager', target:'packages/api/src/sandbox-manager/mockProvider', type:'related' },
+    { source:'packages/api/src/services/billing/BillingService', target:'_dependencies/npm/stripe', type:'imports' },
+    { source:'packages/api/src/providers/aws-ec2/AwsEc2Provider', target:'packages/api/src/providers/aws-ec2/mapEc2State', type:'related' },
+    { source:'packages/api/src/providers/aws-ec2/AwsEc2Provider', target:'_dependencies/npm/@aws-sdk/client-ec2', type:'imports' },
+    { source:'packages/api/src/providers/aws-ec2/AwsEc2Provider', target:'_dependencies/npm/@aws-sdk/client-ssm', type:'imports' },
+    { source:'packages/api/src/providers/aws-ec2/AwsEc2Provider', target:'_dependencies/npm/@AgentBox/shared', type:'imports' },
+    { source:'migrations/001_init/active_users', target:'migrations/001_init/users', type:'related' },
+  ],
+};
+
+const BUNDLE_NAME = 'fresh_agentbox';
+
+// ============================================================
+// App logic (this part ports over to visualize.py near-verbatim)
+// ============================================================
+(function() {
+  const saved = localStorage.getItem('okf-theme');
+  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+})();
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.toggleAttribute('data-theme', !isLight);
+  if (!isLight) document.documentElement.setAttribute('data-theme', 'light');
+  localStorage.setItem('okf-theme', isLight ? 'dark' : 'light');
+  if (lastEgoCenter) renderEgoGraph(lastEgoCenter);
+}
+
+const nodeById = {};
+data.nodes.forEach(n => { nodeById[n.id] = n; });
+
+const adj = {};
+data.nodes.forEach(n => adj[n.id] = new Set());
+data.links.forEach(l => { if (adj[l.source]) adj[l.source].add(l.target); if (adj[l.target]) adj[l.target].add(l.source); });
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// populate type filter + legend from actual data present
+(function initTypeUI() {
+  const types = Array.from(new Set(data.nodes.map(n => n.type))).sort();
+  const sel = document.getElementById('type-filter');
+  types.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+  const legendBody = document.getElementById('legend-body');
+  types.forEach(t => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-dot" style="background:${TYPE_COLORS[t]||'#888'}"></span>${esc(t)}`;
+    legendBody.appendChild(item);
+  });
+})();
+
+// ---------------- Tree ----------------
+function buildTreeDom() {
+  const root = {};
+  data.nodes.forEach(n => {
+    const parts = n.id.split('/');
+    const folders = parts.slice(0, -1);
+    let cur = root;
+    for (const f of folders) {
+      cur.__children__ = cur.__children__ || {};
+      cur.__children__[f] = cur.__children__[f] || {};
+      cur = cur.__children__[f];
+    }
+    cur.__concepts__ = cur.__concepts__ || [];
+    cur.__concepts__.push(n);
+  });
+  return root;
+}
+
+function renderFolder(node, path) {
+  const wrap = document.createElement('div');
+  wrap.className = 'tree-folder';
+  const children = node.__children__ || {};
+  const concepts = node.__concepts__ || [];
+  const folderNames = Object.keys(children).sort();
+
+  if (path) {
+    const label = document.createElement('div');
+    label.className = 'tree-folder-label';
+    label.tabIndex = 0;
+    label.setAttribute('role', 'button');
+    label.setAttribute('aria-expanded', 'true');
+    label.innerHTML = `<svg class="caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"></path></svg><span>${esc(path.split('/').pop())}</span>`;
+    const toggle = () => {
+      wrap.classList.toggle('collapsed');
+      label.setAttribute('aria-expanded', String(!wrap.classList.contains('collapsed')));
+    };
+    label.onclick = toggle;
+    label.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } };
+    wrap.appendChild(label);
+  }
+
+  const childWrap = document.createElement('div');
+  childWrap.className = 'tree-folder-children';
+  for (const fname of folderNames) {
+    childWrap.appendChild(renderFolder(children[fname], path ? path + '/' + fname : fname));
+  }
+  for (const c of concepts.sort((a,b) => a.title.localeCompare(b.title))) {
+    const leaf = document.createElement('div');
+    leaf.className = 'tree-leaf';
+    leaf.dataset.id = c.id;
+    leaf.dataset.type = c.type;
+    leaf.dataset.title = c.title.toLowerCase();
+    leaf.tabIndex = 0;
+    leaf.setAttribute('role', 'button');
+    leaf.setAttribute('aria-label', `${c.type}: ${c.title}`);
+    const color = TYPE_COLORS[c.type] || '#888';
+    leaf.innerHTML = `<span class="dot" style="background:${color}" aria-hidden="true"></span><span class="name">${esc(c.title)}</span>`;
+    leaf.onclick = () => selectConcept(c.id);
+    leaf.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectConcept(c.id); } };
+    childWrap.appendChild(leaf);
+  }
+  wrap.appendChild(childWrap);
+  return wrap;
+}
+
+document.getElementById('tree').appendChild(renderFolder(buildTreeDom(), ''));
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const t = document.getElementById('type-filter').value;
+  document.querySelectorAll('.tree-leaf').forEach(leaf => {
+    const matchesQ = !q || leaf.dataset.title.includes(q);
+    const matchesT = !t || leaf.dataset.type === t;
+    leaf.classList.toggle('hidden', !(matchesQ && matchesT));
+  });
+  document.querySelectorAll('.tree-folder').forEach(folder => {
+    const anyVisible = folder.querySelector('.tree-leaf:not(.hidden)');
+    if (q || t) {
+      folder.classList.remove('collapsed');
+      folder.classList.toggle('hidden', !anyVisible);
+    } else {
+      folder.classList.remove('hidden');
+    }
+  });
+}
+document.getElementById('search').addEventListener('input', applyFilters);
+document.getElementById('type-filter').addEventListener('change', applyFilters);
+
+// ---------------- Landing ----------------
+function typeCounts() {
+  const counts = {};
+  data.nodes.forEach(n => counts[n.type] = (counts[n.type]||0) + 1);
+  return counts;
+}
+function domainCounts() {
+  const counts = {};
+  data.nodes.forEach(n => {
+    const parts = n.id.split('/');
+    const dom = parts.length > 1 ? parts[0] : '(root)';
+    counts[dom] = (counts[dom]||0) + 1;
+  });
+  return counts;
+}
+
+function showLanding() {
+  document.getElementById('detail').classList.add('hidden');
+  const landing = document.getElementById('landing');
+  landing.classList.remove('hidden');
+  landing.classList.add('fade-in');
+  document.getElementById('breadcrumb').innerHTML = '<span class="crumb current" onclick="showLanding()">Home</span>';
+  document.querySelectorAll('.tree-leaf.active').forEach(el => el.classList.remove('active'));
+
+  const counts = typeCounts();
+  const doms = domainCounts();
+  const maxDom = Math.max(...Object.values(doms));
+
+  let statHtml = '<div class="stat-grid">';
+  for (const [t, n] of Object.entries(counts).sort((a,b) => b[1]-a[1])) {
+    const color = TYPE_COLORS[t] || '#888';
+    statHtml += `<div class="stat-card"><div class="n" style="color:${color}">${n}</div><div class="l">${esc(t)}</div></div>`;
+  }
+  statHtml += '</div>';
+
+  let domHtml = '<div class="domains"><h3>Domains</h3>';
+  for (const [d, n] of Object.entries(doms).sort((a,b) => b[1]-a[1])) {
+    const pct = Math.round((n / maxDom) * 100);
+    domHtml += `<div class="domain-row" tabindex="0" role="button" onclick="filterToDomain('${d.replace(/'/g,"\\'")}')"><span class="name">${esc(d)}</span><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div><span class="count">${n} concepts</span></div>`;
+  }
+  domHtml += '</div>';
+
+  landing.innerHTML = `<div class="eyebrow">OKF Bundle</div><h1>${esc(BUNDLE_NAME)}</h1><p class="sub">${data.nodes.length} concepts across ${Object.keys(doms).length} domains and ${data.links.length} relationship edges. Pick a concept from the tree, or search.</p>${statHtml}${domHtml}`;
+}
+function filterToDomain(d) {
+  document.getElementById('search').value = d;
+  applyFilters();
+}
+
+// ---------------- Detail + ego graph ----------------
+let egoCy = null;
+let lastEgoCenter = null;
+
+function selectConcept(id) {
+  const d = nodeById[id];
+  if (!d) return;
+
+  document.querySelectorAll('.tree-leaf.active').forEach(el => el.classList.remove('active'));
+  const leaf = document.querySelector(`.tree-leaf[data-id="${CSS.escape(id)}"]`);
+  if (leaf) { leaf.classList.add('active'); leaf.scrollIntoView({block:'nearest'}); }
+
+  document.getElementById('landing').classList.add('hidden');
+  const panel = document.getElementById('detail');
+  panel.classList.remove('hidden');
+  panel.classList.remove('fade-in'); void panel.offsetWidth; panel.classList.add('fade-in');
+
+  const crumbParts = id.split('/').slice(0, -1);
+  let crumbHtml = '<span class="crumb" onclick="showLanding()">Home</span>';
+  crumbParts.forEach(p => crumbHtml += `<span class="sep">/</span><span class="crumb">${esc(p)}</span>`);
+  crumbHtml += `<span class="sep">/</span><span class="current">${esc(d.title)}</span>`;
+  document.getElementById('breadcrumb').innerHTML = crumbHtml;
+
+  try { renderDetail(d); }
+  catch (e) {
+    document.getElementById('detail-left').innerHTML = `<p style="color:var(--danger)">Could not render this concept (${esc(e.message)}).</p>`;
+    console.error(e);
+  }
+}
+
+function renderDetail(d) {
+  const color = TYPE_COLORS[d.type] || '#888';
+  const sections = d.sections || {};
+  const deptable = d.deptable || {};
+
+  let header = `<span class="type-badge" style="background:${color}18;color:${color}"><span class="dot" style="background:${color}"></span>${esc(d.type)}</span>`;
+  header += `<h2>${esc(d.title)}</h2>`;
+  if (d.description) header += `<p class="desc">${esc(d.description)}</p>`;
+  if (d.resource) header += `<p class="resource">${esc(d.resource)}</p>`;
+
+  let left = '';
+  if (Object.keys(deptable).length) {
+    left += `<div class="card"><h3>Details</h3><table>`;
+    for (const [k, v] of Object.entries(deptable)) left += `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`;
+    left += `</table></div>`;
+  }
+  if (sections.signature) left += `<div class="card"><h3>Signature</h3><pre>${esc(sections.signature.replace(/```\w*\n?/g,''))}</pre></div>`;
+  if (sections.docstring) left += `<div class="card"><h3>Docstring</h3><pre>${esc(sections.docstring.slice(0,600))}</pre></div>`;
+  if (sections.parameters) left += `<div class="card"><h3>Parameters</h3><pre>${esc(sections.parameters.slice(0,400))}</pre></div>`;
+  if (sections.returns) left += `<div class="card"><h3>Returns</h3><pre>${esc(sections.returns)}</pre></div>`;
+
+  if (d.body) {
+    const bodyParts = d.body.split('---');
+    let mdBody = bodyParts.length >= 3 ? bodyParts.slice(2).join('---').trim() : d.body;
+    const already = ['Signature','Docstring','Parameters','Returns','Methods','Source','Related','Calls','Called By','Used By'];
+    const headingRe = new RegExp(`^##\\s+(${already.join('|')})\\s*$`, 'i');
+    const lines = mdBody.split('\n');
+    const kept = [];
+    let skipping = false;
+    for (const line of lines) {
+      if (/^##\s+/.test(line)) { skipping = headingRe.test(line); if (skipping) continue; }
+      if (!skipping) kept.push(line);
+    }
+    mdBody = kept.join('\n').replace(/^#\s+.*\n/, '').trim();
+    const firstPara = (mdBody.split(/\n\s*\n/)[0] || '').trim();
+    if (d.description && firstPara.replace(/\s+/g,' ') === d.description.trim().replace(/\s+/g,' ')) {
+      mdBody = mdBody.slice(firstPara.length).trim();
+    }
+    if (mdBody) {
+      try { left += `<div class="card"><h3>Notes</h3><div class="markdown-body">${marked.parse(mdBody)}</div></div>`; }
+      catch (e) { left += `<div class="card"><h3>Notes</h3><pre>${esc(mdBody.slice(0,600))}</pre></div>`; }
+    }
+  }
+  if (!left) left = '<div class="card"><p class="empty-note">No additional signature, docstring, or notes for this concept.</p></div>';
+
+  let right = '';
+  let anyRel = false;
+  for (const [key, label] of [['related','Related'],['calls','Calls'],['called by','Called By'],['used by','Used By']]) {
+    const ids = (sections[key] || '').match(/\(\/([^)]+)\.md\)/g);
+    if (!ids) continue;
+    anyRel = true;
+    right += `<div class="card"><h3>${label}</h3><div class="chip-list">`;
+    ids.forEach(raw => {
+      const targetId = raw.slice(2, -4);
+      const t = nodeById[targetId];
+      if (!t) return;
+      const tc = TYPE_COLORS[t.type] || '#888';
+      right += `<span class="chip" onclick="selectConcept('${targetId.replace(/'/g,"\\'")}')"><span class="dot" style="background:${tc}"></span>${esc(t.title)}</span>`;
+    });
+    right += `</div></div>`;
+  }
+  if (!anyRel) right += '<div class="card"><p class="empty-note">No related concepts, calls, or dependents.</p></div>';
+  right += `<div class="card"><h3>Local Graph</h3><div id="ego-graph"></div><div id="ego-hint">Click a neighbor to jump to it.</div></div>`;
+
+  document.getElementById('detail-header').innerHTML = header;
+  document.getElementById('detail-left').innerHTML = left;
+  document.getElementById('detail-right').innerHTML = right;
+  renderEgoGraph(d.id);
+}
+
+function themeVars() {
+  const cs = getComputedStyle(document.documentElement);
+  return {
+    text: cs.getPropertyValue('--text').trim(),
+    surface2: cs.getPropertyValue('--surface-2').trim(),
+    border: cs.getPropertyValue('--border-strong').trim(),
+  };
+}
+
+function renderEgoGraph(centerId) {
+  lastEgoCenter = centerId;
+  const tv = themeVars();
+  const neighborIds = Array.from(adj[centerId] || []);
+  const elements = [{ data: { id: centerId, label: nodeById[centerId].title, type: nodeById[centerId].type } }];
+  neighborIds.forEach(nid => {
+    const n = nodeById[nid];
+    if (!n) return;
+    elements.push({ data: { id: nid, label: n.title, type: n.type } });
+  });
+  data.links.forEach(l => {
+    if (l.source === centerId || l.target === centerId) {
+      if (nodeById[l.source] && nodeById[l.target]) elements.push({ data: { source: l.source, target: l.target } });
+    }
+  });
+
+  if (egoCy) egoCy.destroy();
+  const container = document.getElementById('ego-graph');
+  if (!container) return;
+  egoCy = cytoscape({
+    container: container,
+    elements: elements,
+    style: [
+      { selector: 'node', style: {
+        'label': 'data(label)', 'color': tv.text, 'font-size':'10px',
+        'text-valign':'bottom', 'text-margin-y':'6px',
+        'width': 22, 'height': 22, 'border-width':2, 'border-color': tv.surface2,
+        'background-color': ele => TYPE_COLORS[ele.data('type')] || '#888',
+      } },
+      { selector: `node[id = "${centerId}"]`, style: { 'width':32, 'height':32, 'border-width':3, 'border-color': tv.text } },
+      { selector: 'edge', style: { 'width':1.5, 'line-color': tv.border, 'target-arrow-color': tv.border, 'target-arrow-shape':'triangle', 'curve-style':'bezier', 'arrow-scale':0.6, 'opacity':.7 } },
+    ],
+    layout: { name: 'concentric', concentric: n => n.id() === centerId ? 2 : 1, levelWidth: () => 1, minNodeSpacing: 44 },
+    userZoomingEnabled: true,
+    userPanningEnabled: true,
+  });
+  egoCy.nodes().forEach(n => n.style('cursor', 'pointer'));
+  egoCy.on('tap', 'node', evt => {
+    const id = evt.target.id();
+    if (id !== centerId) selectConcept(id);
+  });
+}
+
+showLanding();
+</script>
+</body>
+</html>
