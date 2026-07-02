@@ -7,6 +7,7 @@ Commands:
   okf pairs      <bundle_dir> [output_file]  Convert bundle to training pairs
   okf summarize  <bundle_dir>                Regenerate SUMMARY.md only
   okf install    [agent]                     Install agent integration (claude, opencode, copilot, cursor, windsurf, cline, all)
+  okf init                                   Interactive bundle setup wizard
   okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
   okf serve      [dir] [--port] [--open]     Serve bundle + auto-open viz
 
@@ -215,13 +216,18 @@ def main():
         print("  diff            Compare two bundles (added/removed/changed)")
         print("  pairs           Convert bundle to JSONL training pairs")
         print("  summarize       Regenerate SUMMARY.md from existing bundle")
+        print("  init            Interactive bundle setup wizard")
         print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline)")
         sys.exit(0)
 
     cmd, rest = sys.argv[1], sys.argv[2:]
     sys.argv = [f"okf {cmd}"] + rest
 
-    if cmd == "install":
+    if cmd == "init":
+        from okf.init import main as _main
+        _main()
+
+    elif cmd == "install":
         _install_main()
 
     elif cmd in ("install-skill",):  # backwards compat
