@@ -119,7 +119,7 @@ If you're choosing between OKF producers: pick `okf-generator` when you want bro
 
 [#how-it-works](#how-it-works)
 
-![okf-generator pipeline](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/okf-pipeline.png)
+![okf-generator pipeline](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/workflow.png)
 
 > **Pipeline:** `okf generate` scans your codebase → linker resolves cross-references → writes an OKF bundle → consumed via 6 commands (lookup, pairs, visualize, diff, serve, install).
 
