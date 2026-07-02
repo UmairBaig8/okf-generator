@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.26] — 2026-07-02
+
+### Added
+- `okf visualize` — bundle selector dropdown for multi-project monorepos.
+- `okf visualize` — source code pane in concept detail view.
+- `okf visualize` — resizable left sidebar via drag handle.
+- Multi-bundle detection via `SUMMARY.md` subdirectory markers.
+- 3 new docs: agent-integration, ci-cd, languages-and-manifests.
+
+### Changed
+- README rewritten with code-level knowledge graph pitch, local AI/SLM section,
+  CI/CD pipeline section, and architectural query examples.
+- Viz display name now dynamic — removed hardcoded `fresh_agentbox`.
+- Docs assets reorganized into `images/`, `banners/`, `Demo deck/` directories.
+
+### Fixed
+- `okf visualize` always showed `fresh_agentbox` as title (both JS var + HTML span).
+- Bundle detection used naive first-path-segment causing false bundles.
+
+---
+
 ## [Unreleased]
 
 ### Planned
@@ -340,7 +361,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.25...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.26...HEAD
+[0.1.26]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.26
 [0.1.25]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.25
 [0.1.24]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.24
 [0.1.23]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.23
