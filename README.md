@@ -119,9 +119,9 @@ If you're choosing between OKF producers: pick `okf-generator` when you want bro
 
 ```mermaid
 flowchart LR
-    A[Your codebase] -->|okf generate| B[Scanners: AST / tree-sitter / regex]
-    B --> C[Concepts: Function / Class / Module / Dependency]
-    C --> D[OKF Bundle: markdown + YAML frontmatter]
+    A[Your codebase] -->|okf generate| B[Scanners]
+    B --> C[Concepts]
+    C --> D[OKF Bundle]
     D -->|okf lookup| E[AI Agent]
     D -->|okf pairs| F[JSONL training data]
 ```
