@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.24] — 2026-07-02
+
+### Added
+- `okf serve [dir] [--port] [--open]` — launch a local HTTP server for any bundle directory. Zero dependencies, auto-detects visualization HTML.
+- `okf/_viz_template.py` — embedded HTML template (base64) so `okf visualize` works from PyPI without external files.
+
+### Fixed
+- `okf visualize` no longer fails with `demo.html not found` when installed from PyPI — template is now bundled inside the package.
+
+---
+
 ## [0.1.23] — 2026-07-02
 
 ### Added
@@ -306,7 +317,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.23...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.24...HEAD
+[0.1.24]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.24
 [0.1.23]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.23
 [0.1.22]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.22
 [0.1.21]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.21
