@@ -892,6 +892,120 @@ def test_rust_attributes():
     import shutil; shutil.rmtree(tmp)
 
 
+# ── Visibility modifiers (Tier 2) ────────────────────────────────────────
+
+def test_java_visibility():
+    """Java classes and methods capture visibility modifiers."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "Test.java").write_text(
+        "public class Service {\n"
+        "    public void start() {}\n"
+        "    private void stop() {}\n"
+        "    protected static int count() { return 0; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    svc = next((c for c in concepts if c.type == "Class" and c.title == "Service"), None)
+    assert svc is not None
+    assert "public" in svc.visibility, f"Service missing public: {svc.visibility}"
+    start = next((c for c in concepts if c.type == "Function" and c.title == "start"), None)
+    assert start is not None
+    assert "public" in start.visibility, f"start missing public: {start.visibility}"
+    count = next((c for c in concepts if c.type == "Function" and c.title == "count"), None)
+    assert count is not None
+    assert "static" in count.visibility, f"count missing static: {count.visibility}"
+    assert "protected" in count.visibility, f"count missing protected: {count.visibility}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_visibility():
+    """C# classes and methods capture visibility modifiers."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cs").write_text(
+        "public class Service {\n"
+        "    public void Start() {}\n"
+        "    private static int Count() { return 0; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    svc = next((c for c in concepts if c.type == "Class" and c.title == "Service"), None)
+    assert svc is not None
+    assert "public" in svc.visibility, f"Service missing public: {svc.visibility}"
+    count = next((c for c in concepts if c.type == "Function" and c.title == "Count"), None)
+    assert count is not None
+    assert "private" in count.visibility, f"Count missing private: {count.visibility}"
+    assert "static" in count.visibility, f"Count missing static: {count.visibility}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_typescript_visibility():
+    """TypeScript methods capture accessibility modifiers."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "service.ts").write_text(
+        "class Service {\n"
+        "    public start(): void {}\n"
+        "    private stop(): void {}\n"
+        "    protected static count(): number { return 0; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    start = next((c for c in concepts if c.type == "Function" and c.title == "start"), None)
+    assert start is not None
+    assert "public" in start.visibility, f"start missing public: {start.visibility}"
+    count = next((c for c in concepts if c.type == "Function" and c.title == "count"), None)
+    assert count is not None
+    assert "static" in count.visibility, f"count missing static: {count.visibility}"
+    assert "protected" in count.visibility, f"count missing protected: {count.visibility}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_rust_visibility():
+    """Rust functions and structs capture visibility modifiers."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.rs").write_text(
+        "pub struct Service {}\n"
+        "pub fn run() {}\n"
+        "fn internal() {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    svc = next((c for c in concepts if c.type == "Class" and c.title == "Service"), None)
+    assert svc is not None
+    assert svc.visibility, f"Service should have visibility: {svc.visibility}"
+    assert any("pub" in v for v in svc.visibility), f"Service missing pub: {svc.visibility}"
+    internal = next((c for c in concepts if c.type == "Function" and c.title == "internal"), None)
+    assert internal is not None
+    assert not internal.visibility, f"internal should have no visibility: {internal.visibility}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_cpp_visibility_modifiers():
+    """C++ functions capture static/virtual/const modifiers."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cpp").write_text(
+        "static int run() { return 0; }\n"
+        "virtual void stop() {}\n"
+        "int normal() { return 1; }\n"
+    )
+    concepts = scan_codebase(tmp)
+    run = next((c for c in concepts if c.type == "Function" and c.title == "run"), None)
+    assert run is not None
+    assert "static" in run.visibility, f"run missing static: {run.visibility}"
+    normal = next((c for c in concepts if c.type == "Function" and c.title == "normal"), None)
+    assert normal is not None
+    assert not normal.visibility, f"normal should have no visibility: {normal.visibility}"
+    import shutil; shutil.rmtree(tmp)
+
+
 # ── Method emission as individual concepts (Tier 1) ──────────────────────
 
 def test_python_methods_emitted():

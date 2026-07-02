@@ -96,6 +96,7 @@ class Concept:
     type_params: list[str] = field(default_factory=list)  # generics: ["T"], ["T, U"], etc.
     inheritance: list[str] = field(default_factory=list)  # base types: ["Animal", "Comparable"]
     decorators: list[str] = field(default_factory=list)   # decorators/attributes: ["@cache"], ["@Deprecated"]
+    visibility: list[str] = field(default_factory=list)   # modifiers: ["public"], ["pub", "static"]
     related: list[str] = field(default_factory=list)   # concept IDs to cross-link
     body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
 
@@ -584,6 +585,11 @@ class JSTSParser(TreeSitterParser):
                 mret   = self._js_return_type(node)
                 mtp    = self._js_type_params(node)
                 msig   = f"{mname}({mparams})" + (f": {mret}" if mret else "")
+                # Extract visibility/access modifiers
+                mvis = []
+                for child in node.children:
+                    if child.type in ("accessibility_modifier", "static", "abstract", "readonly", "override"):
+                        mvis.append(_node_text(child))
                 # Link to the nearest enclosing class as parent
                 mparent_id = parent_id
                 p = node.parent
@@ -596,6 +602,7 @@ class JSTSParser(TreeSitterParser):
                 mc = self._make_concept(
                     "Function", mname, mdoc, msig, resource, ts, mparent_id,
                     node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=mtp)
+                mc.visibility = mvis
                 concepts.append(mc)
 
             elif node.type == "lexical_declaration":
@@ -816,21 +823,26 @@ class JavaParser(TreeSitterParser):
                     msig    = f"{mret} {_node_text(mname)}({mparams})"
                     tp = self._java_type_params(method)
                     mdec = []
+                    mvis = []
                     for child in method.children:
                         if child.type == "modifiers":
                             for c in child.children:
                                 if c.type in ("annotation", "marker_annotation"):
                                     mdec.append(_node_text(c))
+                                else:
+                                    mvis.append(_node_text(c))
                     mc = self._make_concept(
                         "Function", _node_text(mname), mdoc, msig,
                         resource, ts, parent_id, method.start_point[0]+1,
                         node=method, src_bytes=src_bytes, type_params=tp)
                     mc.decorators = mdec
+                    mc.visibility = mvis
                     concepts.append(mc)
 
-            # Collect modifiers, annotations, and inheritance by iterating children
+            # Collect modifiers, annotations, inheritance, and visibility
             bases = []
             decs = []
+            vis = []
             extra_mod_text = ""
             for child in node.children:
                 if child.type == "modifiers":
@@ -839,6 +851,7 @@ class JavaParser(TreeSitterParser):
                             decs.append(_node_text(c))
                         else:
                             extra_mod_text += _node_text(c) + " "
+                            vis.append(_node_text(c))
                 elif child.type == "superclass":
                     for ch in child.children:
                         if ch.type in ("type_identifier", "scoped_type_identifier"):
@@ -861,6 +874,7 @@ class JavaParser(TreeSitterParser):
                 type_params=tp)
             cc.inheritance = bases
             cc.decorators = decs
+            cc.visibility = vis
             concepts.insert(0, cc)
 
         return concepts
@@ -904,6 +918,14 @@ class JavaParser(TreeSitterParser):
 # Rust  (tree-sitter)
 # ---------------------------------------------------------------------------
 
+def _rust_vis_node(node):
+    """Find visibility_modifier child by iterating children (no field name)."""
+    for child in node.children:
+        if child.type == "visibility_modifier":
+            return child
+    return None
+
+
 class RustParser(TreeSitterParser):
     LANGUAGE   = "rust"
     EXTENSIONS = {".rs"}
@@ -936,7 +958,7 @@ class RustParser(TreeSitterParser):
                 doc    = _prev_comment(node, src_bytes)
                 params = self._rust_params(node)
                 ret    = self._rust_return(node)
-                vis    = _node_text(node.child_by_field_name("visibility_modifier"))
+                vis    = _node_text(_rust_vis_node(node))
                 tp     = self._rust_type_params(node)
                 sig    = f"{vis+' ' if vis else ''}fn {name}({params})" + (f" -> {ret}" if ret else "")
                 fc = self._make_concept(
@@ -944,6 +966,8 @@ class RustParser(TreeSitterParser):
                     node.start_point[0]+1, node=node, src_bytes=src_bytes,
                     type_params=tp)
                 fc.decorators = self._rust_attributes(node)
+                if vis:
+                    fc.visibility = [vis]
                 concepts.append(fc)
 
             elif node.type in {"struct_item", "enum_item", "trait_item"}:
@@ -953,7 +977,7 @@ class RustParser(TreeSitterParser):
                 name  = _node_text(name_node)
                 doc   = _prev_comment(node, src_bytes)
                 kind  = {"struct_item": "struct", "enum_item": "enum", "trait_item": "trait"}[node.type]
-                vis   = _node_text(node.child_by_field_name("visibility_modifier"))
+                vis   = _node_text(_rust_vis_node(node))
                 tp    = self._rust_type_params(node)
                 sig   = f"{vis+' ' if vis else ''}{kind} {name}"
                 fields = [
@@ -966,6 +990,8 @@ class RustParser(TreeSitterParser):
                     node.start_point[0]+1, methods=fields, node=node, src_bytes=src_bytes,
                     type_params=tp)
                 cc.decorators = self._rust_attributes(node)
+                if vis:
+                    cc.visibility = [vis]
                 concepts.append(cc)
 
             elif node.type == "impl_item":
@@ -979,14 +1005,17 @@ class RustParser(TreeSitterParser):
                     doc    = _prev_comment(fn, src_bytes)
                     params = self._rust_params(fn)
                     ret    = self._rust_return(fn)
-                    vis    = _node_text(fn.child_by_field_name("visibility_modifier"))
+                    vis    = _node_text(_rust_vis_node(fn))
                     tp     = self._rust_type_params(fn) or impl_tp
                     sig    = f"impl {type_name} {{ {vis+' ' if vis else ''}fn {fn_name}({params})" + \
                              (f" -> {ret}" if ret else "") + " }"
-                    concepts.append(self._make_concept(
+                    fc = self._make_concept(
                         "Function", fn_name, doc, sig, resource, ts, parent_id,
                         fn.start_point[0]+1, node=fn, src_bytes=src_bytes,
-                        type_params=tp))
+                        type_params=tp)
+                    if vis:
+                        fc.visibility = [vis]
+                    concepts.append(fc)
 
         return concepts
 
@@ -1236,6 +1265,11 @@ class CppParser(TreeSitterParser):
                 ret   = _node_text(node.child_by_field_name("type"))
                 tp    = self._cpp_template_params(node)
                 sig   = f"{ret + ' ' if ret else ''}{name}({params})"
+                # Extract modifiers (static, virtual, const, override, etc.)
+                cpp_vis = []
+                for child in node.children:
+                    if child.type in ("storage_class_specifier", "virtual", "override", "const"):
+                        cpp_vis.append(_node_text(child))
                 # Determine parent: if inside a class, link to class instead of module
                 f_parent_id = parent_id
                 pn = node.parent
@@ -1247,7 +1281,9 @@ class CppParser(TreeSitterParser):
                             f_parent_id = f"{res_id}/{_safe_id(pname)}"
                         break
                     pn = pn.parent
-                concepts.append(self._make_concept("Function", name, doc, sig, resource, ts, f_parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp))
+                cpp_fc = self._make_concept("Function", name, doc, sig, resource, ts, f_parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp)
+                cpp_fc.visibility = cpp_vis
+                concepts.append(cpp_fc)
             elif node.type in ("class_specifier", "struct_specifier"):
                 name = _node_text(node.child_by_field_name("name"))
                 if not name:
@@ -1333,14 +1369,18 @@ class CSharpParser(TreeSitterParser):
                                 bases.append(_node_text(sub))
                 # Extract attributes
                 decs = []
+                vis = []
                 for child in node.children:
                     if child.type == "attribute_list":
                         for attr in child.children:
                             if attr.type == "attribute":
                                 decs.append(_node_text(attr))
+                    elif child.type == "modifier":
+                        vis.append(_node_text(child))
                 cc = self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
                 cc.inheritance = bases
                 cc.decorators = decs
+                cc.visibility = vis
                 concepts.append(cc)
             elif node.type in ("method_declaration", "local_function_statement"):
                 name = _node_text(node.child_by_field_name("name"))
@@ -1350,16 +1390,20 @@ class CSharpParser(TreeSitterParser):
                 params = _node_text(params_node).strip("()") if params_node else ""
                 ret = _node_text(node.child_by_field_name("return_type"))
                 tp = self._cs_type_params(node)
-                # Extract attributes
+                # Extract attributes and modifiers
                 decs = []
+                vis = []
                 for child in node.children:
                     if child.type == "attribute_list":
                         for attr in child.children:
                             if attr.type == "attribute":
                                 decs.append(_node_text(attr))
+                    elif child.type == "modifier":
+                        vis.append(_node_text(child))
                 sig = f"{ret + ' ' if ret else ''}{name}({params})"
                 fc = self._make_concept("Function", name, "", sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp)
                 fc.decorators = decs
+                fc.visibility = vis
                 concepts.append(fc)
         return concepts
 
@@ -1640,6 +1684,12 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
         lines.append("## Decorators\n")
         for d in concept.decorators:
             lines.append(f"- `{d}`")
+        lines.append("")
+
+    if concept.visibility:
+        lines.append("## Visibility\n")
+        for v in concept.visibility:
+            lines.append(f"- `{v}`")
         lines.append("")
 
     if concept.docstring:
