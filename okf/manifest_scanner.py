@@ -40,6 +40,8 @@ MANIFEST_HANDLERS: dict[str, str] = {
     "package.json": "parse_package_json",
     "Cargo.toml": "parse_cargo_toml",
     "Cargo.lock": "parse_cargo_lock",
+    "yarn.lock": "parse_yarn_lock",
+    "pnpm-lock.yaml": "parse_pnpm_lock",
     "go.mod": "parse_go_mod",
     "go.sum": "parse_go_sum",
     "poetry.lock": "parse_poetry_lock",
@@ -498,6 +500,59 @@ def parse_go_sum(path: Path) -> list[dict[str, Any]]:
             continue
         seen.add(key)
         deps.append({"name": m.group(1), "ecosystem": "go", "version": m.group(2), "dev": False})
+    return deps
+
+
+_YARN_LINE_RE = re.compile(r'^  version "([^"]+)"')
+
+
+def parse_yarn_lock(path: Path) -> list[dict[str, Any]]:
+    """Yarn lockfile (v1). Extracts package@version → name, version."""
+    deps = []
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if line.startswith('"') or (line and line[0].isalpha()):
+            # package line: "package@version: or package@version:
+            name_ver = line.strip().rstrip(":").strip('"')
+            if "@" in name_ver and not name_ver.startswith("#"):
+                at_idx = name_ver.rindex("@")
+                name = name_ver[:at_idx]
+                dep_key = name_ver
+                deps.append({"name": name, "ecosystem": "npm", "version": "", "dev": False, "_key": dep_key})
+        elif "  version " in line and deps:
+            m = _YARN_LINE_RE.match(line)
+            if m:
+                deps[-1]["version"] = m.group(1)
+    # Remove duplicates (same name, keep first occurrence)
+    seen = set()
+    result = []
+    for d in deps:
+        key = d["_key"]
+        if key not in seen:
+            seen.add(key)
+            d.pop("_key")
+            result.append(d)
+    return result
+
+
+def parse_pnpm_lock(path: Path) -> list[dict[str, Any]]:
+    """pnpm lockfile (YAML). Extracts top-level package entries."""
+    import yaml
+    data = yaml.safe_load(path.read_text(encoding="utf-8", errors="ignore"))
+    deps = []
+    packages = data.get("packages", {}) if isinstance(data, dict) else {}
+    for specifier, info in packages.items():
+        # specifier looks like "/package-name@version" or "package-name@version"
+        name_ver = specifier.lstrip("/")
+        if "@" not in name_ver:
+            continue
+        at_idx = name_ver.rindex("@")
+        name = name_ver[:at_idx]
+        version = name_ver[at_idx + 1:]
+        if info and isinstance(info, dict):
+            dev = info.get("dev", False)
+        else:
+            dev = False
+        deps.append({"name": name, "ecosystem": "npm", "version": version, "dev": dev})
     return deps
 
 

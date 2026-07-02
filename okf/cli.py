@@ -36,8 +36,18 @@ def _find_skill() -> Path:
 def _install_agent(agent: str):
     root = Path.cwd()
 
+    def _maybe_overwrite(target: Path, desc: str) -> bool:
+        if target.exists():
+            resp = input(f"  {desc} already exists at {target}. Overwrite? [y/N] ").strip().lower()
+            if resp != "y":
+                print(f"  Skipped {desc}.")
+                return False
+        return True
+
     if agent == "claude":
         target = Path.home() / ".config" / "opencode" / "skills" / "okf-generator" / "SKILL.md"
+        if not _maybe_overwrite(target, "Claude Code skill"):
+            return
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(_find_skill(), target)
         print(f"Claude Code skill → {target}")
@@ -45,6 +55,8 @@ def _install_agent(agent: str):
 
     elif agent == "opencode":
         target = root / ".opencode" / "commands" / "lookup.md"
+        if not _maybe_overwrite(target, "OpenCode command"):
+            return
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("RUN okf lookup --bundle ./okf_bundle $NAME\n")
         print(f"OpenCode command → {target}")
@@ -52,6 +64,8 @@ def _install_agent(agent: str):
 
     elif agent == "copilot":
         target = root / ".github" / "copilot-instructions.md"
+        if not _maybe_overwrite(target, "Copilot instructions"):
+            return
         if COPILOT_SOURCE.exists():
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(COPILOT_SOURCE, target)
@@ -63,16 +77,22 @@ def _install_agent(agent: str):
 
     elif agent == "cursor":
         target = root / ".cursorrules"
+        if not _maybe_overwrite(target, "Cursor rules"):
+            return
         target.write_text(_agent_rules("Cursor"))
         print(f"Cursor rules → {target}")
 
     elif agent == "windsurf":
         target = root / ".windsurfrules"
+        if not _maybe_overwrite(target, "Windsurf rules"):
+            return
         target.write_text(_agent_rules("Windsurf"))
         print(f"Windsurf rules → {target}")
 
     elif agent == "cline":
         target = root / ".clinerules"
+        if not _maybe_overwrite(target, "Cline rules"):
+            return
         target.write_text(_agent_rules("Cline"))
         print(f"Cline rules → {target}")
 

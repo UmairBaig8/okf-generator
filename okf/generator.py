@@ -1599,7 +1599,8 @@ def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]
     all_paths = sorted(root.rglob("*"))
     log.info(f"Scanning {len(all_paths)} paths...")
 
-    for path in all_paths:
+    pbar = tqdm(all_paths, desc="Scanning", unit="files", leave=False, disable=len(all_paths) < 500)
+    for path in pbar:
         rel = path.relative_to(root)
         # per-run exclude patterns (e.g. --exclude tests, --exclude docs)
         if any(part in exclude for part in rel.parts):

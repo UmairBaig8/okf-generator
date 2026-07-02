@@ -371,6 +371,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--compact",   action="store_true", help="One-line output per result")
     p.add_argument("--json",      action="store_true", help="JSON output")
     p.add_argument("--full",      action="store_true", help="Show raw .md file content")
+    p.add_argument("--deps", action="store_true", help="Shortcut for --type Dependency")
     p.add_argument("--min-score", type=float, default=0.1, help="Minimum relevance score 0-1 (default: 0.1)")
     p.add_argument("--no-cache", action="store_true", help="Bypass and skip writing the lookup cache")
     return p
@@ -401,11 +402,14 @@ def main():
 
     # Search
     tokens  = args.query or []
+    type_filter = args.type
+    if args.deps:
+        type_filter = "Dependency"
     results = search(
         concepts,
         tokens     = tokens,
         file_filter= args.file,
-        type_filter= args.type,
+        type_filter= type_filter,
         tag_filters= args.tags,
         limit      = args.limit,
         min_score  = args.min_score,
