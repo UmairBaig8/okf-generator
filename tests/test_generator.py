@@ -267,7 +267,7 @@ def test_complex_all_languages_detected():
         for t in c.tags:
             if t.startswith("lang:"):
                 tags.add(t[5:])
-    expected = {"python", "javascript", "typescript", "go", "java", "rust", "ruby", "sql", "manifest"}
+    expected = {"python", "javascript", "typescript", "go", "java", "rust", "ruby", "c", "cpp", "csharp", "sql", "manifest"}
     assert expected.issubset(tags), f"Missing langs: {expected - tags}"
 
 

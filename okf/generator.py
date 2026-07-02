@@ -881,6 +881,158 @@ class RubyParser(TreeSitterParser):
 
 
 # ---------------------------------------------------------------------------
+# C  (tree-sitter)
+# ---------------------------------------------------------------------------
+
+class CParser(TreeSitterParser):
+    LANGUAGE   = "c"
+    EXTENSIONS = {".c", ".h"}
+    _TS_MODULE = "tree_sitter_c"
+    _lang_obj  = None
+
+    def _module_doc(self, root, src_bytes: bytes) -> str:
+        for child in root.children:
+            if child.type == "comment":
+                return _prev_comment(child.next_sibling or child, src_bytes) or _node_text(child).lstrip("/ *").strip()
+        return ""
+
+    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
+        concepts = []
+        seen = set()
+        for node in _find_all(root, "function_definition", "struct_specifier"):
+            name = None
+            if node.type == "function_definition":
+                decl = node.child_by_field_name("declarator")
+                if decl:
+                    name = _node_text(decl.child_by_field_name("declarator") or decl)
+            elif node.type == "struct_specifier":
+                # Only top-level structs, not params inside functions
+                if node.parent and node.parent.type in ("parameter_declaration", "field_declaration"):
+                    continue
+                name = _node_text(node.child_by_field_name("name"))
+            if not name or name in seen:
+                continue
+            seen.add(name)
+
+            if node.type == "function_definition":
+                decl = node.child_by_field_name("declarator")
+                if not decl:
+                    continue
+                name = _node_text(decl.child_by_field_name("declarator") or decl)
+                doc  = _prev_comment(node, src_bytes)
+                params_node = decl.child_by_field_name("parameters")
+                params = _node_text(params_node).strip("()") if params_node else ""
+                ret   = _node_text(node.child_by_field_name("type"))
+                sig   = f"{ret + ' ' if ret else ''}{name}({params})"
+                concepts.append(self._make_concept("Function", name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
+            elif node.type == "struct_specifier":
+                name = _node_text(node.child_by_field_name("name"))
+                if not name:
+                    continue
+                doc = _prev_comment(node, src_bytes)
+                concepts.append(self._make_concept("Class", name, doc, f"struct {name}", resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
+        return concepts
+
+
+# ---------------------------------------------------------------------------
+# C++  (tree-sitter)
+# ---------------------------------------------------------------------------
+
+class CppParser(TreeSitterParser):
+    LANGUAGE   = "cpp"
+    EXTENSIONS = {".cpp", ".cxx", ".cc", ".hpp", ".hh"}
+    _TS_MODULE = "tree_sitter_cpp"
+    _lang_obj  = None
+
+    def _module_doc(self, root, src_bytes: bytes) -> str:
+        for child in root.children:
+            if child.type == "comment":
+                return _prev_comment(child.next_sibling or child, src_bytes) or _node_text(child).lstrip("/ *").strip()
+        return ""
+
+    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
+        concepts = []
+        seen = set()
+        for node in _find_all(root, "function_definition", "class_specifier", "struct_specifier"):
+            name = None
+            if node.type == "function_definition":
+                decl = node.child_by_field_name("declarator")
+                if decl:
+                    name = _node_text(decl.child_by_field_name("declarator") or decl)
+            elif node.type in ("class_specifier", "struct_specifier"):
+                if node.parent and node.parent.type in ("template_declaration",):
+                    name = _node_text(node.child_by_field_name("name"))
+                elif not node.parent or node.parent.type not in ("function_definition", "parameter_declaration", "field_declaration"):
+                    name = _node_text(node.child_by_field_name("name"))
+            if not name or name in seen:
+                continue
+            seen.add(name)
+
+            if node.type == "function_definition":
+                decl = node.child_by_field_name("declarator")
+                if not decl:
+                    continue
+                name = _node_text(decl.child_by_field_name("declarator") or decl)
+                doc  = _prev_comment(node, src_bytes)
+                params_node = decl.child_by_field_name("parameters")
+                params = _node_text(params_node).strip("()") if params_node else ""
+                ret   = _node_text(node.child_by_field_name("type"))
+                sig   = f"{ret + ' ' if ret else ''}{name}({params})"
+                concepts.append(self._make_concept("Function", name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
+            elif node.type in ("class_specifier", "struct_specifier"):
+                name = _node_text(node.child_by_field_name("name"))
+                if not name:
+                    continue
+                doc = _prev_comment(node, src_bytes)
+                ctype = "Class"
+                methods = [
+                    _node_text(m.child_by_field_name("name"))
+                    for m in _find_all(node, "function_definition")
+                    if m.child_by_field_name("name")
+                ]
+                concepts.append(self._make_concept(ctype, name, doc, f"{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes))
+        return concepts
+
+
+# ---------------------------------------------------------------------------
+# C#  (tree-sitter)
+# ---------------------------------------------------------------------------
+
+class CSharpParser(TreeSitterParser):
+    LANGUAGE   = "csharp"
+    EXTENSIONS = {".cs"}
+    _TS_MODULE = "tree_sitter_c_sharp"
+    _lang_obj  = None
+
+    def _module_doc(self, root, src_bytes: bytes) -> str:
+        return ""
+
+    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
+        concepts = []
+        for node in _find_all(root, "class_declaration", "method_declaration", "local_function_statement"):
+            if node.type == "class_declaration":
+                name = _node_text(node.child_by_field_name("name"))
+                if not name:
+                    continue
+                methods = [
+                    _node_text(m.child_by_field_name("name"))
+                    for m in _find_all(node, "method_declaration")
+                    if m.child_by_field_name("name")
+                ]
+                concepts.append(self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes))
+            elif node.type in ("method_declaration", "local_function_statement"):
+                name = _node_text(node.child_by_field_name("name"))
+                if not name:
+                    continue
+                params_node = node.child_by_field_name("parameter_list")
+                params = _node_text(params_node).strip("()") if params_node else ""
+                ret = _node_text(node.child_by_field_name("return_type"))
+                sig = f"{ret + ' ' if ret else ''}{name}({params})"
+                concepts.append(self._make_concept("Function", name, "", sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
+        return concepts
+
+
+# ---------------------------------------------------------------------------
 # SQL parser (tree-sitter)
 # ---------------------------------------------------------------------------
 
@@ -983,6 +1135,12 @@ def _get_parser(ext: str):
         return RustParser()
     if ext in {".rb"}:
         return RubyParser()
+    if ext in {".c", ".h"}:
+        return CParser()
+    if ext in {".cpp", ".cxx", ".cc", ".hpp", ".hh"}:
+        return CppParser()
+    if ext in {".cs"}:
+        return CSharpParser()
     if ext in {".sql"}:
         return SQLParser()
     return None
