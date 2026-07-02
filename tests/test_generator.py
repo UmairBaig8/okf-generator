@@ -674,3 +674,112 @@ def test_complex_fixture_has_generic_concepts():
     assert "wrapResponse" in titles, f"wrapResponse not in generic concepts: {titles}"
     ds = next(c for c in ts_generic if c.title == "DataService")
     assert ds.type_params == ["T"], f"DataService type_params should be ['T'], got {ds.type_params}"
+
+
+# ── Inheritance chain extraction (Tier 1) ────────────────────────────────
+
+def test_python_class_inheritance():
+    """Python class extracts base classes."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "models.py").write_text(
+        "class Animal:\n    pass\n"
+        "class Dog(Animal):\n    pass\n"
+        "class Pet:\n    pass\n"
+        "class Golden(Dog, Pet):\n    pass\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None
+    assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
+    golden = next((c for c in concepts if c.type == "Class" and c.title == "Golden"), None)
+    assert golden is not None
+    assert len(golden.inheritance) >= 2, f"Golden should have >=2 bases, got {golden.inheritance}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_java_class_inheritance():
+    """Java class extracts superclass and interfaces."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "Test.java").write_text(
+        "interface Pet {}\n"
+        "class Animal {}\n"
+        "class Dog extends Animal implements Pet {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None, "Dog class not found"
+    assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
+    assert "Pet" in dog.inheritance, f"Dog should implement Pet, got {dog.inheritance}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_typescript_class_heritage():
+    """TypeScript class extracts extends/implements bases."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.ts").write_text(
+        "interface Animal {}\n"
+        "interface Pet {}\n"
+        "class Dog extends Animal implements Pet {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None, "Dog class not found"
+    assert "Animal" in dog.inheritance, f"Dog should extend Animal, got {dog.inheritance}"
+    assert "Pet" in dog.inheritance, f"Dog should implement Pet, got {dog.inheritance}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_cpp_class_inheritance():
+    """C++ class extracts base classes."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cpp").write_text(
+        "class Animal {};\n"
+        "class Dog : public Animal {};\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None, "Dog class not found"
+    assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_class_inheritance():
+    """C# class extracts base types from base_list."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cs").write_text(
+        "interface Animal {}\n"
+        "interface Pet {}\n"
+        "class Dog : Animal, Pet {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None, "Dog class not found"
+    assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
+    assert "Pet" in dog.inheritance, f"Dog should inherit Pet, got {dog.inheritance}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_ruby_class_inheritance():
+    """Ruby class extracts superclass."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.rb").write_text(
+        "class Animal\nend\n"
+        "class Dog < Animal\nend\n"
+    )
+    concepts = scan_codebase(tmp)
+    dog = next((c for c in concepts if c.type == "Class" and c.title == "Dog"), None)
+    assert dog is not None, "Dog class not found"
+    assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
+    import shutil; shutil.rmtree(tmp)

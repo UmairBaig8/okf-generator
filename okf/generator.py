@@ -94,6 +94,7 @@ class Concept:
     returns: str = ""
     source_lines: tuple = ()         # (start, end)
     type_params: list[str] = field(default_factory=list)  # generics: ["T"], ["T, U"], etc.
+    inheritance: list[str] = field(default_factory=list)  # base types: ["Animal", "Comparable"]
     related: list[str] = field(default_factory=list)   # concept IDs to cross-link
     body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
 
@@ -389,6 +390,12 @@ class PythonParser:
             child.name for child in ast.iter_child_nodes(node)
             if isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef)
         ]
+        bases = []
+        for b in node.bases:
+            try:
+                bases.append(ast.unparse(b))
+            except Exception:
+                pass
         resource_id = re.sub(r"\.py$", "", resource).replace(os.sep, "/")
         cid     = f"{resource_id}/{_safe_id(node.name)}"
         return Concept(
@@ -397,6 +404,7 @@ class PythonParser:
             resource=resource,
             tags=["python", "class"],
             timestamp=ts, methods=methods,
+            inheritance=bases,
             source_lines=(node.lineno, node.end_lineno),
             concept_id=cid, related=[parent_id],
         )
@@ -530,10 +538,21 @@ class JSTSParser(TreeSitterParser):
                     if m.child_by_field_name("name")
                 ]
                 sig = f"class {name}"
-                concepts.append(self._make_concept(
+                # Extract heritage (extends / implements)
+                bases = []
+                for child in node.children:
+                    if child.type == "class_heritage":
+                        for sub in child.children:
+                            if sub.type in ("extends_clause", "implements_clause"):
+                                for item in sub.children:
+                                    if item.type in ("identifier", "type_identifier", "nested_type_identifier"):
+                                        bases.append(_node_text(item))
+                cc = self._make_concept(
                     "Class", name, doc, sig, resource, ts, parent_id,
                     node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
-                    type_params=tp))
+                    type_params=tp)
+                cc.inheritance = bases
+                concepts.append(cc)
 
             elif node.type == "lexical_declaration":
                 # const/let foo = (...) => ...  or  const foo = function(...) {}
@@ -760,13 +779,31 @@ class JavaParser(TreeSitterParser):
             mods = node.child_by_field_name("modifiers")
             mod_text = _node_text(mods) + " " if mods else ""
             tp = self._java_type_params(node)
+            # Extract inheritance
+            bases = []
+            sc = node.child_by_field_name("superclass")
+            if sc:
+                for ch in sc.children:
+                    if ch.type in ("type_identifier", "scoped_type_identifier"):
+                        bases.append(_node_text(ch))
+            ifaces = node.child_by_field_name("interfaces")
+            if ifaces:
+                for child in ifaces.children:
+                    if child.type == "type_list":
+                        for tc in child.children:
+                            if tc.type in ("type_identifier", "scoped_type_identifier"):
+                                bases.append(_node_text(tc))
+                    elif child.type in ("type_identifier", "scoped_type_identifier"):
+                        bases.append(_node_text(child))
             sig  = f"{mod_text}class {name}" if node.type == "class_declaration" else \
                    f"{mod_text}interface {name}" if node.type == "interface_declaration" else \
                    f"enum {name}"
-            concepts.insert(0, self._make_concept(
+            cc = self._make_concept(
                 "Class", name, doc, sig, resource, ts, parent_id,
                 node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
-                type_params=tp))
+                type_params=tp)
+            cc.inheritance = bases
+            concepts.insert(0, cc)
 
         return concepts
 
@@ -969,9 +1006,18 @@ class RubyParser(TreeSitterParser):
                     if m.child_by_field_name("name")
                 ]
                 sig = f"class {name}" if node.type == "class" else f"module {name}"
-                concepts.append(self._make_concept(
+                bases = []
+                if node.type == "class":
+                    sc = node.child_by_field_name("superclass")
+                    if sc:
+                        for ch in sc.children:
+                            if ch.type == "constant":
+                                bases.append(_node_text(ch))
+                cc = self._make_concept(
                     "Class", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes))
+                    node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes)
+                cc.inheritance = bases
+                concepts.append(cc)
 
         return concepts
 
@@ -1125,12 +1171,21 @@ class CppParser(TreeSitterParser):
                 doc = _prev_comment(node, src_bytes)
                 ctype = "Class"
                 tp = self._cpp_template_params(node)
+                # Extract base classes from base_class_clause
+                bases = []
+                for child in node.children:
+                    if child.type == "base_class_clause":
+                        for sub in child.children:
+                            if sub.type in ("type_identifier", "template_type"):
+                                bases.append(_node_text(sub))
                 methods = [
                     _node_text(m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")).split("(")[0].strip()
                     for m in _find_all(node, "function_definition")
                     if m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")
                 ]
-                concepts.append(self._make_concept(ctype, name, doc, f"{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp))
+                cc = self._make_concept(ctype, name, doc, f"{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
+                cc.inheritance = bases
+                concepts.append(cc)
         return concepts
 
 
@@ -1185,7 +1240,16 @@ class CSharpParser(TreeSitterParser):
                     for m in _find_all(node, "method_declaration")
                     if m.child_by_field_name("name")
                 ]
-                concepts.append(self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp))
+                # Extract base_list
+                bases = []
+                for child in node.children:
+                    if child.type == "base_list":
+                        for sub in child.children:
+                            if sub.type in ("identifier", "generic_name", "qualified_name", "name"):
+                                bases.append(_node_text(sub))
+                cc = self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
+                cc.inheritance = bases
+                concepts.append(cc)
             elif node.type in ("method_declaration", "local_function_statement"):
                 name = _node_text(node.child_by_field_name("name"))
                 if not name:
@@ -1463,6 +1527,12 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
         lines.append("## Type Parameters\n")
         for tp in concept.type_params:
             lines.append(f"- `{tp}`")
+        lines.append("")
+
+    if concept.inheritance:
+        lines.append("## Inheritance\n")
+        for base in concept.inheritance:
+            lines.append(f"- `{base}`")
         lines.append("")
 
     if concept.docstring:
