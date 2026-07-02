@@ -207,6 +207,21 @@ The visualization uses D3.js with:
 - **Pan/zoom** — navigate large graphs
 - **Dark/light theme** — toggle at runtime
 
+### Multi-bundle monorepo support
+
+If your bundle contains sub-bundles (detected by `SUMMARY.md` in subdirectories), the viz adds a **bundle selector** dropdown in the topbar to filter by project. Each sub-bundle's dependencies and source files are scoped under its own namespace.
+
+```bash
+# Combined viz with bundle switcher (cross-bundle edges preserved)
+okf visualize ./okf_bundle
+
+# Standalone viz per sub-bundle (smaller, faster)
+okf visualize ./okf_bundle/AgentBox agentbox.html
+okf visualize ./okf_bundle/StockAI stockai.html
+```
+
+The bundled viz is ideal for exploring relationships across projects; per-bundle viz files are better for focused navigation on a single project.
+
 ---
 
 ## For AI Agents
