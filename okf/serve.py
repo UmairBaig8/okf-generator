@@ -1,9 +1,9 @@
-"""okf serve — launch a local HTTP server for an OKF bundle.
+"""okf serve — launch a local HTTP server for an OKF bundle viz.
 
 Usage:
   okf serve [<bundle_dir>] [options]
-  okf serve --port 8080 --open
-  okf serve ./okf_bundle --https
+  okf serve --stop              Stop a running server
+  okf serve --port 8080
 """
 
 import argparse
@@ -17,19 +17,51 @@ from pathlib import Path
 
 PORT = 8000
 HOST = "127.0.0.1"
+PID_DIR = Path.home() / ".cache" / "okf"
+PID_FILE = PID_DIR / "serve.pid"
 
 
-class QuietHandler(http.server.SimpleHTTPRequestHandler):
+def write_pid():
+    PID_DIR.mkdir(parents=True, exist_ok=True)
+    PID_FILE.write_text(str(os.getpid()))
+
+
+def read_pid() -> int | None:
+    if PID_FILE.exists():
+        try:
+            return int(PID_FILE.read_text().strip())
+        except (ValueError, OSError):
+            return None
+    return None
+
+
+def stop_server():
+    pid = read_pid()
+    if pid is None:
+        print("No running okf serve found.")
+        sys.exit(1)
+    os.kill(pid, 15)  # SIGTERM
+    PID_FILE.unlink(missing_ok=True)
+    print(f"Stopped server (PID {pid}).")
+    sys.exit(0)
+
+
+class VizzHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/" and os.path.exists("viz.html"):
+            self.send_response(302)
+            self.send_header("Location", "/viz.html")
+            self.end_headers()
+            return
+        super().do_GET()
+
     def log_message(self, format, *args):
-        pass  # suppress default request logs
-
-    def log_error(self, format, *args):
         pass
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Launch a local HTTP server for an OKF bundle.",
+        description="Launch a local HTTP server for an OKF bundle visualization.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
@@ -37,11 +69,11 @@ def main():
     parser.add_argument("--port", "-p", type=int, default=PORT, help=f"Port (default: {PORT})")
     parser.add_argument("--host", default=HOST, help=f"Host (default: {HOST})")
     parser.add_argument("--open", "-o", action="store_true", help="Open browser automatically")
-    parser.add_argument("--https", action="store_true", help="Enable HTTPS with self-signed cert (requires certfile)")
-    parser.add_argument("--certfile", help="Path to SSL certificate file (for --https)")
-    parser.add_argument("--keyfile", help="Path to SSL key file (for --https)")
-    parser.add_argument("--quiet", "-q", action="store_true", help="Suppress request logs")
+    parser.add_argument("--stop", action="store_true", help="Stop a running server")
     args = parser.parse_args()
+
+    if args.stop:
+        stop_server()
 
     directory = Path(args.bundle_dir).resolve()
     if not directory.exists():
@@ -50,32 +82,26 @@ def main():
 
     os.chdir(directory)
 
-    handler = QuietHandler if args.quiet else http.server.SimpleHTTPRequestHandler
+    if not os.path.exists("viz.html"):
+        print(f"  No viz.html found in {directory}. Run: okf visualize .")
+        print(f"  Serving directory listing at http://{args.host}:{args.port}")
+    else:
+        url = f"http://{args.host}:{args.port}/viz.html"
+        print(f"  OKF Viz: {url}")
 
-    proto = "https" if args.https else "http"
-    url = f"{proto}://{args.host}:{args.port}"
+    write_pid()
 
-    # Look for a viz HTML file to suggest
-    viz_files = list(directory.glob("*_viz.html")) + list(directory.glob("viz.html")) + list(directory.glob("*.html"))
-    viz_hint = ""
-    for vf in viz_files:
-        if vf.name not in ("index.html", "log.html", "SUMMARY.html"):
-            viz_hint = f"  Viz: {url}/{vf.name}"
-            break
-
-    print(f"Serving {directory.name} at {url}")
-    if viz_hint:
-        print(viz_hint)
-    print("  Quit: Ctrl+C")
-
-    if args.open:
-        webbrowser.open(url)
+    if args.open and os.path.exists("viz.html"):
+        webbrowser.open(f"http://{args.host}:{args.port}/viz.html")
+    elif args.open:
+        webbrowser.open(f"http://{args.host}:{args.port}")
 
     try:
-        with socketserver.TCPServer((args.host, args.port), handler) as httpd:
+        with socketserver.TCPServer((args.host, args.port), VizzHandler) as httpd:
             httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nServer stopped.")
+        print("\nStopped.")
+        PID_FILE.unlink(missing_ok=True)
         sys.exit(0)
     except OSError as e:
         print(f"ERROR: {e}", file=sys.stderr)

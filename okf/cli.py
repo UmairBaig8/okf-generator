@@ -8,7 +8,7 @@ Commands:
   okf summarize  <bundle_dir>                Regenerate SUMMARY.md only
   okf install    [agent]                     Install agent integration (claude, opencode, copilot, cursor, windsurf, cline, all)
   okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
-  okf serve      [dir] [--port] [--open]     Launch HTTP server for a bundle
+  okf serve      [dir] [--port] [--open]     Serve bundle + auto-open viz
 
 Run `okf <command> --help` for per-command options.
 """

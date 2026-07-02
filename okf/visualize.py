@@ -166,7 +166,7 @@ def main():
 
     html, n_nodes, n_edges = visualize(bundle_dir)
 
-    out = Path(args.output).resolve() if args.output else bundle_dir / f"{bundle_dir.name}.html"
+    out = Path(args.output).resolve() if args.output else bundle_dir / "viz.html"
     out.write_text(html, encoding="utf-8")
     print(f"Visualization written -> {out}")
     print(f"  {n_nodes} concepts, {n_edges} edges")
