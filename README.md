@@ -117,14 +117,7 @@ If you're choosing between OKF producers: pick `okf-generator` when you want bro
 
 [#how-it-works](#how-it-works)
 
-```mermaid
-flowchart LR
-    A[Your codebase] -->|okf generate| B[Scanners]
-    B --> C[Concepts]
-    C --> D[OKF Bundle]
-    D -->|okf lookup| E[AI Agent]
-    D -->|okf pairs| F[JSONL training data]
-```
+![okf-generator flowchart](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/flowchart.svg)
 
 Extraction is fully deterministic and offline-capable. LLM enrichment is an optional second pass, resumable on interrupt.
 
