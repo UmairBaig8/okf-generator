@@ -55,7 +55,9 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             "code": "",
         })
 
-    # Source code reading: best-effort per unique resource
+    # Source code reading: best-effort per unique resource path
+    # The resource field is relative to the scanned root (e.g. "src/file.py").
+    # We don't store the scanned root, so try multiple common layouts.
     code_cache: dict[str, str] = {}
     for n in nodes:
         resource = n.get("resource", "")
@@ -64,11 +66,19 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
         if resource in code_cache:
             n["code"] = code_cache[resource]
             continue
+        bp = bundle_dir.parent
         src_candidates = [
-            bundle_dir.parent / resource,
-            bundle_dir.parent / resource.lstrip("/"),
+            bp / resource,                        # bundle at ./okf_bundle, src at ./src/file.py → ./src/file.py
+            bp / resource.lstrip("/"),
             Path(resource) if resource.startswith("/") else None,
+            # Resource may include the source dir prefix (e.g. "my_project/src/file.py")
+            bp / resource.split("/")[-1] if "/" in resource else None,
         ]
+        # Also try walking up: the resource might be relative to a subdir of bundle_dir.parent
+        for part in Path(resource).parents:
+            if part.name and (bp / part.parent.name / resource).exists():
+                src_candidates.append(bp / part.parent.name / resource)
+                break
         found = ""
         for sp in src_candidates:
             if sp and sp.exists() and sp.is_file():
