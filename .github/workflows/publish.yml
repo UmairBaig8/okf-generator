@@ -37,12 +37,6 @@ jobs:
             found { print }
           ' CHANGELOG.md > release_notes.md
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          body_path: release_notes.md
-          generate_release_notes: false
-
       - name: Smoke test published package
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
@@ -71,3 +65,23 @@ jobs:
           /tmp/smoke_venv/bin/okf pairs /tmp/smoke_bundle /tmp/smoke_pairs.jsonl
           /tmp/smoke_venv/bin/okf summarize /tmp/smoke_bundle
           echo "Smoke test PASSED v$VERSION"
+
+      - name: Generate full test report
+        run: |
+          python3 -m venv /tmp/report_venv
+          /tmp/report_venv/bin/pip install --quiet "okf-generator==$VERSION"
+          cp -a tests/fixtures /tmp/report_venv/tests/
+          cd /tmp/report_venv
+          bash tests/test.sh 2>&1
+          cp TEST_REPORT.html "$GITHUB_WORKSPACE/TEST_REPORT.html"
+          cp TEST_REPORT.md "$GITHUB_WORKSPACE/TEST_REPORT.md"
+
+      - name: Upload test report to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            TEST_REPORT.html
+            TEST_REPORT.md
+          body_path: release_notes.md
+          append_body: true
+          generate_release_notes: false

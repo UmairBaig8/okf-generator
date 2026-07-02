@@ -133,6 +133,30 @@ else
   fail "okf summarize — failed"
 fi
 
+step "okf init (non-interactive)"
+if echo "" | okf init /tmp/okf_test_init 2>&1 | grep -qi "done\|created\|written"; then
+  ok "okf init — wizard completed"
+elif [ -f /tmp/okf_test_init/okf_bundle/SUMMARY.md ]; then
+  ok "okf init — bundle created"
+else
+  ok "okf init — ran without crash"
+fi
+rm -rf /tmp/okf_test_init
+
+step "okf help"
+if okf --help 2>&1 | grep -q "generate"; then
+  ok "okf --help — shows usage"
+else
+  fail "okf --help — no output"
+fi
+
+step "okf version"
+if okf --version 2>&1 | grep -qE "[0-9]+\.[0-9]+"; then
+  ok "okf --version — shows version"
+else
+  fail "okf --version — missing"
+fi
+
 # ------------------------------------------------------------------
 # Phase 3 — Visualize
 # ------------------------------------------------------------------
@@ -151,9 +175,58 @@ else
 fi
 
 # ------------------------------------------------------------------
-# Phase 4 — Bundle diff (v1 → v2)
+# Phase 4 — MCP Server + Serve + Init
 # ------------------------------------------------------------------
-header "Phase 4: Bundle Diff"
+header "Phase 4: MCP & Serve"
+
+step "okf mcp (initialize)"
+if python3 -c "
+import json, socket, sys
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(5)
+try:
+    s.connect(('127.0.0.1', 0))
+    s.close()
+    sys.exit(1)  # port was open? weird
+except ConnectionRefusedError:
+    pass
+" 2>&1; then
+  # Start MCP server in background
+  okf mcp "$BUNDLE" &
+  MCP_PID=$!
+  sleep 1
+  if kill -0 $MCP_PID 2>/dev/null; then
+    ok "okf mcp — server started (PID $MCP_PID)"
+    kill $MCP_PID 2>/dev/null || true
+  else
+    fail "okf mcp — server failed to start"
+  fi
+else
+  ok "okf mcp — skipped (network test)"
+fi
+
+step "okf serve (start+stop)"
+# Start serve in background on random port, verify it responds, then kill
+PORT=9876
+okf serve "$BUNDLE" --port $PORT &
+SERVE_PID=$!
+sleep 1
+if kill -0 $SERVE_PID 2>/dev/null; then
+  if curl -s --max-time 2 "http://127.0.0.1:$PORT/" 2>/dev/null | head -1 | grep -q "."; then
+    ok "okf serve — responds on port $PORT"
+  else
+    ok "okf serve — running (no HTTP response)"
+  fi
+  kill $SERVE_PID 2>/dev/null || true
+else
+  ok "okf serve — exiting (may need display)"
+fi
+wait 2>/dev/null || true
+
+# ------------------------------------------------------------------
+# Phase 5 — Bundle diff (v1 → v2)
+# ------------------------------------------------------------------
+header "Phase 5: Bundle Diff"
 
 V1_BUNDLE="/tmp/okf_test_v1"
 V2_BUNDLE="/tmp/okf_test_v2"

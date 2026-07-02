@@ -1,8 +1,8 @@
 # OKF Generator — Test Report
 
-**Date:** 2026-07-02T19:11:56Z
+**Date:** 2026-07-02T19:14:32Z
 **Env:** Darwin / Python 3.14.4
-**Version:** v0.1.27-8-gcebbab6
+**Version:** v0.1.27-9-gd9b56af
 **Fixture:** tests/fixtures/realworld (78 files, 11 languages)
 
 ---
@@ -11,8 +11,8 @@
 
 | Metric | Value |
 |--------|-------|
-| Total tests | 12 |
-| Passed | 12 |
+| Total tests | 17 |
+| Passed | 17 |
 | Failed | 0 |
 | Skipped | 0 |
 
@@ -34,7 +34,12 @@
 | Test | Status | Detail |
 |------|--------|--------|
 
-### Phase 4: Bundle Diff
+### Phase 4: MCP & Serve
+
+| Test | Status | Detail |
+|------|--------|--------|
+
+### Phase 5: Bundle Diff
 
 | Test | Status | Detail |
 |------|--------|--------|

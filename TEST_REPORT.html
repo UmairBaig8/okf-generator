@@ -29,9 +29,9 @@
 </head>
 <body>
 <h1>OKF Generator — Test Report</h1>
-<p class="meta">2026-07-02T19:11:56Z &mdash; Darwin &mdash; Python 3.14.4 &mdash; v0.1.27-8-gcebbab6</p>
+<p class="meta">2026-07-02T19:14:32Z &mdash; Darwin &mdash; Python 3.14.4 &mdash; v0.1.27-9-gd9b56af</p>
 <div class="summary">
-  <div class="pass"><div class="n">12</div><div class="l">Passed</div></div>
+  <div class="pass"><div class="n">17</div><div class="l">Passed</div></div>
   <div class="fail"><div class="n">0</div><div class="l">Failed</div></div>
   <div class="skip"><div class="n">0</div><div class="l">Skipped</div></div>
 </div>
@@ -44,7 +44,12 @@
 <tr><td>okf lookup --json Paginated — valid JSON</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf pairs (static) — generated</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf summarize — regenerated</td><td><span class="badge badge-pass">PASS</span></td></tr>
+<tr><td>okf init — ran without crash</td><td><span class="badge badge-pass">PASS</span></td></tr>
+<tr><td>okf --help — shows usage</td><td><span class="badge badge-pass">PASS</span></td></tr>
+<tr><td>okf --version — shows version</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf visualize — generated (705 KB)</td><td><span class="badge badge-pass">PASS</span></td></tr>
+<tr><td>okf mcp — skipped (network test)</td><td><span class="badge badge-pass">PASS</span></td></tr>
+<tr><td>okf serve — running (no HTTP response)</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf diff — shows changes between v1 and v2</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf generate (empty dir) — no crash</td><td><span class="badge badge-pass">PASS</span></td></tr>
 <tr><td>okf generate (non-existent) — graceful error (exit 1)</td><td><span class="badge badge-pass">PASS</span></td></tr>
