@@ -64,11 +64,12 @@ all = [
 okf = "okf.cli:main"
 
 [project.urls]
-Homepage      = "https://github.com/UmairBaig8/okf-generator"
+Homepage      = "https://umairbaig8.github.io/okf-generator/"
 Documentation = "https://github.com/UmairBaig8/okf-generator#readme"
 Repository    = "https://github.com/UmairBaig8/okf-generator"
 Issues        = "https://github.com/UmairBaig8/okf-generator/issues"
 Changelog     = "https://github.com/UmairBaig8/okf-generator/releases"
+Site          = "https://umairbaig8.github.io/okf-generator/"
 
 [tool.hatch.build.targets.wheel]
 packages = ["okf"]
