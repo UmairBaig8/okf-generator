@@ -62,6 +62,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.30] — 2026-07-02
+
+### Changed
+- PyPI `Homepage` now points to GitHub Pages landing page (`https://umairbaig8.github.io/okf-generator/`).
+- README: added 🌐 Site badge linking to landing page.
+
+---
+
 ## [0.1.29] — 2026-07-02
 
 ### Fixed
@@ -404,7 +412,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.29...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.30...HEAD
+[0.1.30]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.30
 [0.1.29]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.29
 [0.1.28]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.28
 [0.1.27]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.27
