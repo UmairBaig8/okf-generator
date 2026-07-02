@@ -783,3 +783,110 @@ def test_ruby_class_inheritance():
     assert dog is not None, "Dog class not found"
     assert "Animal" in dog.inheritance, f"Dog should inherit Animal, got {dog.inheritance}"
     import shutil; shutil.rmtree(tmp)
+
+
+# ── Decorators / Attributes extraction (Tier 1) ──────────────────────────
+
+def test_python_function_decorators():
+    """Python functions extract decorator list."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "app.py").write_text(
+        "import functools\n"
+        "@functools.cache\n"
+        "def get_data(): return 42\n"
+        "\n"
+        "@app.route('/api', methods=['GET'])\n"
+        "def handle(): pass\n"
+    )
+    concepts = scan_codebase(tmp)
+    get_data = next((c for c in concepts if c.type == "Function" and c.title == "get_data"), None)
+    assert get_data is not None
+    assert get_data.decorators, f"get_data should have decorators, got {get_data.decorators}"
+    assert any("cache" in d for d in get_data.decorators), f"cache decorator missing: {get_data.decorators}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_python_class_decorators():
+    """Python classes extract decorator list."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "models.py").write_text(
+        "from dataclasses import dataclass\n"
+        "@dataclass\n"
+        "class User:\n    name: str\n"
+    )
+    concepts = scan_codebase(tmp)
+    user = next((c for c in concepts if c.type == "Class" and c.title == "User"), None)
+    assert user is not None
+    assert user.decorators, f"User should have decorators, got {user.decorators}"
+    assert any("dataclass" in d for d in user.decorators), f"dataclass missing: {user.decorators}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_java_annotations():
+    """Java classes and methods extract annotations."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "Test.java").write_text(
+        "@Deprecated\n"
+        "class LegacyService {\n"
+        "    @SuppressWarnings(\"unchecked\")\n"
+        "    public void run() {}\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    svc = next((c for c in concepts if c.type == "Class" and c.title == "LegacyService"), None)
+    assert svc is not None
+    assert svc.decorators, f"LegacyService should have annotations, got {svc.decorators}"
+    assert any("Deprecated" in d for d in svc.decorators), f"@Deprecated missing: {svc.decorators}"
+    run = next((c for c in concepts if c.type == "Function" and c.title == "run"), None)
+    assert run is not None
+    assert any("SuppressWarnings" in d for d in run.decorators), f"@SuppressWarnings missing: {run.decorators}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_attributes():
+    """C# classes and methods extract attributes."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cs").write_text(
+        "[Serializable]\n"
+        "class Config {\n"
+        "    [Obsolete(\"use v2\")]\n"
+        "    public string OldPath { get; set; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    cfg = next((c for c in concepts if c.type == "Class" and c.title == "Config"), None)
+    assert cfg is not None
+    assert cfg.decorators, f"Config should have attributes, got {cfg.decorators}"
+    assert any("Serializable" in d for d in cfg.decorators), f"[Serializable] missing: {cfg.decorators}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_rust_attributes():
+    """Rust structs and functions extract #[attribute] items."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.rs").write_text(
+        "#[derive(Debug, Clone)]\n"
+        "struct Config {\n    name: String,\n}\n"
+        "\n"
+        "#[tokio::main]\n"
+        "async fn run() {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    cfg = next((c for c in concepts if c.type == "Class" and c.title == "Config"), None)
+    assert cfg is not None
+    assert cfg.decorators, f"Config should have attributes, got {cfg.decorators}"
+    assert any("derive" in d for d in cfg.decorators), f"#[derive] missing: {cfg.decorators}"
+    fn_run = next((c for c in concepts if c.type == "Function" and c.title == "run"), None)
+    assert fn_run is not None
+    assert any("tokio" in d for d in fn_run.decorators), f"#[tokio::main] missing: {fn_run.decorators}"
+    import shutil; shutil.rmtree(tmp)

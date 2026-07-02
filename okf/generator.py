@@ -95,6 +95,7 @@ class Concept:
     source_lines: tuple = ()         # (start, end)
     type_params: list[str] = field(default_factory=list)  # generics: ["T"], ["T, U"], etc.
     inheritance: list[str] = field(default_factory=list)  # base types: ["Animal", "Comparable"]
+    decorators: list[str] = field(default_factory=list)   # decorators/attributes: ["@cache"], ["@Deprecated"]
     related: list[str] = field(default_factory=list)   # concept IDs to cross-link
     body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
 
@@ -366,6 +367,15 @@ class PythonParser:
                     names.append(n.func.attr)
         return names
 
+    def _py_decorators(self, node) -> list[str]:
+        decs = []
+        for d in node.decorator_list:
+            try:
+                decs.append(ast.unparse(d))
+            except Exception:
+                pass
+        return decs
+
     def _parse_function(self, node, resource, ts, parent_id) -> Concept:
         doc     = ast.get_docstring(node) or ""
         params  = self._params(node)
@@ -382,6 +392,7 @@ class PythonParser:
             source_lines=(node.lineno, node.end_lineno),
             concept_id=cid, related=[parent_id],
             calls_raw=self._collect_calls(node),
+            decorators=self._py_decorators(node),
         )
 
     def _parse_class(self, node, resource, ts, parent_id) -> Concept:
@@ -405,6 +416,7 @@ class PythonParser:
             tags=["python", "class"],
             timestamp=ts, methods=methods,
             inheritance=bases,
+            decorators=self._py_decorators(node),
             source_lines=(node.lineno, node.end_lineno),
             concept_id=cid, related=[parent_id],
         )
@@ -771,38 +783,52 @@ class JavaParser(TreeSitterParser):
                     mret    = _node_text(method.child_by_field_name("type"))
                     msig    = f"{mret} {_node_text(mname)}({mparams})"
                     tp = self._java_type_params(method)
-                    concepts.append(self._make_concept(
+                    mdec = []
+                    for child in method.children:
+                        if child.type == "modifiers":
+                            for c in child.children:
+                                if c.type in ("annotation", "marker_annotation"):
+                                    mdec.append(_node_text(c))
+                    mc = self._make_concept(
                         "Function", _node_text(mname), mdoc, msig,
                         resource, ts, parent_id, method.start_point[0]+1,
-                        node=method, src_bytes=src_bytes, type_params=tp))
+                        node=method, src_bytes=src_bytes, type_params=tp)
+                    mc.decorators = mdec
+                    concepts.append(mc)
 
-            mods = node.child_by_field_name("modifiers")
-            mod_text = _node_text(mods) + " " if mods else ""
-            tp = self._java_type_params(node)
-            # Extract inheritance
+            # Collect modifiers, annotations, and inheritance by iterating children
             bases = []
-            sc = node.child_by_field_name("superclass")
-            if sc:
-                for ch in sc.children:
-                    if ch.type in ("type_identifier", "scoped_type_identifier"):
-                        bases.append(_node_text(ch))
-            ifaces = node.child_by_field_name("interfaces")
-            if ifaces:
-                for child in ifaces.children:
-                    if child.type == "type_list":
-                        for tc in child.children:
-                            if tc.type in ("type_identifier", "scoped_type_identifier"):
-                                bases.append(_node_text(tc))
-                    elif child.type in ("type_identifier", "scoped_type_identifier"):
-                        bases.append(_node_text(child))
-            sig  = f"{mod_text}class {name}" if node.type == "class_declaration" else \
-                   f"{mod_text}interface {name}" if node.type == "interface_declaration" else \
+            decs = []
+            extra_mod_text = ""
+            for child in node.children:
+                if child.type == "modifiers":
+                    for c in child.children:
+                        if c.type in ("annotation", "marker_annotation"):
+                            decs.append(_node_text(c))
+                        else:
+                            extra_mod_text += _node_text(c) + " "
+                elif child.type == "superclass":
+                    for ch in child.children:
+                        if ch.type in ("type_identifier", "scoped_type_identifier"):
+                            bases.append(_node_text(ch))
+                elif child.type == "super_interfaces":
+                    for ci in child.children:
+                        if ci.type == "type_list":
+                            for tc in ci.children:
+                                if tc.type in ("type_identifier", "scoped_type_identifier"):
+                                    bases.append(_node_text(tc))
+                        elif ci.type in ("type_identifier", "scoped_type_identifier"):
+                            bases.append(_node_text(ci))
+            tp = self._java_type_params(node)
+            sig  = f"{extra_mod_text}class {name}" if node.type == "class_declaration" else \
+                   f"{extra_mod_text}interface {name}" if node.type == "interface_declaration" else \
                    f"enum {name}"
             cc = self._make_concept(
                 "Class", name, doc, sig, resource, ts, parent_id,
                 node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
                 type_params=tp)
             cc.inheritance = bases
+            cc.decorators = decs
             concepts.insert(0, cc)
 
         return concepts
@@ -881,10 +907,12 @@ class RustParser(TreeSitterParser):
                 vis    = _node_text(node.child_by_field_name("visibility_modifier"))
                 tp     = self._rust_type_params(node)
                 sig    = f"{vis+' ' if vis else ''}fn {name}({params})" + (f" -> {ret}" if ret else "")
-                concepts.append(self._make_concept(
+                fc = self._make_concept(
                     "Function", name, doc, sig, resource, ts, parent_id,
                     node.start_point[0]+1, node=node, src_bytes=src_bytes,
-                    type_params=tp))
+                    type_params=tp)
+                fc.decorators = self._rust_attributes(node)
+                concepts.append(fc)
 
             elif node.type in {"struct_item", "enum_item", "trait_item"}:
                 name_node = node.child_by_field_name("name")
@@ -901,10 +929,12 @@ class RustParser(TreeSitterParser):
                     for f in _find_all(node, "field_declaration")
                     if f.child_by_field_name("name")
                 ]
-                concepts.append(self._make_concept(
+                cc = self._make_concept(
                     "Class", name, doc, sig, resource, ts, parent_id,
                     node.start_point[0]+1, methods=fields, node=node, src_bytes=src_bytes,
-                    type_params=tp))
+                    type_params=tp)
+                cc.decorators = self._rust_attributes(node)
+                concepts.append(cc)
 
             elif node.type == "impl_item":
                 type_node = node.child_by_field_name("type")
@@ -943,6 +973,20 @@ class RustParser(TreeSitterParser):
     def _rust_return(self, node) -> str:
         r = node.child_by_field_name("return_type")
         return _node_text(r) if r else ""
+
+    def _rust_attributes(self, node):
+        """Collect preceding #[attribute] items for a Rust node."""
+        decs = []
+        sib = node.prev_named_sibling if hasattr(node, 'prev_named_sibling') else None
+        while sib is not None:
+            if sib.type == "attribute_item":
+                attr_node = next((c for c in sib.children if c.type == "attribute"), None)
+                if attr_node:
+                    decs.insert(0, _node_text(attr_node))
+            elif sib.type not in ("attribute_item", "comment", ""):
+                break
+            sib = sib.prev_named_sibling if hasattr(sib, 'prev_named_sibling') else None
+        return decs
 
     def _rust_type_params(self, node):
         tp = node.child_by_field_name("type_parameters")
@@ -1247,8 +1291,16 @@ class CSharpParser(TreeSitterParser):
                         for sub in child.children:
                             if sub.type in ("identifier", "generic_name", "qualified_name", "name"):
                                 bases.append(_node_text(sub))
+                # Extract attributes
+                decs = []
+                for child in node.children:
+                    if child.type == "attribute_list":
+                        for attr in child.children:
+                            if attr.type == "attribute":
+                                decs.append(_node_text(attr))
                 cc = self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
                 cc.inheritance = bases
+                cc.decorators = decs
                 concepts.append(cc)
             elif node.type in ("method_declaration", "local_function_statement"):
                 name = _node_text(node.child_by_field_name("name"))
@@ -1258,8 +1310,17 @@ class CSharpParser(TreeSitterParser):
                 params = _node_text(params_node).strip("()") if params_node else ""
                 ret = _node_text(node.child_by_field_name("return_type"))
                 tp = self._cs_type_params(node)
+                # Extract attributes
+                decs = []
+                for child in node.children:
+                    if child.type == "attribute_list":
+                        for attr in child.children:
+                            if attr.type == "attribute":
+                                decs.append(_node_text(attr))
                 sig = f"{ret + ' ' if ret else ''}{name}({params})"
-                concepts.append(self._make_concept("Function", name, "", sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp))
+                fc = self._make_concept("Function", name, "", sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp)
+                fc.decorators = decs
+                concepts.append(fc)
         return concepts
 
 
@@ -1533,6 +1594,12 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
         lines.append("## Inheritance\n")
         for base in concept.inheritance:
             lines.append(f"- `{base}`")
+        lines.append("")
+
+    if concept.decorators:
+        lines.append("## Decorators\n")
+        for d in concept.decorators:
+            lines.append(f"- `{d}`")
         lines.append("")
 
     if concept.docstring:
