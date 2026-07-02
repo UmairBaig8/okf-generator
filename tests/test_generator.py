@@ -496,3 +496,181 @@ def test_csharp_parser_extracts_classes_and_methods():
     assert "SayHello" in funcs
     assert "Add" in funcs
     import shutil; shutil.rmtree(tmp)
+
+
+# ── Generics / type parameters extraction (Tier 1) ──────────────────────────
+
+def test_typescript_generic_class_and_function():
+    """TypeScript generic classes and functions extract type_params."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.ts").write_text(
+        "export class Box<T> {\n"
+        "  value: T;\n"
+        "  constructor(v: T) { this.value = v; }\n"
+        "  get(): T { return this.value; }\n"
+        "}\n"
+        "export function first<T>(items: T[]): T | undefined {\n"
+        "  return items[0];\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    box = next((c for c in concepts if c.title == "Box"), None)
+    assert box is not None, "Box class not found"
+    assert box.type_params == ["T"], f"Box type_params should be ['T'], got {box.type_params}"
+    fn = next((c for c in concepts if c.title == "first"), None)
+    assert fn is not None, "first() not found"
+    assert fn.type_params == ["T"], f"first type_params should be ['T'], got {fn.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_java_generic_class_and_method():
+    """Java generic classes and methods extract type_params."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "DataStore.java").write_text(
+        "public class DataStore<T, U extends Comparable> {\n"
+        "    public void put(T key, U value) { }\n"
+        "    public <V> V transform(T key, Class<V> type) { return null; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    ds = next((c for c in concepts if c.type == "Class" and c.title == "DataStore"), None)
+    assert ds is not None, "DataStore class not found"
+    assert "T" in ds.type_params, f"DataStore type_params should contain 'T', got {ds.type_params}"
+    assert any("U extends" in tp for tp in ds.type_params), \
+        f"DataStore should have 'U extends Comparable', got {ds.type_params}"
+    transform = next((c for c in concepts if c.type == "Function" and c.title == "transform"), None)
+    assert transform is not None, "transform() not found"
+    assert transform.type_params == ["V"], f"transform type_params should be ['V'], got {transform.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_rust_generic_struct_and_fn():
+    """Rust generic structs and functions extract type_params."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.rs").write_text(
+        "pub struct Pair<T, U> {\n"
+        "    pub first: T,\n"
+        "    pub second: U,\n"
+        "}\n"
+        "impl<T, U> Pair<T, U> {\n"
+        "    pub fn new(first: T, second: U) -> Self { Pair { first, second } }\n"
+        "}\n"
+        "pub fn id<T>(x: T) -> T { x }\n"
+    )
+    concepts = scan_codebase(tmp)
+    pair = next((c for c in concepts if c.type == "Class" and c.title == "Pair"), None)
+    assert pair is not None, "Pair struct not found"
+    assert len(pair.type_params) == 2, f"Pair should have 2 type params, got {pair.type_params}"
+    assert "T" in pair.type_params, f"Pair type_params should contain 'T', got {pair.type_params}"
+    fn_id = next((c for c in concepts if c.type == "Function" and c.title == "id"), None)
+    assert fn_id is not None, "id() not found"
+    assert fn_id.type_params == ["T"], f"id type_params should be ['T'], got {fn_id.type_params}"
+    new_fn = next((c for c in concepts if c.type == "Function" and c.title == "new"), None)
+    assert new_fn is not None, "Pair::new() not found"
+    assert len(new_fn.type_params) == 2, f"new() should have 2 type params, got {new_fn.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_go_generic_func_and_type():
+    """Go generic functions and types extract type_params (Go 1.18+)."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "lib.go").write_text(
+        "package lib\n"
+        "\n"
+        "func Map[T any, R any](items []T, fn func(T) R) []R {\n"
+        "    result := make([]R, len(items))\n"
+        "    for i, item := range items {\n"
+        "        result[i] = fn(item)\n"
+        "    }\n"
+        "    return result\n"
+        "}\n"
+        "\n"
+        "type Stack[T any] struct {\n"
+        "    items []T\n"
+        "}\n"
+        "\n"
+        "func (s *Stack[T]) Push(item T) {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    map_fn = next((c for c in concepts if c.type == "Function" and c.title == "Map"), None)
+    assert map_fn is not None, "Map function not found"
+    assert len(map_fn.type_params) >= 2, f"Map should have >=2 type params, got {map_fn.type_params}"
+    stack = next((c for c in concepts if c.type == "Class" and c.title == "Stack"), None)
+    assert stack is not None, "Stack type not found"
+    assert any("T" in tp for tp in stack.type_params), f"Stack type_params should contain 'T', got {stack.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_cpp_template_class_and_function():
+    """C++ template classes and functions extract type_params."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cpp").write_text(
+        "template<typename T>\n"
+        "class Container {\n"
+        "public:\n"
+        "    void add(T val) {}\n"
+        "    T get() { return T(); }\n"
+        "};\n"
+        "\n"
+        "template<typename T, typename U>\n"
+        "T convert(U val) { return T(); }\n"
+    )
+    concepts = scan_codebase(tmp)
+    container = next((c for c in concepts if c.title == "Container"), None)
+    assert container is not None, "Container class not found"
+    assert container.type_params, f"Container type_params should not be empty"
+    assert any("T" in tp for tp in container.type_params), \
+        f"Container should have 'T' param, got {container.type_params}"
+    convert_fn = next((c for c in concepts if c.title == "convert"), None)
+    assert convert_fn is not None, "convert() not found"
+    assert len(convert_fn.type_params) >= 2, \
+        f"convert should have >=2 type params, got {convert_fn.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_generic_class_and_method():
+    """C# generic classes and methods extract type_params."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cs").write_text(
+        "using System.Collections.Generic;\n"
+        "class Repository<T> {\n"
+        "    public T GetById(int id) { return default(T); }\n"
+        "    public List<T> GetAll() { return new List<T>(); }\n"
+        "    public K Transform<T, K>(T input) { return default(K); }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    repo = next((c for c in concepts if c.type == "Class" and c.title == "Repository"), None)
+    assert repo is not None, "Repository class not found"
+    assert repo.type_params == ["T"], f"Repository type_params should be ['T'], got {repo.type_params}"
+    transform = next((c for c in concepts if c.type == "Function" and c.title == "Transform"), None)
+    assert transform is not None, "Transform method not found"
+    assert len(transform.type_params) >= 2, \
+        f"Transform should have >=2 type params, got {transform.type_params}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_complex_fixture_has_generic_concepts():
+    """The complex fixture's TypeScript generic code extracts type_params."""
+    from okf.generator import scan_codebase
+    from .test_generator import COMPLEX
+    concepts = scan_codebase(COMPLEX)
+    ts_generic = [c for c in concepts if c.type_params and "lang:typescript" in c.tags]
+    assert len(ts_generic) >= 2, f"Expected >=2 generic TS concepts, got {len(ts_generic)}"
+    titles = {c.title for c in ts_generic}
+    assert "DataService" in titles, f"DataService not in generic concepts: {titles}"
+    assert "wrapResponse" in titles, f"wrapResponse not in generic concepts: {titles}"
+    ds = next(c for c in ts_generic if c.title == "DataService")
+    assert ds.type_params == ["T"], f"DataService type_params should be ['T'], got {ds.type_params}"
