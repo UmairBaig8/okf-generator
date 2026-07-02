@@ -21,9 +21,9 @@ FAIL=0
 SKIP=0
 RESULTS=()
 
-ok()   { PASS=$((PASS+1)); RESULTS+=("PASS:$1"); }
-fail() { FAIL=$((FAIL+1)); RESULTS+=("FAIL:$1"); echo "  FAIL: $1"; }
-skip() { SKIP=$((SKIP+1)); RESULTS+=("SKIP:$1"); }
+ok()   { PASS=$((PASS+1)); RESULTS+=("PASS:$1"); echo "| $1 | ✅ PASS | |" >> "$REPORT"; }
+fail() { FAIL=$((FAIL+1)); RESULTS+=("FAIL:$1"); echo "  FAIL: $1"; echo "| $1 | ❌ FAIL | |" >> "$REPORT"; }
+skip() { SKIP=$((SKIP+1)); RESULTS+=("SKIP:$1"); echo "| $1 | 🟡 SKIP | |" >> "$REPORT"; }
 
 header() {
   echo "" >> "$REPORT"
@@ -247,7 +247,7 @@ fi
 # ------------------------------------------------------------------
 # Phase 5 — Edge Cases
 # ------------------------------------------------------------------
-header "Phase 5: Edge Cases"
+header "Phase 6: Edge Cases"
 
 step "empty directory"
 mkdir -p /tmp/okf_test_empty
