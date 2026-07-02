@@ -35,9 +35,11 @@
 ⚡ **Zero LLM extraction** — fully offline, deterministic, no API key needed.  
 🌍 **10 languages + 17 manifest formats** — Python, JS/TS, Go, Java, Rust, Ruby, SQL, C, C++, C# + pip, npm, cargo, go, maven, gradle, yarn, pnpm, and more.  
 🔗 **Cross-reference linker** — imports → dependencies, function calls → caller/callee across all languages.  
-📦 **Training data pipeline** — convert any bundle to JSONL pairs for fine-tuning.  
-🔍 **Instant lookup** — find any function, class, or dependency in milliseconds.  
-📊 **Bundle visualization** — `okf visualize` generates an interactive HTML explorer with tree nav, ego graphs, and light/dark theme.  
+🔍 **Instant lookup** — `okf lookup` finds any class, function, or dependency in milliseconds.  
+📊 **Interactive viz** — `okf visualize` generates an HTML explorer with tree nav, ego graphs, and dark/light theme.  
+📦 **Training data** — `okf pairs` converts bundles to JSONL for fine-tuning.  
+🔄 **Bundle diff** — `okf diff` compares two bundles (added/removed/changed).  
+🌐 **Local server** — `okf serve` launches a local HTTP server for any bundle.  
 
 ## Quick Start
 
@@ -117,7 +119,9 @@ If you're choosing between OKF producers: pick `okf-generator` when you want bro
 
 [#how-it-works](#how-it-works)
 
-![okf-generator flowchart](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/flowchart.svg)
+![okf-generator flowchart](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/flowchart.png)
+
+> **Pipeline:** `okf generate` scans your codebase → linker resolves cross-references → writes an OKF bundle → consumed via 6 commands (lookup, pairs, visualize, diff, serve, install).
 
 Extraction is fully deterministic and offline-capable. LLM enrichment is an optional second pass, resumable on interrupt.
 
