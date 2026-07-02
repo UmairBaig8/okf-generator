@@ -24,7 +24,7 @@ TYPE_COLORS = {
 # Data extraction
 # ---------------------------------------------------------------------------
 
-def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
+def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], dict]:
     from okf.lookup import load_bundle as _load
     concepts = _load(bundle_dir)
 
@@ -52,7 +52,33 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
             "sections": c.get("sections", {}),
             "deptable": deptable,
             "body": c.get("raw", ""),
+            "code": "",
         })
+
+    # Source code reading: best-effort per unique resource
+    code_cache: dict[str, str] = {}
+    for n in nodes:
+        resource = n.get("resource", "")
+        if not resource:
+            continue
+        if resource in code_cache:
+            n["code"] = code_cache[resource]
+            continue
+        src_candidates = [
+            bundle_dir.parent / resource,
+            bundle_dir.parent / resource.lstrip("/"),
+            Path(resource) if resource.startswith("/") else None,
+        ]
+        found = ""
+        for sp in src_candidates:
+            if sp and sp.exists() and sp.is_file():
+                try:
+                    found = sp.read_text(encoding="utf-8")
+                except Exception:
+                    found = ""
+                break
+        code_cache[resource] = found
+        n["code"] = found
 
     def _extract_ids(text: str) -> list[str]:
         if not text:
@@ -97,7 +123,25 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict]]:
                         link_set.add(key)
                         links.append({"source": module_id, "target": src, "type": "imports"})
 
-    return nodes, links
+    # Bundle names: unique first path segments of concept_ids
+    bundles_set: set[str] = set()
+    for n in nodes:
+        cid = n["id"]
+        parts = cid.split("/")
+        if len(parts) > 1 and parts[0]:
+            bundles_set.add(parts[0])
+        elif parts[0]:
+            bundles_set.add(parts[0])
+    bundles = sorted(bundles_set, key=lambda x: (x == "_dependencies", x))
+
+    # Count per bundle for landing stats
+    bundle_counts: dict[str, int] = {}
+    for n in nodes:
+        cid = n["id"]
+        seg = cid.split("/")[0] if cid else ""
+        bundle_counts[seg] = bundle_counts.get(seg, 0) + 1
+
+    return nodes, links, bundles, bundle_counts
 
 
 def build_tree(nodes: list[dict]) -> dict:
@@ -118,9 +162,18 @@ def build_tree(nodes: list[dict]) -> dict:
 # ---------------------------------------------------------------------------
 
 def visualize(bundle_dir: Path) -> tuple[str, int, int]:
-    nodes, links = build_graph(bundle_dir)
+    nodes, links, bundles, bundle_counts = build_graph(bundle_dir)
     bundle_name = bundle_dir.name
-    json_data = json.dumps({"nodes": nodes, "links": links}, ensure_ascii=False)
+
+    # Strip code from nodes for main JSON (code is sent separately per node)
+    json_nodes = []
+    for n in nodes:
+        jn = {k: v for k, v in n.items() if k != "code"}
+        if n.get("code"):
+            jn["code"] = n["code"]
+        json_nodes.append(jn)
+
+    json_data = json.dumps({"nodes": json_nodes, "links": links}, ensure_ascii=False)
 
     from okf._viz_template import DEMO_HTML_B64
     html = base64.b64decode(DEMO_HTML_B64).decode("utf-8")
@@ -140,13 +193,14 @@ def visualize(bundle_dir: Path) -> tuple[str, int, int]:
         "const TYPE_COLORS = {\n" + "\n".join(f'  {t}:"{c}",' for t, c in sorted(TYPE_COLORS.items())) + "\n};"
     )
 
+    # Inject data, BUNDLE_NAME, and BUNDLES
     data_marker = "const data = {\n  nodes: ["
     data_idx = html.find(data_marker)
     if data_idx >= 0:
-        end_marker = "const BUNDLE_NAME = 'fresh_agentbox'"
+        end_marker = "const BUNDLES = [];"
         end_idx = html.find(end_marker, data_idx)
         if end_idx >= 0:
-            new_data = f"const data = {json_data};\n\nconst BUNDLE_NAME = '{bundle_name}';\n"
+            new_data = f"const data = {json_data};\n\nconst BUNDLE_NAME = '{bundle_name}';\nconst BUNDLES = {json.dumps(bundles)};\n"
             html = html[:data_idx] + new_data + html[end_idx + len(end_marker):]
 
     return html, len(nodes), len(links)
