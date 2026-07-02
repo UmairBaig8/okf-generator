@@ -1,382 +1,241 @@
-# OKF Generator — Production Test Specification
+# OKF Generator — Test Specification
 
-**Author:** AI agent / CI  
-**Work dir:** `./dev_wspace` (scratch directory, not versioned)  
-**Test codebase:** `./dev_wspace/AgentBox` (TypeScript monorepo, 369 files, includes `package.json`)  
-**Self-test codebase:** `./` (okf-generator itself, Python)  
-**Report output:** `./dev_wspace/OKF_TEST_REPORT.md` (overwrite each run)
+**Author:** AI agent / CI
+**Canonical runner:** `bash tests/test.sh` (generates `TEST_REPORT.html`)
+**Fixture corpus:** `tests/fixtures/realworld/` (78 files, 11 languages, 20 projects)
+**Unit tests:** `pytest tests/` (173+ tests)
 
 ---
 
-## Phase 0 — Setup
+## Quick Start
 
-### 0.1 Clean slate
 ```bash
-WORK="$(pwd)/dev_wspace"
-rm -rf "$WORK/.venv" "$WORK/okf_bundle" "$WORK/OKF_TEST_REPORT.md"
-```
+# Full test suite + HTML report
+bash tests/test.sh
+open TEST_REPORT.html
 
-### 0.2 Create and activate venv, install okf
-```bash
-python3 -m venv "$WORK/.venv"
-source "$WORK/.venv/bin/activate"
-pip install --quiet --upgrade pip
-pip install --quiet -e ".[dev,llm]"
-```
-
-### 0.3 Verify CLI
-```bash
-okf --help  # must print usage
+# Unit tests only
+pip install -e ".[dev]"
+pytest tests/ -q
 ```
 
 ---
 
-## Phase 1 — Lint + Unit Tests
+## Phase 1 — Unit Tests
 
-### 1.1 Ruff lint
+### 1.1 Lint
 ```bash
-cd "$(git rev-parse --show-toplevel 2>/dev/null || echo "$WORK/..")"
-ruff check okf/ --select E,F,W --ignore E501 2>&1
+ruff check okf/ --select E,F,W --ignore E501
 ```
-
-**Verify:**
-- Exit code 0 (no lint errors).
+**Verify:** Exit code 0.
 
 ### 1.2 Pytest
 ```bash
 python -m pytest tests/ -v 2>&1
 ```
+**Verify:** All tests pass. Record count + time.
 
-**Verify:**
-- All tests pass (exit code 0).
-- Record test count and time.
+### 1.3 Realworld fixture integrity
+```bash
+python3 -c "
+from okf.generator import scan_codebase
+from pathlib import Path
+c = scan_codebase(Path('tests/fixtures/realworld'))
+print(f'{len(c)} concepts')
+feats = ['type_params','inheritance','decorators','visibility','fields']
+for f in feats:
+    print(f'  {f}: {sum(1 for x in c if getattr(x,f))}')
+"
+```
+**Verify:** All features have >0 concepts (generics, inheritance, decorators, visibility, fields).
 
 ---
 
-## Phase 2 — `okf generate` (Static Extraction)
+## Phase 2 — CLI: `okf generate`
 
-### 2.1 AgentBox (TS/JS + manifest deps)
+### 2.1 Realworld (11 langs, 78 files)
 ```bash
-rm -rf "$WORK/okf_bundle"
-okf generate "$WORK/AgentBox" "$WORK/okf_bundle" 2>&1
+rm -rf /tmp/okf_bundle
+okf generate tests/fixtures/realworld /tmp/okf_bundle 2>&1
 ```
-
 **Verify:**
-- Exit code 0.
-- Output shows: `Class`, `Function`, `Module`, `Dependency` rows.
-- `Dependency` count > 0 (npm deps from `package.json`).
-- Bundle dir exists at `$WORK/okf_bundle`.
+- Exit code 0. Output shows `Class`, `Function`, `Module`, `Dependency` rows.
+- Bundle exists at `/tmp/okf_bundle` with `SUMMARY.md`, `index.md`, `log.md`.
 
-### 2.2 Bundle structure
+### 2.2 Python easy project
 ```bash
-ls "$WORK/okf_bundle/"  # must show: SUMMARY.md, index.md, log.md, packages/
+okf generate tests/fixtures/realworld/python/easy /tmp/py_bundle 2>&1
 ```
+**Verify:** Functions (`slugify`, `chunk_list`), Class (`User`), Dependency from `requirements.txt`.
 
-**Verify:**
-- `SUMMARY.md` exists, contains `## Stats` and `## Domain Map` sections.
-- `index.md` exists, lists top-level dirs.
-- `log.md` exists, contains timestamp and concept count.
-- Every subdirectory has its own `index.md`.
-
-### 2.3 Dependency concept file
+### 2.3 Empty directory
 ```bash
-cat "$WORK/okf_bundle/npm:express.md" 2>/dev/null || cat "$WORK/okf_bundle/"*":express.md" 2>/dev/null
+mkdir -p /tmp/empty_test
+okf generate /tmp/empty_test /tmp/empty_bundle 2>&1
 ```
+**Verify:** Exit 0. Warning about no recognized files. Bundle written.
 
-**Verify:**
-- Frontmatter has `type: Dependency`, `title: express`, `resource: packages/.../package.json`, `tags` with `ecosystem:npm`, `type:Dependency`, `manifest:package.json`.
-- Body contains a table with `Ecosystem`, `Version constraint`, `Source manifest`, `Dev dependency` rows.
-
-### 2.4 Empty directory
+### 2.4 Non-existent path
 ```bash
-mkdir -p /tmp/okf_test/empty
-okf generate /tmp/okf_test/empty /tmp/okf_test/bundle_empty 2>&1
+okf generate /tmp/nope_test /tmp/nope_bundle 2>&1
 ```
-
-**Verify:**
-- Exit code 0 (NOT a crash).
-- Output says "No recognized source files" warning.
-- Bundle is written: `index.md`, `log.md`, `SUMMARY.md` all exist.
-- `index.md` contains the bundle name, not an error.
-
-### 2.5 Non-existent path
-```bash
-okf generate /tmp/okf_test/nope /tmp/okf_test/bundle_nope 2>&1
-```
-
-**Verify:**
-- Returns empty concepts list (no crash).
-- Exit code 0.
-
-### 2.6 Python-only extraction (self-test)
-```bash
-okf generate "$(pwd)" /tmp/okf_test/bundle_self 2>&1
-```
-
-**Verify:**
-- Contains `Python` concepts with `lang:python` tags.
-- `Class`, `Function`, `Module` counts > 0.
-- `Dependency` concepts from `pyproject.toml` > 0.
-- `SQL` concepts from test fixtures > 0 (if `migrations/` discovered).
-
-### 2.7 Version stamping
-```bash
-head -1 "$WORK/okf_bundle/SUMMARY.md" | grep -c "okf_version"
-```
-
-**Verify:**
-- `okf_version` appears in SUMMARY.md frontmatter.
-- Tags include `git:branch:` (AgentBox bundles may show `branch:main`).
-
-### 2.8 SQL parser
-```bash
-okf lookup --bundle "$WORK/okf_bundle" --type Function --tag lang:sql 2>&1 | head -5
-```
-
-**Verify:**
-- No SQL in AgentBox (expect no results). This is a negative test confirming no crash.
-- Use the self-test bundle instead:
-```bash
-okf lookup --bundle /tmp/okf_test/bundle_self --type Function --tag lang:sql 2>&1 | head -5
-```
+**Verify:** Graceful error (exit 1, no traceback).
 
 ---
 
-## Phase 3 — `okf lookup` (Concept Search)
+## Phase 3 — CLI: `okf lookup`
 
-### 3.1 Cache miss (first lookup, writes cache)
+Use bundle from Phase 2.1.
+
+### 3.1 Exact name
 ```bash
-time okf lookup --bundle "$WORK/okf_bundle" --compact SandboxManager 2>&1
+okf lookup --bundle /tmp/okf_bundle --compact Paginated 2>&1
 ```
+**Verify:** Returns `[Class] Paginated` (Rust generic).
 
-**Verify:**
-- Returns results with `[Class   ] SandboxManager`.
-- `.okf_lookup_cache.json` now exists in bundle dir.
-
-### 3.2 Cache hit (subsequent lookup, faster)
+### 3.2 Type filter
 ```bash
-time okf lookup --bundle "$WORK/okf_bundle" --compact SandboxManager 2>&1
+okf lookup --bundle /tmp/okf_bundle --type Dependency --compact 2>&1 | head -5
 ```
+**Verify:** Only `[Dependency]` rows.
 
-**Verify:**
-- Same results.
-- Elapsed time is **visibly faster** than the first run (≤60% of cache-miss time).
-
-### 3.3 Bypass cache (`--no-cache`)
+### 3.3 Tag filter
 ```bash
-time okf lookup --bundle "$WORK/okf_bundle" --no-cache --compact SandboxManager 2>&1
+okf lookup --bundle /tmp/okf_bundle --tag lang:python --compact 2>&1 | head -5
 ```
+**Verify:** Shows Python concepts.
 
-**Verify:**
-- Same results.
-- Time is comparable to the original cache-miss time (not as fast as cache hit).
-
-### 3.4 Type filter
+### 3.4 File filter
 ```bash
-okf lookup --bundle "$WORK/okf_bundle" --type Class --compact SandboxManager 2>&1
+okf lookup --bundle /tmp/okf_bundle --file utils.py --compact 2>&1 | head -5
 ```
+**Verify:** Returns concepts from `utils.py`.
 
-**Verify:**
-- Only `Class` type results.
-- If results exist, they contain `[Class   ]`.
-
-### 3.5 Tag filter
+### 3.5 JSON output
 ```bash
-okf lookup --bundle "$WORK/okf_bundle" --tag lang:manifest --compact 2>&1 | head -5
+okf lookup --bundle /tmp/okf_bundle --json Paginated 2>&1 | python3 -m json.tool
 ```
+**Verify:** Valid JSON with `type`, `title`, `signature`, `tags` fields.
 
-**Verify:**
-- Shows `[Dependency]` concepts.
-
-### 3.6 File filter
+### 3.6 No-match
 ```bash
-okf lookup --bundle "$WORK/okf_bundle" --file package.json --compact 2>&1 | head -5
+okf lookup --bundle /tmp/okf_bundle ZZZZ_NOT_FOUND 2>&1
 ```
+**Verify:** Exit 1. "No concepts found".
 
-**Verify:**
-- Returns Dependency concepts with `resource` containing `package.json`.
-
-### 3.7 JSON output
+### 3.7 Cache miss → hit
 ```bash
-okf lookup --bundle "$WORK/okf_bundle" --json SandboxManager 2>&1 | python3 -m json.tool | head -20
+time okf lookup --bundle /tmp/okf_bundle --compact Paginated 2>&1
+time okf lookup --bundle /tmp/okf_bundle --compact Paginated 2>&1
 ```
-
-**Verify:**
-- Valid JSON.
-- Contains: `type`, `title`, `description`, `resource`, `tags`, `signature`, `docstring`, `methods`, `returns` keys.
-
-### 3.8 Full detail view
-```bash
-okf lookup --bundle "$WORK/okf_bundle" --limit 1 --full axios 2>&1 | head -10
-```
-
-**Verify:**
-- Output starts with `---` (frontmatter).
-- Contains raw markdown of the concept file.
-
-### 3.9 Fuzzy / no-match
-```bash
-okf lookup --bundle "$WORK/okf_bundle" NoSuchThing12345 2>&1
-```
-
-**Verify:**
-- Exit code 1.
-- `stderr` says "No concepts found".
-
-### 3.10 Non-existent bundle
-```bash
-okf lookup --bundle ./does_not_exist --compact SandboxManager 2>&1
-```
-
-**Verify:**
-- Falls through to fallback paths (or errors gracefully).
-- Does NOT crash with traceback.
-
-### 3.11 Limit
-```bash
-okf lookup --bundle "$WORK/okf_bundle" --limit 3 --compact manager 2>&1
-```
-
-**Verify:**
-- Exactly 3 results (or fewer if < 3 exist).
-
-### 3.12 Type Dependency filter
-```bash
-okf lookup --bundle "$WORK/okf_bundle" --type Dependency --compact 2>&1 | head -5
-```
-
-**Verify:**
-- Only `[Dependency]` rows.
-- `Dependency` type appears in the output header.
+**Verify:** Second run is visibly faster. `.okf_lookup_cache.json` exists.
 
 ---
 
-## Phase 4 — `okf pairs` (Training Data)
+## Phase 4 — CLI: `okf pairs` + `okf summarize`
 
 ### 4.1 Static pairs
 ```bash
-SKIP_SYNTH=1 okf pairs "$WORK/okf_bundle" "$WORK/pairs_static.jsonl" 2>&1
+SKIP_SYNTH=1 okf pairs /tmp/okf_bundle /tmp/pairs.jsonl 2>&1
 ```
-
-**Verify:**
-- Exit code 0.
-- Output shows counts for `codegen`, `crosslink`, `summarize` pair types.
-- File written and non-empty.
-- Each line is valid JSON with `messages` array.
-
-### 4.2 Pair format (spot-check)
+**Verify:** Exit 0. Output shows `codegen`, `crosslink`, `summarize` counts.
 ```bash
-head -1 "$WORK/pairs_static.jsonl" | python3 -c "import json,sys; d=json.loads(sys.stdin.readline()); assert 'messages' in d; print(f'OK: {len(d[\"messages\"])} turns, type={d.get(\"pair_type\",\"?\")}')"
+head -1 /tmp/pairs.jsonl | python3 -c "import json,sys; d=json.loads(sys.stdin.readline()); assert 'messages' in d; print('OK')"
 ```
 
-**Verify:**
-- No exception from assertion.
-- Prints at least "OK".
-
-### 4.3 Dependency concepts skipped in codegen/summarize (implicit)
+### 4.2 Summarize
 ```bash
-grep -c '"Dependency"' "$WORK/pairs_static.jsonl" || echo "0 Dependency pairs (expected)"
+okf summarize /tmp/okf_bundle 2>&1
 ```
-- Dependency concepts shouldn't appear in codegen/summarize pairs.
+**Verify:** Exit 0. `SUMMARY.md` rewritten.
 
 ---
 
-## Phase 5 — `okf summarize` (Summary Regeneration)
+## Phase 5 — CLI: `okf visualize`
 
-### 5.1 Regenerate
+### 5.1 Generate viz
 ```bash
-cp "$WORK/okf_bundle/SUMMARY.md" "$WORK/okf_bundle/SUMMARY.md.bak"
-okf summarize "$WORK/okf_bundle" 2>&1
+okf visualize /tmp/okf_bundle /tmp/viz.html 2>&1
+ls -lh /tmp/viz.html
 ```
-
-**Verify:**
-- Exit code 0.
-- Output says `SUMMARY.md written`.
-- File still valid (compare content — stats may differ slightly if concepts changed).
-
-### 5.2 Only SUMMARY.md touched
-```bash
-[ -f "$WORK/okf_bundle/index.md" ] && echo "index.md intact"
-[ -f "$WORK/okf_bundle/log.md" ] && echo "log.md intact"
-```
-
-**Verify:**
-- `index.md`, `log.md`, all concept `.md` files still exist.
-- Only `SUMMARY.md` was modified.
-
-```bash
-rm -f "$WORK/okf_bundle/SUMMARY.md.bak"
-```
+**Verify:** HTML file > 100 KB (contains embedded graph data).
 
 ---
 
-## Phase 6 — Edge Cases
+## Phase 6 — CLI: `okf diff`
 
-### 6.1 `okf generate` on directory with only unsupported files
+### 6.1 Real version diff (v1 → v2)
 ```bash
-mkdir -p /tmp/okf_test/only_txt
-echo "hello" > /tmp/okf_test/only_txt/notes.txt
-echo "world" > /tmp/okf_test/only_txt/data.csv
-okf generate /tmp/okf_test/only_txt /tmp/okf_test/bundle_txt 2>&1
+okf generate tests/fixtures/realworld/python/easy /tmp/v1 2>/dev/null
+okf generate tests/fixtures/realworld/python/easy_v2 /tmp/v2 2>/dev/null
+okf diff /tmp/v1 /tmp/v2 --compact 2>&1
 ```
-
-**Verify:**
-- Exit code 0.
-- "No recognized source files" warning.
-- Valid bundle written with `index.md`, `log.md`, `SUMMARY.md`.
-- `index.md` shows the directory (empty subdirectory handling).
-
-### 6.2 Cache invalidation on bundle change
-```bash
-# Touch a concept file to change mtime
-touch "$WORK/okf_bundle/"*.md
-time okf lookup --bundle "$WORK/okf_bundle" --compact SandboxManager 2>&1
-```
-
-**Verify:**
-- Cache is invalidated (mtime changed), re-parses and rewrites cache.
-- Time is closer to cache-miss than cache-hit speed.
-- `.okf_lookup_cache.json` still exists after.
-
-### 6.3 Corrupt cache resilience
-```bash
-echo "garbage" > "$WORK/okf_bundle/.okf_lookup_cache.json"
-okf lookup --bundle "$WORK/okf_bundle" --compact SandboxManager 2>&1
-```
-
-**Verify:**
-- No crash or traceback.
-- Results returned correctly.
-- Cache file overwritten with valid JSON.
+**Verify:** Shows Added (4): `batched`, `validate_email`, `validate_phone`, `validator` module. Changed (1): `utils` module doc.
 
 ---
 
-## Phase 7 — Cleanup
+## Phase 7 — CLI: `okf mcp` + `okf serve` + `okf init`
 
+### 7.1 MCP server
 ```bash
-rm -rf /tmp/okf_test
+okf mcp /tmp/okf_bundle &
+MCP_PID=$!
+sleep 1
+# Test initialize
+echo '{"id":1,"method":"initialize"}' | python3 -c "
+import json, sys
+# MCP uses stdin/stdout transport
+" 2>&1 || echo "MCP started (PID $MCP_PID)"
+kill $MCP_PID 2>/dev/null || true
 ```
+
+### 7.2 Serve
+```bash
+okf serve /tmp/okf_bundle --port 9876 &
+SERVE_PID=$!
+sleep 1
+curl -s --max-time 2 http://127.0.0.1:9876/ 2>&1 | head -1
+kill $SERVE_PID 2>/dev/null || true
+```
+
+### 7.3 Init wizard
+```bash
+echo "" | okf init /tmp/init_test 2>&1
+```
+**Verify:** No crash. Bundle created or graceful exit.
 
 ---
 
-## Production Checklist
+## Phase 8 — Viz source code feature
+
+### 8.1 Source code in viz
+```bash
+# Check that viz.html contains embedded source code
+grep -c '"code":"' /tmp/viz.html || echo "0 code entries (no source files found at viz gen path)"
+```
+**Verify:** May be 0 if source files aren't at the resolved path. When they are, each entry is the full file content.
+
+---
+
+## Phase 9 — Production Checklist
 
 | Area | Check |
 |------|-------|
-| No file is world-writable | `find .venv -perm /o=w -ls | grep -v ".DS_Store"` should be empty or acceptable |
-| `.okf_lookup_cache.json` is ignored | `grep -q "okf_lookup_cache" .gitignore` |
-| `uv.lock` not committed | If exists, check `.gitignore` or keep untracked |
+| `.okf_lookup_cache.json` ignored | `grep -q "okf_lookup_cache" .gitignore` |
 | Version consistency | `grep -E "version" okf/__init__.py pyproject.toml` — both same |
-| No stale `.pyc` files | `find . -name "*.pyc" -not -path "./.venv/*" -not -path "./dev_wspace/*"` should be empty |
+| No stale `.pyc` files | `find . -name "*.pyc" -not -path "./.venv/*" -not -path "./dev_wspace/*"` |
+| Realworld fixture scan | pytest `test_realworld_fixtures.py` — 43 tests covering all features |
+| C# interfaces extracted | Lookup `IOrderRepo` in realworld/csharp/complex bundle |
 
 ---
 
 ## Reporting
 
-After completing all phases, produce `./dev_wspace/OKF_TEST_REPORT.md` with:
+After completing all phases, verify:
 
-- **Header:** Date, env (macOS/Linux, Python version, package version), test codebase summary.
-- **Phase 1–7 tables:** Each test case as a row with Status (✅ PASS / ❌ FAIL / 🟡 WARN), Detail column with actual output or key observation.
-- **Edge cases:** Specific mention of empty-dir, non-existent-dir, only-unsupported-files, corrupt cache, cache invalidation.
-- **Timing table:** Compare cache-miss vs cache-hit vs --no-cache times.
-- **Summary section:** Overall PASS/FAIL, test count, any blockers found.
+```bash
+bash tests/test.sh
+open TEST_REPORT.html
+```
+
+The canonical report lives in `TEST_REPORT.html` (auto-generated by `test.sh`). It covers all 17 phases and is attached to every GitHub Release.

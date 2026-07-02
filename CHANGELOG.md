@@ -22,6 +22,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.28] — 2026-07-02
+
+### Added
+- **Tier 2 extraction:** Visibility modifiers (Java, C#, TS, Rust, C++), class fields/properties (Python, TS, Java, C#), TypeScript completeness (interfaces, type aliases, enums), SQL column/constraint extraction (PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT, REFERENCES).
+- **Realworld test fixtures:** 78 files, 3,545 lines, 20 projects (easy + complex per language) across 11 languages. Every extraction feature has fixture coverage.
+- **test.sh runner:** `bash tests/test.sh` — 17 phases covering pytest, CLI generate/lookup/pairs/summarize/init/--help/--version, visualize, MCP server, serve, diff (v1→v2), edge cases. Generates `TEST_REPORT.html`.
+- **C# parser:** `interface_declaration` and `struct_declaration` support (were silently skipped).
+- Python `easy_v2` fixture for realistic versioned diff testing.
+
+### Changed
+- All tests migrated from `sample_codebase` (2 Python files) to `realworld` (78 files, 11 languages).
+- Publish CI: smoke test now generates from realworld fixtures; test report attached to every GitHub Release.
+- Viz code pane: "View Source" button in detail header, code card moved to top of detail panel.
+
+### Removed
+- `tests/fixtures/sample_codebase/` — no longer used.
+
+---
+
 ## [0.1.26] — 2026-07-02
 
 ### Added
@@ -378,7 +397,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.27...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.28...HEAD
+[0.1.28]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.28
 [0.1.27]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.27
 [0.1.26]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.26
 [0.1.25]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.25
