@@ -97,6 +97,7 @@ class Concept:
     inheritance: list[str] = field(default_factory=list)  # base types: ["Animal", "Comparable"]
     decorators: list[str] = field(default_factory=list)   # decorators/attributes: ["@cache"], ["@Deprecated"]
     visibility: list[str] = field(default_factory=list)   # modifiers: ["public"], ["pub", "static"]
+    fields: list[dict] = field(default_factory=list)      # class fields: [{name, type, visibility}, ...]
     related: list[str] = field(default_factory=list)   # concept IDs to cross-link
     body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
 
@@ -415,6 +416,16 @@ class PythonParser:
                 bases.append(ast.unparse(b))
             except Exception:
                 pass
+        # Extract fields (annotated class-level assignments)
+        py_fields = []
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.AnnAssign) and isinstance(child.target, ast.Name):
+                ftype = ""
+                try:
+                    ftype = ast.unparse(child.annotation)
+                except Exception:
+                    pass
+                py_fields.append({"name": child.target.id, "type": ftype, "visibility": ""})
         resource_id = re.sub(r"\.py$", "", resource).replace(os.sep, "/")
         cid     = f"{resource_id}/{_safe_id(node.name)}"
         return Concept(
@@ -425,6 +436,7 @@ class PythonParser:
             timestamp=ts, methods=methods,
             inheritance=bases,
             decorators=self._py_decorators(node),
+            fields=py_fields,
             source_lines=(node.lineno, node.end_lineno),
             concept_id=cid, related=[parent_id],
         )
@@ -557,6 +569,21 @@ class JSTSParser(TreeSitterParser):
                     for m in _find_all(node, "method_definition")
                     if m.child_by_field_name("name")
                 ]
+                # Extract class fields
+                ts_fields = []
+                for body_child in node.children:
+                    if body_child.type == "class_body":
+                        for member in body_child.children:
+                            if member.type == "public_field_definition":
+                                fname_node = member.child_by_field_name("name")
+                                ftype_node = member.child_by_field_name("type")
+                                fname = _node_text(fname_node) if fname_node else ""
+                                ftype_text = _node_text(ftype_node).lstrip(":").strip() if ftype_node else ""
+                                fvis = ""
+                                for mc in member.children:
+                                    if mc.type in ("accessibility_modifier", "static", "readonly"):
+                                        fvis += _node_text(mc) + " "
+                                ts_fields.append({"name": fname, "type": ftype_text, "visibility": fvis.strip()})
                 sig = f"class {name}"
                 # Extract heritage (extends / implements)
                 bases = []
@@ -572,6 +599,7 @@ class JSTSParser(TreeSitterParser):
                     node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
                     type_params=tp)
                 cc.inheritance = bases
+                cc.fields = ts_fields
                 concepts.append(cc)
 
             elif node.type == "method_definition":
@@ -839,6 +867,21 @@ class JavaParser(TreeSitterParser):
                     mc.visibility = mvis
                     concepts.append(mc)
 
+            # Extract fields
+            java_fields = []
+            for body_child in node.children:
+                if body_child.type == "class_body":
+                    for member in body_child.children:
+                        if member.type == "field_declaration":
+                            ftype = _node_text(member.child_by_field_name("type"))
+                            decl = member.child_by_field_name("declarator")
+                            fname = _node_text(decl.child_by_field_name("name")) if decl else ""
+                            fvis = ""
+                            for mc in member.children:
+                                if mc.type == "modifiers":
+                                    fvis = " ".join(_node_text(c) for c in mc.children if c.type not in ("annotation", "marker_annotation"))
+                            if fname:
+                                java_fields.append({"name": fname, "type": ftype, "visibility": fvis})
             # Collect modifiers, annotations, inheritance, and visibility
             bases = []
             decs = []
@@ -875,6 +918,7 @@ class JavaParser(TreeSitterParser):
             cc.inheritance = bases
             cc.decorators = decs
             cc.visibility = vis
+            cc.fields = java_fields
             concepts.insert(0, cc)
 
         return concepts
@@ -1377,10 +1421,29 @@ class CSharpParser(TreeSitterParser):
                                 decs.append(_node_text(attr))
                     elif child.type == "modifier":
                         vis.append(_node_text(child))
+                # Extract fields
+                cs_fields = []
+                for child in node.children:
+                    if child.type == "declaration_list":
+                        for member in child.children:
+                            if member.type == "field_declaration":
+                                fvis = " ".join(_node_text(c) for c in member.children if c.type == "modifier")
+                                vd = next((c for c in member.children if c.type == "variable_declaration"), None)
+                                if vd:
+                                    ftype = _node_text(vd.child_by_field_name("type"))
+                                    decl = next((c for c in vd.children if c.type == "variable_declarator"), None)
+                                    fname = _node_text(decl.child_by_field_name("name")) if decl else ""
+                                    cs_fields.append({"name": fname, "type": ftype, "visibility": fvis})
+                            elif member.type == "property_declaration":
+                                pname = _node_text(member.child_by_field_name("name"))
+                                ptype = _node_text(member.child_by_field_name("type"))
+                                pvis = " ".join(_node_text(c) for c in member.children if c.type == "modifier")
+                                cs_fields.append({"name": pname, "type": ptype, "visibility": pvis})
                 cc = self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
                 cc.inheritance = bases
                 cc.decorators = decs
                 cc.visibility = vis
+                cc.fields = cs_fields
                 concepts.append(cc)
             elif node.type in ("method_declaration", "local_function_statement"):
                 name = _node_text(node.child_by_field_name("name"))
@@ -1690,6 +1753,14 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
         lines.append("## Visibility\n")
         for v in concept.visibility:
             lines.append(f"- `{v}`")
+        lines.append("")
+
+    if concept.fields:
+        lines.append("## Fields\n")
+        lines.append("| Name | Type | Visibility |")
+        lines.append("|------|------|------------|")
+        for f in concept.fields:
+            lines.append(f"| `{f.get('name', '')}` | `{f.get('type', '')}` | `{f.get('visibility', '')}` |")
         lines.append("")
 
     if concept.docstring:

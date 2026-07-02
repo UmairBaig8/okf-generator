@@ -1006,6 +1006,92 @@ def test_cpp_visibility_modifiers():
     import shutil; shutil.rmtree(tmp)
 
 
+# ── Class fields / properties (Tier 2) ───────────────────────────────────
+
+def test_python_class_fields():
+    """Python classes extract annotated fields."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "models.py").write_text(
+        "from dataclasses import dataclass\n"
+        "@dataclass\n"
+        "class User:\n"
+        "    name: str\n"
+        "    age: int = 0\n"
+    )
+    concepts = scan_codebase(tmp)
+    user = next((c for c in concepts if c.type == "Class" and c.title == "User"), None)
+    assert user is not None
+    field_names = {f["name"] for f in user.fields}
+    assert "name" in field_names, f"field 'name' missing: {user.fields}"
+    assert "age" in field_names, f"field 'age' missing: {user.fields}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_typescript_class_fields():
+    """TypeScript classes extract field definitions."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "models.ts").write_text(
+        "class User {\n"
+        "    name: string;\n"
+        "    age: number = 0;\n"
+        "    private email: string;\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    user = next((c for c in concepts if c.type == "Class" and c.title == "User"), None)
+    assert user is not None
+    field_names = {f["name"] for f in user.fields}
+    assert "name" in field_names, f"field 'name' missing: {user.fields}"
+    assert "email" in field_names, f"field 'email' missing: {user.fields}"
+    email_field = next(f for f in user.fields if f["name"] == "email")
+    assert email_field.get("visibility") == "private", f"email visibility: {email_field}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_java_class_fields():
+    """Java classes extract field declarations."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "User.java").write_text(
+        "class User {\n"
+        "    private String name;\n"
+        "    public int age;\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    user = next((c for c in concepts if c.type == "Class" and c.title == "User"), None)
+    assert user is not None
+    field_names = {f["name"] for f in user.fields}
+    assert "name" in field_names, f"field 'name' missing: {user.fields}"
+    assert "age" in field_names, f"field 'age' missing: {user.fields}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_class_fields():
+    """C# classes extract field and property declarations."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "User.cs").write_text(
+        "class User {\n"
+        "    private string name;\n"
+        "    public int Age { get; set; }\n"
+        "}\n"
+    )
+    concepts = scan_codebase(tmp)
+    user = next((c for c in concepts if c.type == "Class" and c.title == "User"), None)
+    assert user is not None
+    field_names = {f["name"] for f in user.fields}
+    assert "name" in field_names, f"field 'name' missing: {user.fields}"
+    assert "Age" in field_names, f"property 'Age' missing: {user.fields}"
+    import shutil; shutil.rmtree(tmp)
+
+
 # ── Method emission as individual concepts (Tier 1) ──────────────────────
 
 def test_python_methods_emitted():
