@@ -956,9 +956,12 @@ class CppParser(TreeSitterParser):
         for node in _find_all(root, "function_definition", "class_specifier", "struct_specifier"):
             name = None
             if node.type == "function_definition":
-                decl = node.child_by_field_name("declarator")
+                decl = node.child_by_field_name("declarator") or node.child_by_field_name("function_declarator")
                 if decl:
-                    name = _node_text(decl.child_by_field_name("declarator") or decl)
+                    name = _node_text(decl.child_by_field_name("declarator") or decl.child_by_field_name("field_identifier") or decl)
+                # skip methods that are inside a class_specifier (handled by class)
+                if name and node.parent and node.parent.type in ("field_declaration_list", "class_specifier"):
+                    continue
             elif node.type in ("class_specifier", "struct_specifier"):
                 if node.parent and node.parent.type in ("template_declaration",):
                     name = _node_text(node.child_by_field_name("name"))
@@ -986,9 +989,9 @@ class CppParser(TreeSitterParser):
                 doc = _prev_comment(node, src_bytes)
                 ctype = "Class"
                 methods = [
-                    _node_text(m.child_by_field_name("name"))
+                    _node_text(m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")).split("(")[0].strip()
                     for m in _find_all(node, "function_definition")
-                    if m.child_by_field_name("name")
+                    if m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")
                 ]
                 concepts.append(self._make_concept(ctype, name, doc, f"{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes))
         return concepts

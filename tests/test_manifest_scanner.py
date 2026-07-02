@@ -276,6 +276,64 @@ def test_manifest_deps_have_ecosystem_tag(tmp_path):
     assert dep.body_extra.get("dev_dependency") is False
 
 
+# ── Lock file parsers ──────────────────────────────────────────────────────
+
+def test_parse_cargo_lock(tmp_path):
+    from okf.manifest_scanner import parse_cargo_lock
+    f = tmp_path / "Cargo.lock"
+    f.write_text('[[package]]\nname = "serde"\nversion = "1.0.197"\n\n[[package]]\nname = "tokio"\nversion = "1.38.0"\n')
+    deps = parse_cargo_lock(f)
+    assert len(deps) == 2
+    assert {"name": "serde", "ecosystem": "cargo", "version": "1.0.197", "dev": False} in deps
+    assert {"name": "tokio", "ecosystem": "cargo", "version": "1.38.0", "dev": False} in deps
+
+
+def test_parse_poetry_lock(tmp_path):
+    from okf.manifest_scanner import parse_poetry_lock
+    f = tmp_path / "poetry.lock"
+    f.write_text('[[package]]\nname = "requests"\nversion = "2.31.0"\ncategory = "main"\n\n[[package]]\nname = "pytest"\nversion = "7.4.0"\ncategory = "dev"\n')
+    deps = parse_poetry_lock(f)
+    assert len(deps) == 2
+    assert {"name": "requests", "ecosystem": "pip", "version": "2.31.0", "dev": False} in deps
+    assert {"name": "pytest", "ecosystem": "pip", "version": "7.4.0", "dev": True} in deps
+
+
+def test_parse_go_sum(tmp_path):
+    from okf.manifest_scanner import parse_go_sum
+    f = tmp_path / "go.sum"
+    f.write_text('github.com/foo/bar v1.0.0 h1:abc=\ngithub.com/baz/qux v2.0.0 h1:def=\n')
+    deps = parse_go_sum(f)
+    assert len(deps) == 2
+    assert {"name": "github.com/foo/bar", "ecosystem": "go", "version": "v1.0.0", "dev": False} in deps
+
+
+def test_parse_go_sum_skips_go_mod(tmp_path):
+    from okf.manifest_scanner import parse_go_sum
+    f = tmp_path / "go.sum"
+    f.write_text('github.com/foo/bar v1.0.0 h1:abc=\ngithub.com/foo/bar v1.0.0/go.mod h1:abc=\n')
+    deps = parse_go_sum(f)
+    assert len(deps) == 1  # /go.mod line skipped
+
+
+def test_parse_yarn_lock(tmp_path):
+    from okf.manifest_scanner import parse_yarn_lock
+    f = tmp_path / "yarn.lock"
+    f.write_text('express@^4.19.0:\n  version "4.19.2"\n\nlodash@^4.17.21:\n  version "4.17.21"\n')
+    deps = parse_yarn_lock(f)
+    assert len(deps) == 2
+    assert {"name": "express", "ecosystem": "npm", "version": "4.19.2", "dev": False} in deps
+
+
+def test_parse_pnpm_lock(tmp_path):
+    from okf.manifest_scanner import parse_pnpm_lock
+    f = tmp_path / "pnpm-lock.yaml"
+    f.write_text('lockfileVersion: "6.0"\npackages:\n  /express@4.19.2:\n    dev: false\n  /lodash@4.17.21:\n    dev: true\n')
+    deps = parse_pnpm_lock(f)
+    assert len(deps) == 2
+    assert {"name": "express", "ecosystem": "npm", "version": "4.19.2", "dev": False} in deps
+    assert {"name": "lodash", "ecosystem": "npm", "version": "4.17.21", "dev": True} in deps
+
+
 def test_manifest_deps_concept_id_is_ecosystem_colon_name(tmp_path):
     from okf.generator import scan_codebase
     src = tmp_path / "project"

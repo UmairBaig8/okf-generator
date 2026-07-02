@@ -446,3 +446,53 @@ def test_complex_dependency_dev_flag():
     assert parse_build_gradle(p6)[0]["dev"] is True
 
     p1.unlink(); p2.unlink(); p3.unlink(); p4.unlink(); p5.unlink(); p6.unlink()
+
+
+# ── New language parsers: C, C++, C# ─────────────────────────────────────────
+
+def test_c_parser_extracts_functions_and_structs():
+    """C parser creates Function and Class concepts."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.c").write_text("/** Adds two ints. */\nint add(int a, int b) { return a + b; }\n\n/** A 2D point. */\nstruct Point { int x; int y; };\n")
+    concepts = scan_codebase(tmp)
+    funcs = {c.title for c in concepts if c.type == "Function"}
+    classes = {c.title for c in concepts if c.type == "Class"}
+    assert "add" in funcs, f"C function 'add' not found in {funcs}"
+    assert "Point" in classes, f"C struct 'Point' not found in {classes}"
+    add_fn = next(c for c in concepts if c.title == "add")
+    assert add_fn.docstring, "C add() missing docstring"
+    assert "Adds two ints" in add_fn.docstring
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_cpp_parser_extracts_classes_and_methods():
+    """C++ parser creates Class concepts with methods."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cpp").write_text("/** A simple counter. */\nclass Counter {\npublic:\n    int get() const { return val; }\n    void inc() { val++; }\nprivate:\n    int val = 0;\n};\n\nint add(int a, int b) { return a + b; }\n")
+    concepts = scan_codebase(tmp)
+    classes = {c.title for c in concepts if c.type == "Class"}
+    funcs = {c.title for c in concepts if c.type == "Function"}
+    assert "Counter" in classes
+    assert "add" in funcs
+    counter = next(c for c in concepts if c.title == "Counter")
+    assert "get" in counter.methods, f"Counter should have method 'get', got {counter.methods}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_csharp_parser_extracts_classes_and_methods():
+    """C# parser creates Class and Function concepts."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.cs").write_text("using System;\nclass Greeter {\n    public void SayHello(string name) { }\n    public int Add(int a, int b) { return a + b; }\n}\n")
+    concepts = scan_codebase(tmp)
+    classes = {c.title for c in concepts if c.type == "Class"}
+    funcs = {c.title for c in concepts if c.type == "Function"}
+    assert "Greeter" in classes
+    assert "SayHello" in funcs
+    assert "Add" in funcs
+    import shutil; shutil.rmtree(tmp)
