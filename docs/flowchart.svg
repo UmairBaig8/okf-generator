@@ -1,27 +1,42 @@
-<svg viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif">
+<svg viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/>
     </marker>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
   </defs>
-  <rect x="0" y="10" width="120" height="36" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="60" y="33" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">Your codebase</text>
-  <line x1="120" y1="28" x2="155" y2="28" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="138" y="20" text-anchor="middle" fill="#64748b" font-size="9">okf generate</text>
-  <rect x="160" y="10" width="90" height="36" rx="6" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
-  <text x="205" y="33" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="600">Scanners</text>
+  <rect x="0" y="10" width="110" height="36" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="55" y="33" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">Your codebase</text>
+  <line x1="110" y1="28" x2="145" y2="28" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="128" y="18" text-anchor="middle" fill="#64748b" font-size="8">okf generate</text>
+  <rect x="150" y="10" width="100" height="36" rx="6" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="200" y="27" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Scanners</text>
+  <text x="200" y="40" text-anchor="middle" fill="#64748b" font-size="8">AST / tree-sitter</text>
   <line x1="250" y1="28" x2="280" y2="28" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <rect x="285" y="10" width="90" height="36" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="330" y="33" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">Concepts</text>
+  <rect x="285" y="10" width="90" height="36" rx="6" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="330" y="33" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="600">Linker</text>
   <line x1="375" y1="28" x2="405" y2="28" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <rect x="410" y="10" width="100" height="36" rx="6" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
-  <text x="460" y="33" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="600">OKF Bundle</text>
-  <line x1="460" y1="46" x2="460" y2="75" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="460" y1="46" x2="570" y2="75" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <rect x="395" y="80" width="130" height="36" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5"/>
-  <text x="460" y="103" text-anchor="middle" fill="#c084fc" font-size="12" font-weight="600">AI Agent</text>
-  <text x="488" y="68" text-anchor="middle" fill="#64748b" font-size="9">okf lookup</text>
-  <rect x="540" y="80" width="130" height="36" rx="6" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
-  <text x="605" y="103" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">Training Data</text>
-  <text x="535" y="68" text-anchor="middle" fill="#64748b" font-size="9">okf pairs</text>
+  <rect x="410" y="10" width="100" height="36" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="460" y="33" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">Concepts</text>
+  <line x1="510" y1="28" x2="540" y2="28" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="545" y="10" width="100" height="36" rx="6" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="595" y="33" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">OKF Bundle</text>
+  <line x1="595" y1="46" x2="505" y2="75" stroke="#7c3aed" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="595" y1="46" x2="595" y2="75" stroke="#7c3aed" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="595" y1="46" x2="685" y2="75" stroke="#7c3aed" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="595" y1="46" x2="775" y2="75" stroke="#7c3aed" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="405" y="80" width="130" height="36" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="470" y="103" text-anchor="middle" fill="#c084fc" font-size="12" font-weight="600">AI Agent</text>
+  <text x="510" y="68" text-anchor="middle" fill="#64748b" font-size="9">okf lookup</text>
+  <rect x="540" y="120" width="130" height="36" rx="6" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="605" y="143" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="600">Training Data</text>
+  <text x="565" y="105" text-anchor="middle" fill="#64748b" font-size="9">okf pairs</text>
+  <rect x="670" y="70" width="90" height="36" rx="6" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+  <text x="715" y="93" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="600">Viz</text>
+  <text x="700" y="60" text-anchor="middle" fill="#64748b" font-size="9">okf visualize</text>
+  <rect x="720" y="120" width="90" height="36" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="765" y="143" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">Diff</text>
+  <text x="720" y="105" text-anchor="middle" fill="#64748b" font-size="9">okf diff</text>
 </svg>
