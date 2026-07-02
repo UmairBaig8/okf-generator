@@ -1155,6 +1155,55 @@ def test_typescript_enum():
     import shutil; shutil.rmtree(tmp)
 
 
+# ── SQL column/constraint extraction (Tier 2) ────────────────────────────
+
+def test_sql_table_columns():
+    """SQL CREATE TABLE extracts column definitions with types and constraints."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "schema.sql").write_text(
+        "CREATE TABLE users (\n"
+        "    id INTEGER PRIMARY KEY,\n"
+        "    name TEXT NOT NULL,\n"
+        "    email TEXT UNIQUE,\n"
+        "    age INTEGER DEFAULT 0\n"
+        ");\n"
+    )
+    concepts = scan_codebase(tmp)
+    users = next((c for c in concepts if c.type == "Table" and c.title == "users"), None)
+    assert users is not None, "Table 'users' not found"
+    assert users.fields, f"Table users should have fields: {users.fields}"
+    col_names = {f["name"] for f in users.fields}
+    assert "id" in col_names, f"Column 'id' missing: {col_names}"
+    assert "name" in col_names, f"Column 'name' missing: {col_names}"
+    id_col = next(f for f in users.fields if f["name"] == "id")
+    assert "PRIMARY KEY" in id_col.get("visibility", ""), f"id should have PRIMARY KEY: {id_col}"
+    name_col = next(f for f in users.fields if f["name"] == "name")
+    assert "NOT" in name_col.get("visibility", ""), f"name should have NOT NULL: {name_col}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_sql_table_foreign_key():
+    """SQL CREATE TABLE extracts foreign key references."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "schema.sql").write_text(
+        "CREATE TABLE orders (\n"
+        "    id INTEGER PRIMARY KEY,\n"
+        "    user_id INTEGER REFERENCES users(id)\n"
+        ");\n"
+    )
+    concepts = scan_codebase(tmp)
+    orders = next((c for c in concepts if c.type == "Table" and c.title == "orders"), None)
+    assert orders is not None, "Table 'orders' not found"
+    user_id_col = next((f for f in orders.fields if f["name"] == "user_id"), None)
+    assert user_id_col is not None, f"Column 'user_id' missing: {orders.fields}"
+    assert "REFERENCES" in user_id_col.get("visibility", ""), f"FK ref missing: {user_id_col}"
+    import shutil; shutil.rmtree(tmp)
+
+
 # ── Method emission as individual concepts (Tier 1) ──────────────────────
 
 def test_python_methods_emitted():

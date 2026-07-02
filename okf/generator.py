@@ -1585,7 +1585,7 @@ class SQLParser(TreeSitterParser):
                     inner.start_point[0]+1, node=inner, src_bytes=src_bytes))
             else:
                 cid = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
-                concepts.append(Concept(
+                cc = Concept(
                     type=ctype, title=name,
                     description=_first_line(doc) or f"{ctype} defined in {Path(resource).name}",
                     docstring=doc, signature=sig,
@@ -1593,7 +1593,50 @@ class SQLParser(TreeSitterParser):
                     timestamp=ts, source_lines=(inner.start_point[0]+1, inner.end_point[0]+1),
                     concept_id=f"{cid}/{_safe_id(name)}",
                     related=[parent_id],
-                ))
+                )
+                # Extract column definitions for CREATE TABLE
+                if inner.type == "create_table":
+                    sql_cols = []
+                    for child in inner.children:
+                        if child.type == "column_definitions":
+                            for col in child.children:
+                                if col.type == "column_definition":
+                                    col_name = _node_text(col.child_by_field_name("name"))
+                                    col_type = _node_text(col.child_by_field_name("type"))
+                                    # Collect constraints
+                                    constraints = []
+                                    fk_ref = ""
+                                    for c2 in col.children:
+                                        t = c2.type
+                                        if t == "keyword_primary":
+                                            constraints.append("PRIMARY KEY")
+                                        elif t == "keyword_unique":
+                                            constraints.append("UNIQUE")
+                                        elif t == "keyword_not":
+                                            constraints.append("NOT NULL")
+                                        elif t == "keyword_null":
+                                            pass  # handled by NOT above
+                                        elif t == "keyword_default":
+                                            pass  # next child is the default value
+                                        elif t == "keyword_references":
+                                            # next child is object_reference
+                                            pass
+                                        elif t == "object_reference":
+                                            has_ref = False
+                                            for ref_child in col.children:
+                                                if ref_child.type == "keyword_references":
+                                                    has_ref = True
+                                                if ref_child is c2 and has_ref:
+                                                    break
+                                            if not has_ref:
+                                                continue
+                                            fk_ref = _node_text(c2)
+                                    col_constraint = " ".join(constraints)
+                                    if fk_ref:
+                                        col_constraint += f" REFERENCES {fk_ref}" if col_constraint else f"REFERENCES {fk_ref}"
+                                    sql_cols.append({"name": col_name, "type": col_type, "visibility": col_constraint})
+                    cc.fields = sql_cols
+                concepts.append(cc)
         return concepts
 
     @staticmethod
