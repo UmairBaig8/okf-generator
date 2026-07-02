@@ -176,26 +176,23 @@ def _install_main():
         _install_agent(agent)
 
 
-BANNER = r"""╭───────────────────────────────────────────────────╮
-│                                                   │
-│     ○────╮   ██████╗ ██╗  ██╗███████╗   ╭────○    │
-│     │    ╰──██╔═══██╗██║ ██╔╝██╔════╝───╯    │    │
-│   ──○       ██║   ██║█████╔╝ █████╗          ○──  │
-│     │    ╭──██║   ██║██╔═██╗ ██╔══╝───╮      │    │
-│     ○────╯  ╚██████╔╝██║  ██╗██║      ╰──────○    │
-│              ╚═════╝ ╚═╝  ╚═╝╚═╝                  │
-│                                                   │
-│ ❖ Open Knowledge Format Generator                 │
-│ ❖ Index any codebase for AI agents                │
-╰───────────────────────────────────────────────────╯"""
+BANNER = r"""┌─────────────────────────────────────────────────────┐
+│  ██████╗ ██╗  ██╗███████╗                           │
+│ ██╔═══██╗██║ ██╔╝██╔════╝  [ O.K.F. ]               │
+│ ██║   ██║█████╔╝ █████╗    Open Knowledge Format    │
+│ ██║   ██║██╔═██╗ ██╔══╝    Generator                │
+│ ╚██████╔╝██║  ██╗██║       v{version}                  │
+│  ╚═════╝ ╚═╝  ╚═╝╚═╝       ► Index any codebase     │
+└─────────────────────────────────────────────────────┘"""
 
 PURPLE = "\033[35m"
 RESET = "\033[0m"
 
 
 def print_banner():
+    from okf import __version__
     for line in BANNER.splitlines():
-        print(f"{PURPLE}{line}{RESET}")
+        print(f"{PURPLE}{line.replace('{version}', __version__)}{RESET}")
 
 
 def main():

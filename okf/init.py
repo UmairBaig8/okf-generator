@@ -30,15 +30,15 @@ YELLOW = "\033[33m"
 RESET = "\033[0m"
 
 
-def c(text: str, color: str) -> str:
+def clr(text: str, color: str) -> str:
     return f"{color}{text}{RESET}"
 
 
 def ask(prompt: str, default: str = "") -> str:
     """Ask with a colored prompt and optional default."""
-    label = f"{c('?', CYAN)} {prompt}"
+    label = f"{clr('?', CYAN)} {prompt}"
     if default:
-        label += f" {c(f'[{default}]', YELLOW)}"
+        label += f" {clr(f'[{default}]', YELLOW)}"
     try:
         return input(f"{label} ").strip() or default
     except (EOFError, KeyboardInterrupt):
@@ -48,7 +48,7 @@ def ask(prompt: str, default: str = "") -> str:
 
 def confirm(prompt: str, default: bool = True) -> bool:
     hint = "Y/n" if default else "y/N"
-    val = ask(f"{prompt} {c(f'({hint})', YELLOW)}", "y" if default else "n")
+    val = ask(f"{prompt} {clr(f'({hint})', YELLOW)}", "y" if default else "n")
     return val.lower().startswith("y")
 
 
@@ -83,122 +83,188 @@ def detect_languages(root: Path) -> dict[str, int]:
 
 def print_summary(langs: dict[str, int], manifests: int, total: int):
     if langs:
-        print(f"  {c('Languages:', CYAN)} {'  '.join(f'{c(n, BOLD)}×{c(str(v), GREEN)}' for n, v in sorted(langs.items()))}")
+        print(f"  {clr('Languages:', CYAN)} {'  '.join(f'{clr(n, BOLD)}×{clr(str(v), GREEN)}' for n, v in sorted(langs.items()))}")
     if manifests:
-        print(f"  {c('Manifests:', CYAN)} {c(str(manifests), GREEN)} files")
-    print(f"  {c('Total files:', CYAN)} {c(str(total), GREEN)}")
+        print(f"  {clr('Manifests:', CYAN)} {clr(str(manifests), GREEN)} files")
+    print(f"  {clr('Total files:', CYAN)} {clr(str(total), GREEN)}")
 
 
 # ── Main ─────────────────────────────────────────────────────────────────
+
+
+HELP_TEXT = f"""
+  {clr('Available commands:', BOLD)}
+    {clr('/g', CYAN)}            Generate/regenerate the bundle
+    {clr('/lookup <name>', CYAN)}  Look up a concept
+    {clr('/deps', CYAN)}         List dependencies
+    {clr('/viz', CYAN)}          Generate HTML visualization
+    {clr('/serve', CYAN)}        Start local HTTP server
+    {clr('/install [agent]', CYAN)}  Install agent integration
+    {clr('/info', CYAN)}         Show bundle info
+    {clr('/help', CYAN)}         Show this help
+    {clr('/quit', CYAN)}         Exit
+"""
+
+
+def repl_loop(bundle_path: Path):
+    from okf.lookup import load_bundle, search, fmt_detail
+
+    print(f"\n  {clr('Interactive mode — type /help for commands', CYAN)}\n")
+    while True:
+        try:
+            cmd = input(f"{clr('okf>', PURPLE)} ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+        if not cmd:
+            continue
+
+        parts = cmd.split(maxsplit=1)
+        verb = parts[0].lower()
+        arg = parts[1] if len(parts) > 1 else ""
+
+        if verb in ("/quit", "/exit", "/q"):
+            break
+
+        elif verb == "/help":
+            print(HELP_TEXT)
+
+        elif verb == "/info":
+            concepts = load_bundle(bundle_path)
+            types: dict[str, int] = {}
+            for c in concepts:
+                types[c["type"]] = types.get(c["type"], 0) + 1
+            print(f"  {clr('Bundle:', BOLD)} {bundle_path.name}")
+            for t, n in sorted(types.items()):
+                print(f"    {t:<15} {n:>8}")
+            print(f"    {'─'*24}")
+            print(f"    {'TOTAL':<15} {sum(types.values()):>8}")
+
+        elif verb == "/g":
+            print(f"  {clr('Regenerating bundle...', CYAN)}")
+            from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs, _git_info
+            from okf.linker import link_all
+
+            src_path = bundle_path.parent / bundle_path.name.replace("_bundle", "") if bundle_path.name.endswith("_bundle") else bundle_path.parent
+            concepts = scan_codebase(src_path)
+            stats = link_all(concepts)
+            print(f"  {clr(stats.summary_line(), YELLOW)}")
+            log_entries = [f"Regenerated via okf init from {src_path}", f"  Total concepts: {len(concepts)}"]
+            write_bundle(concepts, bundle_path, bundle_path.name, log_entries, source_dirs=_walk_source_dirs(src_path))
+            git = _git_info(src_path) or {}
+            write_summary(bundle_path.name, concepts, bundle_path, git)
+            print(f"  {clr('Bundle regenerated.', GREEN)}")
+
+        elif verb == "/lookup":
+            if not arg:
+                print(f"  {clr('Usage: /lookup <name>', YELLOW)}")
+                continue
+            concepts = load_bundle(bundle_path)
+            results = search(concepts, tokens=arg.split(), limit=5)
+            if results:
+                for r in results:
+                    print(f"\n{fmt_detail(r)}")
+            else:
+                print(f"  {clr('No concept found.', YELLOW)}")
+
+        elif verb == "/deps":
+            concepts = load_bundle(bundle_path)
+            deps = [c for c in concepts if c["type"] == "Dependency"]
+            if arg:
+                deps = [c for c in deps if arg in c.get("resource", "")]
+            print(f"  {clr(f'{len(deps)} dependencies:', BOLD)}")
+            for d in deps:
+                print(f"    {clr(d['title'], GREEN)}  {d.get('resource', '')}")
+
+        elif verb == "/viz":
+            print(f"  {clr('Generating visualization...', CYAN)}")
+            from okf.visualize import visualize as _viz_fn
+            viz_path = bundle_path / "viz.html"
+            html, n_nodes, n_edges = _viz_fn(bundle_path)
+            viz_path.write_text(html, encoding="utf-8")
+            print(f"  {clr('Viz written →', GREEN)} {viz_path}")
+
+        elif verb == "/serve":
+            from okf.serve import main as serve_main
+            serve_main()
+
+        elif verb == "/install":
+            targets = arg.split() if arg else ("claude", "opencode", "copilot", "cursor", "windsurf", "cline")
+            from okf.cli import _install_agent
+            for agent in targets:
+                _install_agent(agent)
+
+        else:
+            print(f"  Unknown: {cmd}. Type {clr('/help', CYAN)} for commands.")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Interactive OKF bundle setup wizard.")
     parser.add_argument("--quick", action="store_true", help="Skip prompts, use defaults")
     parser.add_argument("--llm", action="store_true", help="Enable LLM-assisted Q&A mode")
+    parser.add_argument("dir", nargs="?", default=None, help="Source directory (optional)")
     args = parser.parse_args()
 
     print()
     print_banner()
-    print(f"  {c('okf init', BOLD)} — interactive bundle setup wizard\n")
+    print(f"  {clr('okf init', BOLD)} — interactive bundle setup\n")
     if args.quick:
-        print(f"  {c('Quick mode', YELLOW)} — using defaults\n")
-    if args.llm:
-        print(f"  {c('LLM mode enabled', CYAN)} — you can ask questions about your codebase\n")
+        print(f"  {clr('Quick mode', YELLOW)} — using defaults\n")
 
-    # ── Step 1: Source directory ──────────────────────────────────────────
-    default_dir = "."
-    src = ask("Source directory to scan?", default_dir) if not args.quick else default_dir
+    # ── Source directory ──────────────────────────────────────────────────
+    default_dir = args.dir or "."
+    src = default_dir if args.quick or args.dir else ask("Source directory to scan?", default_dir)
     src_path = Path(src).resolve()
     while not src_path.exists():
-        print(f"  {c('Directory not found.', YELLOW)} Try again.")
-        src = ask("Source directory to scan?", default_dir)
+        print(f"  {clr('Directory not found.', YELLOW)} Try again.")
+        src = ask("Source directory to scan?", ".")
         src_path = Path(src).resolve()
 
     langs, manifests, total = detect_languages(src_path)
-    print(f"\n  {c('Detected in', CYAN)} {c(str(src_path), BOLD)}{c(':', CYAN)}")
+    print(f"\n  {clr('Detected in', CYAN)} {clr(str(src_path), BOLD)}{clr(':', CYAN)}")
     print_summary(langs, manifests, total)
 
     out_name = src_path.name
 
-    # ── Step 2: Generate bundle ───────────────────────────────────────────
-    if args.quick or confirm("\nGenerate OKF bundle?", True):
-        bundle_dir = src_path.parent / f"{out_name}_bundle" if src_path.name != "." else src_path / "okf_bundle"
-        bundle_str = ask("Output directory?", str(bundle_dir)) if not args.quick else str(bundle_dir)
-        bundle_path = Path(bundle_str).resolve()
+    # ── Generate bundle ───────────────────────────────────────────────────
+    bundle_dir = src_path.parent / f"{out_name}_bundle" if src_path.name not in (".", "..") else src_path / "okf_bundle"
+    bundle_str = str(bundle_dir)
+    if not args.quick and not args.dir:
+        bundle_str = ask("Output directory?", str(bundle_dir))
+    bundle_path = Path(bundle_str).resolve()
 
-        print(f"  {c('Generating bundle...', CYAN)}")
-        from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
-        from okf.linker import link_all
+    print(f"  {clr('Generating bundle...', CYAN)}")
+    from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
+    from okf.linker import link_all
 
-        concepts = scan_codebase(src_path)
-        stats = link_all(concepts)
-        print(f"  {c(stats.summary_line(), YELLOW)}")
+    concepts = scan_codebase(src_path)
+    stats = link_all(concepts)
+    print(f"  {clr(stats.summary_line(), YELLOW)}")
 
-        log_entries = [
-            f"Generated via okf init from {src_path}",
-            f"  Source files scanned: {len(set(c.resource for c in concepts))}",
-            f"  Total concepts: {len(concepts)}",
-        ]
-        by_type = write_bundle(
-            concepts, bundle_path, bundle_path.name, log_entries,
-            source_dirs=_walk_source_dirs(src_path),
-        )
+    log_entries = [
+        f"Generated via okf init from {src_path}",
+        f"  Source files scanned: {len(set(c.resource for c in concepts))}",
+        f"  Total concepts: {len(concepts)}",
+    ]
+    by_type = write_bundle(
+        concepts, bundle_path, bundle_path.name, log_entries,
+        source_dirs=_walk_source_dirs(src_path),
+    )
+    try:
+        from okf.generator import _git_info
+        git_info = _git_info(src_path) or {}
+    except Exception:
         git_info = {}
-        try:
-            from okf.generator import _git_info
-            git_info = _git_info(src_path) or {}
-        except Exception:
-            pass
-        write_summary(bundle_path.name, concepts, bundle_path, git_info)
+    write_summary(bundle_path.name, concepts, bundle_path, git_info)
 
-        print(f"\n  {c('Bundle written →', GREEN)} {bundle_path}")
-        for ctype, items in sorted(by_type.items()):
-            print(f"    {ctype:<15} {len(items):>8}")
-        print(f"    {'─'*24}")
-        print(f"    {'TOTAL':<15} {len(concepts):>8}")
+    print(f"\n  {clr('Bundle written →', GREEN)} {bundle_path}")
+    for ctype, items in sorted(by_type.items()):
+        print(f"    {ctype:<15} {len(items):>8}")
+    print(f"    {'─'*24}")
+    print(f"    {'TOTAL':<15} {len(concepts):>8}")
 
-        # ── Step 3: Look up a concept ─────────────────────────────────────
-        if not args.quick:
-            print()
-            if confirm("Look up a concept?", False):
-                while True:
-                    query = ask("Concept name (or empty to skip)?")
-                    if not query:
-                        break
-                    from okf.lookup import load_bundle, search, fmt_detail
-                    loaded = load_bundle(bundle_path)
-                    results = search(loaded, tokens=[query], limit=5)
-                    if results:
-                        for r in results:
-                            print(f"\n  {fmt_detail(r)}")
-                    else:
-                        print(f"  {c('No concept found.', YELLOW)}")
+    # ── REPL loop ─────────────────────────────────────────────────────────
+    if not args.quick:
+        repl_loop(bundle_path)
 
-        # ── Step 4: Visualize ─────────────────────────────────────────────
-        if not args.quick:
-            print()
-            if confirm("Generate interactive visualization?", True):
-                from okf.visualize import visualize as _viz_fn
-                viz_path = bundle_path / "viz.html"
-                html, n_nodes, n_edges = _viz_fn(bundle_path)
-                viz_path.write_text(html, encoding="utf-8")
-                print(f"  {c('Viz written →', GREEN)} {viz_path}")
-                print(f"  {n_nodes} concepts, {n_edges} edges")
-
-        # ── Step 5: Install for agents ────────────────────────────────────
-        if not args.quick:
-            print()
-            if confirm("Install agent integrations?", False):
-                from okf.cli import _install_agent
-                for agent in ("claude", "opencode", "copilot", "cursor", "windsurf", "cline"):
-                    _install_agent(agent)
-
-        # ── Step 6: Serve ─────────────────────────────────────────────────
-        if not args.quick:
-            print()
-            if confirm("Start local server to browse bundle?", True):
-                from okf.serve import main as serve_main
-                serve_main()
-
-    print(f"\n  {c('Done.', GREEN)} {c('Run okf --help to explore more commands.', CYAN)}\n")
+    print(f"\n  {clr('Done.', GREEN)}\n")
