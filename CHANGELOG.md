@@ -77,6 +77,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.31] — 2026-07-03
+
+### Added
+- **Structured doc tag parsing** — Javadoc `@param`/`@return`, JSDoc `@param {type}`/`@returns {type}`, YARD `@param [Type]` now populate structured `concept.params` and `concept.returns`. Applies to Java, JS/TS, Ruby.
+- **Go const/var declarations** — package-level `const` and `var` bindings extracted as `Constant`/`Variable` concept types with type annotations and values.
+- **Ruby singleton methods** — `def self.foo` extracted as `Function` concepts with `self.` prefix in signature and `singleton` visibility tag.
+- **C++ full template signatures** — `template<typename T>` prefix now appears in class/function signatures (e.g. `template<typename T> class Container`).
+
+### Changed
+- `Concept` dataclass: 2 new concept types (`Constant`, `Variable`) added to index renderer.
+- `GoParser` refactored: `_prev_comment` extracted once per node to avoid `UnboundLocalError` with new declaration types.
+
+---
+
 ## [Unreleased]
 
 ### Planned
@@ -412,7 +426,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.30...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.31...HEAD
+[0.1.31]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.31
 [0.1.30]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.30
 [0.1.29]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.29
 [0.1.28]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.28

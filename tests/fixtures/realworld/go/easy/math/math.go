@@ -1,6 +1,15 @@
 // Package math provides basic arithmetic and statistical operations.
 package math
 
+// Pi is an approximation of pi.
+const Pi = 3.14159
+
+// E is the base of natural logarithms.
+const E float64 = 2.71828
+
+// DefaultPrecision controls rounding precision across math functions.
+var DefaultPrecision = 6
+
 // Min returns the smaller of two integers.
 func Min(a, b int) int {
 	if a < b {
