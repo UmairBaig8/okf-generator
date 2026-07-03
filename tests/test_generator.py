@@ -1546,6 +1546,67 @@ def test_cpp_template_function_signature():
     import shutil; shutil.rmtree(tmp)
 
 
+def test_okf_config_loads_defaults():
+    """Config loader returns defaults when no file or env vars set."""
+    import os
+    from okf.config import load
+    # Temporarily clear relevant env vars
+    saved = {}
+    for e in ("OKF_API_KEY", "OKF_BASE_URL", "OKF_MODEL", "OKF_MAX_WORKERS"):
+        saved[e] = os.environ.pop(e, None)
+    try:
+        cfg = load()
+        assert "base_url" in cfg
+        assert "model" in cfg
+        assert cfg["max_workers"] == 2
+    finally:
+        for k, v in saved.items():
+            if v is not None:
+                os.environ[k] = v
+
+
+def test_okf_config_env_var_overrides_file(tmp_path):
+    """Env vars take precedence over config file values."""
+    import os
+    from okf.config import load
+    saved = os.environ.get("OKF_MODEL")
+    try:
+        os.environ["OKF_MODEL"] = "gpt-4"
+        cfg = load()
+        assert cfg["model"] == "gpt-4"
+    finally:
+        if saved:
+            os.environ["OKF_MODEL"] = saved
+        else:
+            os.environ.pop("OKF_MODEL", None)
+
+
+def test_okf_config_dump_and_read(tmp_path):
+    """Written config file can be read back."""
+    from okf.config import dump, load, CONFIG_FILES
+    import os
+    saved = {e: os.environ.pop(e, None) for e in ("OKF_API_KEY", "OKF_BASE_URL", "OKF_MODEL", "OKF_MAX_WORKERS")}
+    try:
+        test_cfg = {"api_key": "sk-test123", "model": "test-model"}
+        proj_file = tmp_path / ".okfconfig"
+        dump(test_cfg, proj_file)
+        assert proj_file.exists()
+        # Temporarily replace CONFIG_FILES[0] to point to our tmp
+        import okf.config as cfgmod
+        orig = cfgmod.CONFIG_FILES[0]
+        cfgmod.CONFIG_FILES[0] = proj_file
+        try:
+            loaded = load()
+            assert loaded["api_key"] == "sk-test123"
+            assert loaded["model"] == "test-model"
+        finally:
+            cfgmod.CONFIG_FILES[0] = orig
+    finally:
+        for k, v in saved.items():
+            if v is not None:
+                os.environ[k] = v
+
+
 def test_dockerfile_syntax():
     """Dockerfile has valid commands."""
     from pathlib import Path

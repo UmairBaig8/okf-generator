@@ -3199,10 +3199,12 @@ def main():
     # --- Optional LLM enrichment (resumable) ---
     enrich = os.environ.get("OKF_ENRICH") == "1"
     if enrich:
-        api_key     = os.environ.get("OKF_API_KEY", "") or os.environ.get("OPENAI_API_KEY", "")
-        base_url    = os.environ.get("OKF_BASE_URL", "https://api.anthropic.com/v1")
-        model       = os.environ.get("OKF_MODEL", "claude-sonnet-4-6")
-        max_workers = int(os.environ.get("OKF_MAX_WORKERS", "2"))
+        from okf.config import load as load_config
+        cc = load_config()
+        api_key     = cc.get("api_key", "") or os.environ.get("OPENAI_API_KEY", "")
+        base_url    = cc.get("base_url", "https://api.anthropic.com/v1")
+        model       = cc.get("model", "claude-sonnet-4-6")
+        max_workers = int(cc.get("max_workers", 2))
 
         if not api_key:
             log.warning("--enrich flag set but no API key found. Set OKF_API_KEY or OPENAI_API_KEY.")

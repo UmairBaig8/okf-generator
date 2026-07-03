@@ -242,6 +242,40 @@ def main():
         from okf.generator import main as _main
         _main()
 
+    elif cmd == "config":
+        from okf.config import load, dump, CONFIG_FILES
+        if rest and rest[0] in ("-h", "--help"):
+            print("""Usage: okf config [key=value ...]
+
+View or set OKF configuration.
+
+Without arguments: show current config (merged from env + file).
+With key=value pairs: write to project .okfconfig file.
+
+Settings:
+  api_key       LLM API key (or OKF_API_KEY env var)
+  base_url      API base URL (default: https://api.anthropic.com/v1)
+  model         Model name (default: claude-sonnet-4-6)
+  max_workers   Parallel enrichment workers (default: 2)
+
+Env vars take precedence over config file values.
+""")
+            sys.exit(0)
+
+        if rest:
+            pairs = dict(kv.split("=", 1) for kv in rest if "=" in kv)
+            existing = load()
+            existing.update(pairs)
+            proj_file = CONFIG_FILES[0]  # .okfconfig in cwd
+            dump(existing, proj_file)
+            print(f"Written {proj_file}")
+        else:
+            cfg = load()
+            for k in ("api_key", "base_url", "model", "max_workers"):
+                v = cfg.get(k, "")
+                if k == "api_key" and v:
+                    v = v[:8] + "..."  # mask
+                print(f"  {k:15s} {v}")
     elif cmd == "lookup":
         from okf.lookup import main as _main
         _main()
