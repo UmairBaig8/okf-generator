@@ -98,6 +98,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.33] — 2026-07-03
+
+### Fixed
+- `pyproject.toml` — added missing `tree-sitter-swift` and `tree-sitter-kotlin` dependencies (CI workflows were failing to install them).
+- CI workflows — added Rust toolchain setup for building `tree-sitter-kotlin` from source on Linux runners.
+- `visualize.py` — guarded `PermissionError` in source code file lookup (was crashing on CI when scanning `/tmp/` siblings).
+- GitHub Pages deployment — fixed by resolving CI failures; `docs/viz.html` now auto-deploys.
+
+---
+
 ## [0.1.32] — 2026-07-03
 
 ### Added
@@ -443,7 +453,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.32...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.33...HEAD
+[0.1.33]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.33
 [0.1.32]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.32
 [0.1.31]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.31
 [0.1.30]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.30
