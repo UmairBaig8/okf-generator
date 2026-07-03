@@ -1,19 +1,24 @@
-"""OKF configuration loader — env vars first, then config file fallback.
+"""OKF configuration — extensible, env + file, local-first defaults.
 
 Config file locations (loaded in order, later overrides earlier):
-  - .okfconfig                    project-level (cwd)
-  - ~/.config/okf/config.json     user-level
+  .okfconfig                         project-level (cwd)
+  ~/.config/okf/config.json          user-level
 
-Format (JSON):
+Extensible design: any key is allowed, grouped by section prefix.
+Currently known sections: llm (future: serve, viz, mcp, ...).
+
+Example .okfconfig:
   {
-    "api_key": "sk-...",
-    "base_url": "https://api.anthropic.com/v1",
-    "model": "claude-sonnet-4-6",
-    "max_workers": 2
+    "llm": {
+      "base_url": "http://localhost:8080/v1",
+      "model": "local-model",
+      "api_key": "",
+      "max_workers": 2
+    }
   }
 
-Env vars take precedence over config file:
-  OKF_API_KEY, OKF_BASE_URL, OKF_MODEL, OKF_MAX_WORKERS
+Both dotted ("llm.base_url") and nested ("llm": {"base_url": ...}) work.
+Env vars take precedence: OKF_BASE_URL, OKF_MODEL, OKF_API_KEY, OKF_MAX_WORKERS
 """
 
 import json
@@ -26,16 +31,16 @@ CONFIG_FILES = [
 ]
 
 DEFAULTS = {
-    "base_url": "https://api.anthropic.com/v1",
-    "model": "claude-sonnet-4-6",
-    "max_workers": 2,
+    "llm.base_url": "http://localhost:8080/v1",
+    "llm.model": "local-model",
+    "llm.max_workers": 2,
 }
 
-ENV_MAP = {
-    "api_key": "OKF_API_KEY",
-    "base_url": "OKF_BASE_URL",
-    "model": "OKF_MODEL",
-    "max_workers": "OKF_MAX_WORKERS",
+ENV_TO_KEY = {
+    "OKF_BASE_URL": "llm.base_url",
+    "OKF_MODEL": "llm.model",
+    "OKF_API_KEY": "llm.api_key",
+    "OKF_MAX_WORKERS": "llm.max_workers",
 }
 
 
@@ -46,26 +51,50 @@ def _load_file(path: Path) -> dict:
         return {}
 
 
-def load() -> dict:
-    cfg = dict(DEFAULTS)
+def _get(cfg: dict, key: str, default=None):
+    """Dot-notation get: cfg['llm.base_url'] → cfg['llm']['base_url']."""
+    parts = key.split(".", 1)
+    if len(parts) == 1:
+        return cfg.get(key, default)
+    section = cfg.get(parts[0], {})
+    return section.get(parts[1], default) if isinstance(section, dict) else default
 
+
+def _set(cfg: dict, key: str, value):
+    """Dot-notation set."""
+    parts = key.split(".", 1)
+    if len(parts) == 1:
+        cfg[key] = value
+    else:
+        cfg.setdefault(parts[0], {})[parts[1]] = value
+
+
+def load() -> dict:
+    """Load merged config: defaults ← file ← env vars."""
+    cfg = {}
+
+    # Start with defaults
+    for k, v in DEFAULTS.items():
+        _set(cfg, k, v)
+
+    # Layer config files
     for cf in CONFIG_FILES:
         if cf.exists():
             data = _load_file(cf)
             if isinstance(data, dict):
-                cfg.update(data)
+                for k, v in data.items():
+                    _set(cfg, k, v)
 
-    # Env vars override everything
-    for key, env in ENV_MAP.items():
-        val = os.environ.get(env)
+    # Env vars override
+    for env_key, cfg_key in ENV_TO_KEY.items():
+        val = os.environ.get(env_key)
         if val:
-            if key == "max_workers":
+            if "max_workers" in env_key.lower():
                 try:
-                    cfg[key] = int(val)
+                    val = int(val)
                 except ValueError:
-                    pass
-            else:
-                cfg[key] = val
+                    continue
+            _set(cfg, cfg_key, val)
 
     return cfg
 

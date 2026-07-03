@@ -243,7 +243,7 @@ def main():
         _main()
 
     elif cmd == "config":
-        from okf.config import load, dump, CONFIG_FILES
+        from okf.config import load, dump, CONFIG_FILES, _get
         if rest and rest[0] in ("-h", "--help"):
             print("""Usage: okf config [key=value ...]
 
@@ -252,30 +252,37 @@ View or set OKF configuration.
 Without arguments: show current config (merged from env + file).
 With key=value pairs: write to project .okfconfig file.
 
-Settings:
-  api_key       LLM API key (or OKF_API_KEY env var)
-  base_url      API base URL (default: https://api.anthropic.com/v1)
-  model         Model name (default: claude-sonnet-4-6)
-  max_workers   Parallel enrichment workers (default: 2)
+Common settings:
+  llm.api_key       API key for LLM enrichment (or OKF_API_KEY env)
+  llm.base_url      API base URL — works with llama.cpp, Ollama, vLLM, etc.
+  llm.model         Model name
+  llm.max_workers   Parallel enrichment workers (default: 2)
 
-Env vars take precedence over config file values.
+Any key is allowed — .okfconfig is extensible for future settings.
+
+Examples:
+  okf config                                   # view current config
+  okf config llm.base_url=http://localhost:8080/v1
+  okf config llm.api_key=sk-xxx
 """)
             sys.exit(0)
 
         if rest:
             pairs = dict(kv.split("=", 1) for kv in rest if "=" in kv)
             existing = load()
-            existing.update(pairs)
-            proj_file = CONFIG_FILES[0]  # .okfconfig in cwd
+            for k, v in pairs.items():
+                from okf.config import _set
+                _set(existing, k, v)
+            proj_file = CONFIG_FILES[0]
             dump(existing, proj_file)
             print(f"Written {proj_file}")
         else:
             cfg = load()
-            for k in ("api_key", "base_url", "model", "max_workers"):
-                v = cfg.get(k, "")
-                if k == "api_key" and v:
-                    v = v[:8] + "..."  # mask
-                print(f"  {k:15s} {v}")
+            for k in ("llm.base_url", "llm.model", "llm.api_key", "llm.max_workers"):
+                v = _get(cfg, k, "")
+                if "api_key" in k and v:
+                    v = v[:8] + "..." if len(v) > 8 else "***"
+                print(f"  {k:20s} {v}")
     elif cmd == "lookup":
         from okf.lookup import main as _main
         _main()

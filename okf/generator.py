@@ -39,8 +39,8 @@ Supported languages:
 
 Config via env vars:
   OKF_API_KEY      API key for LLM enrichment
-  OKF_BASE_URL     API base URL (default: http://localhost:8080/v1)
-  OKF_MODEL        model name (default: claude-sonnet-4-6)
+  OKF_BASE_URL     API base URL (default: http://localhost:8080/v1 — works with llama.cpp, Ollama, vLLM)
+  OKF_MODEL        model name (default: local-model)
   OKF_ENRICH=1     enable LLM enrichment of descriptions + docstrings
   OKF_MAX_WORKERS  parallel enrichment workers (default: 2)
   LOG_LEVEL        default: INFO
@@ -3199,12 +3199,12 @@ def main():
     # --- Optional LLM enrichment (resumable) ---
     enrich = os.environ.get("OKF_ENRICH") == "1"
     if enrich:
-        from okf.config import load as load_config
+        from okf.config import load as load_config, _get
         cc = load_config()
-        api_key     = cc.get("api_key", "") or os.environ.get("OPENAI_API_KEY", "")
-        base_url    = cc.get("base_url", "https://api.anthropic.com/v1")
-        model       = cc.get("model", "claude-sonnet-4-6")
-        max_workers = int(cc.get("max_workers", 2))
+        api_key     = _get(cc, "llm.api_key", "") or os.environ.get("OPENAI_API_KEY", "")
+        base_url    = _get(cc, "llm.base_url", "http://localhost:8080/v1")
+        model       = _get(cc, "llm.model", "local-model")
+        max_workers = int(_get(cc, "llm.max_workers", 2))
 
         if not api_key:
             log.warning("--enrich flag set but no API key found. Set OKF_API_KEY or OPENAI_API_KEY.")
