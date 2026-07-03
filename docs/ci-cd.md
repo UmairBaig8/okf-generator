@@ -101,11 +101,15 @@ repos:
   - repo: local
     hooks:
       - id: okf-generate
-        name: okf generate
-        entry: okf generate ./.okf_bundle
+        name: OKF bundle regeneration
+        entry: okf generate . ./okf_bundle
         language: system
         pass_filenames: false
+        files: \.(py|js|ts|go|java|rs|rb|c|cpp|cs|sql|swift|kt)$
+        stages: [pre-commit]
 ```
+
+Run `pre-commit install` to activate. The hook only triggers when source files change.
 
 ## Tips
 

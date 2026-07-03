@@ -16,6 +16,15 @@ repos:
 
   - repo: local
     hooks:
+      - id: okf-generate
+        name: OKF bundle regeneration
+        description: Regenerates OKF knowledge bundle when source files change
+        entry: okf generate . ./okf_bundle
+        language: system
+        pass_filenames: false
+        files: \.(py|js|ts|jsx|tsx|go|java|rs|rb|c|cpp|h|hpp|cs|sql|swift|kt|kts)$
+        stages: [pre-commit]
+
       - id: bumblebee-scan
         name: Bumblebee supply-chain scan
         description: Scans dependencies for known supply-chain compromises

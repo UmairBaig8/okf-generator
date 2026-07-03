@@ -1546,6 +1546,16 @@ def test_cpp_template_function_signature():
     import shutil; shutil.rmtree(tmp)
 
 
+def test_pre_commit_hook_config_valid():
+    """Pre-commit config YAML is parseable and contains okf hook."""
+    import yaml
+    cfg = yaml.safe_load(Path(__file__).parent.parent.joinpath(".pre-commit-config.yaml").read_text())
+    local_hooks = [r for r in cfg.get("repos", []) if r.get("repo") == "local"]
+    assert local_hooks, "No local hooks found"
+    hook_ids = [h["id"] for h in local_hooks[0]["hooks"]]
+    assert "okf-generate" in hook_ids, f"okf-generate hook missing: {hook_ids}"
+
+
 def test_generate_accepts_enrich_flag(tmp_path):
     """--enrich flag does not crash (requires API key for actual enrichment)."""
     import subprocess, sys
