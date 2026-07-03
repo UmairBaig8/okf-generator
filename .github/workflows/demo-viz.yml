@@ -24,6 +24,9 @@ jobs:
           python-version: '3.12'
           cache: pip
 
+      - name: Install Rust (for tree-sitter-kotlin source build)
+        run: rustup show || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
       - name: Install okf + deps
         run: |
           pip install -e ".[dev]"

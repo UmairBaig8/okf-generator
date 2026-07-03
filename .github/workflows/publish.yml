@@ -22,6 +22,8 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Install Rust (for tree-sitter-kotlin source build)
+        run: rustup show || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
       - run: pip install build
       - run: python -m build
 
@@ -36,6 +38,9 @@ jobs:
             found && /^## \[/ { exit }
             found { print }
           ' CHANGELOG.md > release_notes.md
+
+      - name: Install Rust (for tree-sitter-kotlin source build)
+        run: rustup show || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
       - name: Smoke test published package
         run: |

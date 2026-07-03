@@ -42,6 +42,8 @@ dependencies = [
     "tree-sitter-cpp>=0.23.0",
     "tree-sitter-c-sharp>=0.23.0",
     "tree-sitter-sql>=0.3.0",
+    "tree-sitter-swift>=0.7.0",
+    "tree-sitter-kotlin>=1.1.0",
 ]
 
 [project.optional-dependencies]
