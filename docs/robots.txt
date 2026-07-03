@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://umairbaig8.github.io/okf-generator/sitemap.xml
