@@ -6,4 +6,4 @@ uv.lock
 .venv
 .github/.DS_Store
 .vscode/settings.json
-.sessions/
+.sessions/_build/
