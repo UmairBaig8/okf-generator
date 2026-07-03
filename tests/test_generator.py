@@ -1546,6 +1546,39 @@ def test_cpp_template_function_signature():
     import shutil; shutil.rmtree(tmp)
 
 
+def test_dockerfile_syntax():
+    """Dockerfile has valid commands."""
+    from pathlib import Path
+    lines = Path(__file__).parent.parent.joinpath("Dockerfile").read_text().splitlines()
+    buf = ""
+    joined = []
+    for l in lines:
+        s = l.strip()
+        if not s or s.startswith("#"):
+            continue
+        buf += s
+        if s.endswith("\\"):
+            buf = buf[:-1]
+        else:
+            joined.append(buf)
+            buf = ""
+    keywords = {"FROM", "RUN", "WORKDIR", "ENTRYPOINT", "CMD", "COPY", "ENV", "EXPOSE"}
+    for c in joined:
+        kw = c.split()[0]
+        assert kw in keywords, f"Unknown Dockerfile command: {c}"
+    assert len(joined) >= 4, f"Too few commands: {joined}"
+
+
+def test_docker_publish_workflow_yaml():
+    """docker-publish.yml workflow is valid YAML."""
+    import yaml
+    wf = yaml.safe_load(Path(__file__).parent.parent.joinpath(".github/workflows/docker-publish.yml").read_text())
+    assert wf.get("jobs", {}).get("build"), "Missing build job"
+    steps = wf["jobs"]["build"]["steps"]
+    step_ids = [s.get("uses", s.get("name", "")) for s in steps]
+    assert any("docker/build-push-action" in u for u in step_ids), "Missing build-push step"
+
+
 def test_pre_commit_hook_config_valid():
     """Pre-commit config YAML is parseable and contains okf hook."""
     import yaml
