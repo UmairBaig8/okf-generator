@@ -94,8 +94,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Swift / Kotlin parsers
 - mkdocs documentation site
+
+---
+
+## [0.1.32] — 2026-07-03
+
+### Added
+- **Swift parser** — tree-sitter based: classes, structs, enums, protocols (→ Interface), generics, methods, functions, typealiases. Full field extraction, protocol conformance, associated types.
+- **Kotlin parser** — tree-sitter based: classes, data classes, interfaces, objects, enums, generics, functions, typealiases. Constructor parameter field extraction, visibility modifiers.
+- **18 new fixture files** — `realworld/swift/{easy,complex}/` and `realworld/kotlin/{easy,complex}/` (8 files) covering generics, protocols/interfaces, enums, data classes. Plus `complex/src/app.swift` and `complex/src/app.kt`.
+- **8 new test cases** — dedicated parser unit tests (`test_swift_parser_*`, `test_kotlin_parser_*`) and realworld feature tests (protocols, generics, interfaces, data class fields).
+- **viz detail page overhaul** — Prism.js syntax highlighting (Tomorrow dark theme), slide-in code panel showing only relevant lines, 2×2 compact section grid, meta-tag pills for visibility/decorators, type stacked above concept name.
+- **Live Demo button** on landing page — `docs/index.html` hero section links to interactive bundle viz.
+- **GitHub Actions workflow** — `.github/workflows/demo-viz.yml` auto-regenerates `docs/viz.html` from realworld fixtures on push to main or release.
+- **Bundle dropdown fix** — moved to sidebar above type filter, statically populated (no JS duplication).
+
+### Changed
+- `_viz_template.py` — from `const` to `var` declarations for data/BUNDLES/BUNDLE_NAME (fixes JS scope in IIFE).
+- `visualize.py` — source code resolution searches sibling directories and sub-bundle dirs; structured `visibility`/`decorators`/`inheritance`/`type_params` fields parsed from bundle sections.
 
 ---
 
@@ -426,7 +443,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.31...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.32...HEAD
+[0.1.32]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.32
 [0.1.31]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.31
 [0.1.30]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.30
 [0.1.29]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.29

@@ -48,7 +48,7 @@ cat > "$REPORT" <<EOF
 **Date:** $TIMESTAMP
 **Env:** $(uname -s) / Python $(python3 --version 2>&1 | awk '{print $2}')
 **Version:** $(cd "$WORK" && git describe --tags 2>/dev/null || echo "dev")
-**Fixture:** tests/fixtures/realworld (78 files, 11 languages)
+**Fixture:** tests/fixtures/realworld (96 files, 13 languages)
 
 ---
 

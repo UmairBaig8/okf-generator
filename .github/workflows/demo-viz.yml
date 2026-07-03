@@ -1,0 +1,47 @@
+name: Update Live Demo viz.html
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'okf/**'
+      - 'tests/fixtures/**'
+      - 'pyproject.toml'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install okf + deps
+        run: |
+          pip install -e ".[dev]"
+          python -m pytest tests/ -q --tb=short
+
+      - name: Generate bundle + viz
+        run: |
+          okf generate tests/fixtures/realworld /tmp/okf_bundle
+          okf visualize /tmp/okf_bundle /tmp/viz.html
+
+      - name: Copy viz to docs/
+        run: |
+          cp /tmp/viz.html docs/viz.html
+          echo "viz.html size: $(wc -c < docs/viz.html) bytes"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update docs/viz.html [skip ci]"
+          file_pattern: docs/viz.html
+          commit_user_name: okf-bot
+          commit_user_email: bot@okf.dev

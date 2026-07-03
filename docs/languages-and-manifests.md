@@ -9,6 +9,8 @@
 | Go | tree-sitter | Funcs, methods, structs, interfaces, GoDoc |
 | Java | tree-sitter | Classes, methods, constructors, Javadoc |
 | Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///` |
+| **Swift** | tree-sitter | Classes, structs, enums, protocols, generics, methods, properties, doc comments |
+| **Kotlin** | tree-sitter | Classes, data classes, objects, enums, interfaces, generics, functions, constructor params |
 | Ruby | tree-sitter | Defs, classes, modules, `#` comments |
 | C | tree-sitter | Functions, structs with `/**` doc comments |
 | C++ | tree-sitter | Functions, classes, structs, methods with `///` doc comments |

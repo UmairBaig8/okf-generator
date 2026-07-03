@@ -1,6 +1,6 @@
 """Tests against 20 real-world fixture projects (easy + complex per language).
 
-Fixtures at tests/fixtures/realworld/ — 78 files, 3,545 lines, 11 languages.
+Fixtures at tests/fixtures/realworld/ — 96 files, ~4,500 lines, 13 languages.
 Covers all extraction features: generics, inheritance, decorators, visibility,
 fields, interfaces, enums, type aliases, SQL columns, manifests.
 """
@@ -24,6 +24,8 @@ LANGUAGE_DIRS = {
     "cpp":        REALWORLD / "cpp",
     "csharp":     REALWORLD / "csharp",
     "sql":        REALWORLD / "sql",
+    "swift":      REALWORLD / "swift",
+    "kotlin":     REALWORLD / "kotlin",
 }
 
 
@@ -50,7 +52,7 @@ def test_realworld_all_languages_detected():
         if tag:
             langs.add(tag)
     expected = {"python", "javascript", "typescript", "go", "java", "rust",
-                "ruby", "c", "cpp", "csharp", "sql", "manifest"}
+                "ruby", "c", "cpp", "csharp", "sql", "swift", "kotlin", "manifest"}
     missing = expected - langs
     assert not missing, f"Languages missing from realworld: {missing}"
 
@@ -218,6 +220,33 @@ def test_ruby_complex_has_inheritance():
     concepts = scan(REALWORLD / "ruby" / "complex")
     with_inh = [c for c in concepts if c.inheritance]
     assert len(with_inh) >= 1, f"Ruby complex: no inheritance found"
+
+
+def test_swift_complex_has_protocols_generics_enums():
+    """Swift complex has protocols (Interfaces), generics, enums."""
+    concepts = scan(REALWORLD / "swift" / "complex")
+    types = {c.type for c in concepts}
+    assert "Interface" in types, f"No protocols (Interface) in Swift complex: {types}"
+    with_tp = [c for c in concepts if c.type_params]
+    assert len(with_tp) >= 1, f"Swift complex: no generics found"
+    # enums emit as Class with methods as enum cases
+    enum_names = [c.title for c in concepts if c.type == "Class" and "Status" in c.title]
+    assert enum_names, f"No enums found in Swift complex"
+
+
+def test_kotlin_complex_has_interfaces_generics_data_classes():
+    """Kotlin complex has interfaces, generics, data classes."""
+    concepts = scan(REALWORLD / "kotlin" / "complex")
+    types = {c.type for c in concepts}
+    assert "Interface" in types, f"No interfaces in Kotlin complex: {types}"
+    with_tp = [c for c in concepts if c.type_params]
+    assert len(with_tp) >= 1, f"Kotlin complex: no generics found"
+    # data classes emitted as Class with fields
+    with_fields = [c for c in concepts if c.fields]
+    assert len(with_fields) >= 2, f"Kotlin complex: only {len(with_fields)} with fields"
+    # enums
+    enum_names = [c.title for c in concepts if c.type == "Class" and "Status" in c.title]
+    assert enum_names, f"No enums found in Kotlin complex"
 
 
 # ── Bundle generation ───────────────────────────────────────────────────────

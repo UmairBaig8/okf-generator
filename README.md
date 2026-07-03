@@ -319,7 +319,7 @@ Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as 
 
 ## Language & Manifest Coverage
 
-### Code Languages (10)
+### Code Languages (12)
 
 | Language | Parser | Extracts |
 |---|---|---|
@@ -328,6 +328,8 @@ Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as 
 | Go | tree-sitter | Funcs, methods, structs, interfaces, GoDoc, type params (Go 1.18+) |
 | Java | tree-sitter | Classes, methods, constructors, Javadoc, generics, inheritance (extends/implements), annotations |
 | Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///`, generics, attributes |
+| **Swift** | tree-sitter | Classes, structs, enums, protocols, generics, methods, properties, doc comments |
+| **Kotlin** | tree-sitter | Classes, data classes, objects, enums, interfaces, generics, functions, constructor params |
 | Ruby | tree-sitter | Defs, classes, modules, `#` comments, superclass |
 | C | tree-sitter | Functions, structs with `/**` doc comments |
 | C++ | tree-sitter | Functions, classes, structs, methods, templates, base classes |
@@ -444,7 +446,7 @@ okf install cline       # Cline rules
 
 | | **okf-generator** | Other OKF producers |
 |---|---|---|
-| Language coverage | 10 languages (Python, JS/TS, Go, Java, Rust, Ruby, SQL, C, C++, C#) | Usually 1 language or doc-only |
+| Language coverage | 12 languages (Python, JS/TS, Go, Java, Rust, Swift, Kotlin, Ruby, SQL, C, C++, C#) | Usually 1 language or doc-only |
 | Cross-reference linking | Imports → dependencies, function calls → caller/callee across all languages | Not typically supported |
 | Dependency/manifest parsing | 17 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, +7) | Not typically supported |
 | Extraction | Zero-LLM, deterministic, offline | Often LLM-required for every concept |

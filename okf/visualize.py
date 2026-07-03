@@ -45,20 +45,44 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
                         deptable[parts[0]] = parts[1]
                     elif len(parts) == 2:
                         deptable[parts[0].lower()] = parts[1]
+        sections = c.get("sections", {})
+        # Parse structured fields from markdown bullet lists in sections
+        def _parse_bullets(text: str) -> list[str]:
+            if not text:
+                return []
+            return [re.sub(r'^-\s*`?|`$', '', line).strip() for line in text.strip().splitlines()
+                    if line.strip().startswith('- ')]
         nodes.append({
             "id": nid, "title": c["title"], "type": c["type"],
             "description": c.get("description", ""),
             "resource": c.get("resource", ""),
-            "sections": c.get("sections", {}),
+            "sections": sections,
             "deptable": deptable,
             "body": c.get("raw", ""),
             "code": "",
+            "visibility": _parse_bullets(sections.get("visibility", "")),
+            "decorators": _parse_bullets(sections.get("decorators", "")),
+            "inheritance": _parse_bullets(sections.get("inheritance", "")),
+            "type_params": _parse_bullets(sections.get("type_parameters", "")),
         })
 
     # Source code reading: best-effort per unique resource path
     # The resource field is relative to the scanned root (e.g. "src/file.py").
     # We don't store the scanned root, so try multiple common layouts.
     code_cache: dict[str, str] = {}
+    # Collect candidate source roots: sibling dirs and their immediate subdirs
+    src_roots: list[Path] = []
+    if bundle_dir.parent.exists():
+        for d in bundle_dir.parent.iterdir():
+            if d.is_dir() and d.name != bundle_dir.name and not d.name.startswith("."):
+                src_roots.append(d)
+                # one level deeper
+                try:
+                    for sub in d.iterdir():
+                        if sub.is_dir() and not sub.name.startswith("."):
+                            src_roots.append(sub)
+                except Exception:
+                    pass
     for n in nodes:
         resource = n.get("resource", "")
         if not resource:
@@ -68,17 +92,17 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             continue
         bp = bundle_dir.parent
         src_candidates = [
-            bp / resource,                        # bundle at ./okf_bundle, src at ./src/file.py → ./src/file.py
+            bp / resource,
             bp / resource.lstrip("/"),
             Path(resource) if resource.startswith("/") else None,
-            # Resource may include the source dir prefix (e.g. "my_project/src/file.py")
             bp / resource.split("/")[-1] if "/" in resource else None,
         ]
-        # Also try walking up: the resource might be relative to a subdir of bundle_dir.parent
-        for part in Path(resource).parents:
-            if part.name and (bp / part.parent.name / resource).exists():
-                src_candidates.append(bp / part.parent.name / resource)
-                break
+        # Search sibling source directories and their immediate subdirs
+        for root_dir in src_roots:
+            src_candidates.append(root_dir / resource)
+        # Also search inside sub-bundle dirs (bundle_dir / sub_bundle / resource)
+        for sb in [d.name for d in bundle_dir.iterdir() if d.is_dir() and (d / "SUMMARY.md").exists()]:
+            src_candidates.append(bundle_dir / sb / resource)
         found = ""
         for sp in src_candidates:
             if sp and sp.exists() and sp.is_file():
@@ -146,8 +170,10 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
         bundle = matched if matched else bundle_dir.name
         bundle_of_node[cid] = bundle
 
-    # If no sub-bundles detected, fall back to first-path-segment grouping
-    if not sub_bundles:
+    # If no sub-bundles detected (or none matched), fall back to first-path-segment grouping
+    if not sub_bundles or all(b == bundle_dir.name for b in bundle_of_node.values()):
+        if sub_bundles:  # reset when sub-bundles exist but none matched
+            sub_bundles.clear()
         for n in nodes:
             cid = n["id"]
             seg = cid.split("/")[0] if cid else bundle_dir.name
@@ -217,15 +243,22 @@ def visualize(bundle_dir: Path) -> tuple[str, int, int]:
         "const TYPE_COLORS = {\n" + "\n".join(f'  {t}:"{c}",' for t, c in sorted(TYPE_COLORS.items())) + "\n};"
     )
 
-    # Inject data, BUNDLE_NAME, and BUNDLES
-    data_marker = "const data = {\n  nodes: ["
+    # Inject data, BUNDLE_NAME, BUNDLES, and bundle-select options
+    data_marker = "var data = {\n  nodes: ["
     data_idx = html.find(data_marker)
     if data_idx >= 0:
-        end_marker = "const BUNDLES = [];"
+        end_marker = "var BUNDLES = [];"
         end_idx = html.find(end_marker, data_idx)
         if end_idx >= 0:
-            new_data = f"const data = {json_data};\n\nconst BUNDLE_NAME = '{bundle_name}';\nconst BUNDLES = {json.dumps(bundles)};\n"
+            new_data = f"var data = {json_data};\n\nvar BUNDLE_NAME = '{bundle_name}';\nvar BUNDLES = {json.dumps(bundles)};\n"
             html = html[:data_idx] + new_data + html[end_idx + len(end_marker):]
+
+    # Populate bundle-select options statically
+    opt_marker = '<option value="">All Bundles</option>'
+    if bundles and opt_marker in html:
+        extra_opts = "\n".join(f'    <option value="{b}">{b}</option>' for b in bundles)
+        replacement = f'<option value="">All Bundles</option>\n{extra_opts}'
+        html = html.replace(opt_marker, replacement)
 
     return html, len(nodes), len(links)
 

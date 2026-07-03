@@ -265,7 +265,7 @@ def test_complex_all_languages_detected():
         for t in c.tags:
             if t.startswith("lang:"):
                 tags.add(t[5:])
-    expected = {"python", "javascript", "typescript", "go", "java", "rust", "ruby", "c", "cpp", "csharp", "sql", "manifest"}
+    expected = {"python", "javascript", "typescript", "go", "java", "rust", "ruby", "c", "cpp", "csharp", "sql", "swift", "kotlin", "manifest"}
     assert expected.issubset(tags), f"Missing langs: {expected - tags}"
 
 
@@ -493,6 +493,54 @@ def test_csharp_parser_extracts_classes_and_methods():
     assert "Greeter" in classes
     assert "SayHello" in funcs
     assert "Add" in funcs
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_swift_parser_extracts_classes_methods_and_functions():
+    """Swift parser creates Class and Function concepts."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.swift").write_text(
+        "import Foundation\n"
+        "/** A simple greeter. */\n"
+        "public class Greeter {\n"
+        "    private let greeting: String\n"
+        "    public init(greeting: String) { self.greeting = greeting }\n"
+        "    public func greet(name: String) -> String { return \"\\(greeting), \\(name)!\" }\n"
+        "}\n"
+        "/** Adds two integers. */\n"
+        "public func add(a: Int, b: Int) -> Int { a + b }\n"
+    )
+    concepts = scan_codebase(tmp)
+    classes = {c.title for c in concepts if c.type == "Class"}
+    funcs = {c.title for c in concepts if c.type == "Function"}
+    assert "Greeter" in classes, f"Swift class 'Greeter' not found in {classes}"
+    assert "greet" in funcs, f"Swift method 'greet' not found in {funcs}"
+    assert "add" in funcs, f"Swift function 'add' not found in {funcs}"
+    import shutil; shutil.rmtree(tmp)
+
+
+def test_kotlin_parser_extracts_classes_methods_and_functions():
+    """Kotlin parser creates Class and Function concepts."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "test.kt").write_text(
+        "package com.okfgen.test\n"
+        "/** A simple greeter. */\n"
+        "class Greeter(private val greeting: String) {\n"
+        "    fun greet(name: String): String = \"$greeting, $name!\"\n"
+        "}\n"
+        "/** Adds two integers. */\n"
+        "fun add(a: Int, b: Int): Int = a + b\n"
+    )
+    concepts = scan_codebase(tmp)
+    classes = {c.title for c in concepts if c.type == "Class"}
+    funcs = {c.title for c in concepts if c.type == "Function"}
+    assert "Greeter" in classes, f"Kotlin class 'Greeter' not found in {classes}"
+    assert "greet" in funcs, f"Kotlin method 'greet' not found in {funcs}"
+    assert "add" in funcs, f"Kotlin function 'add' not found in {funcs}"
     import shutil; shutil.rmtree(tmp)
 
 
