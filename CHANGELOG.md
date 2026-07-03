@@ -94,7 +94,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- mkdocs documentation site
+- **Fuzzy search** — `okf lookup` with substring/prefix/fuzzy matching (not just exact token match)
+- **LLM enrichment CLI** — `okf generate --enrich` with configurable model, resumable per-concept
+- **More manifest formats** — Dockerfile (base images, env vars), docker-compose.yml, .editorconfig, .gitmodules
+- **GitHub Action** — marketplace action to auto-generate bundle on push, PR comments with dep diffs
+- **Dependency impact analysis** — `okf diff --impact` traces which concepts depend on changed deps
+- **Web dashboard** — FastAPI-powered live bundle browser beyond static viz.html
+- **Docker image** — `docker pull okf/okf-generator` for CI without Python toolchain
+- **Pre-commit hook** — auto-update `.okf_bundle` on commit
+- **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
+- **mkdocs documentation site**
 
 ---
 

@@ -126,6 +126,60 @@ def test_search_paginated_generic(bundle):
     assert results[0]["title"] == "Paginated"
 
 
+def test_search_camelcase_breaks_into_tokens(bundle):
+    """CamelCase names match snake_case queries via tokenization."""
+    from okf.lookup import load_bundle, search
+    concepts = load_bundle(bundle)
+    # "user" should find "UserService", "UserRepository", "UserStore" etc.
+    results = search(concepts, tokens=["user"])
+    titles = [r["title"].lower() for r in results]
+    assert any("user" in t for t in titles), f"No user-related found: {titles[:10]}"
+
+
+def test_search_camelcase_token_matches_subword(bundle):
+    """Tokenized query matches camelCase subwords (e.g. 'repo' finds 'UserRepository')."""
+    from okf.lookup import load_bundle, search
+    concepts = load_bundle(bundle)
+    results = search(concepts, tokens=["repo"])
+    titles = [r["title"].lower() for r in results]
+    assert any("repo" in t for t in titles), f"No repo matches: {titles[:10]}"
+
+
+def test_search_acronym_matches_title_initials(bundle):
+    """Acronym query matches initials of camelCase words."""
+    from okf.lookup import load_bundle, search
+    concepts = load_bundle(bundle)
+    # "ur" should match "UserRepository"
+    results = search(concepts, tokens=["ur"])
+    titles = [r["title"].lower() for r in results]
+    assert any("userrepo" in t.replace("_","") for t in titles), f"No acronym match: {titles[:10]}"
+
+
+def test_search_exact_flag_requires_high_score(bundle):
+    """--exact flag (min_score=0.9) rejects fuzzy matches."""
+    from okf.lookup import load_bundle, search
+    concepts = load_bundle(bundle)
+    # "calc" would normally fuzzy-match "Calculator", but with exact it won't
+    results = search(concepts, tokens=["calc"], min_score=0.9)
+    titles = [r["title"] for r in results]
+    # Calculator should NOT appear with exact match on "calc"
+    assert "Calculator" not in titles
+
+
+def test_search_tokenize_helper():
+    """_tokenize correctly splits camelCase and snake_case."""
+    from okf.lookup import _tokenize
+    toks = _tokenize("UserRepository")
+    assert "user" in toks
+    assert any("repo" in t for t in toks), f"Expected 'repo' in {toks}"
+    toks2 = _tokenize("user_repo")
+    assert "user" in toks2
+    assert "repo" in toks2
+    toks3 = _tokenize("CreateUserDto")
+    assert "create" in toks3
+    assert "user" in toks3
+
+
 # ── formatters ────────────────────────────────────────────────────────────────
 
 def test_fmt_compact(bundle):

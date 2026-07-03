@@ -171,6 +171,20 @@ def load_bundle(bundle_dir: Path, use_cache: bool = True) -> list[dict]:
 # Scoring / search
 # ---------------------------------------------------------------------------
 
+def _tokenize(text: str) -> list[str]:
+    """Break text into searchable tokens: split on space, camelCase, snake_case."""
+    tokens = []
+    for word in text.split():
+        # Split snake_case first
+        for part in word.split("_"):
+            if not part:
+                continue
+            # Split camelCase (e.g. UserRepo -> User, Repo)
+            parts = re.findall(r"[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\d|$)|[A-Z]+", part)
+            tokens.extend(p.lower() for p in parts if p)
+    return tokens
+
+
 def _score(concept: dict, tokens: list[str]) -> float:
     """Return a relevance score 0–1. Higher = better match."""
     if not tokens:
@@ -181,26 +195,44 @@ def _score(concept: dict, tokens: list[str]) -> float:
     resource    = concept["resource"].lower()
     concept_id  = concept["concept_id"].lower()
     tags        = " ".join(concept["tags"]).lower()
+    # Pre-tokenized fields for substring + fuzzy matching
+    title_tokens = _tokenize(concept["title"])
+    id_tokens    = _tokenize(concept["concept_id"])
 
     score = 0.0
     for tok in tokens:
         t = tok.lower()
+        # Exact title match
         if t == title:
-            score += 1.0   # exact title match
+            score += 1.0
+        # Prefix match on title
         elif title.startswith(t):
-            score += 0.8   # prefix match
+            score += 0.8
+        # Substring in title
         elif t in title:
-            score += 0.6   # substring in title
+            score += 0.6
+        # Any tokenized subword matches (camelCase/snake_case)
+        elif t in title_tokens:
+            score += 0.75
+        elif t in id_tokens:
+            score += 0.5
         elif t in concept_id:
-            score += 0.4   # in path
+            score += 0.4
         elif t in resource:
-            score += 0.35  # in source file
+            score += 0.35
         elif t in description:
-            score += 0.3   # in description
+            score += 0.3
         elif t in tags:
-            score += 0.2   # in tags
-        # fuzzy: count matching chars / token length
+            score += 0.2
+        # Acronym match: each char matches a title word initial
         else:
+            # Try as acronym (e.g. "ur" matches "UserRepository")
+            if len(t) >= 2 and len(title_tokens) >= len(t):
+                initials = "".join(w[0] for w in title_tokens if w)
+                if initials.startswith(t):
+                    score += 0.7
+                    continue
+            # Fuzzy: count matching chars / token length
             matches = sum(1 for ch in t if ch in title)
             ratio   = matches / max(len(t), 1)
             if ratio > 0.7:
@@ -372,6 +404,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json",      action="store_true", help="JSON output")
     p.add_argument("--full",      action="store_true", help="Show raw .md file content")
     p.add_argument("--deps", action="store_true", help="Shortcut for --type Dependency")
+    p.add_argument("--exact", action="store_true", help="Exact match only (min-score=0.9, no fuzzy)")
     p.add_argument("--min-score", type=float, default=0.1, help="Minimum relevance score 0-1 (default: 0.1)")
     p.add_argument("--no-cache", action="store_true", help="Bypass and skip writing the lookup cache")
     return p
@@ -412,7 +445,7 @@ def main():
         type_filter= type_filter,
         tag_filters= args.tags,
         limit      = args.limit,
-        min_score  = args.min_score,
+        min_score  = 0.9 if args.exact else args.min_score,
     )
 
     if not results:

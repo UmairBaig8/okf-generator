@@ -123,7 +123,32 @@ okf lookup --bundle /tmp/okf_bundle ZZZZ_NOT_FOUND 2>&1
 ```
 **Verify:** Exit 1. "No concepts found".
 
-### 3.7 Cache miss → hit
+### 3.7 Fuzzy / camelCase / acronym search
+```bash
+# Subword match: "calc" finds "Calculator"
+okf lookup --bundle /tmp/okf_bundle --compact calc 2>&1
+```
+**Verify:** `Calculator` appears in results.
+
+```bash
+# CamelCase token match: "repo" finds "UserRepository", "OrderRepo"
+okf lookup --bundle /tmp/okf_bundle --compact repo 2>&1
+```
+**Verify:** At least one `*Repo*` or `*Repository` result.
+
+```bash
+# Acronym match: "ur" finds "UserRepository"
+okf lookup --bundle /tmp/okf_bundle --compact ur 2>&1
+```
+**Verify:** `UserRepository` or similar appears.
+
+```bash
+# Exact flag rejects fuzzy: must match full title
+okf lookup --bundle /tmp/okf_bundle --exact calc 2>&1; echo "exit=$?"
+```
+**Verify:** No results. Exit code 1.
+
+### 3.8 Cache miss → hit
 ```bash
 time okf lookup --bundle /tmp/okf_bundle --compact Paginated 2>&1
 time okf lookup --bundle /tmp/okf_bundle --compact Paginated 2>&1
