@@ -2,7 +2,7 @@
 
 **Author:** AI agent / CI
 **Canonical runner:** `bash tests/test.sh` (generates `TEST_REPORT.html`)
-**Fixture corpus:** `tests/fixtures/realworld/` (78 files, 11 languages, 20 projects)
+**Fixture corpus:** `tests/fixtures/realworld/` (96 files, 13 languages, 22 projects)
 **Unit tests:** `pytest tests/` (173+ tests)
 
 ---
@@ -214,6 +214,15 @@ echo "" | okf init /tmp/init_test 2>&1
 grep -c '"code":"' /tmp/viz.html || echo "0 code entries (no source files found at viz gen path)"
 ```
 **Verify:** May be 0 if source files aren't at the resolved path. When they are, each entry is the full file content.
+
+### 8.2 Viz generation must never crash
+```bash
+# Run from repo root to ensure source paths resolve
+cd "$(git rev-parse --show-toplevel)"
+okf generate tests/fixtures/realworld /tmp/viz_crash_test 2>/dev/null
+okf visualize /tmp/viz_crash_test /tmp/viz_crash_test.html 2>&1
+```
+**Verify:** Exit 0. No `PermissionError`, `KeyError`, or traceback. If it crashes, check `visualize.py` source-code lookup for permission-guarded `Path.exists()` calls or search-bases that scan `/tmp/`.
 
 ---
 

@@ -7,6 +7,8 @@
 - **Realworld fixture coverage:** `python -m pytest tests/test_realworld_fixtures.py -q` (43 tests)
 - **CHANGELOG.md** has an up-to-date `[Unreleased]` section
 - **Ruff lint passes:** `ruff check okf/ --select E,F,W --ignore E501`
+- **`.gitignore` is up to date** — `_build/`, `dist/`, `*.egg-info` must be listed to prevent CI auto-commits from polluting the repo
+- **New languages fully wired** — Every new `tree-sitter-*` dependency is listed in `pyproject.toml`; if it lacks Linux wheels, all CI workflows include a Rust setup step
 
 For a quick confidence check:
 
@@ -30,7 +32,15 @@ Hand this prompt to any LLM-powered coding agent before cutting a release:
 > 7. **Dead code check** — Identify any unused imports, orphaned files, or stale test fixtures. Verify `tests/fixtures/sample_codebase/` is gone.
 > 8. **Image rendering** — Verify all README images use absolute `raw.githubusercontent.com` URLs (not relative paths), so they render on PyPI.
 > 9. **Dependency audit** — Run `pip list --outdated` and flag any major-version-skewed dependencies.
-> 10. **Produce report** — Concise summary of issues found, severity (blocker/minor/nit), and suggested fixes.
+> 10. **New language checklist** — For each new language parser added since last release:
+>     - `pyproject.toml` has the corresponding `tree-sitter-<lang>` dependency in `[project.dependencies]`
+>     - If the package lacks pre-built Linux wheels, all CI workflows have a Rust toolchain step before `pip install`
+>     - `tests/fixtures/realworld/<language>/` exists with `easy/` and `complex/` fixtures
+>     - `tests/test_realworld_fixtures.py` has an entry in `LANGUAGE_DIRS` and a language-specific feature test
+>     - `README.md` language table and `docs/languages-and-manifests.md` include the new language
+> 11. **Build artifact check** — Verify `_build/`, `dist/`, and `*.egg-info` are in `.gitignore` so CI auto-commits don't pollute the repo.
+> 12. **CI workflow dry-run** — For any new `.github/workflows/*.yml` files, verify triggers, permissions, and absence of hardcoded local paths that differ between dev machines and CI runners.
+> 13. **Produce report** — Concise summary of issues found, severity (blocker/minor/nit), and suggested fixes.
 
 ## Steps
 

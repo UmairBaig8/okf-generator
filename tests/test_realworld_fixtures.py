@@ -1,4 +1,4 @@
-"""Tests against 20 real-world fixture projects (easy + complex per language).
+"""Tests against 22 real-world fixture projects (easy + complex per language).
 
 Fixtures at tests/fixtures/realworld/ — 96 files, ~4,500 lines, 13 languages.
 Covers all extraction features: generics, inheritance, decorators, visibility,
