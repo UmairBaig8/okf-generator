@@ -32,10 +32,11 @@ jobs:
           pip install -e ".[dev]"
           python -m pytest tests/ -q --tb=short
 
-      - name: Generate bundle + viz
-        run: |
-          okf generate tests/fixtures/realworld /tmp/okf_bundle
-          okf visualize /tmp/okf_bundle /tmp/viz.html
+      - name: Generate bundle
+        run: okf generate tests/fixtures/realworld /tmp/okf_bundle
+
+      - name: Generate viz (from repo root so source paths resolve)
+        run: okf visualize /tmp/okf_bundle /tmp/viz.html
 
       - name: Copy viz to docs/
         run: |

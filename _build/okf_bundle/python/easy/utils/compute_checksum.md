@@ -1,0 +1,59 @@
+---
+description: Compute hex digest of a string using the specified hash algorithm.
+resource: python/easy/utils.py
+tags:
+- lang:python
+- type:Function
+- module:python
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-02T18:42:01Z'
+title: compute_checksum
+type: Function
+---
+
+# compute_checksum
+
+Compute hex digest of a string using the specified hash algorithm.
+
+## Signature
+
+```python
+def compute_checksum(data: str, algorithm: str = 'sha256') -> str
+```
+
+## Docstring
+
+Compute hex digest of a string using the specified hash algorithm.
+
+Args:
+    data: Input string to hash.
+    algorithm: Hash algorithm name (``sha256``, ``sha1``, ``md5``).
+
+Returns:
+    Hex digest string.
+
+Raises:
+    ValueError: If the algorithm is not supported by ``hashlib``.
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `data` | `str` | `—` |
+| `algorithm` | `str` | `'sha256'` |
+
+## Returns
+`str`
+
+## Source
+Lines 40–58 in `python/easy/utils.py`
+
+## Related
+
+- [utils](/python/easy/utils.md)
+
+## Calls
+
+- [update](/typescript/complex/utils/db/update.md)

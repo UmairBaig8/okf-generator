@@ -68,21 +68,20 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
 
     # Source code reading: best-effort per unique resource path
     # The resource field is relative to the scanned root (e.g. "src/file.py").
-    # We don't store the scanned root, so try multiple common layouts.
+    # We don't store the scanned root, so try multiple base directories.
     code_cache: dict[str, str] = {}
-    # Collect candidate source roots: sibling dirs and their immediate subdirs
-    src_roots: list[Path] = []
-    if bundle_dir.parent.exists():
-        for d in bundle_dir.parent.iterdir():
-            if d.is_dir() and d.name != bundle_dir.name and not d.name.startswith("."):
-                src_roots.append(d)
-                # one level deeper
-                try:
-                    for sub in d.iterdir():
-                        if sub.is_dir() and not sub.name.startswith("."):
-                            src_roots.append(sub)
-                except Exception:
-                    pass
+    # Collect all possible base dirs (parents of bundle + CWD + ancestors up to git root)
+    search_bases: list[Path] = [bundle_dir.parent]
+    try:
+        cwd = Path.cwd().resolve()
+        search_bases.append(cwd)
+        # Walk up from CWD to find git root and all intermediate dirs
+        for parent in cwd.parents:
+            search_bases.append(parent)
+            if (parent / ".git").exists():
+                break
+    except Exception:
+        pass
     for n in nodes:
         resource = n.get("resource", "")
         if not resource:
@@ -90,19 +89,12 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
         if resource in code_cache:
             n["code"] = code_cache[resource]
             continue
-        bp = bundle_dir.parent
-        src_candidates = [
-            bp / resource,
-            bp / resource.lstrip("/"),
-            Path(resource) if resource.startswith("/") else None,
-            bp / resource.split("/")[-1] if "/" in resource else None,
-        ]
-        # Search sibling source directories and their immediate subdirs
-        for root_dir in src_roots:
-            src_candidates.append(root_dir / resource)
-        # Also search inside sub-bundle dirs (bundle_dir / sub_bundle / resource)
-        for sb in [d.name for d in bundle_dir.iterdir() if d.is_dir() and (d / "SUMMARY.md").exists()]:
-            src_candidates.append(bundle_dir / sb / resource)
+        src_candidates = []
+        for base in search_bases:
+            src_candidates.append(base / resource)
+            src_candidates.append(base / resource.lstrip("/"))
+            if "/" in resource:
+                src_candidates.append(base / resource.split("/")[-1])
         found = ""
         for sp in src_candidates:
             if sp:
