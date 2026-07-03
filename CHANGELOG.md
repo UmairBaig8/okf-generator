@@ -94,16 +94,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- **Fuzzy search** — `okf lookup` with substring/prefix/fuzzy matching (not just exact token match)
-- **LLM enrichment CLI** — `okf generate --enrich` with configurable model, resumable per-concept
-- **More manifest formats** — Dockerfile (base images, env vars), docker-compose.yml, .editorconfig, .gitmodules
 - **GitHub Action** — marketplace action to auto-generate bundle on push, PR comments with dep diffs
 - **Dependency impact analysis** — `okf diff --impact` traces which concepts depend on changed deps
 - **Web dashboard** — FastAPI-powered live bundle browser beyond static viz.html
-- **Docker image** — `docker pull okf/okf-generator` for CI without Python toolchain
-- **Pre-commit hook** — auto-update `.okf_bundle` on commit
 - **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
 - **mkdocs documentation site**
+
+---
+
+## [0.1.34] — 2026-07-03
+
+### Added
+- **Fuzzy search** — camelCase/snake_case tokenization, acronym matching (`okf lookup repo` finds `UserRepository`). New `--exact` flag for strict title-only matching.
+- **Dockerfile + Containerfile + docker-compose.yml parsers** — `FROM` → docker dep with tag, `RUN pip install` → pip dep with version, `image:` and `depends_on:` for compose services.
+- **LLM enrichment CLI** — `okf generate --enrich` activates LLM description/docstring enrichment. Gracefully skips when no API key is configured.
+- **`.okfconfig` config system** — extensible flat + sectional config (global `bundle_dir`, feature sections `llm.*`, `serve.*`, `lookup.*`, `mcp.*`, `pairs.*`). No environment variables. `okf config` CLI to view/edit. `okf init` prompts for config interactively.
+- **Pre-commit hook** — `.pre-commit-config.yaml` includes `okf-generate` hook that auto-regenerates bundle when source files change.
+- **Docker image** — `Dockerfile` + GHCR publish workflow on release.
+- **Live Demo** button on landing page with CI-published visualization.
+
+### Changed
+- Config system migrated from env vars to `.okfconfig` file. All `os.environ` lookups removed from generator, pairs, serve, lookup, and init.
+- Default LLM endpoint changed to `http://localhost:8080/v1` (local-first, works with llama.cpp/Ollama out of the box).
+- `okf init` wizard now prompts for config (LLM provider, model, API key) before generating bundle.
+- RELEASE.md expanded with 15-point pre-release audit including feature validation and landing page freshness checks.
+- README.md feature table updated with fuzzy search, Dockerfile/compose, config, pre-commit, Docker image rows.
 
 ---
 
@@ -462,7 +477,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.33...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.34...HEAD
+[0.1.34]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.34
 [0.1.33]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.33
 [0.1.32]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.32
 [0.1.31]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.31

@@ -1,0 +1,29 @@
+---
+description: Dependency from python/easy_v2/requirements.txt
+resource: python/easy_v2/requirements.txt
+tags:
+- lang:manifest
+- type:Dependency
+- module:python
+- domain:easy_v2
+- git:branch:main
+- git:repo:okf-generator
+- version:==8.1.7
+- manifest:requirements.txt
+- ecosystem:pip
+timestamp: '2026-07-02T19:06:43Z'
+title: click
+type: Dependency
+---
+
+# click
+
+Dependency from python/easy_v2/requirements.txt
+
+| Field | Value |
+|-------|-------|
+| Ecosystem | `pip` |
+| Version constraint | `==8.1.7` |
+| Source manifest | `python/easy_v2/requirements.txt` |
+| Dev dependency | `no` |
+| Used by | 0 module(s) |

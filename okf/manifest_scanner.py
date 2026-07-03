@@ -586,7 +586,7 @@ def parse_mix_exs(path: Path) -> list[dict[str, Any]]:
 
 def parse_dockerfile(path: Path) -> list[dict[str, Any]]:
     """Dockerfile. Extracts base images (FROM) and pip packages (RUN pip install).
-    
+
     Detects:
       - FROM <image>[:<tag>] [AS <name>]     → docker base image dependency
       - RUN pip install <package>[==<version>] → pip dependency
@@ -644,7 +644,7 @@ def parse_dockerfile(path: Path) -> list[dict[str, Any]]:
 
 def parse_docker_compose(path: Path) -> list[dict[str, Any]]:
     """docker-compose.yml. Extracts service images and depends_on relations.
-    
+
     Detects:
       - image: <image>[:<tag>]         → docker base image dependency
       - depends_on: [<service>, ...]   → docker service dependency

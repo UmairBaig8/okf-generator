@@ -1,8 +1,8 @@
 # OKF Generator — Test Report
 
-**Date:** 2026-07-03T19:57:00Z
+**Date:** 2026-07-03T20:57:20Z
 **Env:** Darwin / Python 3.14.4
-**Version:** v0.1.32-13-g0b9c975
+**Version:** v0.1.32-27-g1be0299
 **Fixture:** tests/fixtures/realworld (96 files, 13 languages)
 
 ---

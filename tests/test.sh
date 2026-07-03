@@ -120,7 +120,7 @@ else
 fi
 
 step "okf pairs (static)"
-if SKIP_SYNTH=1 okf pairs "$BUNDLE" /tmp/okf_test_pairs.jsonl 2>&1; then
+if okf pairs "$BUNDLE" /tmp/okf_test_pairs.jsonl --skip-synth 2>&1; then
   ok "okf pairs (static) — generated"
 else
   fail "okf pairs (static) — failed"

@@ -1,0 +1,28 @@
+---
+resource: c/complex/linked_list.c
+tags:
+- lang:c
+- type:Function
+- module:c
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-02T18:44:29Z'
+title: list_push_front
+type: Function
+---
+
+# list_push_front
+
+## Signature
+
+```c
+int list_push_front(LinkedList* list, int value)
+```
+
+## Source
+Lines 20–27 in `c/complex/linked_list.c`
+
+## Related
+
+- [linked_list](/c/complex/linked_list.md)
