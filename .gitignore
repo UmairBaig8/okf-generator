@@ -7,3 +7,4 @@ uv.lock
 .github/.DS_Store
 .vscode/settings.json
 .sessions/_build/
+.sessions/
