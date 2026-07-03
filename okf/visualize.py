@@ -105,12 +105,15 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             src_candidates.append(bundle_dir / sb / resource)
         found = ""
         for sp in src_candidates:
-            if sp and sp.exists() and sp.is_file():
+            if sp:
                 try:
-                    found = sp.read_text(encoding="utf-8")
+                    if sp.exists() and sp.is_file():
+                        found = sp.read_text(encoding="utf-8")
+                        break
+                except (PermissionError, OSError):
+                    continue
                 except Exception:
-                    found = ""
-                break
+                    continue
         code_cache[resource] = found
         n["code"] = found
 
