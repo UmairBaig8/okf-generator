@@ -1546,6 +1546,24 @@ def test_cpp_template_function_signature():
     import shutil; shutil.rmtree(tmp)
 
 
+def test_generate_accepts_enrich_flag(tmp_path):
+    """--enrich flag does not crash (requires API key for actual enrichment)."""
+    import subprocess, sys
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "main.py").write_text("def foo():\n    \"\"\"A test function.\"\"\"\n    pass\n")
+    out = tmp_path / "bundle"
+    # Without API key, --enrich should log a warning but not crash
+    result = subprocess.run(
+        [sys.executable, "-m", "okf.cli", "generate", str(src), str(out), "--enrich"],
+        capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0, f"Enrich flag caused crash: stderr={result.stderr[:200]}"
+    assert (out / "index.md").exists()
+    output = (result.stdout + result.stderr).lower()
+    assert "no api key" in output or "skipping" in output, f"Expected warning in output: {output[:300]}"
+
+
 def test_cpp_template_type_params_still_populated():
     """C++ template type_params are populated alongside template prefix."""
     from okf.generator import scan_codebase

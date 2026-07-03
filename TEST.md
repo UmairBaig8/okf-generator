@@ -68,14 +68,20 @@ okf generate tests/fixtures/realworld/python/easy /tmp/py_bundle 2>&1
 ```
 **Verify:** Functions (`slugify`, `chunk_list`), Class (`User`), Dependency from `requirements.txt`.
 
-### 2.3 Empty directory
+### 2.3 Enrich flag does not crash
+```bash
+okf generate tests/fixtures/realworld/python/easy /tmp/enrich_bundle --enrich 2>&1
+```
+**Verify:** Exit 0. Warning about missing API key, but no traceback. Bundle written with all concepts.
+
+### 2.4 Empty directory
 ```bash
 mkdir -p /tmp/empty_test
 okf generate /tmp/empty_test /tmp/empty_bundle 2>&1
 ```
 **Verify:** Exit 0. Warning about no recognized files. Bundle written.
 
-### 2.4 Non-existent path
+### 2.5 Non-existent path
 ```bash
 okf generate /tmp/nope_test /tmp/nope_bundle 2>&1
 ```

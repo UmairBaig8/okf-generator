@@ -3162,7 +3162,11 @@ def main():
     source_dir = Path(sys.argv[1]).resolve()
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
 
-    # Parse --exclude flags (can be repeated)
+    # Parse --enrich and --exclude flags
+    if "--enrich" in sys.argv:
+        os.environ["OKF_ENRICH"] = "1"
+        sys.argv.remove("--enrich")
+
     exclude = []
     i = 3
     while i < len(sys.argv):
@@ -3195,14 +3199,26 @@ def main():
     # --- Optional LLM enrichment (resumable) ---
     enrich = os.environ.get("OKF_ENRICH") == "1"
     if enrich:
-        api_key     = os.environ.get("OKF_API_KEY", "")
+        api_key     = os.environ.get("OKF_API_KEY", "") or os.environ.get("OPENAI_API_KEY", "")
         base_url    = os.environ.get("OKF_BASE_URL", "https://api.anthropic.com/v1")
         model       = os.environ.get("OKF_MODEL", "claude-sonnet-4-6")
         max_workers = int(os.environ.get("OKF_MAX_WORKERS", "2"))
 
+        if not api_key:
+            log.warning("--enrich flag set but no API key found. Set OKF_API_KEY or OPENAI_API_KEY.")
+            log.warning("Skipping LLM enrichment — bundle generated without enrichment.")
+            enrich = False
+            api_key = "sk-unset"  # placeholder so OpenAI client init doesn't crash
+
         try:
             from openai import OpenAI
-            client = OpenAI(api_key=api_key, base_url=base_url)
+            try:
+                client = OpenAI(api_key=api_key, base_url=base_url)
+            except Exception as e:
+                log.warning(f"OpenAI client init failed: {e}")
+                log.warning("Skipping LLM enrichment.")
+                enrich = False
+                raise ImportError()  # fall through to the except below
             log.info(f"LLM enrichment enabled: {model} @ {base_url}")
 
             # Prepare output dirs and lookup so we can write each file immediately
