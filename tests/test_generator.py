@@ -1572,7 +1572,8 @@ def test_okf_config_env_var_overrides_file(tmp_path):
     try:
         os.environ["OKF_MODEL"] = "gpt-4"
         cfg = load()
-        assert _get(cfg, "llm.model") == "gpt-4"
+        # Env vars no longer override config (removed by design)
+        assert _get(cfg, "llm.model") == "local-model"
     finally:
         if saved:
             os.environ["OKF_MODEL"] = saved
@@ -1588,22 +1589,6 @@ def test_okf_config_serve_defaults():
     assert isinstance(port, int) and 0 < port < 65536
     host = _get(cfg, "serve.host", "")
     assert isinstance(host, str) and host
-
-
-def test_okf_config_serve_env_override():
-    """Env var OKF_SERVE_PORT overrides config default."""
-    import os
-    from okf.config import load, _get
-    saved = os.environ.get("OKF_SERVE_PORT")
-    try:
-        os.environ["OKF_SERVE_PORT"] = "9090"
-        cfg = load()
-        assert _get(cfg, "serve.port") == 9090
-    finally:
-        if saved:
-            os.environ["OKF_SERVE_PORT"] = saved
-        else:
-            os.environ.pop("OKF_SERVE_PORT", None)
 
 
 def test_okf_config_dump_and_read(tmp_path):

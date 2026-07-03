@@ -3031,7 +3031,9 @@ def write_bundle(
     ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # ── 1. Write every concept file (skip already-enriched ones) ────────────
-    enrich_enabled = os.environ.get("OKF_ENRICH") == "1"
+    from okf.config import load as load_config, _get
+    _cfg = load_config()
+    enrich_enabled = _get(_cfg, "llm.enabled", False)
     for c in concepts:
         out_path = _concept_output_path(c, output_dir)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -3118,7 +3120,7 @@ def write_bundle(
 # ---------------------------------------------------------------------------
 
 def setup_logging():
-    level = getattr(logging, os.environ.get("LOG_LEVEL", "INFO").upper(), logging.INFO)
+    level = logging.INFO
     logging.basicConfig(
         level=level,
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -3162,9 +3164,9 @@ def main():
     source_dir = Path(sys.argv[1]).resolve()
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
 
-    # Parse --enrich and --exclude flags
-    if "--enrich" in sys.argv:
-        os.environ["OKF_ENRICH"] = "1"
+    # Save --enrich flag before removing from argv for positional parsing
+    _has_enrich_flag = "--enrich" in sys.argv
+    if _has_enrich_flag:
         sys.argv.remove("--enrich")
 
     exclude = []
@@ -3197,14 +3199,14 @@ def main():
         )
 
     # --- Optional LLM enrichment (resumable) ---
-    enrich = os.environ.get("OKF_ENRICH") == "1"
+    from okf.config import load as load_config, _get
+    _cfg = load_config()
+    enrich = _get(_cfg, "llm.enabled", False) or _has_enrich_flag
     if enrich:
-        from okf.config import load as load_config, _get
-        cc = load_config()
-        api_key     = _get(cc, "llm.api_key", "") or os.environ.get("OPENAI_API_KEY", "")
-        base_url    = _get(cc, "llm.base_url", "http://localhost:8080/v1")
-        model       = _get(cc, "llm.model", "local-model")
-        max_workers = int(_get(cc, "llm.max_workers", 2))
+        api_key     = _get(_cfg, "llm.api_key", "")
+        base_url    = _get(_cfg, "llm.base_url", "http://localhost:8080/v1")
+        model       = _get(_cfg, "llm.model", "local-model")
+        max_workers = int(_get(_cfg, "llm.max_workers", 2))
 
         if not api_key:
             log.warning("--enrich flag set but no API key found. Set OKF_API_KEY or OPENAI_API_KEY.")

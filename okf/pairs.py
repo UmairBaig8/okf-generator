@@ -633,7 +633,7 @@ def process_concept(
 # ---------------------------------------------------------------------------
 
 def setup_logging():
-    level = getattr(logging, os.environ.get("LOG_LEVEL", "INFO").upper(), logging.INFO)
+    level = logging.INFO
     logging.basicConfig(
         level=level,
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -655,14 +655,16 @@ def main():
         log.error(f"Bundle directory not found: {bundle_dir}")
         sys.exit(1)
 
-    # --- Config ---
-    skip_synth  = os.environ.get("SKIP_SYNTH") == "1"
-    api_key     = os.environ.get("SYNTH_API_KEY", "llamabarn")
-    base_url    = os.environ.get("SYNTH_BASE_URL", "http://localhost:8080/v1")
-    model       = os.environ.get("SYNTH_MODEL", "ggml-org/gemma-3-4b-it-qat-GGUF:Q4_0")
-    qa_n        = int(os.environ.get("QA_PER_CONCEPT", "3"))
-    max_workers = int(os.environ.get("MAX_WORKERS", "3"))
-    types_env   = os.environ.get("PAIR_TYPES", "codegen,qa,doc,summarize,crosslink")
+    # --- Config (from .okfconfig) ---
+    from okf.config import load as load_config, _get
+    _pcfg = load_config()
+    skip_synth  = "--skip-synth" in sys.argv or "-s" in sys.argv
+    api_key     = _get(_pcfg, "llm.api_key", "")
+    base_url    = _get(_pcfg, "llm.base_url", "http://localhost:8080/v1")
+    model       = _get(_pcfg, "llm.model", "local-model")
+    qa_n        = int(_get(_pcfg, "pairs.qa_per_concept", 3))
+    max_workers = int(_get(_pcfg, "pairs.max_workers", 3))
+    types_env   = _get(_pcfg, "pairs.pair_types", "codegen,qa,doc,summarize,crosslink")
     pair_types  = set(t.strip() for t in types_env.split(","))
 
     log.info(f"Bundle:     {bundle_dir}")

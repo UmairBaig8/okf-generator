@@ -1,28 +1,38 @@
-"""OKF configuration — extensible, env + file, local-first defaults.
+"""OKF configuration — global keys + feature sections, no env vars.
 
-Config file locations (loaded in order, later overrides earlier):
-  .okfconfig                         project-level (cwd)
-  ~/.config/okf/config.json          user-level
+Config file locations:
+  .okfconfig                      project-level (cwd)
+  ~/.config/okf/config.json       user-level global defaults
 
-Extensible design: any key is allowed, grouped by section prefix.
-Currently known sections: llm (future: serve, viz, mcp, ...).
-
-Example .okfconfig:
+Schema (both dotted and nested accepted):
   {
+    "bundle_dir": "./okf_bundle",
+
     "llm": {
+      "enabled": false,
+      "provider": "openai-compatible",
       "base_url": "http://localhost:8080/v1",
       "model": "local-model",
       "api_key": "",
       "max_workers": 2
+    },
+
+    "serve": { "port": 8000, "host": "127.0.0.1" },
+    "lookup": { "limit": 10, "min_score": 0.1 },
+    "mcp": { "port": 0 },
+    "pairs": {
+      "output_file": "./okf_pairs.jsonl",
+      "qa_per_concept": 3,
+      "max_workers": 3,
+      "pair_types": "codegen,qa,doc,summarize,crosslink"
     }
   }
 
-Both dotted ("llm.base_url") and nested ("llm": {"base_url": ...}) work.
-Env vars take precedence: OKF_BASE_URL, OKF_MODEL, OKF_API_KEY, OKF_MAX_WORKERS
+Global keys (at root): bundle_dir
+Sectional keys: llm.*, serve.*, lookup.*, mcp.*, pairs.*
 """
 
 import json
-import os
 from pathlib import Path
 
 CONFIG_FILES = [
@@ -31,30 +41,24 @@ CONFIG_FILES = [
 ]
 
 DEFAULTS = {
-    "llm.base_url": "http://localhost:8080/v1",
-    "llm.model": "local-model",
-    "llm.max_workers": 2,
-    "serve.port": 8000,
-    "serve.host": "127.0.0.1",
-    "lookup.bundle": "./okf_bundle",
-    "lookup.limit": 10,
-    "lookup.min_score": 0.1,
-    "generate.output_dir": "./okf_bundle",
-    "mcp.port": 0,
-    "mcp.host": "127.0.0.1",
-}
-
-ENV_TO_KEY = {
-    "OKF_BASE_URL": "llm.base_url",
-    "OKF_MODEL": "llm.model",
-    "OKF_API_KEY": "llm.api_key",
-    "OKF_MAX_WORKERS": "llm.max_workers",
-    "OKF_SERVE_PORT": "serve.port",
-    "OKF_SERVE_HOST": "serve.host",
-    "OKF_LOOKUP_BUNDLE": "lookup.bundle",
-    "OKF_LOOKUP_LIMIT": "lookup.limit",
-    "OKF_GENERATE_OUTPUT": "generate.output_dir",
-    "OKF_MCP_PORT": "mcp.port",
+    "bundle_dir": "./okf_bundle",
+    "llm": {
+        "enabled": False,
+        "provider": "openai-compatible",
+        "base_url": "http://localhost:8080/v1",
+        "model": "local-model",
+        "api_key": "",
+        "max_workers": 2,
+    },
+    "serve": {"port": 8000, "host": "127.0.0.1"},
+    "lookup": {"limit": 10, "min_score": 0.1},
+    "mcp": {"port": 0},
+    "pairs": {
+        "output_file": "./okf_pairs.jsonl",
+        "qa_per_concept": 3,
+        "max_workers": 3,
+        "pair_types": "codegen,qa,doc,summarize,crosslink",
+    },
 }
 
 
@@ -65,53 +69,46 @@ def _load_file(path: Path) -> dict:
         return {}
 
 
+def load() -> dict:
+    """Load merged config: DEFAULTS ← file ← user file."""
+    cfg = {}
+    _deep_merge(cfg, DEFAULTS)
+
+    for cf in CONFIG_FILES:
+        if cf.exists():
+            data = _load_file(cf)
+            if isinstance(data, dict):
+                _deep_merge(cfg, data)
+    return cfg
+
+
+def _deep_merge(base: dict, overrides: dict):
+    """Recursive dict merge."""
+    for k, v in overrides.items():
+        if k in base and isinstance(base[k], dict) and isinstance(v, dict):
+            _deep_merge(base[k], v)
+        else:
+            base[k] = v
+
+
 def _get(cfg: dict, key: str, default=None):
     """Dot-notation get: cfg['llm.base_url'] → cfg['llm']['base_url']."""
     parts = key.split(".", 1)
     if len(parts) == 1:
         return cfg.get(key, default)
     section = cfg.get(parts[0], {})
-    return section.get(parts[1], default) if isinstance(section, dict) else default
+    if isinstance(section, dict):
+        return section.get(parts[1], default)
+    return default
 
 
 def _set(cfg: dict, key: str, value):
-    """Dot-notation set."""
+    """Dot-notation set (creates nested sections as needed)."""
     parts = key.split(".", 1)
     if len(parts) == 1:
         cfg[key] = value
     else:
         cfg.setdefault(parts[0], {})[parts[1]] = value
-
-
-def load() -> dict:
-    """Load merged config: defaults ← file ← env vars."""
-    cfg = {}
-
-    # Start with defaults
-    for k, v in DEFAULTS.items():
-        _set(cfg, k, v)
-
-    # Layer config files
-    for cf in CONFIG_FILES:
-        if cf.exists():
-            data = _load_file(cf)
-            if isinstance(data, dict):
-                for k, v in data.items():
-                    _set(cfg, k, v)
-
-    # Env vars override
-    for env_key, cfg_key in ENV_TO_KEY.items():
-        val = os.environ.get(env_key)
-        if val:
-            # Auto-convert numeric strings to int
-            try:
-                if val.lstrip("-").isdigit():
-                    val = int(val)
-            except (AttributeError, ValueError):
-                pass
-            _set(cfg, cfg_key, val)
-
-    return cfg
 
 
 def dump(cfg: dict, path: Path | None = None) -> str:

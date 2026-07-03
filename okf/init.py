@@ -201,7 +201,7 @@ def repl_loop(bundle_path: Path):
 def main():
     parser = argparse.ArgumentParser(description="Interactive OKF bundle setup wizard.")
     parser.add_argument("--quick", action="store_true", help="Skip prompts, use defaults")
-    parser.add_argument("--llm", action="store_true", help="Enable LLM-assisted Q&A mode")
+    parser.add_argument("--enrich", action="store_true", help="Enable LLM enrichment")
     parser.add_argument("dir", nargs="?", default=None, help="Source directory (optional)")
     args = parser.parse_args()
 
@@ -226,12 +226,44 @@ def main():
 
     out_name = src_path.name
 
-    # ── Generate bundle ───────────────────────────────────────────────────
+    # ── Output directory ──────────────────────────────────────────────────
     bundle_dir = src_path.parent / f"{out_name}_bundle" if src_path.name not in (".", "..") else src_path / "okf_bundle"
     bundle_str = str(bundle_dir)
     if not args.quick and not args.dir:
         bundle_str = ask("Output directory?", str(bundle_dir))
     bundle_path = Path(bundle_str).resolve()
+
+    # ── Config ────────────────────────────────────────────────────────────
+    cfg = {}
+    cfg["bundle_dir"] = str(bundle_path)
+
+    if args.enrich:
+        cfg["llm"] = {"enabled": True}
+    elif args.quick:
+        cfg["llm"] = {"enabled": False}
+    else:
+        print(f"\n  {clr('Configuration', BOLD)}")
+        if confirm("Enable LLM enrichment? (improves descriptions)", default=False):
+            provider = ask("LLM provider (openai-compatible, anthropic, openai)?", "openai-compatible")
+            base_url = ask("API base URL?", "http://localhost:8080/v1" if provider == "openai-compatible" else "https://api.anthropic.com/v1")
+            model = ask("Model name?", "local-model")
+            api_key = ask("API key (leave blank if not needed)?", "")
+            cfg["llm"] = {
+                "enabled": True,
+                "provider": provider,
+                "base_url": base_url,
+                "model": model,
+                "api_key": api_key,
+                "max_workers": 2,
+            }
+        else:
+            cfg["llm"] = {"enabled": False}
+
+    # Write .okfconfig
+    from okf.config import dump
+    dotfile = Path.cwd() / ".okfconfig"
+    dump(cfg, dotfile)
+    print(f"  {clr('Config written →', GREEN)} {dotfile}")
 
     print(f"  {clr('Generating bundle...', CYAN)}")
     from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
