@@ -717,10 +717,16 @@ Signature: class WorldBankConnector
           <code>Package.swift</code>
         </div>
       </div>
-      <div class="manifest-group">
+        <div class="manifest-group">
         <div class="manifest-group-head"><i class="lang-dot" style="background:#5881D8"></i>other</div>
         <div class="manifest-chips">
           <code>project.clj</code><code>mix.exs</code>
+        </div>
+      </div>
+      <div class="manifest-group" style="margin-top:8px">
+        <div class="manifest-group-head"><i class="lang-dot" style="background:#2496ED"></i>docker</div>
+        <div class="manifest-chips">
+          <code>Dockerfile</code><code>Containerfile</code><code>docker-compose.yml</code>
         </div>
       </div>
     </div>
@@ -782,8 +788,9 @@ Signature: class WorldBankConnector
     </div>
     <table class="cli-table">
       <tr><td>okf generate</td><td>Scan a codebase and write an OKF v0.1 bundle</td></tr>
-      <tr><td>okf lookup</td><td>Search the bundle — by name, type, tag, or source file</td></tr>
-      <tr><td>okf init</td><td>Interactive bundle setup wizard</td></tr>
+      <tr><td>okf lookup</td><td>Search the bundle — by name, type, tag, or source file (fuzzy camelCase/acronym)</td></tr>
+      <tr><td>okf config</td><td>View / set global + per-section settings (.okfconfig)</td></tr>
+      <tr><td>okf init</td><td>Interactive project setup wizard with config prompts</td></tr>
       <tr><td>okf diff</td><td>Compare two bundles: added, removed, changed concepts</td></tr>
       <tr><td>okf summarize</td><td>Regenerate the bundle's SUMMARY.md map</td></tr>
       <tr><td>okf visualize</td><td>Generate a self-contained interactive HTML explorer</td></tr>

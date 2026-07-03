@@ -231,7 +231,13 @@ Every concept in the bundle is deterministic, typed, and cross-referenced — ag
 
 | Capability | How |
 |---|---|
+| Manifest coverage | 19 formats incl. **Dockerfile**, **Containerfile**, **docker-compose.yml** |
+| Smart config | `okf config` / `.okfconfig` — global + per-section settings, no env vars |
+| Quick setup wizard | `okf init` — interactive prompts for source, bundle, LLM enrichment |
+| Pre-commit hook | Auto-regenerates bundle on commit when source files change |
+| Docker image | `ghcr.io/umairbaig8/okf-generator/okf-generator` — CI-ready |
 | Zero-LLM lookups | `okf lookup <Name>` returns full concept detail in milliseconds |
+| Fuzzy / camelCase search | `okf lookup repo` finds `UserRepository`; `okf lookup ur` matches acronyms |
 | Type filters | `okf lookup --type Function | Class | Dependency` |
 | Ecosystem queries | `okf lookup --tag ecosystem:pip` |
 | Source file queries | `okf lookup --file path/to/file.py` |
