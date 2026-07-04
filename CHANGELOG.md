@@ -102,6 +102,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.35] — 2026-07-05
+
+### Added
+- **Named provider registry** — `okf/config.py` now ships built-in provider presets (`anthropic`, `openai`, `deepseek`, `gemini`, `glm`, `openrouter`, `dashscope`, `minimax`, `ollama`, `lmstudio`, `local`) with default `base_url`s. Users reference by name instead of repeating URL+model.
+- **Per-mode provider routing** — `enrich.description`, `enrich.deep`, `enrich.security`, and `enrich.semantic_related` each resolve their own provider independently. Resolution cascade: `enrich.{mode}.{key}` → `providers.{name}.{key}` → `llm.{key}`.
+- **LLM enrichment extensions** — `enrich_concept()` now also sets `design_pattern` and LLM-suggested semantic `tags` (merged, deduped). New `enrich_concept_deep()` second pass (gated behind `enrich.deep.enabled`) reads actual source body via `source_lines` to produce `usage_example`, `side_effects`, `security`, `complexity`.
+- **Deterministic deprecation detection** — `_detect_deprecation()` uses regex over docstring+decorators, no LLM call needed.
+- **`_get()` multi-level dot-notation** — now supports arbitrary depth (e.g. `enrich.deep.provider` resolves correctly).
+- **Anthropic SDK support** — `_resolve_client()` uses `anthropic.Anthropic` for `"anthropic"` provider, `openai.OpenAI` for all others.
+- **7 new unit tests** — provider resolution cascade, per-mode overrides, built-in provider lookups, multi-level `_get`.
+
+### Changed
+- `config.py` DEFAULTS now includes `providers.*` and `enrich.*` sections. Default LLM provider changed to `"local"`.
+- `load()` uses `copy.deepcopy(DEFAULTS)` instead of mutable reference merge — prevents config file loads from mutating module-level defaults (fixes test isolation).
+- `enrich_concept()` now also accepts `inheritance` context in prompt, `max_tokens` bumped 300→400.
+- Version bumped to `0.1.35`.
+
+---
+
 ## [0.1.34] — 2026-07-03
 
 ### Added
@@ -477,7 +496,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.34...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.35...HEAD
+[0.1.35]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.35
 [0.1.34]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.34
 [0.1.33]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.33
 [0.1.32]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.32

@@ -266,6 +266,9 @@ okf visualize /tmp/viz_crash_test /tmp/viz_crash_test.html 2>&1
 | No stale `.pyc` files | `find . -name "*.pyc" -not -path "./.venv/*" -not -path "./dev_wspace/*"` |
 | Realworld fixture scan | pytest `test_realworld_fixtures.py` — 43 tests covering all features |
 | C# interfaces extracted | Lookup `IOrderRepo` in realworld/csharp/complex bundle |
+| Provider config unit tests | `pytest tests/test_generator.py -k "resolve_provider or _get_multi" -q` — 7 tests |
+| Provider resolution cascade | Verify `enrich.{mode}.{key} → providers.{name}.{key} → llm.{key}` in `.okfconfig` |
+| Built-in provider URLs | `providers.anthropic`, `providers.deepseek`, `providers.openai`, etc. all have valid base_urls |
 
 ---
 

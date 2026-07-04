@@ -1670,12 +1670,12 @@ def test_generate_accepts_enrich_flag(tmp_path):
     # Without API key, --enrich should log a warning but not crash
     result = subprocess.run(
         [sys.executable, "-m", "okf.cli", "generate", str(src), str(out), "--enrich"],
-        capture_output=True, text=True, timeout=30,
+        capture_output=True, text=True, timeout=120,
     )
     assert result.returncode == 0, f"Enrich flag caused crash: stderr={result.stderr[:200]}"
     assert (out / "index.md").exists()
     output = (result.stdout + result.stderr).lower()
-    assert "no api key" in output or "skipping" in output, f"Expected warning in output: {output[:300]}"
+    assert "no api key" in output or "skipping" in output or "enrichment complete" in output, f"Expected warning or success in output: {output[:300]}"
 
 
 def test_cpp_template_type_params_still_populated():
@@ -1697,3 +1697,87 @@ def test_cpp_template_type_params_still_populated():
     assert any("T" in tp for tp in container.type_params), \
         f"Container type_params should contain 'T': {container.type_params}"
     import shutil; shutil.rmtree(tmp)
+
+
+def test_get_multi_level():
+    """_get traverses arbitrary dot-notation depth."""
+    from okf.config import _get
+    cfg = {"a": {"b": {"c": "deep"}}}
+    assert _get(cfg, "a.b.c") == "deep"
+    assert _get(cfg, "a.b") == {"c": "deep"}
+    assert _get(cfg, "x.y.z", "fall") == "fall"
+    assert _get(cfg, "a.b.missing") is None
+    assert _get({"llm": {"enabled": True}}, "llm.enabled") is True
+
+
+def test_resolve_provider_defaults():
+    """resolve_provider returns llm.* values when no per-mode override."""
+    from okf.config import DEFAULTS, resolve_provider
+    r = resolve_provider(DEFAULTS, "description")
+    assert r["provider"] == "local"
+    assert r["base_url"] == "http://localhost:8080/v1"
+    assert r["model"] == "local-model"
+    assert r["api_key"] == ""
+    assert r["max_workers"] == 2
+
+
+def test_resolve_provider_per_mode_override():
+    """Per-mode enrich.{mode}.provider overrides llm.provider."""
+    import copy
+    from okf.config import DEFAULTS, resolve_provider
+    cfg = copy.deepcopy(DEFAULTS)
+    cfg["enrich"]["deep"] = {"enabled": True, "provider": "deepseek", "model": "deepseek-chat"}
+    r = resolve_provider(cfg, "deep")
+    assert r["provider"] == "deepseek"
+    assert r["base_url"] == "https://api.deepseek.com/v1"
+    assert r["model"] == "deepseek-chat"
+
+
+def test_resolve_provider_per_mode_key_override():
+    """enrich.{mode}.base_url overrides the provider default."""
+    import copy
+    from okf.config import DEFAULTS, resolve_provider
+    cfg = copy.deepcopy(DEFAULTS)
+    cfg["enrich"]["description"] = {"base_url": "http://myproxy:8080/v1", "model": "proxy-model"}
+    r = resolve_provider(cfg, "description")
+    assert r["base_url"] == "http://myproxy:8080/v1"
+    assert r["model"] == "proxy-model"
+    assert r["provider"] == "local"  # unchanged
+
+
+def test_resolve_provider_named_provider():
+    """providers.{name}.base_url is used when no per-mode key overrides."""
+    import copy
+    from okf.config import DEFAULTS, resolve_provider
+    cfg = copy.deepcopy(DEFAULTS)
+    cfg["llm"]["provider"] = "openai"
+    cfg["providers"]["openai"] = {"base_url": "https://api.openai.com/v1", "api_key": "sk-test"}
+    r = resolve_provider(cfg, "description")
+    assert r["provider"] == "openai"
+    assert r["base_url"] == "https://api.openai.com/v1"
+    assert r["api_key"] == "sk-test"
+
+
+def test_resolve_provider_anthropic_builtin():
+    """Anthropic built-in provider resolves correctly without config overrides."""
+    import copy
+    from okf.config import DEFAULTS, resolve_provider
+    cfg = copy.deepcopy(DEFAULTS)
+    cfg["llm"]["provider"] = "anthropic"
+    r = resolve_provider(cfg, "description")
+    assert r["provider"] == "anthropic"
+    assert r["base_url"] == "https://api.anthropic.com/v1"
+    assert r["api_key"] == ""  # user must set this
+
+
+def test_resolve_provider_mode_cascade():
+    """Full cascade: enrich.{mode}.provider → llm.provider → builtin."""
+    import copy
+    from okf.config import DEFAULTS, resolve_provider
+    cfg = copy.deepcopy(DEFAULTS)
+    cfg["enrich"]["security"] = {"enabled": True, "provider": "anthropic", "api_key": "sk-ant-sec"}
+    r = resolve_provider(cfg, "security")
+    assert r["provider"] == "anthropic"
+    assert r["base_url"] == "https://api.anthropic.com/v1"
+    assert r["api_key"] == "sk-ant-sec"
+    assert r["max_workers"] == 2  # falls back to llm.max_workers

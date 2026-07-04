@@ -101,6 +101,12 @@ class Concept:
     related: list[str] = field(default_factory=list)   # concept IDs to cross-link
     body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
 
+    # deep enrichment (optional, requires reading source body — see enrich_concept_deep)
+    usage_example: str = ""          # short snippet showing real invocation
+    side_effects: str = ""           # mutation / I/O / thread-safety notes
+    design_pattern: str = ""         # e.g. "Factory", "Singleton", "Observer"
+    deprecation_notes: str = ""      # populated deterministically, not by LLM (see _detect_deprecation)
+
     # cross-reference edges (populated by parsers + okf.linker)
     imports: list[str] = field(default_factory=list)    # Module only — raw import names
     calls_raw: list[str] = field(default_factory=list)  # Function/Class/Method — raw callee names
@@ -2492,6 +2498,18 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
     if concept.returns:
         lines.append(f"## Returns\n`{concept.returns}`\n")
 
+    if concept.design_pattern:
+        lines.append(f"## Design Pattern\n{concept.design_pattern}\n")
+
+    if concept.deprecation_notes:
+        lines.append(f"## Deprecation\n{concept.deprecation_notes}\n")
+
+    if concept.usage_example:
+        lines.append(f"## Usage Example\n```\n{concept.usage_example}\n```\n")
+
+    if concept.side_effects:
+        lines.append(f"## Side Effects\n{concept.side_effects}\n")
+
     if concept.methods:
         lines.append("## Methods\n")
         for m in concept.methods:
@@ -2815,19 +2833,27 @@ def write_summary(
 ENRICH_PROMPT = """\
 You are enriching an OKF (Open Knowledge Format) knowledge bundle for a codebase.
 
-Given this code concept, return a JSON object with two fields:
+Given this code concept, return a JSON object with four fields:
 
-  "description" - one clear sentence (max 20 words) summarising what it does,
-                   specific enough to be useful to a developer or AI agent.
-  "docstring"    - a full docstring in Google style:
-                     - First line: one-sentence summary.
-                     - Args section (if it has parameters).
-                     - Returns section (if it returns something).
-                     - Raises section (if relevant).
-                   Omit sections that do not apply.
+  "description"    - one clear sentence (max 20 words) summarising what it does,
+                      specific enough to be useful to a developer or AI agent.
+  "docstring"      - a full docstring in Google style:
+                       - First line: one-sentence summary.
+                       - Args section (if it has parameters).
+                       - Returns section (if it returns something).
+                       - Raises section (if relevant).
+                     Omit sections that do not apply.
+  "tags"           - 0-4 short semantic tags describing PURPOSE, not language/type
+                      (e.g. "auth", "caching", "validation", "io-bound", "parsing").
+                      Do not repeat the language, "function", "class", or module name
+                      as a tag — those are already recorded elsewhere.
+  "design_pattern" - a well-known design pattern name (e.g. "Factory", "Singleton",
+                      "Observer", "Strategy", "Decorator") ONLY if the signature,
+                      inheritance, or name clearly indicates one. Empty string if
+                      none applies or you are not confident — do not force a label.
 
 Rules:
-- Both fields must reference specific names or behaviour from THIS concept.
+- All fields must reference specific names or behaviour from THIS concept.
 - Do NOT invent parameters or return types that are not in the signature.
 - If the existing docstring is already detailed (>80 chars), improve it slightly
   rather than replacing it completely.
@@ -2839,7 +2865,46 @@ Existing docstring: {docstring}
 Signature: {signature}
 Parameters: {params}
 Returns: {returns}
+Inheritance: {inheritance}
 """
+
+
+_MAX_BODY_LINES = 120  # cap so one large class doesn't blow the token budget
+
+def _read_body(concept: Concept, source_dir: Path) -> str:
+    """Best-effort read of the concept's source body using resource + source_lines.
+    Returns '' if anything is missing/unreadable — callers must treat that as
+    'no body available' and skip body-dependent enrichment rather than guessing."""
+    if not concept.resource or not concept.source_lines:
+        return ""
+    start, end = concept.source_lines
+    if not start or not end or end < start:
+        return ""
+    try:
+        path = (source_dir / concept.resource).resolve()
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        snippet = lines[start - 1:end]
+        if len(snippet) > _MAX_BODY_LINES:
+            snippet = snippet[:_MAX_BODY_LINES] + ["# ... truncated ..."]
+        return "\n".join(snippet)
+    except Exception as e:
+        log.debug(f"Could not read body for {concept.title}: {e}")
+        return ""
+
+
+_DEPRECATED_RE = re.compile(r"@deprecated|\bdeprecated\b", re.IGNORECASE)
+
+def _detect_deprecation(concept: Concept) -> str:
+    """Deterministic scan of docstring + decorators for deprecation markers.
+    Not LLM-based — comment/decorator text is either present or it isn't,
+    so a regex is more reliable and cheaper than an inference call."""
+    haystack = " ".join([concept.docstring or "", " ".join(concept.decorators or [])])
+    if _DEPRECATED_RE.search(haystack):
+        for line in (concept.docstring or "").splitlines():
+            if _DEPRECATED_RE.search(line):
+                return line.strip()
+        return "Marked deprecated (see decorators)."
+    return ""
 
 
 def enrich_concept(concept: Concept, client, model: str) -> Concept:
@@ -2856,6 +2921,11 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
             concept.description = concept.docstring.strip().splitlines()[0][:120]
         return concept
 
+    # deterministic — no LLM call needed, do this regardless of needs_desc/needs_doc
+    dep_note = _detect_deprecation(concept)
+    if dep_note:
+        concept.deprecation_notes = dep_note
+
     # build param summary for the prompt
     params_summary = ", ".join(
         p["name"] + (f": {p['annotation']}" if p.get("annotation") else "")
@@ -2869,6 +2939,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         signature=concept.signature or "none",
         params=params_summary,
         returns=concept.returns or "none",
+        inheritance=", ".join(concept.inheritance) if concept.inheritance else "none",
     )
 
     raw = ""  # ensure always bound before try/except
@@ -2876,7 +2947,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=300,
+            max_tokens=400,
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
@@ -2893,6 +2964,18 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         if needs_doc and data.get("docstring"):
             concept.docstring = data["docstring"].strip()
 
+        # tags are additive: keep the deterministic lang/type/module tags and
+        # merge in LLM-suggested semantic tags, deduped, existing ones untouched
+        llm_tags = data.get("tags") or []
+        if isinstance(llm_tags, list):
+            for t in llm_tags:
+                t = str(t).strip().lower()
+                if t and t not in concept.tags:
+                    concept.tags.append(t)
+
+        if data.get("design_pattern"):
+            concept.design_pattern = str(data["design_pattern"]).strip()
+
     except json.JSONDecodeError:
         # fallback: treat whole response as description only
         if needs_desc and raw:
@@ -2902,6 +2985,120 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         log.debug(f"Enrichment failed for {concept.title}: {e}")
 
     return concept
+
+
+DEEP_ENRICH_PROMPT = """\
+You are enriching an OKF (Open Knowledge Format) knowledge bundle for a codebase.
+
+You are given the ACTUAL SOURCE BODY below, not just the signature. Only describe
+behaviour you can see directly in this body — do not speculate about callers,
+inputs from other files, or runtime conditions not visible here.
+
+Return a JSON object with two fields:
+
+  "usage_example" - a short (2-6 line) realistic code snippet showing how to call
+                     this, using only the parameters/return type actually shown.
+                     Empty string if the concept has no meaningful call pattern
+                     (e.g. a plain data class with no methods).
+  "side_effects"   - one sentence on what this mutates, reads/writes (files, env,
+                      network, globals), or "Pure — no observable side effects."
+                      if the body has none of that. Base this ONLY on the body
+                      given; if uncertain, say what is uncertain rather than
+                      asserting purity or impurity you can't confirm.
+
+Reply with ONLY the JSON object, no markdown fences, no preamble.
+
+Concept type: {type}
+Name: {title}
+Signature: {signature}
+Source body:
+{body}
+"""
+
+
+def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) -> Concept:
+    """Second-pass enrichment that requires the actual source body.
+    Skips silently (no call made) if the body can't be resolved, rather than
+    falling back to signature-only guessing for fields that need real code."""
+    if concept.type not in {"Function", "Class", "Method"}:
+        return concept
+    if concept.usage_example and concept.side_effects:
+        return concept  # already enriched
+
+    body = _read_body(concept, source_dir)
+    if not body:
+        log.debug(f"No body available for {concept.title}, skipping deep enrichment")
+        return concept
+
+    prompt = DEEP_ENRICH_PROMPT.format(
+        type=concept.type,
+        title=concept.title,
+        signature=concept.signature or "none",
+        body=body,
+    )
+
+    try:
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=350,
+            temperature=0.1,
+        )
+        raw = (resp.choices[0].message.content or "").strip()
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw).strip()
+        data = json.loads(raw)
+
+        if data.get("usage_example"):
+            concept.usage_example = str(data["usage_example"]).strip()
+        if data.get("side_effects"):
+            concept.side_effects = str(data["side_effects"]).strip()
+
+    except json.JSONDecodeError:
+        log.debug(f"Deep-enrich JSON parse failed for {concept.title}")
+    except Exception as e:
+        log.debug(f"Deep enrichment failed for {concept.title}: {e}")
+
+    return concept
+
+
+# ---------------------------------------------------------------------------
+# Client resolver — per-mode provider dispatch
+# ---------------------------------------------------------------------------
+
+def _resolve_client(cfg: dict, mode: str):
+    """Create an LLM client for the given enrich mode.
+
+    Resolves provider via config.resolve_provider(), then instantiates
+    the appropriate SDK client. Returns (client, resolved_dict) or
+    raises ImportError if the required SDK is missing.
+
+    For anthropic provider -> anthropic.Anthropic client
+    For all others        -> openai.OpenAI client (OpenAI-compatible)
+    """
+    from okf.config import resolve_provider
+    r = resolve_provider(cfg, mode)
+    api_key = r["api_key"]
+    base_url = r["base_url"]
+
+    if r["provider"] == "anthropic":
+        try:
+            from anthropic import Anthropic
+        except ImportError:
+            log.warning("anthropic package not installed. Install with: pip install anthropic")
+            raise
+        client = Anthropic(api_key=api_key)
+    else:
+        try:
+            from openai import OpenAI
+        except ImportError:
+            log.warning("openai package not installed. Install with: pip install openai")
+            raise
+        if not api_key:
+            api_key = "sk-unset"  # placeholder so client init doesn't crash
+        client = OpenAI(api_key=api_key, base_url=base_url)
+
+    return client, r
 
 
 # ---------------------------------------------------------------------------
@@ -3202,80 +3399,79 @@ def main():
     from okf.config import load as load_config, _get
     _cfg = load_config()
     enrich = _get(_cfg, "llm.enabled", False) or _has_enrich_flag
+    client = None
     if enrich:
-        api_key     = _get(_cfg, "llm.api_key", "")
-        base_url    = _get(_cfg, "llm.base_url", "http://localhost:8080/v1")
-        model       = _get(_cfg, "llm.model", "local-model")
-        max_workers = int(_get(_cfg, "llm.max_workers", 2))
-
-        if not api_key:
-            log.warning("--enrich flag set but no API key found. Set OKF_API_KEY or OPENAI_API_KEY.")
-            log.warning("Skipping LLM enrichment — bundle generated without enrichment.")
-            enrich = False
-            api_key = "sk-unset"  # placeholder so OpenAI client init doesn't crash
-
         try:
-            from openai import OpenAI
-            try:
-                client = OpenAI(api_key=api_key, base_url=base_url)
-            except Exception as e:
-                log.warning(f"OpenAI client init failed: {e}")
-                log.warning("Skipping LLM enrichment.")
-                enrich = False
-                raise ImportError()  # fall through to the except below
-            log.info(f"LLM enrichment enabled: {model} @ {base_url}")
-
-            # Prepare output dirs and lookup so we can write each file immediately
-            output_dir.mkdir(parents=True, exist_ok=True)
-            concepts = _dedup_concept_ids(concepts)
-            all_map_enrich: dict[str, Concept] = {c.concept_id: c for c in concepts}
-
-            def _concept_path(c: Concept) -> Path:
-                return _concept_output_path(c, output_dir)
-
-            def _is_already_enriched(c: Concept) -> bool:
-                """Return True if the on-disk .md already has rich description + docstring."""
-                p = _concept_path(c)
-                if not p.exists():
-                    return False
-                try:
-                    raw = p.read_text(encoding="utf-8", errors="replace")
-                    parts = raw.split("---", 2)
-                    if len(parts) < 3:
-                        return False
-                    fm = yaml.safe_load(parts[1]) or {}
-                    desc = fm.get("description", "")
-                    has_doc = "## Docstring" in parts[2] and len(parts[2]) > 200
-                    return len(desc) > 120 and has_doc
-                except Exception:
-                    return False
-
-            def _enrich_and_write(c: Concept) -> Concept:
-                enriched = enrich_concept(c, client, model)
-                path = _concept_path(enriched)
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(render_concept(enriched, all_map_enrich), encoding="utf-8")
-                return enriched
-
-            to_enrich   = [c for c in concepts if c.type in {"Function", "Class", "Method"} and not _is_already_enriched(c)]
-            skipped_ok  = sum(1 for c in concepts if c.type in {"Function", "Class", "Method"} and _is_already_enriched(c))
-            log.info(f"To enrich: {len(to_enrich)}  |  already done (skipped): {skipped_ok}")
-
-            done = errors = 0
-            with ThreadPoolExecutor(max_workers=max_workers) as pool:
-                futures = {pool.submit(_enrich_and_write, c): c for c in to_enrich}
-                for future in tqdm(as_completed(futures), total=len(futures), desc="Enriching"):
-                    try:
-                        future.result()
-                        done += 1
-                    except Exception as e:
-                        errors += 1
-                        log.debug(f"Enrichment error: {e}")
-
-            log.info(f"Enrichment complete: {done} enriched, {errors} errors, {skipped_ok} skipped")
-
+            client, r = _resolve_client(_cfg, "description")
+            model = r["model"]
+            base_url = r["base_url"]
+            max_workers = r["max_workers"]
+            log.info(f"LLM enrichment enabled: {r['provider']}/{model} @ {base_url}")
         except ImportError:
-            log.warning("openai not installed — skipping enrichment")
+            log.warning("Skipping LLM enrichment.")
+
+    if client:
+        # Resolve deep enrichment client (may use a different provider)
+        deep_client = None
+        deep_model = None
+        if _get(_cfg, "enrich.deep.enabled", False):
+            try:
+                deep_client, deep_r = _resolve_client(_cfg, "deep")
+                deep_model = deep_r["model"]
+                log.info(f"Deep enrichment enabled: {deep_r['provider']}/{deep_model} @ {deep_r['base_url']}")
+            except ImportError:
+                log.warning("Deep enrichment disabled.")
+
+        # Prepare output dirs and lookup so we can write each file immediately
+        output_dir.mkdir(parents=True, exist_ok=True)
+        concepts = _dedup_concept_ids(concepts)
+        all_map_enrich: dict[str, Concept] = {c.concept_id: c for c in concepts}
+
+        def _concept_path(c: Concept) -> Path:
+            return _concept_output_path(c, output_dir)
+
+        def _is_already_enriched(c: Concept) -> bool:
+            """Return True if the on-disk .md already has rich description + docstring."""
+            p = _concept_path(c)
+            if not p.exists():
+                return False
+            try:
+                raw = p.read_text(encoding="utf-8", errors="replace")
+                parts = raw.split("---", 2)
+                if len(parts) < 3:
+                    return False
+                fm = yaml.safe_load(parts[1]) or {}
+                desc = fm.get("description", "")
+                has_doc = "## Docstring" in parts[2] and len(parts[2]) > 200
+                return len(desc) > 120 and has_doc
+            except Exception:
+                return False
+
+        def _enrich_and_write(c: Concept) -> Concept:
+            enriched = enrich_concept(c, client, model)
+            if deep_client:
+                enriched = enrich_concept_deep(enriched, deep_client, deep_model, source_dir)
+            path = _concept_path(enriched)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(render_concept(enriched, all_map_enrich), encoding="utf-8")
+            return enriched
+
+        to_enrich   = [c for c in concepts if c.type in {"Function", "Class", "Method"} and not _is_already_enriched(c)]
+        skipped_ok  = sum(1 for c in concepts if c.type in {"Function", "Class", "Method"} and _is_already_enriched(c))
+        log.info(f"To enrich: {len(to_enrich)}  |  already done (skipped): {skipped_ok}")
+
+        done = errors = 0
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {pool.submit(_enrich_and_write, c): c for c in to_enrich}
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Enriching"):
+                try:
+                    future.result()
+                    done += 1
+                except Exception as e:
+                    errors += 1
+                    log.debug(f"Enrichment error: {e}")
+
+        log.info(f"Enrichment complete: {done} enriched, {errors} errors, {skipped_ok} skipped")
 
     # --- Write bundle ---
     log_entries = [

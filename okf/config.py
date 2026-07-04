@@ -17,6 +17,27 @@ Schema (both dotted and nested accepted):
       "max_workers": 2
     },
 
+    "providers": {
+      "anthropic": { "base_url": "https://api.anthropic.com/v1", "api_key": "" },
+      "openai": { "base_url": "https://api.openai.com/v1", "api_key": "" },
+      "deepseek": { "base_url": "https://api.deepseek.com/v1", "api_key": "" },
+      "gemini": { "base_url": "https://generativelanguage.googleapis.com/v1beta/openai", "api_key": "" },
+      "glm": { "base_url": "https://open.bigmodel.cn/api/paas/v4", "api_key": "" },
+      "openrouter": { "base_url": "https://openrouter.ai/api/v1", "api_key": "" },
+      "dashscope": { "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1", "api_key": "" },
+      "minimax": { "base_url": "https://api.minimax.io/v1", "api_key": "" },
+      "ollama": { "base_url": "http://localhost:11434/v1", "api_key": "" },
+      "lmstudio": { "base_url": "http://localhost:1234/v1", "api_key": "" },
+      "local": { "base_url": "http://localhost:8080/v1", "api_key": "" }
+    },
+
+    "enrich": {
+      "description": { "model": "", "max_workers": 2 },
+      "deep": { "enabled": false, "model": "", "max_workers": 2 },
+      "security": { "enabled": false, "model": "", "max_workers": 2 },
+      "semantic_related": { "enabled": false, "max_workers": 2 }
+    },
+
     "serve": { "port": 8000, "host": "127.0.0.1" },
     "lookup": { "limit": 10, "min_score": 0.1 },
     "mcp": { "port": 0 },
@@ -28,8 +49,14 @@ Schema (both dotted and nested accepted):
     }
   }
 
+Provider resolution (applied in order):
+  1. enrich.{mode}.{key}          — per-mode override
+  2. providers.{provider}.{key}   — named provider defaults
+  3. llm.{key}                    — global fallback
+  4. hardcoded default            — code-level fallback
+
 Global keys (at root): bundle_dir
-Sectional keys: llm.*, serve.*, lookup.*, mcp.*, pairs.*
+Sectional keys: llm.*, providers.*, enrich.*, serve.*, lookup.*, mcp.*, pairs.*
 """
 
 import json
@@ -40,15 +67,36 @@ CONFIG_FILES = [
     Path.home() / ".config" / "okf" / "config.json",
 ]
 
+BUILTIN_PROVIDERS = {
+    "anthropic": {"base_url": "https://api.anthropic.com/v1", "api_key": ""},
+    "openai": {"base_url": "https://api.openai.com/v1", "api_key": ""},
+    "deepseek": {"base_url": "https://api.deepseek.com/v1", "api_key": ""},
+    "gemini": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai", "api_key": ""},
+    "glm": {"base_url": "https://open.bigmodel.cn/api/paas/v4", "api_key": ""},
+    "openrouter": {"base_url": "https://openrouter.ai/api/v1", "api_key": ""},
+    "dashscope": {"base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1", "api_key": ""},
+    "minimax": {"base_url": "https://api.minimax.io/v1", "api_key": ""},
+    "ollama": {"base_url": "http://localhost:11434/v1", "api_key": ""},
+    "lmstudio": {"base_url": "http://localhost:1234/v1", "api_key": ""},
+    "local": {"base_url": "http://localhost:8080/v1", "api_key": ""},
+}
+
 DEFAULTS = {
     "bundle_dir": "./okf_bundle",
     "llm": {
         "enabled": False,
-        "provider": "openai-compatible",
+        "provider": "local",
         "base_url": "http://localhost:8080/v1",
         "model": "local-model",
         "api_key": "",
         "max_workers": 2,
+    },
+    "providers": dict(BUILTIN_PROVIDERS),
+    "enrich": {
+        "description": {"model": "", "max_workers": 2},
+        "deep": {"enabled": False, "model": "", "max_workers": 2},
+        "security": {"enabled": False, "model": "", "max_workers": 2},
+        "semantic_related": {"enabled": False, "max_workers": 2},
     },
     "serve": {"port": 8000, "host": "127.0.0.1"},
     "lookup": {"limit": 10, "min_score": 0.1},
@@ -71,8 +119,8 @@ def _load_file(path: Path) -> dict:
 
 def load() -> dict:
     """Load merged config: DEFAULTS ← file ← user file."""
-    cfg = {}
-    _deep_merge(cfg, DEFAULTS)
+    import copy
+    cfg = copy.deepcopy(DEFAULTS)
 
     for cf in CONFIG_FILES:
         if cf.exists():
@@ -92,14 +140,53 @@ def _deep_merge(base: dict, overrides: dict):
 
 
 def _get(cfg: dict, key: str, default=None):
-    """Dot-notation get: cfg['llm.base_url'] → cfg['llm']['base_url']."""
-    parts = key.split(".", 1)
-    if len(parts) == 1:
-        return cfg.get(key, default)
-    section = cfg.get(parts[0], {})
-    if isinstance(section, dict):
-        return section.get(parts[1], default)
-    return default
+    """Dot-notation get: cfg['llm.base_url'] → cfg['llm']['base_url'].
+    Supports arbitrary depth: cfg['enrich.deep.provider'] → cfg['enrich']['deep']['provider']."""
+    parts = key.split(".")
+    current = cfg
+    for part in parts:
+        if not isinstance(current, dict):
+            return default
+        current = current.get(part)
+        if current is None:
+            return default
+    return current
+
+
+def resolve_provider(cfg: dict, mode: str) -> dict:
+    """Resolve provider config for an enrich mode.
+
+    Resolution cascade:
+      1. enrich.{mode}.provider      — per-mode provider override
+      2. llm.provider                — global provider
+      3. "local"                     — fallback
+
+    Returns dict with keys: provider, base_url, model, api_key, max_workers
+    """
+    provider = _get(cfg, f"enrich.{mode}.provider") or _get(cfg, "llm.provider", "local")
+    prov_cfg = _get(cfg, f"providers.{provider}", {})
+    return {
+        "provider": provider,
+        "base_url": (
+            _get(cfg, f"enrich.{mode}.base_url")
+            or prov_cfg.get("base_url")
+            or _get(cfg, "llm.base_url", "http://localhost:8080/v1")
+        ),
+        "model": (
+            _get(cfg, f"enrich.{mode}.model")
+            or prov_cfg.get("model")
+            or _get(cfg, "llm.model", "local-model")
+        ),
+        "api_key": (
+            _get(cfg, f"enrich.{mode}.api_key")
+            or prov_cfg.get("api_key")
+            or _get(cfg, "llm.api_key", "")
+        ),
+        "max_workers": int(
+            _get(cfg, f"enrich.{mode}.max_workers")
+            or _get(cfg, "llm.max_workers", 2)
+        ),
+    }
 
 
 def _set(cfg: dict, key: str, value):
