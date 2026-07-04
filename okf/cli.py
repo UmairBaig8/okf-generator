@@ -2,6 +2,9 @@
 
 Commands:
   okf generate   <source_dir> [output_dir]   Generate OKF bundle from codebase
+  okf generate --enrich [base|deep|security|full]  Enrich with mode selection
+  okf enrich     <bundle_dir> [--mode base|deep|security|full] [--src <path>]
+                                               Enrich an EXISTING bundle
   okf lookup     <query> [options]            Look up a concept in a bundle
   okf diff       <old> <new>                  Diff two bundles (added/removed/changed)
   okf pairs      <bundle_dir> [output_file]  Convert bundle to training pairs
@@ -234,6 +237,8 @@ def main():
     elif cmd == "generate":
         if rest and rest[0] == "--summarize":
             sys.argv = ["okf generate", "--summarize"] + rest[1:]
+        elif rest and rest[0] == "--security":
+            sys.argv = ["okf generate", "--security"] + rest[1:]
         from okf.generator import main as _main
         _main()
 
@@ -241,6 +246,26 @@ def main():
         sys.argv = ["okf generate", "--summarize"] + rest
         from okf.generator import main as _main
         _main()
+
+    elif cmd == "enrich":
+        from pathlib import Path
+        from okf.generator import enrich_bundle
+        bundle_dir = Path(rest[0]).resolve() if rest else Path("okf_bundle").resolve()
+        mode = "security"
+        source_dir = None
+        rest_args = rest[1:] if len(rest) > 1 else []
+        for i, a in enumerate(rest_args):
+            if a == "--mode" and i + 1 < len(rest_args):
+                mode = rest_args[i + 1]
+            elif a == "--src" and i + 1 < len(rest_args):
+                source_dir = Path(rest_args[i + 1]).resolve()
+            elif a == "--force":
+                pass  # passed through
+        if mode not in {"base", "deep", "security", "full"}:
+            print(f"Unknown mode: {mode!r}. Use: base, deep, security, full")
+            sys.exit(1)
+        enrich_bundle(bundle_dir, mode=mode, source_dir=source_dir, force="--force" in rest_args or "--force" in rest)
+        sys.exit(0)
 
     elif cmd == "config":
         from okf.config import load, dump, CONFIG_FILES, _get

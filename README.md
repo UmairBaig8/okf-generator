@@ -131,7 +131,9 @@ No re-reading the file. No guessing. No LLM call required.
 
 **4. Consume** — 8 commands: `lookup`, `pairs`, `diff`, `visualize`, `mcp`, `serve`, `init`, `summarize`.
 
-LLM enrichment is optional, resumable, and works with any OpenAI-compatible endpoint (Claude, Ollama, llama.cpp). Extraction itself is fully deterministic and offline-capable.
+**5. Enrich (optional)** — 4 modes to enhance description, docstring, security, and cross-links. Runs at generate time or standalone against an existing bundle.
+
+Extraction is fully deterministic and offline-capable. Enrichment is optional, resumable, and works with any AI provider.
 
 ### Used by / Built for
 
@@ -277,17 +279,43 @@ Cloud models have massive context windows. Local SLMs (Gemma 3 4B, Llama 3.2, Ph
 
 `okf lookup` solves this with **exact-symbol retrieval**: the agent sends a 50-token query and gets back a 200-token concept card. No embeddings, no vector DB, no RAG pipeline. This makes local coding assistants viable for enterprise-scale codebases.
 
+### Enrichment modes
+
+Choose how deep the LLM goes — all modes are resumable (interrupt and rerun freely, already-enriched concepts are skipped):
+
+| Mode | What it does | Needs source body? |
+|------|-------------|:---:|
+| `base` | Improves descriptions + docstrings (Google-style) | ❌ |
+| `deep` | Adds usage examples, side effects, security notes, complexity estimates | ✅ |
+| `security` | Audits existing bundle for visible risk patterns only | ✅ |
+| `full` | All of the above + semantic related-links | ✅ |
+
 ```bash
-# Enrichment with a local llama.cpp server (MacBook-friendly)
-OKF_ENRICH=1 \
-OKF_BASE_URL="http://localhost:8080/v1" \
-OKF_API_KEY="llamabarn" \
-OKF_MODEL="ggml-org/gemma-3-4b-it-qat-GGUF:Q4_0" \
-OKF_MAX_WORKERS=2 \
-okf generate ./my_project ./okf_bundle
+# Enrich at generate time
+okf generate ./my_project ./okf_bundle --enrich deep
+
+# Or enrich an existing bundle (no re-scan needed)
+okf enrich ./okf_bundle --mode full
 ```
 
-Enrichment works with any OpenAI-compatible endpoint — Ollama, llama.cpp, vLLM, or cloud APIs (Claude, GPT). It is **resumable**: interrupt and rerun freely, already-enriched concepts are skipped.
+### Multi-provider routing
+
+Each enrich mode can use a different provider. Route cheap description work to local llama.cpp and security audits to a stronger cloud model — all from one config file:
+
+```json
+{
+  "llm": { "provider": "local", "base_url": "http://localhost:8080/v1" },
+  "enrich": {
+    "description": { "provider": "local", "model": "gemma-3-4b-it-qat:Q4_0" },
+    "deep": { "enabled": true, "provider": "deepseek", "model": "deepseek-chat" },
+    "security": { "enabled": true, "provider": "anthropic" }
+  }
+}
+```
+
+Built-in provider presets: `local`, `openai`, `anthropic`, `deepseek`, `gemini`, `glm`, `ollama`, `lmstudio`, `openrouter`, `dashscope`, `minimax`.
+
+Enrichment works with any OpenAI-compatible endpoint — Ollama, llama.cpp, vLLM, or cloud APIs (Claude, GPT, DeepSeek, GLM).
 
 ---
 
@@ -325,22 +353,25 @@ Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as 
 
 ## Language & Manifest Coverage
 
-### Code Languages (12)
+### Code Languages (13)
 
-| Language | Parser | Extracts |
-|---|---|---|
-| Python | stdlib `ast` | Functions, classes, methods, params, return types, docstrings, decorators, inheritance, type params |
-| JavaScript / TypeScript | tree-sitter | Functions, arrow fns, classes, methods, JSDoc, generics, heritage (extends/implements) |
-| Go | tree-sitter | Funcs, methods, structs, interfaces, GoDoc, type params (Go 1.18+) |
-| Java | tree-sitter | Classes, methods, constructors, Javadoc, generics, inheritance (extends/implements), annotations |
-| Rust | tree-sitter | Fns, structs, enums, traits, impl blocks, `///`, generics, attributes |
-| **Swift** | tree-sitter | Classes, structs, enums, protocols, generics, methods, properties, doc comments |
-| **Kotlin** | tree-sitter | Classes, data classes, objects, enums, interfaces, generics, functions, constructor params |
-| Ruby | tree-sitter | Defs, classes, modules, `#` comments, superclass |
-| C | tree-sitter | Functions, structs with `/**` doc comments |
-| C++ | tree-sitter | Functions, classes, structs, methods, templates, base classes |
-| C# | tree-sitter | Classes, methods, generics, attributes, base types |
-| SQL | tree-sitter | Tables, views, functions, indexes, types, triggers |
+Each language lives in its own file under `okf/parsers/`. Adding a new language requires one file + one registry entry — no changes to the core generator.
+
+| Language | File | Parser | Extracts |
+|----------|------|--------|----------|
+| Python | `parsers/python.py` | stdlib `ast` | Functions, classes, methods, params, return types, docstrings, decorators, inheritance, type params |
+| JavaScript / TypeScript | `parsers/javascript.py` | tree-sitter | Functions, arrow fns, methods, classes, interfaces, type aliases, enums, JSDoc, generics, heritage, visibility |
+| Go | `parsers/go.py` | tree-sitter | Funcs, methods, structs, interfaces, GoDoc, type params (Go 1.18+) |
+| Java | `parsers/java.py` | tree-sitter | Classes, interfaces, enums, methods, constructors, Javadoc, generics, annotations, visibility, inheritance, fields |
+| Rust | `parsers/rust.py` | tree-sitter | Fns, structs, enums, traits, impl blocks, `///`/`//!`, generics, `#[derive]`, visibility |
+| Swift | `parsers/swift.py` | tree-sitter | Classes, structs, enums, protocols (→Interface), generics, methods, init, doc comments |
+| Kotlin | `parsers/kotlin.py` | tree-sitter | Classes, data classes, objects, enums, interfaces, generics, constructor params, visibility |
+| Ruby | `parsers/ruby.py` | tree-sitter | Defs, classes, modules, `#`/YARD doc comments, superclass |
+| C | `parsers/c.py` | tree-sitter | Functions, structs, enums, typedefs, `/**` doc comments |
+| C++ | `parsers/cpp.py` | tree-sitter | Functions, classes, methods, templates, base classes, visibility |
+| C# | `parsers/csharp.py` | tree-sitter | Classes, methods, generics, attributes, base types, visibility, fields |
+| SQL | `parsers/sql.py` | tree-sitter | Tables (columns, PK, FK, constraints), views, functions, indexes, triggers |
+| _new_ | `parsers/your_lang.py` | tree-sitter | You define it — see [development guide](docs/development.md) |
 
 ### Manifest / Build Formats (17)
 
@@ -369,7 +400,8 @@ okf --version           Show version
 
 | Command | Usage |
 |---|---|
-| `generate` | `okf generate <source_dir> [output_dir]` |
+| `generate` | `okf generate <source_dir> [output_dir] [--enrich [mode]]` |
+| `enrich` | `okf enrich <bundle_dir> [--mode mode] [--src path]` |
 | `lookup` | `okf lookup <query>` |
 | `diff` | `okf diff <old_bundle> <new_bundle>` |
 | `pairs` | `okf pairs <bundle_dir> [output_file]` |
@@ -452,11 +484,13 @@ okf install cline       # Cline rules
 
 | | **okf-generator** | Other OKF producers |
 |---|---|---|
-| Language coverage | 12 languages (Python, JS/TS, Go, Java, Rust, Swift, Kotlin, Ruby, SQL, C, C++, C#) | Usually 1 language or doc-only |
+| Language coverage | 13 languages, modular parsers (`okf/parsers/*.py`) — add one in minutes | Usually 1 language or doc-only |
 | Cross-reference linking | Imports → dependencies, function calls → caller/callee across all languages | Not typically supported |
 | Dependency/manifest parsing | 17 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, +7) | Not typically supported |
 | Extraction | Zero-LLM, deterministic, offline | Often LLM-required for every concept |
-| Optional enrichment | Any OpenAI-compatible endpoint (Claude, local llama.cpp, Ollama) | Often locked to one vendor |
+| Enrichment modes | 4 tiers (`base`, `deep`, `security`, `full`) — per-model provider routing | Usually 1 mode, 1 provider |
+| Multi-provider routing | Route each enrich mode to a different provider (local LLM for descriptions, cloud for security) | Often locked to one vendor |
+| Post-hoc enrichment | `okf enrich` runs against existing bundle — no re-scan. Source origin auto-loaded from bundle metadata | Not supported |
 | Training data export | Built-in JSONL pair generator (5 pair types) | Not typically included |
 | Agent compatibility | Any agent that can run a CLI (Claude Code, Cursor, Windsurf, Copilot, OpenCode, Cline) | Often single-agent focused |
 
@@ -473,7 +507,7 @@ No. Core extraction (`okf generate`) is fully offline and deterministic — no L
 RAG retrieves chunks by semantic similarity, which is approximate and can miss exact symbols. `okf lookup` is exact: it indexes real functions, classes, modules, and dependencies by name and resolves to the precise concept, with zero embedding/vector infrastructure required.
 
 **What happens if my language is not supported?**
-Unsupported files are skipped, not dropped silently — `log.md` records what was scanned. Adding a new language is a self-contained tree-sitter grammar mapping; see [CONTRIBUTING.md](CONTRIBUTING.md) — it is a listed good-first-issue.
+Unsupported files are skipped, not dropped silently — `log.md` records what was scanned. Adding a new language is a self-contained tree-sitter grammar mapping: create `okf/parsers/your_lang.py` and add one line to the extension registry. See [docs/development.md](docs/development.md) for the step-by-step guide.
 
 **Does this work on monorepos / very large codebases?**
 Yes — the bundle mirrors your source tree, so scanning is linear in file count. For very large repos, scope `okf generate` to a subdirectory if you only need part of the codebase indexed.

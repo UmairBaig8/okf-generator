@@ -102,6 +102,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.36] — 2026-07-05
+
+### Added
+- **Modular parser architecture** — All 13 language parsers extracted from `generator.py` into `okf/parsers/` (one file per language). Adding a new language is a single file + single registry entry. See `docs/development.md`.
+- **`okf enrich` command** — Standalone enrichment of an existing bundle without re-scanning. Reads `source_root` from bundle `index.md` frontmatter (stored at generate time). Usage: `okf enrich <bundle_dir> [--mode base|deep|security|full]`.
+- **Enrichment mode selection** — `--enrich` now accepts mode qualifiers: `--enrich base` (descriptions/docstrings), `--enrich deep` (+usage examples, side effects, security, complexity), `--enrich security` (risk audit only), `--enrich full` (all passes). Backward compatible — plain `--enrich` defaults to `base`.
+- **`--security` standalone mode** — `okf generate --security <source_dir> <bundle_dir>` audits security/complexity on an existing bundle. Uses `_upsert_section()` for surgical file patching — only touches Security/Complexity sections, leaves all others intact.
+- **Semantic related-links pass** — `enrich_related_semantic()` uses LLM to find relevant cross-links beyond the call graph. Gated behind `enrich.semantic_related.enabled`. Includes deterministic candidate pre-filtering (`_candidate_pool()`) to keep prompt sizes bounded.
+- **`source_root` stored in bundle metadata** — `render_root_index()` writes `source_root` to `index.md` frontmatter. `_read_source_root()` reads it back. `_read_body()` falls back to bundle metadata when no source dir is provided.
+- **`_get()` multi-level dot-notation** — now supports arbitrary depth (e.g. `enrich.deep.provider`).
+- **Anthropic SDK support** — `_resolve_client()` uses `anthropic.Anthropic` for "anthropic" provider, `openai.OpenAI` for all others.
+- **`docs/development.md`** — New developer guide with full parser onboarding walkthrough, method reference table, and shared utilities index.
+- **7 new unit tests** — provider resolution cascade, per-mode overrides, built-in provider lookups, multi-level `_get`.
+- **6 new CLI test scenarios in TEST.md** — `okf enrich` modes and `--enrich` mode qualifier validation.
+
+### Changed
+- `generator.py` reduced from 3509 to ~1630 lines — all parsers extracted to `okf/parsers/`. Remaining code (rendering, enrichment, scanning, writer, main) is focused and readable.
+- `Concept` dataclass moved to `okf/parsers/base.py` — re-exported from `generator.py` for backward compat.
+- `config.py` DEFAULTS now includes `providers.*` and `enrich.*` sections. Default LLM provider changed to `"local"`.
+- `load()` uses `copy.deepcopy(DEFAULTS)` instead of mutable reference merge — fixes test isolation.
+- `DEEP_ENRICH_PROMPT` expanded from 2 fields to 4 (usage_example, side_effects, security, complexity). `max_tokens` bumped 350→500.
+- `_read_body()` now accepts optional `bundle_dir` parameter for body-dependent passes without a source directory argument.
+- CLI docstring updated to document `--enrich` modes and `okf enrich` command.
+- README updated: new Enrichment Modes section, multi-provider routing config example, modular parsers table with file paths, comparison table with 2 new rows, FAQ links to `docs/development.md`.
+- Version bumped to `0.1.36`.
+
+---
+
 ## [0.1.35] — 2026-07-05
 
 ### Added
@@ -496,7 +524,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.35...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.36...HEAD
+[0.1.36]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.36
 [0.1.35]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.35
 [0.1.34]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.34
 [0.1.33]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.33

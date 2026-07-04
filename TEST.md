@@ -257,7 +257,48 @@ okf visualize /tmp/viz_crash_test /tmp/viz_crash_test.html 2>&1
 
 ---
 
-## Phase 9 — Production Checklist
+## Phase 9 — CLI: `okf enrich` (standalone, no re-scan)
+
+### 9.1 Security mode
+```bash
+okf generate tests/fixtures/realworld /tmp/enrich_bundle 2>/dev/null
+okf enrich /tmp/enrich_bundle --mode security --src tests/fixtures/realworld 2>&1
+```
+**Verify:** Exit 0. Logs show "security audit complete".
+
+### 9.2 Security mode with --force re-audit
+```bash
+okf enrich /tmp/enrich_bundle --mode security --force 2>&1
+```
+**Verify:** Re-audits already-audited concepts. Logs show patched > 0.
+
+### 9.3 Deep enrich mode
+```bash
+okf enrich /tmp/enrich_bundle --mode deep 2>&1
+```
+**Verify:** Exit 0. Logs show "enrich complete".
+
+### 9.4 Full enrich mode
+```bash
+okf enrich /tmp/enrich_bundle --mode full 2>&1
+```
+**Verify:** Exit 0. Logs show both enrich and (if semantic_related enabled) related-linking.
+
+### 9.5 `--enrich` with mode qualifier
+```bash
+okf generate tests/fixtures/realworld/python/easy /tmp/mode_bundle --enrich deep 2>&1
+```
+**Verify:** Exit 0. Bundle written. Logs show "LLM enrichment enabled" + "To enrich".
+
+### 9.6 `--enrich` unknown mode
+```bash
+okf generate tests/fixtures/realworld /tmp/fail_bundle --enrich bogus 2>&1; echo "exit=$?"
+```
+**Verify:** Exit code 1. Error message about unknown mode.
+
+---
+
+## Phase 10 — Production Checklist
 
 | Area | Check |
 |------|-------|

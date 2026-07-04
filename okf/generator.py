@@ -52,16 +52,14 @@ Usage:
   output_dir   where to write the OKF bundle (default: ./okf_bundle)
 """
 
-import ast
-import subprocess
 import json
 import logging
 import os
 import re
+import subprocess
 import sys
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -69,2269 +67,10 @@ import yaml  # PyYAML
 from tqdm import tqdm
 
 from okf import manifest_scanner
+from okf.parsers import get_parser
+from okf.parsers.base import Concept, SKIP_DIRS, SKIP_DIR_SUFFIXES
 
 log = logging.getLogger("okf_gen")
-
-
-# ---------------------------------------------------------------------------
-# Data model
-# ---------------------------------------------------------------------------
-
-@dataclass
-class Concept:
-    """One OKF concept (maps to one .md file)."""
-    type: str                        # Module | Function | Class | Method | Dependency
-    title: str
-    description: str = ""
-    resource: str = ""               # relative source path
-    tags: list[str] = field(default_factory=list)
-    timestamp: str = ""
-    # extra body sections
-    signature: str = ""
-    docstring: str = ""
-    methods: list[str] = field(default_factory=list)   # for classes
-    params: list[dict] = field(default_factory=list)   # {name, annotation, default}
-    returns: str = ""
-    source_lines: tuple = ()         # (start, end)
-    type_params: list[str] = field(default_factory=list)  # generics: ["T"], ["T, U"], etc.
-    inheritance: list[str] = field(default_factory=list)  # base types: ["Animal", "Comparable"]
-    decorators: list[str] = field(default_factory=list)   # decorators/attributes: ["@cache"], ["@Deprecated"]
-    visibility: list[str] = field(default_factory=list)   # modifiers: ["public"], ["pub", "static"]
-    fields: list[dict] = field(default_factory=list)      # class fields: [{name, type, visibility}, ...]
-    related: list[str] = field(default_factory=list)   # concept IDs to cross-link
-    body_extra: dict = field(default_factory=dict)     # type-specific fields (e.g. Dependency)
-
-    # deep enrichment (optional, requires reading source body — see enrich_concept_deep)
-    usage_example: str = ""          # short snippet showing real invocation
-    side_effects: str = ""           # mutation / I/O / thread-safety notes
-    design_pattern: str = ""         # e.g. "Factory", "Singleton", "Observer"
-    deprecation_notes: str = ""      # populated deterministically, not by LLM (see _detect_deprecation)
-
-    # cross-reference edges (populated by parsers + okf.linker)
-    imports: list[str] = field(default_factory=list)    # Module only — raw import names
-    calls_raw: list[str] = field(default_factory=list)  # Function/Class/Method — raw callee names
-    calls: list[str] = field(default_factory=list)       # resolved concept_ids (linker output)
-    called_by: list[str] = field(default_factory=list)   # resolved concept_ids (linker output)
-    # internal
-    concept_id: str = ""             # e.g. "functions/my_func"
-
-
-# ---------------------------------------------------------------------------
-# Language parsers
-# ---------------------------------------------------------------------------
-
-def _ts(path: Path) -> str:
-    try:
-        mtime = path.stat().st_mtime
-        return datetime.fromtimestamp(mtime, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    except Exception:
-        return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-# ---------------------------------------------------------------------------
-# Tree-sitter base parser
-# ---------------------------------------------------------------------------
-
-def _prev_comment(node, src_bytes: bytes) -> str:
-    """Extract the comment block immediately preceding a node (JSDoc, ///, #, --)."""
-    chunk = src_bytes[:node.start_byte].rstrip()
-
-    # Block comment: /** ... */ or /* ... */
-    if chunk.endswith(b"*/"):
-        begin = chunk.rfind(b"/*")
-        if begin >= 0:
-            raw = chunk[begin:].decode(errors="replace").strip()
-            # strip /* */ and leading * from each line
-            lines = raw.lstrip("/").lstrip("*").rstrip("*/").strip().splitlines()
-            cleaned = [x.strip().lstrip("*").strip() for x in lines]
-            return "\n".join(x for x in cleaned if x)
-
-    # Line comments: // /// # --
-    lines = chunk.splitlines()
-    comment_lines = []
-    for line in reversed(lines):
-        s = line.strip()
-        if s.startswith(b"///") or s.startswith(b"//"):
-            comment_lines.insert(0, s.lstrip(b"/").strip().decode(errors="replace"))
-        elif s.startswith(b"#"):
-            comment_lines.insert(0, s.lstrip(b"#").strip().decode(errors="replace"))
-        elif s.startswith(b"--"):
-            comment_lines.insert(0, s.lstrip(b"-").strip().decode(errors="replace"))
-        else:
-            break
-    return "\n".join(comment_lines)
-
-
-def _find_all(node, *kinds):
-    """Yield all descendant nodes matching any of the given type names."""
-    if node.type in kinds:
-        yield node
-    for child in node.children:
-        yield from _find_all(child, *kinds)
-
-
-def _node_text(node) -> str:
-    if node is None:
-        return ""
-    return node.text.decode(errors="replace").strip()
-
-
-def _parse_doc_tags(docstring: str, lang: str) -> tuple[list[dict], str]:
-    """Parse structured doc tags (@param, @return, @type) from docstring.
-
-    Returns (params, returns) suitable for Concept.params / Concept.returns.
-    """
-    if not docstring:
-        return [], ""
-    params = []
-    returns = ""
-    for line in docstring.splitlines():
-        s = line.strip()
-        if not s:
-            continue
-        if lang in ("java",):
-            m = re.match(r'@param\s+(\S+)(?:\s+(.*))?', s)
-            if m:
-                params.append({"name": m.group(1), "annotation": "", "default": ""})
-                continue
-            m = re.match(r'@return\s+(.*)', s)
-            if m:
-                returns = m.group(1)
-                continue
-        elif lang in ("javascript", "typescript"):
-            m = re.match(r'@param\s+\{([^}]*)\}\s+(\S+)', s)
-            if m:
-                params.append({"name": m.group(2), "annotation": m.group(1), "default": ""})
-                continue
-            m = re.match(r'@param\s+(\S+)', s)
-            if m:
-                params.append({"name": m.group(1), "annotation": "", "default": ""})
-                continue
-            m = re.match(r'@returns?\s+\{([^}]*)\}', s)
-            if m:
-                returns = m.group(1)
-                continue
-        elif lang == "ruby":
-            m = re.match(r'@param\s+\[([^\]]*)\]\s+(\S+)', s)
-            if m:
-                params.append({"name": m.group(2), "annotation": m.group(1), "default": ""})
-                continue
-            m = re.match(r'@return\s+\[([^\]]*)\]', s)
-            if m:
-                returns = m.group(1)
-                continue
-    return params, returns
-
-
-class TreeSitterParser:
-    """Base class for all tree-sitter language parsers."""
-    LANGUAGE     = "unknown"
-    EXTENSIONS: set[str] = set()
-
-    # Subclasses set these
-    _TS_MODULE   = ""          # importlib module name e.g. "tree_sitter_python"
-    _lang_obj    = None        # cached Language instance
-
-    def _lang(self):
-        if self.__class__._lang_obj is None:
-            import importlib
-            mod = importlib.import_module(self._TS_MODULE)
-            from tree_sitter import Language
-            self.__class__._lang_obj = Language(mod.language())
-        return self.__class__._lang_obj
-
-    def _parser(self):
-        from tree_sitter import Parser
-        p = Parser(self._lang())
-        return p
-
-    def parse_file(self, path: Path, repo_root: Path) -> list[Concept]:
-        rel    = str(path.relative_to(repo_root))
-        ts     = _ts(path)
-        res_id = str(path.relative_to(repo_root).with_suffix("")).replace(os.sep, "/")
-
-        try:
-            src_bytes = path.read_bytes()
-        except Exception:
-            return []
-
-        try:
-            tree = self._parser().parse(src_bytes)
-        except Exception as e:
-            log.debug(f"tree-sitter parse error in {path}: {e}")
-            return [Concept(
-                type="Module", title=path.stem, resource=rel,
-                description=f"{self.LANGUAGE} file: {path.name}",
-                tags=[self.LANGUAGE], timestamp=ts,
-                concept_id=res_id,
-            )]
-
-        root = tree.root_node
-
-        # Module-level doc
-        module_doc   = self._module_doc(root, src_bytes)
-        module_title = path.parent.name if path.stem in {"index", "__init__", "mod", "main"} else path.stem
-        module = Concept(
-            type="Module",
-            title=module_title,
-            description=_first_line(module_doc),
-            docstring=module_doc,
-            resource=rel,
-            tags=[self.LANGUAGE, module_title],
-            timestamp=ts,
-            concept_id=res_id,
-            imports=self._collect_imports(root, src_bytes),
-        )
-
-        symbols = self._parse_symbols(root, src_bytes, rel, ts, res_id)
-        for s in symbols:
-            module.related.append(s.concept_id)
-
-        return [module] + symbols
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        """Override per language to extract file-level doc comment."""
-        return ""
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        """Override per language to collect raw import/require names.
-        Default returns empty — languages without an override produce no
-        import edges (silently correct, not an error)."""
-        return []
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        """Override per language to collect raw callee names inside a
-        function/method/class body.  Default returns empty."""
-        return []
-
-    def _parse_symbols(self, root, src_bytes: bytes, resource: str, ts: str, parent_id: str) -> list[Concept]:
-        """Override per language to extract functions, classes, etc."""
-        return []
-
-    def _make_concept(self, ctype: str, name: str, doc: str, sig: str,
-                      resource: str, ts: str, parent_id: str,
-                      lineno: int = 0, methods: list[str] | None = None,
-                      node=None, src_bytes: bytes = b"",
-                      type_params: list[str] | None = None) -> Concept:
-        res_id = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
-        cid    = f"{res_id}/{_safe_id(name)}"
-        calls_raw = self._collect_calls(node, src_bytes) if node is not None else []
-        end_lineno = (node.end_point[0] + 1) if node is not None else 0
-        return Concept(
-            type=ctype,
-            title=name,
-            description=_first_line(doc),
-            docstring=doc,
-            signature=sig,
-            resource=resource,
-            tags=[self.LANGUAGE, ctype.lower()],
-            timestamp=ts,
-            source_lines=(lineno, end_lineno),
-            concept_id=cid,
-            related=[parent_id],
-            methods=methods or [],
-            calls_raw=calls_raw,
-            type_params=type_params or [],
-        )
-
-
-# ---------------------------------------------------------------------------
-# Python parser (AST — unchanged, best quality)
-# ---------------------------------------------------------------------------
-
-class PythonParser:
-    LANGUAGE   = "python"
-    EXTENSIONS = {".py"}
-
-    def parse_file(self, path: Path, repo_root: Path) -> list[Concept]:
-        rel = str(path.relative_to(repo_root))
-        ts  = _ts(path)
-
-        try:
-            source = path.read_text(encoding="utf-8", errors="replace")
-            tree   = ast.parse(source, filename=str(path))
-        except SyntaxError as e:
-            log.debug(f"Syntax error in {path}: {e}")
-            err_title    = path.parent.name if path.name == "__init__.py" else path.stem
-            resource_id_err = re.sub(r"\.py$", "", rel).replace(os.sep, "/")
-            return [Concept(
-                type="Module", title=err_title,
-                description=f"Python module (parse error: {e})",
-                resource=rel,
-                tags=[self.LANGUAGE, err_title],
-                timestamp=ts,
-                concept_id=resource_id_err,
-            )]
-
-        module_doc = ast.get_docstring(tree) or ""
-        resource_id = re.sub(r"\.py$", "", rel).replace(os.sep, "/")
-        # __init__.py represents the package — use parent dir name as title
-        if path.name == "__init__.py":
-            module_title = path.parent.name
-            module_tag   = path.parent.name
-        else:
-            module_title = path.stem
-            module_tag   = path.stem
-
-        module_concept = Concept(
-            type="Module",
-            title=module_title,
-            description=_first_line(module_doc),
-            docstring=module_doc,
-            resource=rel,
-            tags=[self.LANGUAGE, module_tag],
-            timestamp=ts,
-            concept_id=resource_id,
-            imports=self._collect_imports(tree),
-        )
-
-        funcs   = []
-        classes = []
-        for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
-                c = self._parse_function(node, rel, ts, module_concept.concept_id)
-                funcs.append(c)
-                module_concept.related.append(c.concept_id)
-            elif isinstance(node, ast.ClassDef):
-                c = self._parse_class(node, rel, ts, module_concept.concept_id)
-                classes.append(c)
-                module_concept.related.append(c.concept_id)
-                # Emit methods as individual Function concepts
-                for child in ast.iter_child_nodes(node):
-                    if isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef):
-                        mc = self._parse_function(child, rel, ts, c.concept_id)
-                        mc.decorators = self._py_decorators(child)
-                        funcs.append(mc)
-                        c.related.append(mc.concept_id)
-
-        return [module_concept] + funcs + classes
-
-    def _collect_imports(self, tree) -> list[str]:
-        """Top-level import names for a module, used by okf.linker to
-        cross-reference against manifest-derived Dependency concepts."""
-        names = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                names.extend(alias.name for alias in node.names)
-            elif isinstance(node, ast.ImportFrom) and node.module:
-                names.append(node.module)
-        return names
-
-    def _collect_calls(self, node) -> list[str]:
-        """Raw callee names referenced inside a function/method body, used
-        by okf.linker to resolve call-graph edges between concepts."""
-        names = []
-        for n in ast.walk(node):
-            if isinstance(n, ast.Call):
-                if isinstance(n.func, ast.Name):
-                    names.append(n.func.id)
-                elif isinstance(n.func, ast.Attribute):
-                    names.append(n.func.attr)
-        return names
-
-    def _py_decorators(self, node) -> list[str]:
-        decs = []
-        for d in node.decorator_list:
-            try:
-                decs.append(ast.unparse(d))
-            except Exception:
-                pass
-        return decs
-
-    def _parse_function(self, node, resource, ts, parent_id) -> Concept:
-        doc     = ast.get_docstring(node) or ""
-        params  = self._params(node)
-        ret     = self._returns(node)
-        sig     = self._sig(node, params, ret)
-        resource_id = re.sub(r"\.py$", "", resource).replace(os.sep, "/")
-        cid     = f"{resource_id}/{_safe_id(node.name)}"
-        return Concept(
-            type="Function", title=node.name,
-            description=_first_line(doc), docstring=doc,
-            resource=resource,
-            tags=["python", "function"],
-            timestamp=ts, signature=sig, params=params, returns=ret,
-            source_lines=(node.lineno, node.end_lineno),
-            concept_id=cid, related=[parent_id],
-            calls_raw=self._collect_calls(node),
-            decorators=self._py_decorators(node),
-        )
-
-    def _parse_class(self, node, resource, ts, parent_id) -> Concept:
-        doc     = ast.get_docstring(node) or ""
-        methods = [
-            child.name for child in ast.iter_child_nodes(node)
-            if isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef)
-        ]
-        bases = []
-        for b in node.bases:
-            try:
-                bases.append(ast.unparse(b))
-            except Exception:
-                pass
-        # Extract fields (annotated class-level assignments)
-        py_fields = []
-        for child in ast.iter_child_nodes(node):
-            if isinstance(child, ast.AnnAssign) and isinstance(child.target, ast.Name):
-                ftype = ""
-                try:
-                    ftype = ast.unparse(child.annotation)
-                except Exception:
-                    pass
-                py_fields.append({"name": child.target.id, "type": ftype, "visibility": ""})
-        resource_id = re.sub(r"\.py$", "", resource).replace(os.sep, "/")
-        cid     = f"{resource_id}/{_safe_id(node.name)}"
-        return Concept(
-            type="Class", title=node.name,
-            description=_first_line(doc), docstring=doc,
-            resource=resource,
-            tags=["python", "class"],
-            timestamp=ts, methods=methods,
-            inheritance=bases,
-            decorators=self._py_decorators(node),
-            fields=py_fields,
-            source_lines=(node.lineno, node.end_lineno),
-            concept_id=cid, related=[parent_id],
-        )
-
-    def _params(self, node) -> list[dict]:
-        args    = node.args
-        params  = []
-        def_off = len(args.args) - len(args.defaults)
-        for i, arg in enumerate(args.args):
-            d_idx   = i - def_off
-            default = ""
-            if d_idx >= 0:
-                try:
-                    default = ast.unparse(args.defaults[d_idx])
-                except Exception:
-                    default = "..."
-            annotation = ""
-            if arg.annotation:
-                try:
-                    annotation = ast.unparse(arg.annotation)
-                except Exception:
-                    pass
-            params.append({"name": arg.arg, "annotation": annotation, "default": default})
-        return params
-
-    def _returns(self, node) -> str:
-        if node.returns:
-            try:
-                return ast.unparse(node.returns)
-            except Exception:
-                pass
-        return ""
-
-    def _sig(self, node, params, ret) -> str:
-        parts  = []
-        for p in params:
-            s = p["name"]
-            if p["annotation"]:
-                s += f": {p['annotation']}"
-            if p["default"]:
-                s += f" = {p['default']}"
-            parts.append(s)
-        prefix = "async def" if isinstance(node, ast.AsyncFunctionDef) else "def"
-        sig = f"{prefix} {node.name}({', '.join(parts)})"
-        if ret:
-            sig += f" -> {ret}"
-        return sig
-
-
-# ---------------------------------------------------------------------------
-# JavaScript / TypeScript  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class JSTSParser(TreeSitterParser):
-    LANGUAGE   = "javascript"
-    EXTENSIONS = {".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
-    _TS_MODULE = "tree_sitter_javascript"
-    _lang_obj  = None
-
-    def _lang(self):
-        if self.__class__._lang_obj is None:
-            ext = getattr(self, "_path_ext", ".js")
-            if ext in {".ts", ".tsx"}:
-                try:
-                    import tree_sitter_typescript as tsts
-                    from tree_sitter import Language
-                    # typescript grammar has .language_typescript() and .language_tsx()
-                    if ext == ".tsx":
-                        self.__class__._lang_obj = Language(tsts.language_tsx())
-                    else:
-                        self.__class__._lang_obj = Language(tsts.language_typescript())
-                    return self.__class__._lang_obj
-                except Exception:
-                    pass
-            import tree_sitter_javascript as tsjs
-            from tree_sitter import Language
-            self.__class__._lang_obj = Language(tsjs.language())
-        return self.__class__._lang_obj
-
-    def parse_file(self, path: Path, repo_root: Path) -> list[Concept]:
-        self._path_ext = path.suffix.lower()
-        self.__class__._lang_obj = None   # reset lang cache every parse to avoid TS→JS cross-contamination
-        if self._path_ext in {".ts", ".tsx"}:
-            self.LANGUAGE = "typescript"
-        else:
-            self.LANGUAGE = "javascript"
-        return super().parse_file(path, repo_root)
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        # First block comment at top of file
-        for child in root.children:
-            if child.type == "comment":
-                return _prev_comment(child.next_sibling or child, src_bytes) or \
-                       _node_text(child).lstrip("/").lstrip("*").strip()
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root,
-                               "function_declaration",
-                               "class_declaration",
-                               "method_definition",
-                               "lexical_declaration",    # const foo = () => {}
-                               "interface_declaration",
-                               "type_alias_declaration",
-                               "enum_declaration",
-                               "export_statement"):
-            if node.type in {"function_declaration"}:
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name   = _node_text(name_node)
-                doc    = _prev_comment(node, src_bytes)
-                params = self._js_params(node)
-                ret    = self._js_return_type(node)
-                tp     = self._js_type_params(node)
-                sig    = f"function {name}({params})" + (f": {ret}" if ret else "")
-                fc = self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes,
-                    type_params=tp)
-                parsed_params, parsed_returns = _parse_doc_tags(doc, self.LANGUAGE)
-                if parsed_params:
-                    fc.params = parsed_params
-                if parsed_returns:
-                    fc.returns = parsed_returns
-                concepts.append(fc)
-
-            elif node.type == "class_declaration":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name    = _node_text(name_node)
-                doc     = _prev_comment(node, src_bytes)
-                tp      = self._js_type_params(node)
-                methods = [
-                    _node_text(m.child_by_field_name("name"))
-                    for m in _find_all(node, "method_definition")
-                    if m.child_by_field_name("name")
-                ]
-                # Extract class fields
-                ts_fields = []
-                for body_child in node.children:
-                    if body_child.type == "class_body":
-                        for member in body_child.children:
-                            if member.type == "public_field_definition":
-                                fname_node = member.child_by_field_name("name")
-                                ftype_node = member.child_by_field_name("type")
-                                fname = _node_text(fname_node) if fname_node else ""
-                                ftype_text = _node_text(ftype_node).lstrip(":").strip() if ftype_node else ""
-                                fvis = ""
-                                for mc in member.children:
-                                    if mc.type in ("accessibility_modifier", "static", "readonly"):
-                                        fvis += _node_text(mc) + " "
-                                ts_fields.append({"name": fname, "type": ftype_text, "visibility": fvis.strip()})
-                sig = f"class {name}"
-                # Extract heritage (extends / implements)
-                bases = []
-                for child in node.children:
-                    if child.type == "class_heritage":
-                        for sub in child.children:
-                            if sub.type in ("extends_clause", "implements_clause"):
-                                for item in sub.children:
-                                    if item.type in ("identifier", "type_identifier", "nested_type_identifier"):
-                                        bases.append(_node_text(item))
-                cc = self._make_concept(
-                    "Class", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
-                    type_params=tp)
-                cc.inheritance = bases
-                cc.fields = ts_fields
-                concepts.append(cc)
-
-            elif node.type == "method_definition":
-                # Emit class methods as individual Function concepts
-                mname_node = node.child_by_field_name("name")
-                if not mname_node:
-                    continue
-                mname  = _node_text(mname_node)
-                mdoc   = _prev_comment(node, src_bytes)
-                mparams = self._js_params(node)
-                mret   = self._js_return_type(node)
-                mtp    = self._js_type_params(node)
-                msig   = f"{mname}({mparams})" + (f": {mret}" if mret else "")
-                # Extract visibility/access modifiers
-                mvis = []
-                for child in node.children:
-                    if child.type in ("accessibility_modifier", "static", "abstract", "readonly", "override"):
-                        mvis.append(_node_text(child))
-                # Link to the nearest enclosing class as parent
-                mparent_id = parent_id
-                p = node.parent
-                while p is not None:
-                    if p.type == "class_declaration":
-                        pname = _node_text(p.child_by_field_name("name"))
-                        mparent_id = f"{resource.replace(os.sep, '/')}/{_safe_id(pname)}" if pname else parent_id
-                        break
-                    p = p.parent
-                mc = self._make_concept(
-                    "Function", mname, mdoc, msig, resource, ts, mparent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=mtp)
-                mc.visibility = mvis
-                parsed_params, parsed_returns = _parse_doc_tags(mdoc, self.LANGUAGE)
-                if parsed_params:
-                    mc.params = parsed_params
-                if parsed_returns:
-                    mc.returns = parsed_returns
-                concepts.append(mc)
-
-            elif node.type == "interface_declaration":
-                iname_node = node.child_by_field_name("name")
-                if not iname_node:
-                    continue
-                iname = _node_text(iname_node)
-                idoc  = _prev_comment(node, src_bytes)
-                # Extract heritage (extends)
-                ibases = []
-                for child in node.children:
-                    if child.type in ("class_heritage", "extends_type_clause"):
-                        if child.type == "extends_type_clause":
-                            for item in child.children:
-                                if item.type in ("identifier", "type_identifier", "nested_type_identifier"):
-                                    ibases.append(_node_text(item))
-                        else:
-                            for sub in child.children:
-                                if sub.type == "extends_clause":
-                                    for item in sub.children:
-                                        if item.type in ("identifier", "type_identifier", "nested_type_identifier"):
-                                            ibases.append(_node_text(item))
-                # Collect interface members
-                imethods = []
-                for body_child in node.children:
-                    if body_child.type == "interface_body":
-                        for member in body_child.children:
-                            if member.type in ("method_signature", "property_signature"):
-                                msig_name = member.child_by_field_name("name")
-                                if msig_name:
-                                    imethods.append(_node_text(msig_name))
-                ic = self._make_concept(
-                    "Interface", iname, idoc, f"interface {iname}", resource, ts, parent_id,
-                    node.start_point[0]+1, methods=imethods, node=node, src_bytes=src_bytes)
-                ic.inheritance = ibases
-                concepts.append(ic)
-
-            elif node.type == "type_alias_declaration":
-                taname_node = node.child_by_field_name("name")
-                taname = _node_text(taname_node) if taname_node else ""
-                if taname:
-                    tadoc = _prev_comment(node, src_bytes)
-                    concepts.append(self._make_concept(
-                        "Type", taname, tadoc, f"type {taname} = …", resource, ts, parent_id,
-                        node.start_point[0]+1, node=node, src_bytes=src_bytes))
-
-            elif node.type == "enum_declaration":
-                ename_node = node.child_by_field_name("name")
-                ename = _node_text(ename_node) if ename_node else ""
-                if ename:
-                    edoc = _prev_comment(node, src_bytes)
-                    emembers = []
-                    for child in node.children:
-                        if child.type == "enum_body":
-                            for member in child.children:
-                                if member.type == "property_identifier":
-                                    emembers.append(_node_text(member))
-                    concepts.append(self._make_concept(
-                        "Class", ename, edoc, f"enum {ename}", resource, ts, parent_id,
-                        node.start_point[0]+1, methods=emembers, node=node, src_bytes=src_bytes))
-
-            elif node.type == "lexical_declaration":
-                # const/let foo = (...) => ...  or  const foo = function(...) {}
-                for decl in _find_all(node, "variable_declarator"):
-                    name_node  = decl.child_by_field_name("name")
-                    value_node = decl.child_by_field_name("value")
-                    if not name_node or not value_node:
-                        continue
-                    if value_node.type not in {"arrow_function", "function"}:
-                        continue
-                    name   = _node_text(name_node)
-                    doc    = _prev_comment(node, src_bytes)
-                    params = self._js_params(value_node)
-                    ret    = self._js_return_type(value_node)
-                    sig    = f"const {name} = ({params}) =>" + (f": {ret}" if ret else "")
-                    concepts.append(self._make_concept(
-                        "Function", name, doc, sig, resource, ts, parent_id,
-                        node.start_point[0]+1, node=value_node, src_bytes=src_bytes))
-
-        return concepts
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        from okf.linker import js_collect_imports
-        return js_collect_imports(root, src_bytes)
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        from okf.linker import js_collect_calls
-        return js_collect_calls(node, src_bytes)
-
-    def _js_params(self, node) -> str:
-        params_node = node.child_by_field_name("parameters") or \
-                      node.child_by_field_name("parameter")
-        if not params_node:
-            return ""
-        return _node_text(params_node).strip("()")
-
-    def _js_return_type(self, node) -> str:
-        ret = node.child_by_field_name("return_type")
-        return _node_text(ret).lstrip(":").strip() if ret else ""
-
-    def _js_type_params(self, node):
-        tp = node.child_by_field_name("type_parameters")
-        if not tp:
-            return []
-        text = _node_text(tp)
-        inner = text.strip("<>").strip()
-        if not inner:
-            return []
-        parts, depth, buf = [], 0, []
-        for ch in inner:
-            if ch == "," and depth == 0:
-                parts.append("".join(buf).strip())
-                buf = []
-            else:
-                if ch in "<>":
-                    depth += 1 if ch == "<" else -1
-                buf.append(ch)
-        if buf:
-            parts.append("".join(buf).strip())
-        return [p for p in parts if p]
-
-
-# ---------------------------------------------------------------------------
-# Go  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class GoParser(TreeSitterParser):
-    LANGUAGE   = "go"
-    EXTENSIONS = {".go"}
-    _TS_MODULE = "tree_sitter_go"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        # Package comment: comment block before "package" clause
-        for child in root.children:
-            if child.type == "package_clause":
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root, "function_declaration", "method_declaration", "type_declaration",
-                               "const_declaration", "var_declaration"):
-
-            doc = _prev_comment(node, src_bytes)
-
-            if node.type == "function_declaration":
-                name = _node_text(node.child_by_field_name("name"))
-                if not name:
-                    continue
-                params = self._go_params(node)
-                ret    = self._go_return(node)
-                tp     = self._go_type_params(node)
-                sig    = f"func {name}({params})" + (f" {ret}" if ret else "")
-                concepts.append(self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes,
-                    type_params=tp))
-
-            elif node.type == "method_declaration":
-                name = _node_text(node.child_by_field_name("name"))
-                recv = node.child_by_field_name("receiver")
-                recv_text = _node_text(recv) if recv else ""
-                if not name:
-                    continue
-                params = self._go_params(node)
-                ret    = self._go_return(node)
-                tp     = self._go_type_params(node)
-                sig    = f"func {recv_text} {name}({params})" + (f" {ret}" if ret else "")
-                concepts.append(self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes,
-                    type_params=tp))
-
-            elif node.type == "type_declaration":
-                # type Foo struct { ... } or type Foo interface { ... }
-                for spec in _find_all(node, "type_spec"):
-                    name_node = spec.child_by_field_name("name")
-                    type_node = spec.child_by_field_name("type")
-                    if not name_node:
-                        continue
-                    name    = _node_text(name_node)
-                    is_iface = type_node and type_node.type == "interface_type"
-                    ctype   = "Interface" if is_iface else "Class"
-                    tp      = self._go_type_params(spec)
-                    sig     = f"type {name} struct" if not is_iface else f"type {name} interface"
-                    methods = [
-                        _node_text(f.child_by_field_name("name") or f)
-                        for f in _find_all(type_node or spec, "field_declaration", "method_spec")
-                        if _node_text(f.child_by_field_name("name") or f)
-                    ] if type_node else []
-                    concepts.append(self._make_concept(
-                        ctype, name, doc, sig, resource, ts, parent_id,
-                        node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
-                        type_params=tp))
-
-            elif node.type == "const_declaration":
-                for spec in node.children:
-                    if spec.type != "const_spec":
-                        continue
-                    n = spec.child_by_field_name("name")
-                    if not n:
-                        continue
-                    cname = _node_text(n)
-                    cdoc = _prev_comment(spec, src_bytes) or doc
-                    t = spec.child_by_field_name("type")
-                    tstr = _node_text(t) if t else ""
-                    v = spec.child_by_field_name("value")
-                    vstr = _node_text(v) if v else ""
-                    sig = f"const {cname}" + (f" {tstr}" if tstr else "") + (f" = {vstr}" if vstr else "")
-                    concepts.append(self._make_concept(
-                        "Constant", cname, cdoc, sig, resource, ts, parent_id,
-                        spec.start_point[0]+1, node=spec, src_bytes=src_bytes))
-
-            elif node.type == "var_declaration":
-                for spec in node.children:
-                    if spec.type != "var_spec":
-                        continue
-                    n = spec.child_by_field_name("name")
-                    if not n:
-                        continue
-                    vname = _node_text(n)
-                    vdoc = _prev_comment(spec, src_bytes) or doc
-                    t = spec.child_by_field_name("type")
-                    tstr = _node_text(t) if t else ""
-                    v = spec.child_by_field_name("value")
-                    vstr = _node_text(v) if v else ""
-                    sig = f"var {vname}" + (f" {tstr}" if tstr else "") + (f" = {vstr}" if vstr else "")
-                    concepts.append(self._make_concept(
-                        "Variable", vname, vdoc, sig, resource, ts, parent_id,
-                        spec.start_point[0]+1, node=spec, src_bytes=src_bytes))
-
-        return concepts
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        from okf.linker import go_collect_imports
-        return go_collect_imports(root, src_bytes)
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        from okf.linker import go_collect_calls
-        return go_collect_calls(node, src_bytes)
-
-    def _go_params(self, node) -> str:
-        p = node.child_by_field_name("parameters")
-        return _node_text(p).strip("()") if p else ""
-
-    def _go_return(self, node) -> str:
-        r = node.child_by_field_name("result")
-        return _node_text(r) if r else ""
-
-    def _go_type_params(self, node):
-        tp = node.child_by_field_name("type_parameters")
-        if not tp:
-            return []
-        text = _node_text(tp)
-        inner = text.strip("[]").strip()
-        if not inner:
-            return []
-        parts, depth, buf = [], 0, []
-        for ch in inner:
-            if ch == "," and depth == 0:
-                parts.append("".join(buf).strip())
-                buf = []
-            else:
-                if ch in "[]":
-                    depth += 1 if ch == "[" else -1
-                buf.append(ch)
-        if buf:
-            parts.append("".join(buf).strip())
-        return [p for p in parts if p]
-
-
-# ---------------------------------------------------------------------------
-# Java  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class JavaParser(TreeSitterParser):
-    LANGUAGE   = "java"
-    EXTENSIONS = {".java"}
-    _TS_MODULE = "tree_sitter_java"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type == "class_declaration":
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root, "class_declaration", "interface_declaration", "enum_declaration"):
-            name_node = node.child_by_field_name("name")
-            if not name_node:
-                continue
-            name = _node_text(name_node)
-            doc  = _prev_comment(node, src_bytes)
-            # strip /** */ markers from Javadoc
-            doc  = re.sub(r"/\*+|\*+/", "", doc).strip().lstrip("*").strip()
-
-            # collect methods
-            methods = []
-            for method in _find_all(node, "method_declaration", "constructor_declaration"):
-                mname = method.child_by_field_name("name")
-                if mname:
-                    methods.append(_node_text(mname))
-                    # emit method as Function concept
-                    mdoc    = _prev_comment(method, src_bytes)
-                    mdoc    = re.sub(r"/\*+|\*+/", "", mdoc).strip().lstrip("*").strip()
-                    mparams = self._java_params(method)
-                    mret    = _node_text(method.child_by_field_name("type"))
-                    msig    = f"{mret} {_node_text(mname)}({mparams})"
-                    tp = self._java_type_params(method)
-                    mdec = []
-                    mvis = []
-                    for child in method.children:
-                        if child.type == "modifiers":
-                            for c in child.children:
-                                if c.type in ("annotation", "marker_annotation"):
-                                    mdec.append(_node_text(c))
-                                else:
-                                    mvis.append(_node_text(c))
-                    mc = self._make_concept(
-                        "Function", _node_text(mname), mdoc, msig,
-                        resource, ts, parent_id, method.start_point[0]+1,
-                        node=method, src_bytes=src_bytes, type_params=tp)
-                    mc.decorators = mdec
-                    mc.visibility = mvis
-                    parsed_params, parsed_returns = _parse_doc_tags(mdoc, "java")
-                    if parsed_params:
-                        mc.params = parsed_params
-                    if parsed_returns:
-                        mc.returns = parsed_returns
-                    concepts.append(mc)
-
-            # Extract fields
-            java_fields = []
-            for body_child in node.children:
-                if body_child.type == "class_body":
-                    for member in body_child.children:
-                        if member.type == "field_declaration":
-                            ftype = _node_text(member.child_by_field_name("type"))
-                            decl = member.child_by_field_name("declarator")
-                            fname = _node_text(decl.child_by_field_name("name")) if decl else ""
-                            fvis = ""
-                            for mc in member.children:
-                                if mc.type == "modifiers":
-                                    fvis = " ".join(_node_text(c) for c in mc.children if c.type not in ("annotation", "marker_annotation"))
-                            if fname:
-                                java_fields.append({"name": fname, "type": ftype, "visibility": fvis})
-            # Collect modifiers, annotations, inheritance, and visibility
-            bases = []
-            decs = []
-            vis = []
-            extra_mod_text = ""
-            for child in node.children:
-                if child.type == "modifiers":
-                    for c in child.children:
-                        if c.type in ("annotation", "marker_annotation"):
-                            decs.append(_node_text(c))
-                        else:
-                            extra_mod_text += _node_text(c) + " "
-                            vis.append(_node_text(c))
-                elif child.type == "superclass":
-                    for ch in child.children:
-                        if ch.type in ("type_identifier", "scoped_type_identifier"):
-                            bases.append(_node_text(ch))
-                elif child.type == "super_interfaces":
-                    for ci in child.children:
-                        if ci.type == "type_list":
-                            for tc in ci.children:
-                                if tc.type in ("type_identifier", "scoped_type_identifier"):
-                                    bases.append(_node_text(tc))
-                        elif ci.type in ("type_identifier", "scoped_type_identifier"):
-                            bases.append(_node_text(ci))
-            tp = self._java_type_params(node)
-            sig  = f"{extra_mod_text}class {name}" if node.type == "class_declaration" else \
-                   f"{extra_mod_text}interface {name}" if node.type == "interface_declaration" else \
-                   f"enum {name}"
-            cc = self._make_concept(
-                "Class", name, doc, sig, resource, ts, parent_id,
-                node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes,
-                type_params=tp)
-            cc.inheritance = bases
-            cc.decorators = decs
-            cc.visibility = vis
-            cc.fields = java_fields
-            concepts.insert(0, cc)
-
-        return concepts
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        from okf.linker import java_collect_imports
-        return java_collect_imports(root, src_bytes)
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        from okf.linker import java_collect_calls
-        return java_collect_calls(node, src_bytes)
-
-    def _java_params(self, node) -> str:
-        p = node.child_by_field_name("parameters")
-        return _node_text(p).strip("()") if p else ""
-
-    def _java_type_params(self, node):
-        tp = node.child_by_field_name("type_parameters")
-        if not tp:
-            return []
-        text = _node_text(tp)
-        inner = text.strip("<>").strip()
-        if not inner:
-            return []
-        # Split on commas respecting nested <>
-        parts, depth, buf = [], 0, []
-        for ch in inner:
-            if ch == "," and depth == 0:
-                parts.append("".join(buf).strip())
-                buf = []
-            else:
-                if ch in "<>":
-                    depth += 1 if ch == "<" else -1
-                buf.append(ch)
-        if buf:
-            parts.append("".join(buf).strip())
-        return [p for p in parts if p]
-
-
-# ---------------------------------------------------------------------------
-# Rust  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-def _rust_vis_node(node):
-    """Find visibility_modifier child by iterating children (no field name)."""
-    for child in node.children:
-        if child.type == "visibility_modifier":
-            return child
-    return None
-
-
-class RustParser(TreeSitterParser):
-    LANGUAGE   = "rust"
-    EXTENSIONS = {".rs"}
-    _TS_MODULE = "tree_sitter_rust"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        # //! inner doc comments at file top
-        lines = src_bytes.decode(errors="replace").splitlines()
-        doc_lines = []
-        for line in lines:
-            s = line.strip()
-            if s.startswith("//!"):
-                doc_lines.append(s[3:].strip())
-            elif s and not s.startswith("//"):
-                break
-        return "\n".join(doc_lines)
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root, "function_item", "struct_item", "enum_item",
-                               "trait_item", "impl_item"):
-
-            if node.type == "function_item":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name   = _node_text(name_node)
-                doc    = _prev_comment(node, src_bytes)
-                params = self._rust_params(node)
-                ret    = self._rust_return(node)
-                vis    = _node_text(_rust_vis_node(node))
-                tp     = self._rust_type_params(node)
-                sig    = f"{vis+' ' if vis else ''}fn {name}({params})" + (f" -> {ret}" if ret else "")
-                fc = self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes,
-                    type_params=tp)
-                fc.decorators = self._rust_attributes(node)
-                if vis:
-                    fc.visibility = [vis]
-                concepts.append(fc)
-
-            elif node.type in {"struct_item", "enum_item", "trait_item"}:
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name  = _node_text(name_node)
-                doc   = _prev_comment(node, src_bytes)
-                kind  = {"struct_item": "struct", "enum_item": "enum", "trait_item": "trait"}[node.type]
-                vis   = _node_text(_rust_vis_node(node))
-                tp    = self._rust_type_params(node)
-                sig   = f"{vis+' ' if vis else ''}{kind} {name}"
-                fields = [
-                    _node_text(f.child_by_field_name("name"))
-                    for f in _find_all(node, "field_declaration")
-                    if f.child_by_field_name("name")
-                ]
-                cc = self._make_concept(
-                    "Class", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, methods=fields, node=node, src_bytes=src_bytes,
-                    type_params=tp)
-                cc.decorators = self._rust_attributes(node)
-                if vis:
-                    cc.visibility = [vis]
-                concepts.append(cc)
-
-            elif node.type == "impl_item":
-                type_node = node.child_by_field_name("type")
-                type_name = _node_text(type_node) if type_node else ""
-                impl_tp = self._rust_type_params(node)
-                for fn in _find_all(node, "function_item"):
-                    fn_name = _node_text(fn.child_by_field_name("name"))
-                    if not fn_name:
-                        continue
-                    doc    = _prev_comment(fn, src_bytes)
-                    params = self._rust_params(fn)
-                    ret    = self._rust_return(fn)
-                    vis    = _node_text(_rust_vis_node(fn))
-                    tp     = self._rust_type_params(fn) or impl_tp
-                    sig    = f"impl {type_name} {{ {vis+' ' if vis else ''}fn {fn_name}({params})" + \
-                             (f" -> {ret}" if ret else "") + " }"
-                    fc = self._make_concept(
-                        "Function", fn_name, doc, sig, resource, ts, parent_id,
-                        fn.start_point[0]+1, node=fn, src_bytes=src_bytes,
-                        type_params=tp)
-                    if vis:
-                        fc.visibility = [vis]
-                    concepts.append(fc)
-
-        return concepts
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        from okf.linker import rust_collect_imports
-        return rust_collect_imports(root, src_bytes)
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        from okf.linker import rust_collect_calls
-        return rust_collect_calls(node, src_bytes)
-
-    def _rust_params(self, node) -> str:
-        p = node.child_by_field_name("parameters")
-        return _node_text(p).strip("()") if p else ""
-
-    def _rust_return(self, node) -> str:
-        r = node.child_by_field_name("return_type")
-        return _node_text(r) if r else ""
-
-    def _rust_attributes(self, node):
-        """Collect preceding #[attribute] items for a Rust node."""
-        decs = []
-        sib = node.prev_named_sibling if hasattr(node, 'prev_named_sibling') else None
-        while sib is not None:
-            if sib.type == "attribute_item":
-                attr_node = next((c for c in sib.children if c.type == "attribute"), None)
-                if attr_node:
-                    decs.insert(0, _node_text(attr_node))
-            elif sib.type not in ("attribute_item", "comment", ""):
-                break
-            sib = sib.prev_named_sibling if hasattr(sib, 'prev_named_sibling') else None
-        return decs
-
-    def _rust_type_params(self, node):
-        tp = node.child_by_field_name("type_parameters")
-        if not tp:
-            return []
-        text = _node_text(tp)
-        inner = text.strip("<>").strip()
-        if not inner:
-            return []
-        parts, depth, buf = [], 0, []
-        for ch in inner:
-            if ch == "," and depth == 0:
-                parts.append("".join(buf).strip())
-                buf = []
-            else:
-                if ch in "<>":
-                    depth += 1 if ch == "<" else -1
-                buf.append(ch)
-        if buf:
-            parts.append("".join(buf).strip())
-        return [p for p in parts if p]
-
-
-# ---------------------------------------------------------------------------
-# Ruby  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class RubyParser(TreeSitterParser):
-    LANGUAGE   = "ruby"
-    EXTENSIONS = {".rb"}
-    _TS_MODULE = "tree_sitter_ruby"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type not in {"comment", ""}:
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root, "method", "singleton_method", "class", "module"):
-            name_node = node.child_by_field_name("name")
-            if not name_node:
-                continue
-            name = _node_text(name_node)
-            doc  = _prev_comment(node, src_bytes)
-
-            if node.type == "method":
-                params = self._ruby_params(node)
-                sig    = f"def {name}({params})"
-                mc = self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes)
-                parsed_params, parsed_returns = _parse_doc_tags(doc, "ruby")
-                if parsed_params:
-                    mc.params = parsed_params
-                if parsed_returns:
-                    mc.returns = parsed_returns
-                concepts.append(mc)
-
-            elif node.type == "singleton_method":
-                params = self._ruby_params(node)
-                sig    = f"def self.{name}({params})"
-                mc = self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, node=node, src_bytes=src_bytes)
-                mc.visibility = ["singleton"]
-                parsed_params, parsed_returns = _parse_doc_tags(doc, "ruby")
-                if parsed_params:
-                    mc.params = parsed_params
-                if parsed_returns:
-                    mc.returns = parsed_returns
-                concepts.append(mc)
-
-            elif node.type in {"class", "module"}:
-                methods = [
-                    _node_text(m.child_by_field_name("name"))
-                    for m in _find_all(node, "method", "singleton_method")
-                    if m.child_by_field_name("name")
-                ]
-                sig = f"class {name}" if node.type == "class" else f"module {name}"
-                bases = []
-                if node.type == "class":
-                    sc = node.child_by_field_name("superclass")
-                    if sc:
-                        for ch in sc.children:
-                            if ch.type == "constant":
-                                bases.append(_node_text(ch))
-                cc = self._make_concept(
-                    "Class", name, doc, sig, resource, ts, parent_id,
-                    node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes)
-                cc.inheritance = bases
-                concepts.append(cc)
-
-        return concepts
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        from okf.linker import ruby_collect_imports
-        return ruby_collect_imports(root, src_bytes)
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        from okf.linker import ruby_collect_calls
-        return ruby_collect_calls(node, src_bytes)
-
-    def _ruby_params(self, node) -> str:
-        p = node.child_by_field_name("parameters") or node.child_by_field_name("method_parameters")
-        return _node_text(p).strip("()") if p else ""
-
-
-# ---------------------------------------------------------------------------
-# C  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class CParser(TreeSitterParser):
-    LANGUAGE   = "c"
-    EXTENSIONS = {".c", ".h"}
-    _TS_MODULE = "tree_sitter_c"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type == "comment":
-                return _prev_comment(child.next_sibling or child, src_bytes) or _node_text(child).lstrip("/ *").strip()
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-        seen = set()
-        for node in _find_all(root, "function_definition", "struct_specifier"):
-            name = None
-            if node.type == "function_definition":
-                decl = node.child_by_field_name("declarator")
-                if decl:
-                    name = _node_text(decl.child_by_field_name("declarator") or decl)
-            elif node.type == "struct_specifier":
-                # Only top-level structs, not params inside functions
-                if node.parent and node.parent.type in ("parameter_declaration", "field_declaration"):
-                    continue
-                name = _node_text(node.child_by_field_name("name"))
-            if not name or name in seen:
-                continue
-            seen.add(name)
-
-            if node.type == "function_definition":
-                decl = node.child_by_field_name("declarator")
-                if not decl:
-                    continue
-                name = _node_text(decl.child_by_field_name("declarator") or decl)
-                doc  = _prev_comment(node, src_bytes)
-                params_node = decl.child_by_field_name("parameters")
-                params = _node_text(params_node).strip("()") if params_node else ""
-                ret   = _node_text(node.child_by_field_name("type"))
-                sig   = f"{ret + ' ' if ret else ''}{name}({params})"
-                concepts.append(self._make_concept("Function", name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
-            elif node.type == "struct_specifier":
-                name = _node_text(node.child_by_field_name("name"))
-                if not name:
-                    continue
-                doc = _prev_comment(node, src_bytes)
-                concepts.append(self._make_concept("Class", name, doc, f"struct {name}", resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
-        return concepts
-
-
-# ---------------------------------------------------------------------------
-# C++  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class CppParser(TreeSitterParser):
-    LANGUAGE   = "cpp"
-    EXTENSIONS = {".cpp", ".cxx", ".cc", ".hpp", ".hh"}
-    _TS_MODULE = "tree_sitter_cpp"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type == "comment":
-                return _prev_comment(child.next_sibling or child, src_bytes) or _node_text(child).lstrip("/ *").strip()
-        return ""
-
-    def _cpp_template_prefix(self, node) -> str:
-        """Return 'template<...>' prefix if node is inside a template_declaration."""
-        parent = node.parent
-        while parent is not None:
-            if parent.type == "template_declaration":
-                tpl = parent.child_by_field_name("parameters")
-                if tpl:
-                    return f"template<{_node_text(tpl)}> "
-                return "template<> "
-            parent = parent.parent
-        return ""
-
-    def _cpp_template_params(self, node):
-        """Extract template params from node or its template_declaration parent."""
-        # C++ wraps templated declarations in template_declaration nodes
-        parent = node.parent
-        while parent is not None:
-            if parent.type == "template_declaration":
-                tpl = parent.child_by_field_name("parameters")
-                if tpl:
-                    text = _node_text(tpl)
-                    inner = text.strip("<>").strip()
-                    if not inner:
-                        return []
-                    parts, depth, buf = [], 0, []
-                    for ch in inner:
-                        if ch == "," and depth == 0:
-                            parts.append("".join(buf).strip())
-                            buf = []
-                        else:
-                            if ch in "<>":
-                                depth += 1 if ch == "<" else -1
-                            buf.append(ch)
-                    if buf:
-                        parts.append("".join(buf).strip())
-                    return [p for p in parts if p]
-            parent = parent.parent
-        return []
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-        seen = set()
-        for node in _find_all(root, "function_definition", "class_specifier", "struct_specifier"):
-            name = None
-            if node.type == "function_definition":
-                decl = node.child_by_field_name("declarator") or node.child_by_field_name("function_declarator")
-                if decl:
-                    name = _node_text(decl.child_by_field_name("declarator") or decl.child_by_field_name("field_identifier") or decl)
-            elif node.type in ("class_specifier", "struct_specifier"):
-                if node.parent and node.parent.type in ("template_declaration",):
-                    name = _node_text(node.child_by_field_name("name"))
-                elif not node.parent or node.parent.type not in ("function_definition", "parameter_declaration", "field_declaration"):
-                    name = _node_text(node.child_by_field_name("name"))
-            if not name or name in seen:
-                continue
-            seen.add(name)
-
-            if node.type == "function_definition":
-                decl = node.child_by_field_name("declarator")
-                if not decl:
-                    continue
-                name = _node_text(decl.child_by_field_name("declarator") or decl)
-                doc  = _prev_comment(node, src_bytes)
-                params_node = decl.child_by_field_name("parameters")
-                params = _node_text(params_node).strip("()") if params_node else ""
-                ret   = _node_text(node.child_by_field_name("type"))
-                tp    = self._cpp_template_params(node)
-                tpl_prefix = self._cpp_template_prefix(node)
-                sig   = f"{tpl_prefix}{ret + ' ' if ret else ''}{name}({params})"
-                # Extract modifiers (static, virtual, const, override, etc.)
-                cpp_vis = []
-                for child in node.children:
-                    if child.type in ("storage_class_specifier", "virtual", "override", "const"):
-                        cpp_vis.append(_node_text(child))
-                # Determine parent: if inside a class, link to class instead of module
-                f_parent_id = parent_id
-                pn = node.parent
-                while pn is not None:
-                    if pn.type in ("class_specifier", "struct_specifier"):
-                        pname = _node_text(pn.child_by_field_name("name"))
-                        if pname:
-                            res_id = resource.replace(os.sep, "/")
-                            f_parent_id = f"{res_id}/{_safe_id(pname)}"
-                        break
-                    pn = pn.parent
-                cpp_fc = self._make_concept("Function", name, doc, sig, resource, ts, f_parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp)
-                cpp_fc.visibility = cpp_vis
-                concepts.append(cpp_fc)
-            elif node.type in ("class_specifier", "struct_specifier"):
-                name = _node_text(node.child_by_field_name("name"))
-                if not name:
-                    continue
-                doc = _prev_comment(node, src_bytes)
-                ctype = "Class"
-                tp = self._cpp_template_params(node)
-                # Extract base classes from base_class_clause
-                bases = []
-                for child in node.children:
-                    if child.type == "base_class_clause":
-                        for sub in child.children:
-                            if sub.type in ("type_identifier", "template_type"):
-                                bases.append(_node_text(sub))
-                methods = [
-                    _node_text(m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")).split("(")[0].strip()
-                    for m in _find_all(node, "function_definition")
-                    if m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")
-                ]
-                tpl_prefix = self._cpp_template_prefix(node)
-                cc = self._make_concept(ctype, name, doc, f"{tpl_prefix}{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
-                cc.inheritance = bases
-                concepts.append(cc)
-        return concepts
-
-
-# ---------------------------------------------------------------------------
-# C#  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class CSharpParser(TreeSitterParser):
-    LANGUAGE   = "csharp"
-    EXTENSIONS = {".cs"}
-    _TS_MODULE = "tree_sitter_c_sharp"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        return ""
-
-    def _cs_type_params(self, node):
-        tp = None
-        for child in node.children:
-            if child.type == "type_parameter_list":
-                tp = child
-                break
-        if not tp:
-            return []
-        text = _node_text(tp)
-        inner = text.strip("<>").strip()
-        if not inner:
-            return []
-        parts, depth, buf = [], 0, []
-        for ch in inner:
-            if ch == "," and depth == 0:
-                parts.append("".join(buf).strip())
-                buf = []
-            else:
-                if ch in "<>":
-                    depth += 1 if ch == "<" else -1
-                buf.append(ch)
-        if buf:
-            parts.append("".join(buf).strip())
-        return [p for p in parts if p]
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-        for node in _find_all(root, "class_declaration", "struct_declaration", "interface_declaration", "method_declaration", "local_function_statement"):
-            if node.type == "class_declaration":
-                name = _node_text(node.child_by_field_name("name"))
-                if not name:
-                    continue
-                tp = self._cs_type_params(node)
-                methods = [
-                    _node_text(m.child_by_field_name("name"))
-                    for m in _find_all(node, "method_declaration")
-                    if m.child_by_field_name("name")
-                ]
-                # Extract base_list
-                bases = []
-                for child in node.children:
-                    if child.type == "base_list":
-                        for sub in child.children:
-                            if sub.type in ("identifier", "generic_name", "qualified_name", "name"):
-                                bases.append(_node_text(sub))
-                # Extract attributes
-                decs = []
-                vis = []
-                for child in node.children:
-                    if child.type == "attribute_list":
-                        for attr in child.children:
-                            if attr.type == "attribute":
-                                decs.append(_node_text(attr))
-                    elif child.type == "modifier":
-                        vis.append(_node_text(child))
-                # Extract fields
-                cs_fields = []
-                for child in node.children:
-                    if child.type == "declaration_list":
-                        for member in child.children:
-                            if member.type == "field_declaration":
-                                fvis = " ".join(_node_text(c) for c in member.children if c.type == "modifier")
-                                vd = next((c for c in member.children if c.type == "variable_declaration"), None)
-                                if vd:
-                                    ftype = _node_text(vd.child_by_field_name("type"))
-                                    decl = next((c for c in vd.children if c.type == "variable_declarator"), None)
-                                    fname = _node_text(decl.child_by_field_name("name")) if decl else ""
-                                    cs_fields.append({"name": fname, "type": ftype, "visibility": fvis})
-                            elif member.type == "property_declaration":
-                                pname = _node_text(member.child_by_field_name("name"))
-                                ptype = _node_text(member.child_by_field_name("type"))
-                                pvis = " ".join(_node_text(c) for c in member.children if c.type == "modifier")
-                                cs_fields.append({"name": pname, "type": ptype, "visibility": pvis})
-                cc = self._make_concept("Class", name, "", f"class {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
-                cc.inheritance = bases
-                cc.decorators = decs
-                cc.visibility = vis
-                cc.fields = cs_fields
-                concepts.append(cc)
-            elif node.type == "interface_declaration":
-                iname = _node_text(node.child_by_field_name("name"))
-                if not iname:
-                    continue
-                # Extract base_list
-                ibases = []
-                for child in node.children:
-                    if child.type == "base_list":
-                        for sub in child.children:
-                            if sub.type in ("identifier", "generic_name", "qualified_name", "name"):
-                                ibases.append(_node_text(sub))
-                # Extract methods
-                imethods = []
-                for child in node.children:
-                    if child.type == "declaration_list":
-                        for m in child.children:
-                            if m.type == "method_declaration":
-                                mn = m.child_by_field_name("name")
-                                if mn:
-                                    imethods.append(_node_text(mn))
-                ic = self._make_concept("Interface", iname, "", f"interface {iname}", resource, ts, parent_id, node.start_point[0]+1, methods=imethods, node=node, src_bytes=src_bytes)
-                ic.inheritance = ibases
-                concepts.append(ic)
-            elif node.type == "struct_declaration":
-                sname = _node_text(node.child_by_field_name("name"))
-                if not sname:
-                    continue
-                smethods = [
-                    _node_text(m.child_by_field_name("name"))
-                    for m in _find_all(node, "method_declaration")
-                    if m.child_by_field_name("name")
-                ]
-                sc = self._make_concept("Class", sname, "", f"struct {sname}", resource, ts, parent_id, node.start_point[0]+1, methods=smethods, node=node, src_bytes=src_bytes)
-                concepts.append(sc)
-            elif node.type in ("method_declaration", "local_function_statement"):
-                name = _node_text(node.child_by_field_name("name"))
-                if not name:
-                    continue
-                params_node = node.child_by_field_name("parameter_list")
-                params = _node_text(params_node).strip("()") if params_node else ""
-                ret = _node_text(node.child_by_field_name("return_type"))
-                tp = self._cs_type_params(node)
-                # Extract attributes and modifiers
-                decs = []
-                vis = []
-                for child in node.children:
-                    if child.type == "attribute_list":
-                        for attr in child.children:
-                            if attr.type == "attribute":
-                                decs.append(_node_text(attr))
-                    elif child.type == "modifier":
-                        vis.append(_node_text(child))
-                sig = f"{ret + ' ' if ret else ''}{name}({params})"
-                fc = self._make_concept("Function", name, "", sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes, type_params=tp)
-                fc.decorators = decs
-                fc.visibility = vis
-                concepts.append(fc)
-        return concepts
-
-
-# ---------------------------------------------------------------------------
-# SQL parser (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class SQLParser(TreeSitterParser):
-    LANGUAGE   = "sql"
-    EXTENSIONS = {".sql"}
-    _TS_MODULE = "tree_sitter_sql"
-    _lang_obj  = None
-
-    _KIND_MAP = {
-        "create_table": "Table",
-        "create_view": "View",
-        "create_function": "Function",
-        "create_procedure": "Function",
-        "create_index": "Index",
-        "create_trigger": "Trigger",
-        "create_type": "Type",
-    }
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type not in {"comment", "marginalia", ""}:
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-        for stmt in root.children:
-            if stmt.type != "statement" or not stmt.children:
-                continue
-            inner = stmt.children[0]
-            ctype = self._KIND_MAP.get(inner.type)
-            if ctype is None:
-                continue
-
-            name = self._sql_name(inner, ctype)
-            if not name:
-                continue
-            doc = _prev_comment(inner, src_bytes)
-            sig = _node_text(inner)
-            if len(sig) > 200:
-                sig = sig[:200] + " ..."
-
-            if ctype == "Function":
-                params = self._sql_params(inner)
-                sig = f"{'CREATE OR REPLACE ' if any(c.type == 'keyword_replace' for c in inner.children) else 'CREATE '}{inner.type.upper().split('_')[1]} {name}({params})"
-                concepts.append(self._make_concept(
-                    "Function", name, doc, sig, resource, ts, parent_id,
-                    inner.start_point[0]+1, node=inner, src_bytes=src_bytes))
-            else:
-                cid = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
-                cc = Concept(
-                    type=ctype, title=name,
-                    description=_first_line(doc) or f"{ctype} defined in {Path(resource).name}",
-                    docstring=doc, signature=sig,
-                    resource=resource, tags=[self.LANGUAGE, ctype.lower()],
-                    timestamp=ts, source_lines=(inner.start_point[0]+1, inner.end_point[0]+1),
-                    concept_id=f"{cid}/{_safe_id(name)}",
-                    related=[parent_id],
-                )
-                # Extract column definitions for CREATE TABLE
-                if inner.type == "create_table":
-                    sql_cols = []
-                    for child in inner.children:
-                        if child.type == "column_definitions":
-                            for col in child.children:
-                                if col.type == "column_definition":
-                                    col_name = _node_text(col.child_by_field_name("name"))
-                                    col_type = _node_text(col.child_by_field_name("type"))
-                                    # Collect constraints
-                                    constraints = []
-                                    fk_ref = ""
-                                    for c2 in col.children:
-                                        t = c2.type
-                                        if t == "keyword_primary":
-                                            constraints.append("PRIMARY KEY")
-                                        elif t == "keyword_unique":
-                                            constraints.append("UNIQUE")
-                                        elif t == "keyword_not":
-                                            constraints.append("NOT NULL")
-                                        elif t == "keyword_null":
-                                            pass  # handled by NOT above
-                                        elif t == "keyword_default":
-                                            pass  # next child is the default value
-                                        elif t == "keyword_references":
-                                            # next child is object_reference
-                                            pass
-                                        elif t == "object_reference":
-                                            has_ref = False
-                                            for ref_child in col.children:
-                                                if ref_child.type == "keyword_references":
-                                                    has_ref = True
-                                                if ref_child is c2 and has_ref:
-                                                    break
-                                            if not has_ref:
-                                                continue
-                                            fk_ref = _node_text(c2)
-                                    col_constraint = " ".join(constraints)
-                                    if fk_ref:
-                                        col_constraint += f" REFERENCES {fk_ref}" if col_constraint else f"REFERENCES {fk_ref}"
-                                    sql_cols.append({"name": col_name, "type": col_type, "visibility": col_constraint})
-                    cc.fields = sql_cols
-                concepts.append(cc)
-        return concepts
-
-    @staticmethod
-    def _sql_name(node, ctype: str) -> str:
-        for c in node.children:
-            if c.type == "object_reference":
-                for cc in c.children:
-                    if cc.type == "identifier":
-                        return _node_text(cc)
-            if c.type == "identifier" and ctype == "Index":
-                return _node_text(c)
-        return ""
-
-    @staticmethod
-    def _sql_params(node) -> str:
-        for c in node.children:
-            if c.type == "function_arguments":
-                return _node_text(c).strip("()")
-        return ""
-
-
-# ---------------------------------------------------------------------------
-# Swift  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-class SwiftParser(TreeSitterParser):
-    LANGUAGE   = "swift"
-    EXTENSIONS = {".swift"}
-    _TS_MODULE = "tree_sitter_swift"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type not in ("comment", "multiline_comment", ""):
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root,
-                               "class_declaration", "struct_declaration",
-                               "protocol_declaration", "enum_declaration",
-                               "function_declaration", "typealias_declaration",
-                               "init_declaration"):
-
-            if node.type in ("class_declaration", "protocol_declaration"):
-                # struct, enum, class all use class_declaration — detect from keyword child
-                keyword = ""
-                for c in node.children:
-                    if c.type in ("struct", "class", "enum", "protocol"):
-                        keyword = c.type
-                        break
-                name_node = next((c for c in node.children if c.type == "type_identifier"), None)
-                if not name_node:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                is_protocol_like = keyword == "protocol"
-                ctype = "Interface" if is_protocol_like else "Class"
-                kind_name = keyword
-                sig = f"{kind_name} {name}"
-
-                # Type parameters
-                tp = []
-                for child in node.children:
-                    if child.type == "type_parameters":
-                        for tp_node in child.children:
-                            if tp_node.type == "type_parameter":
-                                tp.append(_node_text(tp_node.child_by_field_name("identifier") or tp_node))
-                            elif tp_node.type == "identifier":
-                                tp.append(_node_text(tp_node))
-
-                # Inheritance
-                bases = []
-                for child in node.children:
-                    if child.type == "inheritance_specifier":
-                        for item in child.children:
-                            if item.type in ("type_identifier", "identifier", "user_type"):
-                                bases.append(_node_text(item))
-
-                # Members
-                body = None
-                for child in node.children:
-                    if child.type in ("class_body", "protocol_body", "enum_class_body"):
-                        body = child
-                        break
-                methods = []
-                if body:
-                    for member in body.children:
-                        if member.type == "function_declaration":
-                            mname_node = next((c for c in member.children if c.type in ("simple_identifier", "identifier")), None)
-                            if mname_node:
-                                methods.append(_node_text(mname_node))
-                                # Emit method
-                                mdoc = _prev_comment(member, src_bytes)
-                                msig = self._swift_fn_sig(member)
-                                mparent_id = f"{resource.replace(os.sep, '/')}/{_safe_id(name)}"
-                                mc = self._make_concept("Function", _node_text(mname_node), mdoc, msig, resource, ts, mparent_id, member.start_point[0]+1, node=member, src_bytes=src_bytes)
-                                concepts.append(mc)
-                        elif member.type == "init_declaration":
-                            methods.append("init")
-                            mdoc = _prev_comment(member, src_bytes)
-                            msig = self._swift_init_sig(member)
-                            mparent_id = f"{resource.replace(os.sep, '/')}/{_safe_id(name)}"
-                            mc = self._make_concept("Function", "init", mdoc, msig, resource, ts, mparent_id, member.start_point[0]+1, node=member, src_bytes=src_bytes)
-                            concepts.append(mc)
-
-                cc = self._make_concept(ctype, name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
-                cc.inheritance = bases
-                concepts.append(cc)
-
-            elif node.type == "function_declaration":
-                name_node = next((c for c in node.children if c.type in ("simple_identifier", "identifier")), None)
-                if not name_node:
-                    continue
-                # Skip if inside a type body (already emitted as method)
-                p = node.parent
-                in_type = False
-                while p is not None:
-                    if p.type in ("class_body", "protocol_body", "enum_class_body"):
-                        in_type = True
-                        break
-                    p = p.parent
-                if in_type:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                sig = self._swift_fn_sig(node)
-                concepts.append(self._make_concept("Function", name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
-
-            elif node.type == "typealias_declaration":
-                name_node = node.child_by_field_name("name") or next((c for c in node.children if c.type in ("simple_identifier", "identifier")), None)
-                if not name_node:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                concepts.append(self._make_concept("Type", name, doc, f"typealias {name}", resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
-
-        return concepts
-
-    def _swift_fn_sig(self, node) -> str:
-        name_node = next((c for c in node.children if c.type in ("simple_identifier", "identifier")), None)
-        name = _node_text(name_node) if name_node else "?"
-        params_node = None
-        for child in node.children:
-            if child.type in ("value_arguments", "parameter"):
-                params_node = child
-                break
-        params = _node_text(params_node) if params_node else ""
-        # Return type
-        ret = ""
-        for child in node.children:
-            if child.type == "type_annotation" or (child.type == "input_parameters" and child.next_sibling and child.next_sibling.type in ("output_type", "return_type")):
-                ret = _node_text(child)
-                break
-            if child.type in ("output_type",):
-                ret = _node_text(child)
-                break
-        sig = f"func {name}({params.strip('()')})"
-        if ret:
-            sig += f" -> {ret}"
-        # throws
-        for child in node.children:
-            if child.type == "throws":
-                sig += " throws"
-                break
-        return sig
-
-    def _swift_init_sig(self, node) -> str:
-        params_node = None
-        for child in node.children:
-            if child.type in ("value_arguments", "parameter"):
-                params_node = child
-                break
-        params = _node_text(params_node) if params_node else ""
-        sig = f"init({params.strip('()')})"
-        for child in node.children:
-            if child.type == "throws":
-                sig += " throws"
-                break
-        return sig
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        names = []
-        for node in _find_all(root, "import_declaration"):
-            for child in node.children:
-                if child.type in ("identifier", "simple_identifier"):
-                    t = _node_text(child)
-                    if t and t != "import":
-                        names.append(t)
-        return names
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        names = []
-        for call in _find_all(node, "call_expression"):
-            for child in call.children:
-                if child.type in ("identifier", "simple_identifier", "navigation_expression"):
-                    if child.type == "navigation_expression":
-                        names.append(_node_text(child))
-                    else:
-                        names.append(_node_text(child))
-            # Also check call_suffix
-            for child in call.children:
-                if child.type == "call_suffix" and child.prev_sibling:
-                    names.append(_node_text(child.prev_sibling))
-        return names
-
-
-# ---------------------------------------------------------------------------
-# Kotlin  (tree-sitter)
-# ---------------------------------------------------------------------------
-
-def _kotlin_is_interface(node) -> bool:
-    for child in node.children:
-        if child.type == "interface":
-            return True
-    return False
-
-
-class KotlinParser(TreeSitterParser):
-    LANGUAGE   = "kotlin"
-    EXTENSIONS = {".kt", ".kts"}
-    _TS_MODULE = "tree_sitter_kotlin"
-    _lang_obj  = None
-
-    def _module_doc(self, root, src_bytes: bytes) -> str:
-        for child in root.children:
-            if child.type not in ("comment", ""):
-                return _prev_comment(child, src_bytes)
-        return ""
-
-    def _parse_symbols(self, root, src_bytes, resource, ts, parent_id):
-        concepts = []
-
-        for node in _find_all(root, "class_declaration", "object_declaration",
-                               "function_declaration", "type_alias"):
-
-            if node.type == "class_declaration":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                is_iface = _kotlin_is_interface(node)
-                ctype = "Interface" if is_iface else "Class"
-                # Collect modifiers
-                decs = []
-                vis = []
-                for child in node.children:
-                    if child.type == "modifiers":
-                        for mod in child.children:
-                            if mod.type == "annotation":
-                                decs.append(_node_text(mod))
-                            elif mod.type == "visibility_modifier":
-                                vis.append(_node_text(mod))
-                            elif mod.type == "class_modifier":
-                                t = _node_text(mod)
-                                if t not in ("interface",):
-                                    vis.append(t if t != "class" else "")
-
-                # Type parameters
-                tp = []
-                for child in node.children:
-                    if child.type == "type_parameters":
-                        for tp_node in child.children:
-                            if tp_node.type == "type_parameter":
-                                tp.append(_node_text(tp_node.child_by_field_name("name") or tp_node))
-
-                # Inheritance
-                bases = []
-                for child in node.children:
-                    if child.type == "delegation_specifiers":
-                        for spec in child.children:
-                            if spec.type == "delegation_specifier":
-                                for c2 in spec.children:
-                                    if c2.type in ("user_type", "identifier", "constructor_invocation"):
-                                        bases.append(_node_text(c2).split("(")[0].strip())
-
-                # Members
-                body = None
-                for child in node.children:
-                    if child.type in ("class_body", "enum_class_body"):
-                        body = child
-                        break
-                methods = []
-                if body:
-                    for member in body.children:
-                        if member.type == "function_declaration":
-                            mn = member.child_by_field_name("name")
-                            if mn:
-                                methods.append(_node_text(mn))
-                                mdoc = _prev_comment(member, src_bytes)
-                                msig = self._kotlin_fn_sig(member)
-                                mparent_id = f"{resource.replace(os.sep, '/')}/{_safe_id(name)}"
-                                mc = self._make_concept("Function", _node_text(mn), mdoc, msig, resource, ts, mparent_id, member.start_point[0]+1, node=member, src_bytes=src_bytes)
-                                concepts.append(mc)
-                        elif member.type == "property_declaration":
-                            # val/var at class level = field
-                            pname_node = member.child_by_field_name("name")
-                            if pname_node:
-                                methods.append(_node_text(pname_node))
-
-                # Fields from property_declaration inside class_body
-                # and from primary constructor parameters (data class properties)
-                fields = []
-                # Primary constructor parameters
-                for child in node.children:
-                    if child.type == "primary_constructor":
-                        for params_node in child.children:
-                            if params_node.type == "class_parameters":
-                                for param in params_node.children:
-                                    if param.type == "class_parameter":
-                                        pname = _node_text(param.child_by_field_name("name")) or \
-                                                _node_text(next((c for c in param.children if c.type == "identifier"), None))
-                                        ptype_node = None
-                                        for c in param.children:
-                                            if c.type in ("user_type", "nullable_type", "array_type", "type_identifier"):
-                                                ptype_node = c
-                                                break
-                                        ptype = _node_text(ptype_node) if ptype_node else ""
-                                        fvis = " ".join(vis)
-                                        if pname:
-                                            fields.append({"name": pname, "type": ptype, "visibility": fvis})
-                # Body-level property declarations
-                if body:
-                    for member in body.children:
-                        if member.type == "property_declaration":
-                            pname = _node_text(member.child_by_field_name("name"))
-                            ptype_node = None
-                            for c in member.children:
-                                if c.type == "user_type":
-                                    ptype_node = c
-                                    break
-                            ptype = _node_text(ptype_node) if ptype_node else ""
-                            fvis = " ".join(vis)
-                            if pname:
-                                fields.append({"name": pname, "type": ptype, "visibility": fvis})
-
-                sig = f"{'interface ' if is_iface else 'class '}{name}"
-                cc = self._make_concept(ctype, name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
-                cc.inheritance = bases
-                cc.decorators = decs
-                cc.visibility = vis
-                cc.fields = fields
-                concepts.append(cc)
-
-            elif node.type == "object_declaration":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                # Type parameters
-                tp = []
-                for child in node.children:
-                    if child.type == "type_parameters":
-                        for tp_node in child.children:
-                            if tp_node.type == "type_parameter":
-                                tp.append(_node_text(tp_node.child_by_field_name("name") or tp_node))
-                methods = []
-                body = None
-                for child in node.children:
-                    if child.type == "class_body":
-                        body = child
-                        break
-                if body:
-                    for member in body.children:
-                        if member.type == "function_declaration":
-                            mn = member.child_by_field_name("name")
-                            if mn:
-                                methods.append(_node_text(mn))
-                                mdoc = _prev_comment(member, src_bytes)
-                                msig = self._kotlin_fn_sig(member)
-                                mparent_id = f"{resource.replace(os.sep, '/')}/{_safe_id(name)}"
-                                mc = self._make_concept("Function", _node_text(mn), mdoc, msig, resource, ts, mparent_id, member.start_point[0]+1, node=member, src_bytes=src_bytes)
-                                concepts.append(mc)
-                cc = self._make_concept("Class", name, doc, f"object {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
-                concepts.append(cc)
-
-            elif node.type == "function_declaration":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                # Skip if inside a class body (already emitted as method)
-                p = node.parent
-                in_class = False
-                while p is not None:
-                    if p.type in ("class_body", "enum_class_body"):
-                        in_class = True
-                        break
-                    p = p.parent
-                if in_class:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                sig = self._kotlin_fn_sig(node)
-                # Modifiers
-                vis = []
-                for child in node.children:
-                    if child.type == "modifiers":
-                        for mod in child.children:
-                            if mod.type == "visibility_modifier":
-                                vis.append(_node_text(mod))
-                fc = self._make_concept("Function", name, doc, sig, resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes)
-                fc.visibility = vis
-                concepts.append(fc)
-
-            elif node.type == "type_alias":
-                name_node = node.child_by_field_name("name")
-                if not name_node:
-                    continue
-                name = _node_text(name_node)
-                doc = _prev_comment(node, src_bytes)
-                concepts.append(self._make_concept("Type", name, doc, f"typealias {name}", resource, ts, parent_id, node.start_point[0]+1, node=node, src_bytes=src_bytes))
-
-        return concepts
-
-    def _kotlin_fn_sig(self, node) -> str:
-        name = _node_text(node.child_by_field_name("name"))
-        params_node = None
-        for child in node.children:
-            if child.type == "function_value_parameters":
-                params_node = child
-                break
-        params = _node_text(params_node).strip("()") if params_node else ""
-        # Return type
-        ret = ""
-        for child in node.children:
-            if child.type == "user_type":
-                ret = _node_text(child)
-                break
-            if child.type in ("type_identifier",):
-                ret = _node_text(child)
-                break
-        sig = f"fun {name}({params})"
-        if ret:
-            sig += f": {ret}"
-        return sig
-
-    def _collect_imports(self, root, src_bytes: bytes) -> list[str]:
-        names = []
-        for node in _find_all(root, "import"):
-            for child in node.children:
-                if child.type in ("identifier", "qualified_identifier"):
-                    t = _node_text(child)
-                    if t and t != "import":
-                        names.append(t)
-        return names
-
-    def _collect_calls(self, node, src_bytes: bytes) -> list[str]:
-        names = []
-        for call in _find_all(node, "call_expression"):
-            for child in call.children:
-                if child.type in ("identifier", "navigation_expression"):
-                    names.append(_node_text(child))
-        return names
-
-
-# ---------------------------------------------------------------------------
-# Parser registry
-# ---------------------------------------------------------------------------
-
-def _get_parser(ext: str):
-    if ext in {".py"}:
-        return PythonParser()
-    if ext in {".js", ".jsx", ".mjs", ".cjs"}:
-        return JSTSParser()
-    if ext in {".ts", ".tsx"}:
-        p = JSTSParser()
-        p._path_ext = ext
-        return p
-    if ext in {".go"}:
-        return GoParser()
-    if ext in {".java"}:
-        return JavaParser()
-    if ext in {".rs"}:
-        return RustParser()
-    if ext in {".rb"}:
-        return RubyParser()
-    if ext in {".c", ".h"}:
-        return CParser()
-    if ext in {".cpp", ".cxx", ".cc", ".hpp", ".hh"}:
-        return CppParser()
-    if ext in {".cs"}:
-        return CSharpParser()
-    if ext in {".sql"}:
-        return SQLParser()
-    if ext in {".swift"}:
-        return SwiftParser()
-    if ext in {".kt", ".kts"}:
-        return KotlinParser()
-    return None
-
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-# Exact directory names to skip
-SKIP_DIRS = {
-    ".git", ".hg", ".svn", "__pycache__", ".mypy_cache", ".pytest_cache",
-    "node_modules", ".venv", "venv", "env", ".env", "dist", "build",
-    ".tox", "htmlcov", ".eggs", "vendor", "target", "coverage",
-    ".next", ".nuxt", "__snapshots__", ".cache", "tmp", "temp", "logs",
-    "static", "media", "assets",
-}
-
-# Suffix-based skip patterns (replaces broken glob strings in sets)
-SKIP_DIR_SUFFIXES = (".egg-info", ".dist-info")
-
-def _safe_id(name: str) -> str:
-    """Convert symbol name to safe file/concept ID."""
-    return re.sub(r"[^a-zA-Z0-9_\-]", "_", name).strip("_") or "unknown"
-
-
-def _first_line(text: str) -> str:
-    if not text:
-        return ""
-    return text.strip().splitlines()[0].strip()
-
 
 def _git_info(repo_root: Path) -> dict:
     """Get git metadata for tagging. Returns empty dict if not a git repo."""
@@ -2510,6 +249,15 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
     if concept.side_effects:
         lines.append(f"## Side Effects\n{concept.side_effects}\n")
 
+    if concept.security:
+        lines.append(
+            "## Security \u26a0\ufe0f AI-estimated \u2014 verify manually, absence of a "
+            f"flagged pattern is not proof of safety\n{concept.security}\n"
+        )
+
+    if concept.complexity:
+        lines.append(f"## Complexity \u26a0\ufe0f AI-estimated \u2014 verify manually\n{concept.complexity}\n")
+
     if concept.methods:
         lines.append("## Methods\n")
         for m in concept.methods:
@@ -2532,6 +280,14 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
                 # cid not found — may be stale; show as plain text
                 label = cid.split("/")[-1]
                 lines.append(f"- {label} *(unresolved)*")
+        lines.append("")
+
+    if concept.related_semantic:
+        lines.append("## Related (AI-suggested)\n")
+        for cid in concept.related_semantic:
+            rel_concept = all_concepts.get(cid)
+            label = rel_concept.title if rel_concept else cid.split("/")[-1]
+            lines.append(f"- [{label}](/{cid}.md)")
         lines.append("")
 
     if concept.calls:
@@ -2613,7 +369,7 @@ def render_dir_index(
     return "\n".join(lines)
 
 
-def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str) -> str:
+def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str, source_root: str = "") -> str:
     fm = {
         "type": "Index",
         "title": bundle_name,
@@ -2621,6 +377,8 @@ def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str
         "okf_version": "0.1",
         "timestamp": ts,
     }
+    if source_root:
+        fm["source_root"] = source_root
     lines = [
         "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",
         f"# {bundle_name}\n",
@@ -2871,7 +629,22 @@ Inheritance: {inheritance}
 
 _MAX_BODY_LINES = 120  # cap so one large class doesn't blow the token budget
 
-def _read_body(concept: Concept, source_dir: Path) -> str:
+def _read_source_root(bundle_dir: Path) -> Path | None:
+    """Read source_root from bundle's root index.md frontmatter."""
+    try:
+        raw = (bundle_dir / "index.md").read_text(encoding="utf-8")
+        parts = raw.split("---", 2)
+        if len(parts) >= 2:
+            fm = yaml.safe_load(parts[1]) or {}
+            src = fm.get("source_root")
+            if src:
+                return Path(str(src)).resolve()
+    except Exception:
+        pass
+    return None
+
+
+def _read_body(concept: Concept, source_dir: Path | None = None, bundle_dir: Path | None = None) -> str:
     """Best-effort read of the concept's source body using resource + source_lines.
     Returns '' if anything is missing/unreadable — callers must treat that as
     'no body available' and skip body-dependent enrichment rather than guessing."""
@@ -2879,6 +652,13 @@ def _read_body(concept: Concept, source_dir: Path) -> str:
         return ""
     start, end = concept.source_lines
     if not start or not end or end < start:
+        return ""
+    if source_dir is None and bundle_dir is not None:
+        src = _read_source_root(bundle_dir)
+        if src is None:
+            return ""
+        source_dir = src
+    if source_dir is None:
         return ""
     try:
         path = (source_dir / concept.resource).resolve()
@@ -2994,7 +774,7 @@ You are given the ACTUAL SOURCE BODY below, not just the signature. Only describ
 behaviour you can see directly in this body — do not speculate about callers,
 inputs from other files, or runtime conditions not visible here.
 
-Return a JSON object with two fields:
+Return a JSON object with four fields:
 
   "usage_example" - a short (2-6 line) realistic code snippet showing how to call
                      this, using only the parameters/return type actually shown.
@@ -3005,6 +785,20 @@ Return a JSON object with two fields:
                       if the body has none of that. Base this ONLY on the body
                       given; if uncertain, say what is uncertain rather than
                       asserting purity or impurity you can't confirm.
+  "security"       - list ONLY concrete, visible risk patterns in this body:
+                      unsanitized input reaching a query/shell/eval/HTML sink,
+                      hardcoded secrets, missing auth checks that are visibly
+                      absent, unsafe deserialization, etc. Quote the specific
+                      line/construct you're flagging. If you see no such pattern,
+                      say exactly: "No obvious risk pattern in this body." Do NOT
+                      say a concept is "safe" or "secure" — absence of a visible
+                      issue is not proof of safety, since you cannot see callers
+                      or the full data flow.
+  "complexity"     - Big-O time/space ONLY if a clear loop, recursion, or data
+                      structure operation is visible in the body (e.g. nested
+                      loops, recursive calls). Otherwise return exactly:
+                      "Not estimable from this body alone." Do not guess based
+                      on the function name or docstring.
 
 Reply with ONLY the JSON object, no markdown fences, no preamble.
 
@@ -3019,10 +813,15 @@ Source body:
 def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) -> Concept:
     """Second-pass enrichment that requires the actual source body.
     Skips silently (no call made) if the body can't be resolved, rather than
-    falling back to signature-only guessing for fields that need real code."""
+    falling back to signature-only guessing for fields that need real code.
+
+    security/complexity are intentionally worded to avoid false-confidence
+    claims (see DEEP_ENRICH_PROMPT) and the render layer adds a hardcoded
+    "AI-estimated — verify manually" disclaimer regardless of what the model
+    returns, so the caveat can't be silently dropped."""
     if concept.type not in {"Function", "Class", "Method"}:
         return concept
-    if concept.usage_example and concept.side_effects:
+    if concept.usage_example and concept.side_effects and concept.security and concept.complexity:
         return concept  # already enriched
 
     body = _read_body(concept, source_dir)
@@ -3041,7 +840,7 @@ def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) 
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=350,
+            max_tokens=500,
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
@@ -3053,12 +852,231 @@ def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) 
             concept.usage_example = str(data["usage_example"]).strip()
         if data.get("side_effects"):
             concept.side_effects = str(data["side_effects"]).strip()
+        if data.get("security"):
+            concept.security = str(data["security"]).strip()
+        if data.get("complexity"):
+            concept.complexity = str(data["complexity"]).strip()
 
     except json.JSONDecodeError:
         log.debug(f"Deep-enrich JSON parse failed for {concept.title}")
     except Exception as e:
         log.debug(f"Deep enrichment failed for {concept.title}: {e}")
 
+    return concept
+
+
+# ---------------------------------------------------------------------------
+# Standalone security/complexity audit — runs against an EXISTING bundle
+# (okf generate --security) without re-scanning or touching any other field.
+# ---------------------------------------------------------------------------
+
+SECURITY_PROMPT = """\
+You are auditing one code concept for an OKF (Open Knowledge Format) knowledge
+bundle. You are given the ACTUAL SOURCE BODY below — only describe patterns
+visible in this body; do not speculate about callers or data you cannot see.
+
+Return a JSON object with two fields:
+
+  "security"   - concrete, visible risk patterns only: unsanitized input reaching
+                  a query/shell/eval/HTML sink, hardcoded secrets, missing auth
+                  checks that are visibly absent, unsafe deserialization, etc.
+                  Quote the specific construct you're flagging. If you see none,
+                  say exactly: "No obvious risk pattern in this body." Never say
+                  a concept is "safe" or "secure" — absence of a visible issue is
+                  not proof of safety, since you cannot see callers or full data flow.
+  "complexity" - Big-O time/space ONLY if a clear loop, recursion, or data
+                  structure operation is visible in the body. Otherwise return
+                  exactly: "Not estimable from this body alone." Do not guess
+                  from the function name or docstring alone.
+
+Reply with ONLY the JSON object, no markdown fences, no preamble.
+
+Concept type: {type}
+Name: {title}
+Signature: {signature}
+Source body:
+{body}
+"""
+
+
+def enrich_security(concept: Concept, client, model: str, source_dir: Path) -> Concept:
+    """Lean, security/complexity-only enrichment."""
+    if concept.type not in {"Function", "Class", "Method"}:
+        return concept
+    if concept.security and concept.complexity:
+        return concept
+    body = _read_body(concept, source_dir)
+    if not body:
+        log.debug(f"No body available for {concept.title}, skipping security audit")
+        return concept
+    prompt = SECURITY_PROMPT.format(
+        type=concept.type, title=concept.title, signature=concept.signature or "none", body=body,
+    )
+    try:
+        resp = client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300, temperature=0.1)
+        raw = (resp.choices[0].message.content or "").strip()
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw).strip()
+        data = json.loads(raw)
+        if data.get("security"):
+            concept.security = str(data["security"]).strip()
+        if data.get("complexity"):
+            concept.complexity = str(data["complexity"]).strip()
+    except json.JSONDecodeError:
+        log.debug(f"Security-audit JSON parse failed for {concept.title}")
+    except Exception as e:
+        log.debug(f"Security audit failed for {concept.title}: {e}")
+    return concept
+
+
+_SOURCE_LINE_RE = re.compile(r"Lines (\d+)[-\u2013\u2014](\d+) in")
+
+
+def _parse_source_line_range(source_section_text: str) -> tuple:
+    """Recover (start, end) from the '## Source\\nLines N-M in `path`' section."""
+    m = _SOURCE_LINE_RE.search(source_section_text or "")
+    if not m:
+        return ()
+    return (int(m.group(1)), int(m.group(2)))
+
+
+def _upsert_section(body: str, heading_prefix: str, new_heading: str, content: str,
+                     insert_before: str = "## Source") -> str:
+    """Surgically replace a single '## <heading_prefix>...' section, or insert
+    a new one if absent — without touching any other section."""
+    lines = body.splitlines()
+    start = None
+    end = len(lines)
+    for i, line in enumerate(lines):
+        if line.startswith(heading_prefix):
+            start = i
+            end = len(lines)
+            for j in range(i + 1, len(lines)):
+                if lines[j].startswith("## "):
+                    end = j
+                    break
+            break
+    new_section = [new_heading, "", content, ""]
+    if start is not None:
+        lines[start:end] = new_section
+    else:
+        insert_at = len(lines)
+        for i, line in enumerate(lines):
+            if line.startswith(insert_before):
+                insert_at = i
+                break
+        lines[insert_at:insert_at] = new_section + [""]
+    return "\n".join(lines)
+
+
+def _patch_security_complexity(path: Path, security: str, complexity: str) -> bool:
+    """Write security/complexity into an existing concept .md file in place."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return False
+    body = parts[2]
+    if security:
+        body = _upsert_section(
+            body, "## Security",
+            "## Security \u26a0\ufe0f AI-estimated \u2014 verify manually, absence of a "
+            "flagged pattern is not proof of safety",
+            security,
+        )
+    if complexity:
+        body = _upsert_section(
+            body, "## Complexity",
+            "## Complexity \u26a0\ufe0f AI-estimated \u2014 verify manually",
+            complexity,
+        )
+    path.write_text("---" + parts[1] + "---" + body, encoding="utf-8")
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Semantic related-links (separate pass — needs the full concept catalog)
+# ---------------------------------------------------------------------------
+
+_MAX_CANDIDATES = 40
+
+
+def _candidate_pool(concept: Concept, all_concepts: dict[str, Concept]) -> list[Concept]:
+    """Cheap deterministic prefilter before the LLM re-ranks."""
+    concept_dir = concept.resource.rsplit("/", 1)[0] if "/" in (concept.resource or "") else ""
+    scored: list[tuple[int, Concept]] = []
+    for other in all_concepts.values():
+        if other.concept_id == concept.concept_id:
+            continue
+        if other.type not in {"Function", "Class", "Method"}:
+            continue
+        if other.concept_id in concept.related or other.concept_id in concept.calls or other.concept_id in concept.called_by:
+            continue
+        score = len(set(other.tags or []) & set(concept.tags or [])) * 2
+        other_dir = other.resource.rsplit("/", 1)[0] if "/" in (other.resource or "") else ""
+        if other_dir == concept_dir:
+            score += 1
+        if other.type == concept.type:
+            score += 1
+        if score > 0:
+            scored.append((score, other))
+    scored.sort(key=lambda x: -x[0])
+    return [c for _, c in scored[:_MAX_CANDIDATES]]
+
+
+RELATED_PROMPT = """\
+You are finding semantically related code concepts for an OKF knowledge bundle.
+Given the target concept and a list of CANDIDATES, pick UP TO {top_k} candidate
+ids that are genuinely related in purpose or pattern. Do NOT pick candidates
+just because they share a tag or directory if the purpose isn't actually related.
+
+Rules:
+- Only return ids that appear EXACTLY as given in the candidate list below.
+- If nothing is truly related, return an empty list.
+- Reply with ONLY a JSON object: {{"related_ids": ["id1", "id2"]}}, no preamble.
+
+Target concept:
+type: {type}
+title: {title}
+description: {description}
+
+Candidates:
+{candidates}
+"""
+
+
+def enrich_related_semantic(
+    concept: Concept, all_concepts: dict[str, Concept], client, model: str, top_k: int = 5,
+) -> Concept:
+    """Adds LLM-suggested cross-links to concept.related_semantic."""
+    if concept.type not in {"Function", "Class", "Method"}:
+        return concept
+    if concept.related_semantic:
+        return concept
+    candidates = _candidate_pool(concept, all_concepts)
+    if not candidates:
+        return concept
+    candidate_ids = {c.concept_id for c in candidates}
+    candidate_text = "\n".join(
+        f"- {c.concept_id}: {c.title} \u2014 {c.description or 'no description'}"
+        for c in candidates
+    )
+    prompt = RELATED_PROMPT.format(top_k=top_k, type=concept.type, title=concept.title, description=concept.description or "none", candidates=candidate_text)
+    try:
+        resp = client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=200, temperature=0.1)
+        raw = (resp.choices[0].message.content or "").strip()
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw).strip()
+        data = json.loads(raw)
+        ids = data.get("related_ids") or []
+        if isinstance(ids, list):
+            concept.related_semantic = [i for i in ids if i in candidate_ids][:top_k]
+    except json.JSONDecodeError:
+        log.debug(f"Related-links JSON parse failed for {concept.title}")
+    except Exception as e:
+        log.debug(f"Semantic related linking failed for {concept.title}: {e}")
     return concept
 
 
@@ -3176,7 +1194,7 @@ def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]
             except Exception as e:
                 log.warning(f"Failed to parse manifest {path}: {e}")
             continue
-        parser = _get_parser(path.suffix.lower())
+        parser = get_parser(path.suffix.lower())
         if parser is None:
             continue
         try:
@@ -3219,6 +1237,7 @@ def write_bundle(
     bundle_name: str,
     log_entries: list[str],
     source_dirs: set[str] | None = None,
+    source_root: str = "",
 ):
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -3298,7 +1317,7 @@ def write_bundle(
     # ── 4. Root index ─────────────────────────────────────────────────────
     top_dirs = sorted(dir_tree.get("", {}).get("subdirs", set()))
     (output_dir / "index.md").write_text(
-        render_root_index(bundle_name, top_dirs, len(concepts), ts),
+        render_root_index(bundle_name, top_dirs, len(concepts), ts, source_root=source_root),
         encoding="utf-8",
     )
 
@@ -3323,6 +1342,113 @@ def setup_logging():
         format="%(asctime)s [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     )
+
+
+def enrich_bundle(
+    bundle_dir: Path,
+    mode: str = "security",
+    source_dir: Path | None = None,
+    force: bool = False,
+):
+    """Run an enrich pass against an EXISTING bundle without re-scanning.
+
+    Reads source_root from bundle index.md frontmatter (stored at generate time),
+    or uses the provided source_dir. Supports modes: security, deep, full.
+    """
+    if not bundle_dir.exists():
+        log.error(f"Bundle directory not found: {bundle_dir}")
+        return
+
+    src = source_dir or _read_source_root(bundle_dir)
+    if not src:
+        log.error("No source directory available. Either pass --src or generate the bundle first.")
+        return
+
+    from okf.config import load as load_config
+    _cfg = load_config()
+
+    # Resolve client for the requested mode
+    resolve_mode = "deep" if mode in ("deep", "full") else "security"
+    try:
+        client, r = _resolve_client(_cfg, resolve_mode)
+    except ImportError:
+        return
+    log.info(f"Enrich (mode={mode}): {r['provider']}/{r['model']} @ {r['base_url']}")
+
+    from okf.pairs import load_bundle as _load_md
+    raw = _load_md(bundle_dir)
+
+    if mode == "security":
+        targets = []
+        for r2 in raw:
+            if r2.get("type") not in {"Function", "Class", "Method"}:
+                continue
+            sections = r2.get("sections", {})
+            source_lines = _parse_source_line_range(sections.get("source", ""))
+            if not source_lines:
+                continue
+            if not force and sections.get("security") and sections.get("complexity"):
+                continue
+            c = Concept(type=r2.get("type", ""), title=r2.get("title", ""), resource=r2.get("resource", ""), signature=sections.get("signature", ""), source_lines=source_lines)
+            targets.append((c, Path(r2["source_file"])))
+        log.info(f"To audit: {len(targets)} concepts")
+        if not targets:
+            log.info("Nothing to do — all concepts already audited (use --force to re-run).")
+            return
+        done_seen = skipped = errors = 0
+        with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
+            futures = {}
+            for c, path in targets:
+                futures[pool.submit(_audit_one, c, client, r["model"], src, path)] = (c, path)
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Security audit"):
+                try:
+                    result = future.result()
+                    if result == "done":
+                        done_seen += 1
+                    else:
+                        skipped += 1
+                except Exception as e:
+                    errors += 1
+                    log.debug(f"Security audit error: {e}")
+        log.info(f"Security audit complete: {done_seen} patched, {skipped} skipped, {errors} errors")
+
+    elif mode in ("deep", "full"):
+        log.info(f"Deep enrich for {len(raw)} concepts...")
+        all_map = {}
+        concepts = []
+        for r2 in raw:
+            c = Concept(type=r2.get("type", ""), title=r2.get("title", ""), resource=r2.get("resource", ""), signature=r2.get("signature", ""), description=r2.get("description", ""), concept_id=r2.get("concept_id", ""), source_lines=_parse_source_line_range(r2.get("sections", {}).get("source", "")))
+            concepts.append(c)
+            all_map[c.concept_id] = c
+
+        def _deep_and_write(c):
+            enriched = enrich_concept(c, client, r["model"])
+            enriched = enrich_concept_deep(enriched, client, r["model"], src)
+            p = _concept_output_path(enriched, bundle_dir)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(render_concept(enriched, all_map), encoding="utf-8")
+            return enriched
+
+        done_seen = errors = 0
+        with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
+            futures = {pool.submit(_deep_and_write, c): c for c in concepts}
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Enriching"):
+                try:
+                    future.result()
+                    done_seen += 1
+                except Exception as e:
+                    errors += 1
+                    log.debug(f"Enrich error: {e}")
+        log.info(f"Enrich complete: {done_seen} done, {errors} errors")
+
+
+def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path) -> str:
+    """Helper for enrich_bundle security mode."""
+    enrich_security(c, client, model, source_dir)
+    if c.security or c.complexity:
+        if _patch_security_complexity(path, c.security, c.complexity):
+            return "done"
+    return "skipped"
 
 
 def main():
@@ -3354,6 +1480,69 @@ def main():
         log.info(f"SUMMARY.md written -> {out}")
         return
 
+    # --security mode: audit an EXISTING bundle for security/complexity only.
+    if len(sys.argv) >= 2 and sys.argv[1] == "--security":
+        if len(sys.argv) < 3:
+            print("Usage: okf generate --security <source_dir> [bundle_dir] [--force]")
+            sys.exit(1)
+        force = "--force" in sys.argv
+        _argv = [a for a in sys.argv if a != "--force"]
+        source_dir = Path(_argv[2]).resolve()
+        bundle_dir = Path(_argv[3]).resolve() if len(_argv) > 3 else Path("okf_bundle").resolve()
+        if not source_dir.exists():
+            log.error(f"Source directory not found: {source_dir}")
+            sys.exit(1)
+        if not bundle_dir.exists():
+            log.error(f"Bundle directory not found: {bundle_dir}")
+            sys.exit(1)
+        from okf.config import load as load_config
+        _cfg = load_config()
+        try:
+            client, r = _resolve_client(_cfg, "security")
+        except ImportError:
+            sys.exit(1)
+        log.info(f"Security audit: {r['provider']}/{r['model']} @ {r['base_url']}")
+        from okf.pairs import load_bundle as _load_md
+        raw = _load_md(bundle_dir)
+        targets = []
+        for r2 in raw:
+            if r2.get("type") not in {"Function", "Class", "Method"}:
+                continue
+            sections = r2.get("sections", {})
+            source_lines = _parse_source_line_range(sections.get("source", ""))
+            if not source_lines:
+                continue
+            if not force and sections.get("security") and sections.get("complexity"):
+                continue
+            c = Concept(type=r2.get("type", ""), title=r2.get("title", ""), resource=r2.get("resource", ""), signature=sections.get("signature", ""), source_lines=source_lines)
+            targets.append((c, Path(r2["source_file"])))
+        log.info(f"To audit: {len(targets)} concepts")
+        if not targets:
+            log.info("Nothing to do — all concepts already audited (use --force to re-run).")
+            return
+        done = skipped = errors = 0
+        def _audit_and_patch(item):
+            c, path = item
+            enrich_security(c, client, r["model"], source_dir)
+            if c.security or c.complexity:
+                if _patch_security_complexity(path, c.security, c.complexity):
+                    return "done"
+            return "skipped"
+        with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
+            futures = {pool.submit(_audit_and_patch, t): t for t in targets}
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Security audit"):
+                try:
+                    result = future.result()
+                    if result == "done":
+                        done += 1
+                    else:
+                        skipped += 1
+                except Exception as e:
+                    errors += 1
+                    log.debug(f"Security audit error: {e}")
+        log.info(f"Security audit complete: {done} patched, {skipped} skipped, {errors} errors")
+        return
+
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)
@@ -3361,10 +1550,17 @@ def main():
     source_dir = Path(sys.argv[1]).resolve()
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
 
-    # Save --enrich flag before removing from argv for positional parsing
+    # Save --enrich flag + optional mode before removing from argv
     _has_enrich_flag = "--enrich" in sys.argv
+    _enrich_mode = "base"
     if _has_enrich_flag:
-        sys.argv.remove("--enrich")
+        idx = sys.argv.index("--enrich")
+        del sys.argv[idx]
+        if idx < len(sys.argv) and not sys.argv[idx].startswith("-"):
+            _enrich_mode = sys.argv.pop(idx)
+        if _enrich_mode not in {"base", "deep", "security", "full"}:
+            print(f"Unknown enrich mode: {_enrich_mode!r}. Use: base, deep, security, full")
+            sys.exit(1)
 
     exclude = []
     i = 3
@@ -3396,10 +1592,27 @@ def main():
         )
 
     # --- Optional LLM enrichment (resumable) ---
+    _do_enrich = {"base": False, "deep": False, "security": False, "semantic": False}
+    if _enrich_mode == "full":
+        _do_enrich = {"base": True, "deep": True, "security": True, "semantic": True}
+    elif _enrich_mode == "deep":
+        _do_enrich = {"base": True, "deep": True, "security": True, "semantic": False}
+    elif _enrich_mode == "security":
+        _do_enrich = {"base": False, "deep": False, "security": True, "semantic": False}
+    elif _enrich_mode == "base":
+        _do_enrich = {"base": True, "deep": False, "security": False, "semantic": False}
+
     from okf.config import load as load_config, _get
     _cfg = load_config()
-    enrich = _get(_cfg, "llm.enabled", False) or _has_enrich_flag
+    config_enabled = _get(_cfg, "llm.enabled", False)
+    if config_enabled and not any(_do_enrich.values()):
+        _do_enrich["base"] = True
+    enrich = any(_do_enrich.values()) or _has_enrich_flag
+    if enrich and not any(_do_enrich.values()):
+        _do_enrich["base"] = True
     client = None
+
+    # Resolve clients per mode
     if enrich:
         try:
             client, r = _resolve_client(_cfg, "description")
@@ -3414,7 +1627,7 @@ def main():
         # Resolve deep enrichment client (may use a different provider)
         deep_client = None
         deep_model = None
-        if _get(_cfg, "enrich.deep.enabled", False):
+        if _do_enrich["deep"] or _do_enrich["security"]:
             try:
                 deep_client, deep_r = _resolve_client(_cfg, "deep")
                 deep_model = deep_r["model"]
@@ -3473,6 +1686,29 @@ def main():
 
         log.info(f"Enrichment complete: {done} enriched, {errors} errors, {skipped_ok} skipped")
 
+        # --- Optional third pass: semantic related-links ---
+        if _do_enrich["semantic"] and client:
+            code_concepts = {cid: c for cid, c in all_map_enrich.items() if c.type in {"Function", "Class", "Method"}}
+            def _relate_and_write(c: Concept) -> Concept:
+                enrich_related_semantic(c, code_concepts, client, model)
+                path = _concept_path(c)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(render_concept(c, all_map_enrich), encoding="utf-8")
+                return c
+            to_relate = [c for c in code_concepts.values() if not c.related_semantic]
+            log.info(f"Building semantic related-links for {len(to_relate)} concepts...")
+            rel_done = rel_errors = 0
+            with ThreadPoolExecutor(max_workers=max_workers) as pool:
+                futures = {pool.submit(_relate_and_write, c): c for c in to_relate}
+                for future in tqdm(as_completed(futures), total=len(futures), desc="Linking related"):
+                    try:
+                        future.result()
+                        rel_done += 1
+                    except Exception as e:
+                        rel_errors += 1
+                        log.debug(f"Related-linking error: {e}")
+            log.info(f"Semantic related-links complete: {rel_done} linked, {rel_errors} errors")
+
     # --- Write bundle ---
     log_entries = [
         f"{datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} — Bundle generated from `{source_dir}`",
@@ -3484,6 +1720,7 @@ def main():
     by_type = write_bundle(
         concepts, output_dir, bundle_name, log_entries,
         source_dirs=_walk_source_dirs(source_dir),
+        source_root=str(source_dir.resolve()),
     )
 
     # --- Write SUMMARY.md ---
