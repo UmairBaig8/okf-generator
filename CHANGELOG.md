@@ -99,8 +99,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Scala parser** — `okf/parsers/scala.py` extracts classes, objects, traits (→Interface), enums, functions, methods, visibility, typed params. Fixtures at `tests/fixtures/realworld/scala/{easy,complex}/`. 3 new fixture tests.
 - **Julia parser** — `okf/parsers/julia.py` extracts functions, structs (→Class), abstract types (→Interface), constants, macros. Fixtures at `tests/fixtures/realworld/julia/{easy,complex}/`. 3 new fixture tests.
 
+### Added
+- **Web dashboard** — `okf dashboard <bundle_dir>` launches a FastAPI-based live bundle browser. Search/filter concepts, view full detail (signature, params, docstring, source), explore interactive dependency graph per concept. API endpoints: `/api/info`, `/api/types`, `/api/languages`, `/api/search`, `/api/concept/{id}`, `/api/graph`. Optional dep: `pip install "okf-generator[dashboard]"`.
+
 ### Planned
-- **Web dashboard** — FastAPI-powered live bundle browser beyond static viz.html
 - **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
 - **mkdocs documentation site**
 

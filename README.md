@@ -416,6 +416,7 @@ okf --version           Show version
 | `visualize` | `okf visualize <bundle_dir> [output.html]` |
 | `mcp` | `okf mcp <bundle_dir>` |
 | `serve` | `okf serve [dir] [--port] [--open]` |
+| `dashboard` | `okf dashboard <bundle_dir> [--port] [--open]` |
 
 > Full options, environment variables, and examples: **[docs/cli-reference.md](docs/cli-reference.md)**
 

@@ -13,6 +13,7 @@ Commands:
   okf init                                   Interactive bundle setup wizard
   okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
   okf serve      [dir] [--port] [--open]     Serve bundle + auto-open viz
+  okf dashboard  <bundle> [--port] [--open]   Live bundle browser (FastAPI + interactive graph)
   okf mcp        <bundle> [--port]            MCP server for AI agents (Claude, Cursor, etc.)
 
 Run `okf <command> --help` for per-command options.
@@ -217,6 +218,7 @@ def main():
         print("  diff            Compare two bundles (added/removed/changed)")
         print("  pairs           Convert bundle to JSONL training pairs")
         print("  summarize       Regenerate SUMMARY.md from existing bundle")
+        print("  dashboard       Launch live bundle browser (FastAPI + interactive graph)")
         print("  init            Interactive bundle setup wizard")
         print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline)")
         sys.exit(0)
@@ -326,6 +328,10 @@ Examples:
 
     elif cmd == "serve":
         from okf.serve import main as _main
+        _main()
+
+    elif cmd == "dashboard":
+        from okf.dashboard import main as _main
         _main()
 
     elif cmd == "mcp":

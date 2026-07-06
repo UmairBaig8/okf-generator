@@ -62,6 +62,10 @@ dev = [
     "ruff>=0.1",
     "pre-commit>=3.0",
 ]
+dashboard = [
+    "fastapi>=0.139.0",
+    "uvicorn>=0.50.0",
+]
 all = [
     "okf-generator[llm,dev]",
 ]
