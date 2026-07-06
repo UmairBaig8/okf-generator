@@ -1,0 +1,113 @@
+name: OKF Bundle
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: okf-bundle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Rust
+        run: rustup show || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+      - name: Install okf-generator
+        run: pip install -e ".[dev]" -q
+
+      - name: Restore previous bundle
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .okf_bundle_prev
+          key: okf-bundle-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            okf-bundle-${{ github.ref_name }}-
+            okf-bundle-main-
+
+      - name: Generate bundle
+        run: |
+          mkdir -p okf_bundle
+          okf generate . okf_bundle 2>&1
+
+      - name: Diff against previous
+        id: diff
+        run: |
+          if [ -f .okf_bundle_prev/index.md ]; then
+            okf diff .okf_bundle_prev okf_bundle --compact > /tmp/okf_diff.txt 2>&1
+            okf diff .okf_bundle_prev okf_bundle --impact > /tmp/okf_impact.txt 2>&1
+          fi
+          echo "has_prev=$(test -f .okf_bundle_prev/index.md && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Save to cache (main only)
+        if: github.ref_name == 'main'
+        uses: actions/cache/save@v4
+        with:
+          path: okf_bundle
+          key: okf-bundle-${{ github.ref_name }}-${{ github.sha }}
+
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: okf-bundle-${{ github.ref_name }}
+          path: okf_bundle/
+
+      - name: Find existing bot comment
+        if: github.event_name == 'pull_request' && steps.diff.outputs.has_prev == 'true'
+        id: find-comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const {data: comments} = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const bot = comments.find(c => c.user.type === 'Bot' && c.body && c.body.includes('OKF Bundle'));
+            return bot ? String(bot.id) : '';
+
+      - name: Post / update PR comment
+        if: github.event_name == 'pull_request' && steps.diff.outputs.has_prev == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const diffPath = '/tmp/okf_diff.txt';
+            const impactPath = '/tmp/okf_impact.txt';
+            const diffContent = fs.existsSync(diffPath) ? fs.readFileSync(diffPath, 'utf8').trim() : '';
+            const impactContent = fs.existsSync(impactPath) ? fs.readFileSync(impactPath, 'utf8').trim() : '';
+            const diffBlock = diffContent ? '```\n' + diffContent + '\n```' : '*No changes detected*';
+            const impactBlock = impactContent ? '```\n' + impactContent + '\n```' : '*No dependency impact*';
+            const body = '## 📦 OKF Bundle\n\n### Changes\n' + diffBlock + '\n\n### Dependency Impact\n' + impactBlock;
+            const commentId = '${{ steps.find-comment.outputs.result }}';
+            if (commentId) {
+              await github.rest.issues.updateComment({
+                comment_id: parseInt(commentId),
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body,
+              });
+            }

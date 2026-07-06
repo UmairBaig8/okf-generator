@@ -6,10 +6,20 @@ browse and search bundle concepts natively over stdio.
 Usage:
   okf mcp <bundle_dir>              Start MCP server (stdio mode)
   okf mcp <bundle_dir> --port 9000  Start MCP server (HTTP+SSE mode)
+
+Tools:
+  lookup             Search concepts by name/type/tag
+  get_concept        Full detail by concept_id
+  find_callers       Concepts that reference a given concept_id
+  list_by_file       Concepts extracted from a source file
+  list_dependencies  List dependency concepts
+  bundle_info        Bundle statistics
+  list_by_type       List concepts of a specific type
 """
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -24,8 +34,15 @@ def jsonrpc(id: int | str, result: Any = None, error: dict | None = None) -> str
     return json.dumps(msg, ensure_ascii=False)
 
 
+class ToolError(Exception):
+    """Raised inside handle_tool_call to produce a structured MCP error."""
+    def __init__(self, message: str, code: int = -32000):
+        self.code = code
+        self.message = message
+
+
 # ═══════════════════════════════════════════════════════════════════════════
-# MCP Server — stdio mode
+# MCP Server
 # ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -37,6 +54,44 @@ class BundleMCPServer:
         self.bundle_dir = bundle_dir
         self.concepts = load_bundle(bundle_dir)
         self.req_id = 0
+
+    # ── Helpers ─────────────────────────────────────────────────────────
+
+    def _require(self, args: dict, key: str, typ: type = str) -> Any:
+        val = args.get(key)
+        if val is None:
+            raise ToolError(f"Missing required argument: '{key}'")
+        if not isinstance(val, typ):
+            raise ToolError(f"Argument '{key}' must be {typ.__name__}, got {type(val).__name__}")
+        return val
+
+    def _build_callers_index(self) -> dict[str, list[dict]]:
+        """Build {referenced_cid: [concepts_that_reference_it]} from all concepts."""
+        idx: dict[str, list[dict]] = {}
+        for c in self.concepts:
+            related_text = c.get("sections", {}).get("related", "")
+            refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
+            for ref in refs:
+                idx.setdefault(ref, []).append(c)
+        return idx
+
+    def _concept_detail(self, c: dict) -> dict:
+        """Build a rich detail dict from a concept."""
+        sections = c.get("sections", {})
+        return {
+            "concept_id": c["concept_id"],
+            "title": c["title"],
+            "type": c["type"],
+            "resource": c.get("resource", ""),
+            "description": c.get("description", ""),
+            "tags": c.get("tags", []),
+            "signature": sections.get("signature", ""),
+            "docstring": sections.get("docstring", ""),
+            "parameters": sections.get("parameters", ""),
+            "returns": sections.get("returns", ""),
+            "source": sections.get("source", ""),
+            "related": sections.get("related", ""),
+        }
 
     # ── Resource handlers ───────────────────────────────────────────────
 
@@ -65,16 +120,50 @@ class BundleMCPServer:
         return [
             {
                 "name": "lookup",
-                "description": "Search concepts by name, type, or tag",
+                "description": "Search concepts by name, type, or tag. Returns compact results by default; set detail=true for full fields (signature, params, etc.)",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
-                        "query": {"type": "string", "description": "Search query"},
-                        "type": {"type": "string", "description": "Filter by type (Class, Function, Module, Dependency)", "enum": ["", "Class", "Function", "Module", "Dependency"]},
+                        "query": {"type": "string", "description": "Search query (space-separated tokens, fuzzy)"},
+                        "type": {"type": "string", "description": "Filter by concept type", "enum": ["", "Class", "Function", "Module", "Dependency"]},
                         "tag": {"type": "string", "description": "Filter by tag (e.g. lang:python, ecosystem:pip)"},
-                        "limit": {"type": "integer", "description": "Max results", "default": 10},
+                        "limit": {"type": "integer", "description": "Max results (default 10)"},
+                        "detail": {"type": "boolean", "description": "Return full detail (signature, params, etc.)"},
                     },
                     "required": ["query"],
+                },
+            },
+            {
+                "name": "get_concept",
+                "description": "Get full detail for a single concept by concept_id (e.g. 'utils/slugify' or '_dependencies/pip/requests')",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "concept_id": {"type": "string", "description": "Concept ID (path relative to bundle root, no .md extension)"},
+                    },
+                    "required": ["concept_id"],
+                },
+            },
+            {
+                "name": "find_callers",
+                "description": "List all concepts that reference (call, import, or link to) a given concept_id",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "concept_id": {"type": "string", "description": "Target concept_id to find callers for"},
+                    },
+                    "required": ["concept_id"],
+                },
+            },
+            {
+                "name": "list_by_file",
+                "description": "List all concepts extracted from a specific source file",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "file": {"type": "string", "description": "Source file path (e.g. 'utils.py' or 'src/main.ts')"},
+                    },
+                    "required": ["file"],
                 },
             },
             {
@@ -89,7 +178,7 @@ class BundleMCPServer:
             },
             {
                 "name": "bundle_info",
-                "description": "Get bundle statistics (total concepts, types, languages)",
+                "description": "Get bundle statistics (total concepts, breakdown by type and language)",
                 "inputSchema": {"type": "object", "properties": {}},
             },
             {
@@ -106,13 +195,44 @@ class BundleMCPServer:
         ]
 
     def handle_tool_call(self, name: str, args: dict) -> Any:
+        try:
+            return self._dispatch(name, args)
+        except ToolError as e:
+            return {"error": {"code": e.code, "message": e.message}}
+
+    def _dispatch(self, name: str, args: dict) -> Any:
         if name == "lookup":
             from okf.lookup import search
             tokens = args.get("query", "").split()
+            if not tokens:
+                raise ToolError("query is required")
             type_filter = args.get("type", "")
             tag_filters = [args["tag"]] if args.get("tag") else []
             results = search(self.concepts, tokens=tokens, type_filter=type_filter, tag_filters=tag_filters, limit=args.get("limit", 10))
+            detail = args.get("detail", False)
+            if detail:
+                return [self._concept_detail(c) for c in results]
             return [{"title": c["title"], "type": c["type"], "description": c.get("description", ""), "resource": c.get("resource", "")} for c in results]
+
+        if name == "get_concept":
+            cid = self._require(args, "concept_id")
+            for c in self.concepts:
+                if c["concept_id"] == cid:
+                    return self._concept_detail(c)
+            raise ToolError(f"Concept not found: {cid}", code=-32001)
+
+        if name == "find_callers":
+            target = self._require(args, "concept_id")
+            idx = self._build_callers_index()
+            callers = idx.get(target, [])
+            return [{"concept_id": c["concept_id"], "title": c["title"], "type": c["type"], "resource": c.get("resource", "")} for c in callers]
+
+        if name == "list_by_file":
+            file_path = self._require(args, "file")
+            results = [c for c in self.concepts if file_path in c.get("resource", "")]
+            if not results:
+                return []
+            return [{"concept_id": c["concept_id"], "title": c["title"], "type": c["type"], "resource": c.get("resource", "")} for c in results]
 
         if name == "list_dependencies":
             deps = [c for c in self.concepts if c["type"] == "Dependency"]
@@ -133,10 +253,10 @@ class BundleMCPServer:
             return {"name": self.bundle_dir.name, "total": len(self.concepts), "types": types, "languages": langs}
 
         if name == "list_by_type":
-            ctype = args.get("type", "")
+            ctype = self._require(args, "type")
             return [{"title": c["title"], "resource": c.get("resource", ""), "description": c.get("description", "")} for c in self.concepts if c["type"] == ctype]
 
-        return {"error": f"Unknown tool: {name}"}
+        raise ToolError(f"Unknown tool: {name}", code=-32601)
 
     # ── JSON-RPC dispatch ────────────────────────────────────────────────
 
@@ -225,7 +345,11 @@ class BundleMCPServer:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MCP server for OKF bundles.")
+    parser = argparse.ArgumentParser(
+        description="MCP server for OKF bundles.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
     parser.add_argument("bundle_dir", help="Path to OKF bundle directory")
     parser.add_argument("--port", "-p", type=int, default=0, help="HTTP port (omit or 0 for stdio mode)")
     args = parser.parse_args()

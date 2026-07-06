@@ -94,11 +94,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- **GitHub Action** — marketplace action to auto-generate bundle on push, PR comments with dep diffs
-- **Dependency impact analysis** — `okf diff --impact` traces which concepts depend on changed deps
 - **Web dashboard** — FastAPI-powered live bundle browser beyond static viz.html
 - **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
 - **mkdocs documentation site**
+
+---
+
+## [0.1.37] — 2026-07-07
+
+### Added
+- **`okf diff --impact`** — dependency impact analysis traces changed deps → affected modules → downstream functions/classes. Uses `## Used By` sections from existing bundles. Output: hierarchical tree or JSON (with `--json`). No new data required — `used_by` already populated by linker.
+- **MCP tool polish** — `get_concept` (full detail by concept_id), `find_callers` (citators via `## Related` link scanning), `list_by_file` (concepts by source file path). Enhanced `lookup` with `detail=true` param for full output (signature, params, source). Structured error handling for missing/invalid args. 6 new MCP protocol tests.
+- **GitHub Action** — `.github/workflows/okf-bundle.yml`: auto-generates OKF bundle on push/PR to main. Caches previous bundle per branch, diffs with `--compact` + `--impact`, posts/updates single PR comment showing changes and dependency impact. Restores main branch cache for PR comparison.
+
+### Changed
+- `okf/diff.py` refactored: `diff_bundles()` accepts optional pre-loaded concept lists to avoid double load when `--impact` is used.
+- `okf/mcp_server.py` refactored: tool dispatch via `_dispatch()` with structured `ToolError` for validation.
+- `tests/test_diff.py`: 11 total tests (6 new for impact analysis).
+- `tests/test_mcp.py`: 11 total tests (6 new for MCP new tools + validation).
 
 ---
 
@@ -524,7 +537,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.36...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.37...HEAD
+[0.1.37]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.37
 [0.1.36]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.36
 [0.1.35]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.35
 [0.1.34]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.34

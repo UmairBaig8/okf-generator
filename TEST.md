@@ -203,6 +203,18 @@ okf diff /tmp/v1 /tmp/v2 --compact 2>&1
 ```
 **Verify:** Shows Added (4): `batched`, `validate_email`, `validate_phone`, `validator` module. Changed (1): `utils` module doc.
 
+### 6.2 Dependency impact analysis
+```bash
+# Generate two bundles with different dep versions
+cp -r tests/fixtures/realworld/python/easy /tmp/impact_v1
+cp -r tests/fixtures/realworld/python/easy_v2 /tmp/impact_v2
+
+# Make deps actually differ (add third-party imports to v1 fixtures)
+# For a real test, use the complex fixture which has cross-refs
+okf diff /tmp/v1 /tmp/v2 --impact 2>&1
+```
+**Verify:** Exit 0. Output shows header `okf diff --impact`. When deps differ, shows affected modules and code concepts. Works with `--json` for programmatic use.
+
 ---
 
 ## Phase 7 — CLI: `okf mcp` + `okf serve` + `okf init`

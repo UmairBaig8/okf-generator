@@ -11,3 +11,7 @@ _build/
 session-*.md
 Claude/
 .sessions/
+.gradle/
+build/
+tests/fixtures/**/.gradle/
+tests/fixtures/**/build/

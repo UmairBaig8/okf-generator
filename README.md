@@ -244,7 +244,7 @@ Every concept in the bundle is deterministic, typed, and cross-referenced — ag
 | Ecosystem queries | `okf lookup --tag ecosystem:pip` |
 | Source file queries | `okf lookup --file path/to/file.py` |
 | JSON output | `okf lookup --json <Name>` for programmatic agent use |
-| MCP protocol | `okf mcp ./okf_bundle` exposes via Model Context Protocol |
+| MCP protocol | `okf mcp ./okf_bundle` exposes 7 tools: `lookup`, `get_concept`, `find_callers`, `list_by_file`, `list_dependencies`, `bundle_info`, `list_by_type` |
 | Summary map | `cat ./okf_bundle/SUMMARY.md` primes full context |
 
 ### Quick setup for any agent:
@@ -323,26 +323,27 @@ Enrichment works with any OpenAI-compatible endpoint — Ollama, llama.cpp, vLLM
 
 Deterministic + fully offline = ideal for automated pipelines:
 
+A pre-built **GitHub Action** (`.github/workflows/okf-bundle.yml`) auto-generates the bundle on every push/PR to `main`, caches previous bundles per branch, diffs with `--impact`, and posts a PR comment showing which dependency changes affect which code:
+
 ```yaml
-# .github/workflows/okf-bundle.yml
-name: Generate OKF Bundle
+# .github/workflows/okf-bundle.yml  (ships with the package)
+name: OKF Bundle
 on:
-  push:
-    branches: [main]
+  push:     { branches: [main] }
+  pull_request: { branches: [main] }
 jobs:
   generate:
     runs-on: ubuntu-latest
+    permissions: { contents: read, pull-requests: write }
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - uses: actions/setup-python@v5          { python-version: "3.12" }
       - run: pip install okf-generator
-      - run: okf generate ./src ./okf_bundle
-      - uses: actions/upload-artifact@v4
-        with:
-          name: okf-bundle
-          path: ./okf_bundle
+      - run: okf generate . okf_bundle
+      - uses: actions/cache/restore@v4          { ... }
+      - run: okf diff .okf_bundle_prev okf_bundle --impact
+      - uses: actions/github-script@v7          # post/update PR comment
+      - uses: actions/upload-artifact@v4         { name: okf-bundle, path: okf_bundle/ }
 ```
 
 Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as static websites for zero-infrastructure browsing.
@@ -493,6 +494,7 @@ okf install cline       # Cline rules
 | Post-hoc enrichment | `okf enrich` runs against existing bundle — no re-scan. Source origin auto-loaded from bundle metadata | Not supported |
 | Training data export | Built-in JSONL pair generator (5 pair types) | Not typically included |
 | Agent compatibility | Any agent that can run a CLI (Claude Code, Cursor, Windsurf, Copilot, OpenCode, Cline) | Often single-agent focused |
+| CI/CD integration | Built-in GitHub Action (`okf-bundle.yml`) — bundle generation + impact diff + PR comments | Not typically included |
 
 If you are choosing between OKF producers: pick `okf-generator` when you want broad language + dependency coverage with zero mandatory LLM cost, and you want the bundle to double as a fine-tuning data source.
 
