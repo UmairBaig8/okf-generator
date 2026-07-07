@@ -41,12 +41,13 @@ def _search_context(concepts, query_parts, llm_client=None, llm_model=None):
     if llm_client and llm_model:
         try:
             term_prompt = f"""Extract 2-5 key search terms from this question about a codebase.
-Return ONLY a JSON array of strings, no preamble, no markdown.
+Return ONLY a JSON object with a "terms" key containing an array of strings.
+No preamble, no markdown, no reasoning. Just the JSON.
 Example: {{"terms": ["payment", "service", "api"]}}
 Question: {query}"""
             resp = llm_client.chat.completions.create(
                 model=llm_model, messages=[{"role": "user", "content": term_prompt}],
-                max_tokens=100, temperature=0.1,
+                max_tokens=500, temperature=0.1,
             )
             import json, re
             raw = (resp.choices[0].message.content or "").strip()
