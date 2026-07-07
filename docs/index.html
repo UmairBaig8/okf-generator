@@ -140,7 +140,10 @@
     .problem-card.before .problem-tokens { color: var(--red); }
     .problem-card.after .problem-tokens { color: var(--green); }
     .problem-card p { font-size: 15px; color: var(--text-muted); margin-top: 8px; }
-    .problem-code { margin-top: 16px; background: rgba(0,0,0,0.04); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .problem-code { margin-top: 16px; background: rgba(0,0,0,0.04); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .problem-code .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 4px; display: flex; transition: all 0.2s; margin-top: 2px; }
+    .problem-code .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
+    .problem-code .copy-mini.copied { color: var(--green); }
     @media (max-width: 640px) { .problem-grid { grid-template-columns: 1fr; } }
 
     /* HOW IT WORKS */
@@ -152,7 +155,7 @@
     .step h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .step p { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; }
     .step-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .step-cmd .cmd-text { flex: 1; overflow-x: auto; white-space: nowrap; }
+    .step-cmd .cmd-text { flex: 1; word-break: break-all; }
     .step-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
     .step-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
     .step-cmd .copy-mini.copied { color: var(--green); }
@@ -200,7 +203,10 @@
     .enrich-badge.full { background: var(--accent-light); color: var(--accent); }
     .enrich-card h3 { font-size: 17px; font-weight: 700; }
     .enrich-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
-    .enrich-cmd { background: var(--code-bg); border-radius: 8px; padding: 9px 14px; font-family: var(--mono); font-size: 12px; color: var(--text); border: 1px solid var(--border); }
+    .enrich-cmd { background: var(--code-bg); border-radius: 8px; padding: 9px 14px; font-family: var(--mono); font-size: 12px; color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .enrich-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 4px; display: flex; transition: all 0.2s; }
+    .enrich-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
+    .enrich-cmd .copy-mini.copied { color: var(--green); }
     @media (max-width: 640px) { .enrich-grid { grid-template-columns: 1fr; } }
 
     /* CLI TABLE */
@@ -363,8 +369,8 @@
           <div class="problem-tokens" aria-label="14,000 tokens">14,000</div>
           <p>tokens consumed reading the whole file</p>
           <div class="problem-code" aria-label="Example: reading entire file">
-            # Agent reads entire economic_data.py<br>
-            # 600 lines · 14,000 tokens · slow
+            <span># Agent reads entire economic_data.py<br># 600 lines · 14,000 tokens · slow</span>
+            <button class="copy-mini" onclick="copyMini(this)" data-text="# Agent reads entire economic_data.py\n# 600 lines · 14,000 tokens · slow" aria-label="Copy code"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
           </div>
         </div>
         <div class="problem-card after reveal">
@@ -373,8 +379,8 @@
           <div class="problem-tokens" aria-label="140 tokens">140</div>
           <p>tokens for full concept: signature, params, callers</p>
           <div class="problem-code" aria-label="Example: okf lookup command">
-            okf lookup WorldBankConnector<br>
-            # Signature · Methods · Calls · Called-by
+            <span>okf lookup WorldBankConnector<br># Signature · Methods · Calls · Called-by</span>
+            <button class="copy-mini" onclick="copyMini(this)" data-text="okf lookup WorldBankConnector" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
           </div>
         </div>
       </div>
@@ -538,7 +544,7 @@
             <h3>Base Enrichment</h3>
           </div>
           <p>Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
-          <div class="enrich-cmd">okf generate ./src ./okf_bundle --enrich base</div>
+          <div class="enrich-cmd"><span>okf generate ./src ./okf_bundle --enrich base</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate ./src ./okf_bundle --enrich base" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -546,7 +552,7 @@
             <h3>Deep Enrichment</h3>
           </div>
           <p>Adds usage examples, side effects, security notes, and complexity estimates. Requires source body for full context.</p>
-          <div class="enrich-cmd">okf enrich ./okf_bundle --mode deep</div>
+          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode deep</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode deep" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -554,7 +560,7 @@
             <h3>Security Audit</h3>
           </div>
           <p>Audits the bundle for visible risk patterns — injection vectors, auth bypasses, unsafe deserialization. Flags risks with remediation hints.</p>
-          <div class="enrich-cmd">okf enrich ./okf_bundle --mode security</div>
+          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode security</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode security" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -562,7 +568,7 @@
             <h3>Full Enrichment</h3>
           </div>
           <p>All tiers plus semantic related-links across concepts. Best for training data generation and comprehensive architectural review.</p>
-          <div class="enrich-cmd">okf enrich ./okf_bundle --mode full</div>
+          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode full</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode full" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
       </div>
     </div>
