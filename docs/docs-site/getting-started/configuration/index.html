@@ -10,9 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/Demo%20deck/video-script/">
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/getting-started/configuration/">
       
       
+        <link rel="prev" href="../quick-start/">
+      
+      
+        <link rel="next" href="../../user-guide/cli-reference/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>okf-generator — Demo Video Script - okf-generator</title>
+        <title>Configuration - okf-generator</title>
       
     
     
@@ -72,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#okf-generator-demo-video-script" class="md-skip">
+        <a href="#configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              okf-generator — Demo Video Script
+              Configuration
             
           </span>
         </div>
@@ -254,8 +258,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -266,11 +272,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -291,7 +297,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -309,7 +315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -337,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/quick-start/" class="md-nav__link">
+      <a href="../quick-start/" class="md-nav__link">
         
   
   
@@ -362,10 +368,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/configuration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -381,6 +414,142 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-file-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config file location
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Section reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm-llm-enrichment-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        llm.* — LLM enrichment settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llmproviders-named-provider-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        llm.providers.* — Named provider presets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enrich-enrichment-mode-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enrich.* — Enrichment mode routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serve-dashboard-viz-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        serve.* — Dashboard / viz server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-concept-lookup-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lookup.* — Concept lookup defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-file-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config file precedence
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -871,10 +1040,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#0-thumbnail-w-ai-image-generator" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
-        0. Thumbnail (w/ AI image generator)
+        Quick start
       
     </span>
   </a>
@@ -882,10 +1051,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-hook-0-5s" class="md-nav__link">
+  <a href="#config-file-location" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Hook (0-5s)
+        Config file location
       
     </span>
   </a>
@@ -893,10 +1062,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-generate-5-20s" class="md-nav__link">
+  <a href="#section-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Generate (5-20s)
+        Section reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Section reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm-llm-enrichment-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        llm.* — LLM enrichment settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llmproviders-named-provider-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        llm.providers.* — Named provider presets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enrich-enrichment-mode-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enrich.* — Enrichment mode routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serve-dashboard-viz-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        serve.* — Dashboard / viz server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-concept-lookup-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lookup.* — Concept lookup defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment variables
       
     </span>
   </a>
@@ -904,65 +1145,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-lookup-20-35s" class="md-nav__link">
+  <a href="#config-file-precedence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Lookup (20-35s)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-dependencies-35-45s" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Dependencies (35-45s)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-visualize-45-55s" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Visualize (45-55s)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-serve-55-65s" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Serve (55-65s)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-diff-65-72s" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Diff (65-72s)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-install-close-72-85s" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Install + Close (72-85s)
+        Config file precedence
       
     </span>
   </a>
@@ -989,78 +1175,138 @@
   
 
 
-<h1 id="okf-generator-demo-video-script">okf-generator — Demo Video Script<a class="headerlink" href="#okf-generator-demo-video-script" title="Permanent link">&para;</a></h1>
-<p><strong>Format:</strong> 60-90s screencast<br />
-<strong>Tone:</strong> Professional, fast-paced, developer-focused<br />
-<strong>Music:</strong> Lo-fi / electronic background</p>
-<hr />
-<h2 id="0-thumbnail-w-ai-image-generator">0. Thumbnail (w/ AI image generator)<a class="headerlink" href="#0-thumbnail-w-ai-image-generator" title="Permanent link">&para;</a></h2>
-<p><strong>Prompt for Midjourney / DALL-E:</strong></p>
-<blockquote>
-<p>A futuristic developer workspace split in two halves. Left side: messy code files scattered everywhere. Right side: neat glowing folders arranged in a knowledge graph. A glowing purple arrow transforms chaos into order. Neon purple and cyan colors, dark theme, tech aesthetic. Text overlay: "Index your codebase for AI agents."</p>
-</blockquote>
-<hr />
-<h2 id="1-hook-0-5s">1. Hook (0-5s)<a class="headerlink" href="#1-hook-0-5s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong> Terminal window, typing starts</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># The problem:</span>
-<span class="c1"># AI agents keep re-reading your entire codebase.</span>
-<span class="c1"># One lookup is faster than one grep.</span>
+<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
+<p>okf-generator uses a project-level <code>.okfconfig</code> file for settings. No environment variables are needed — everything goes through the config file.</p>
+<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># View current config</span>
+okf<span class="w"> </span>config
+
+<span class="c1"># Set a value</span>
+okf<span class="w"> </span>config<span class="w"> </span>llm.base_url<span class="o">=</span>http://localhost:8080/v1
+
+<span class="c1"># Run the setup wizard</span>
+okf<span class="w"> </span>init
 </code></pre></div>
-<p><strong>VO:</strong> "AI agents waste context re-reading your whole codebase. One command fixes that."</p>
-<hr />
-<h2 id="2-generate-5-20s">2. Generate (5-20s)<a class="headerlink" href="#2-generate-5-20s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong> Real terminal recording</p>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./project<span class="w"> </span>./okf_bundle
+<h2 id="config-file-location">Config file location<a class="headerlink" href="#config-file-location" title="Permanent link">&para;</a></h2>
+<p>okf-generator looks for <code>.okfconfig</code> in the current directory, then walks up to the parent directories. The file uses JSON format:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/v1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_workers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;serve&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;lookup&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bundle&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./okf_bundle&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
-<p><strong>Show output:</strong> scanning files, progress bar, final summary (Classes, Functions, Dependencies)</p>
-<p><strong>VO:</strong> "Index your entire project — Python, TypeScript, Go, Rust, Java, Ruby, C, C++, C#, SQL — all at once."</p>
-<hr />
-<h2 id="3-lookup-20-35s">3. Lookup (20-35s)<a class="headerlink" href="#3-lookup-20-35s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong> 
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span>PaymentService
-</code></pre></div></p>
-<p><strong>Show output:</strong> full concept detail — type, signature, methods, calls, called-by, dependencies</p>
-<p><strong>VO:</strong> "Now your AI agent can look up any class or function instantly. Signature, docstring, parameters — even what calls it and what it calls."</p>
-<hr />
-<h2 id="4-dependencies-35-45s">4. Dependencies (35-45s)<a class="headerlink" href="#4-dependencies-35-45s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span>--deps
-okf<span class="w"> </span>lookup<span class="w"> </span>--tag<span class="w"> </span>ecosystem:pip
-</code></pre></div></p>
-<p><strong>Show output:</strong> compact list of dependencies</p>
-<p><strong>VO:</strong> "Dependencies from requirements.txt, package.json, Cargo.lock, go.mod, and 15 other manifest formats — all searchable in milliseconds."</p>
-<hr />
-<h2 id="5-visualize-45-55s">5. Visualize (45-55s)<a class="headerlink" href="#5-visualize-45-55s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong> Screen recording of the HTML explorer
-- Click a concept in the tree → detail panel shows
-- Hover the ego graph → neighbors highlighted
-- Toggle light/dark theme</p>
-<p><strong>VO:</strong> "Generate an interactive HTML explorer. Tree navigation, local dependency graphs, clickable cross-references — no server required."</p>
-<hr />
-<h2 id="6-serve-55-65s">6. Serve (55-65s)<a class="headerlink" href="#6-serve-55-65s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>serve<span class="w"> </span>./okf_bundle<span class="w"> </span>--open
-</code></pre></div></p>
-<p><strong>Show output:</strong> browser opens, viz.html loads automatically</p>
-<p><strong>VO:</strong> "Share with your team. <code>okf serve</code> launches a local server and auto-opens the visualization."</p>
-<hr />
-<h2 id="7-diff-65-72s">7. Diff (65-72s)<a class="headerlink" href="#7-diff-65-72s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong>
-<div class="highlight"><pre><span></span><code><span class="c1"># Before a PR</span>
-okf<span class="w"> </span>diff<span class="w"> </span>./okf_bundle.bak<span class="w"> </span>./okf_bundle<span class="w"> </span>--compact
-</code></pre></div></p>
-<p><strong>Show output:</strong> Added 3 concepts, Removed 1, Changed 2</p>
-<p><strong>VO:</strong> "See what changed between bundles. Useful for PR reviews and release notes."</p>
-<hr />
-<h2 id="8-install-close-72-85s">8. Install + Close (72-85s)<a class="headerlink" href="#8-install-close-72-85s" title="Permanent link">&para;</a></h2>
-<p><strong>Visual:</strong>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>okf-generator
-okf<span class="w"> </span>install<span class="w"> </span>all
-</code></pre></div></p>
-<p><strong>Show output:</strong> installing for Claude Code, Cursor, Copilot, Windsurf, Cline, OpenCode</p>
-<p><strong>VO:</strong> "Install once, integrate with every AI coding agent. Pip install, generate your bundle, and your agent has the full picture."</p>
-<p><strong>Final frame:</strong> Banner + <code>okf-generator</code> + star count box</p>
-<p><strong>VO:</strong> "okf-generator — the knowledge layer for AI coding agents."</p>
+<h2 id="section-reference">Section reference<a class="headerlink" href="#section-reference" title="Permanent link">&para;</a></h2>
+<h3 id="llm-llm-enrichment-settings"><code>llm.*</code> — LLM enrichment settings<a class="headerlink" href="#llm-llm-enrichment-settings" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llm.base_url</code></td>
+<td><code>http://localhost:8080/v1</code></td>
+<td>OpenAI-compatible endpoint</td>
+</tr>
+<tr>
+<td><code>llm.model</code></td>
+<td><code>gemma-3-4b-it-qat:Q4_0</code></td>
+<td>Model name</td>
+</tr>
+<tr>
+<td><code>llm.api_key</code></td>
+<td>—</td>
+<td>API key (set via env <code>OKF_API_KEY</code> or here)</td>
+</tr>
+<tr>
+<td><code>llm.max_workers</code></td>
+<td><code>2</code></td>
+<td>Parallel enrichment workers</td>
+</tr>
+</tbody>
+</table>
+<h3 id="llmproviders-named-provider-presets"><code>llm.providers.*</code> — Named provider presets<a class="headerlink" href="#llmproviders-named-provider-presets" title="Permanent link">&para;</a></h3>
+<p>Built-in providers: <code>local</code>, <code>openai</code>, <code>anthropic</code>, <code>deepseek</code>, <code>gemini</code>, <code>ollama</code>, <code>lmstudio</code>, <code>openrouter</code>, <code>dashscope</code>, <code>minimax</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;providers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;anthropic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.anthropic.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;deepseek&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.deepseek.com/v1&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="enrich-enrichment-mode-routing"><code>enrich.*</code> — Enrichment mode routing<a class="headerlink" href="#enrich-enrichment-mode-routing" title="Permanent link">&para;</a></h3>
+<p>Each mode resolves its own provider independently:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enrich&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;deep&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-chat&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;semantic_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Resolution cascade: <code>enrich.{mode}.{key}</code> → <code>providers.{name}.{key}</code> → <code>llm.{key}</code>.</p>
+<h3 id="serve-dashboard-viz-server"><code>serve.*</code> — Dashboard / viz server<a class="headerlink" href="#serve-dashboard-viz-server" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>serve.port</code></td>
+<td><code>8000</code></td>
+<td>HTTP port</td>
+</tr>
+<tr>
+<td><code>serve.host</code></td>
+<td><code>127.0.0.1</code></td>
+<td>Bind address</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lookup-concept-lookup-defaults"><code>lookup.*</code> — Concept lookup defaults<a class="headerlink" href="#lookup-concept-lookup-defaults" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lookup.bundle</code></td>
+<td><code>./okf_bundle</code></td>
+<td>Default bundle path</td>
+</tr>
+</tbody>
+</table>
+<h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<p>For CI/CD or ephemeral environments, you can use <code>OKF_API_KEY</code> as a fallback — the config file takes precedence when set.</p>
+<h2 id="config-file-precedence">Config file precedence<a class="headerlink" href="#config-file-precedence" title="Permanent link">&para;</a></h2>
+<ol>
+<li><code>.okfconfig</code> in current directory</li>
+<li><code>.okfconfig</code> in parent directories (walking up)</li>
+<li>Built-in defaults</li>
+</ol>
 
 
 

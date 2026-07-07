@@ -13,34 +13,42 @@ theme:
   features:
     - navigation.instant
     - navigation.tracking
-    - navigation.expand
+    - navigation.sections
+    - navigation.top
     - search.suggest
+    - search.highlight
     - content.code.copy
+    - content.code.annotate
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight
+  - tables
+  - toc:
+      permalink: true
 
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: installation.md
-    - Quick Start: quick-start.md
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+      - Configuration: getting-started/configuration.md
   - User Guide:
-    - CLI Reference: cli-reference.md
-    - Language Support: languages-and-manifests.md
-    - Agent Integration: agent-integration.md
-    - CI/CD: ci-cd.md
+      - CLI Reference: user-guide/cli-reference.md
+      - Bundle Format: user-guide/bundle-format.md
+      - Language Coverage: user-guide/languages-and-manifests.md
+      - Agent Integration: user-guide/agent-integration.md
+      - MCP Server: user-guide/mcp-server.md
+      - LLM Enrichment: user-guide/enrichment.md
+      - CI/CD Guide: user-guide/ci-cd.md
+      - Visualization: user-guide/visualization.md
+  - Troubleshooting: troubleshooting.md
   - Development:
-    - Adding a Language: development.md
-  - API Reference: python-api.md
-
-markdown_extensions:
-  - pymdownx.highlight
-  - pymdownx.superfences
-  - admonition
-  - toc:
-      permalink: true
-
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/UmairBaig8/okf-generator
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/okf-generator/
+      - Adding a Language: development.md
+  - API Reference: user-guide/python-api.md
+  - Changelog: changelog.md

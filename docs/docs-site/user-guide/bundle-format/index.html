@@ -10,10 +10,10 @@
       
       
       
-        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/cli-reference/">
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/user-guide/bundle-format/">
       
       
-        <link rel="prev" href="../quick-start/">
+        <link rel="prev" href="../cli-reference/">
       
       
         <link rel="next" href="../languages-and-manifests/">
@@ -22,19 +22,19 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>CLI Reference - okf-generator</title>
+        <title>Bundle Format - okf-generator</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,7 +53,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cli-reference" class="md-skip">
+        <a href="#bundle-format-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="okf-generator" class="md-header__button md-logo" aria-label="okf-generator" data-md-component="logo">
+    <a href="../.." title="okf-generator" class="md-header__button md-logo" aria-label="okf-generator" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI Reference
+              Bundle Format
             
           </span>
         </div>
@@ -204,7 +204,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="okf-generator" class="md-nav__button md-logo" aria-label="okf-generator" data-md-component="logo">
+    <a href="../.." title="okf-generator" class="md-nav__button md-logo" aria-label="okf-generator" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -234,7 +234,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -264,17 +264,20 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -310,7 +313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   
@@ -338,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quick-start/" class="md-nav__link">
+      <a href="../../getting-started/quick-start/" class="md-nav__link">
         
   
   
@@ -346,6 +349,34 @@
     
   
     Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
   
 
     
@@ -378,15 +409,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -419,6 +455,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -438,7 +502,7 @@
   <span class="md-ellipsis">
     
   
-    CLI Reference
+    Bundle Format
   
 
     
@@ -456,7 +520,7 @@
   <span class="md-ellipsis">
     
   
-    CLI Reference
+    Bundle Format
   
 
     
@@ -482,10 +546,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#global" class="md-nav__link">
+  <a href="#directory-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global
+        Directory Layout
       
     </span>
   </a>
@@ -493,10 +557,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-generate" class="md-nav__link">
+  <a href="#concept-frontmatter-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf generate
+        Concept Frontmatter Schema
       
     </span>
   </a>
@@ -504,10 +568,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-lookup" class="md-nav__link">
+  <a href="#concept-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf lookup
+        Concept Types
       
     </span>
   </a>
@@ -515,10 +579,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-diff" class="md-nav__link">
+  <a href="#tag-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf diff
+        Tag Reference
       
     </span>
   </a>
@@ -526,10 +590,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-pairs" class="md-nav__link">
+  <a href="#dependency-body_extra" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf pairs
+        Dependency body_extra
       
     </span>
   </a>
@@ -537,10 +601,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-summarize" class="md-nav__link">
+  <a href="#call-graph-markdown-body" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf summarize
+        Call Graph (markdown body)
       
     </span>
   </a>
@@ -548,10 +612,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-install" class="md-nav__link">
+  <a href="#minimal-valid-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf install
+        Minimal Valid Example
       
     </span>
   </a>
@@ -559,21 +623,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-visualize" class="md-nav__link">
+  <a href="#versioning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf visualize
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#okf-serve" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf serve
+        Versioning
       
     </span>
   </a>
@@ -603,7 +656,7 @@
   <span class="md-ellipsis">
     
   
-    Language Support
+    Language Coverage
   
 
     
@@ -652,6 +705,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../mcp-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../ci-cd/" class="md-nav__link">
         
   
@@ -659,7 +768,35 @@
   <span class="md-ellipsis">
     
   
-    CI/CD
+    CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
   
 
     
@@ -686,21 +823,51 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
     
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -718,8 +885,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -736,7 +903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development/" class="md-nav__link">
+      <a href="../../development/" class="md-nav__link">
         
   
   
@@ -791,6 +958,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -818,10 +1012,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#global" class="md-nav__link">
+  <a href="#directory-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global
+        Directory Layout
       
     </span>
   </a>
@@ -829,10 +1023,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-generate" class="md-nav__link">
+  <a href="#concept-frontmatter-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf generate
+        Concept Frontmatter Schema
       
     </span>
   </a>
@@ -840,10 +1034,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-lookup" class="md-nav__link">
+  <a href="#concept-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf lookup
+        Concept Types
       
     </span>
   </a>
@@ -851,10 +1045,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-diff" class="md-nav__link">
+  <a href="#tag-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf diff
+        Tag Reference
       
     </span>
   </a>
@@ -862,10 +1056,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-pairs" class="md-nav__link">
+  <a href="#dependency-body_extra" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf pairs
+        Dependency body_extra
       
     </span>
   </a>
@@ -873,10 +1067,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-summarize" class="md-nav__link">
+  <a href="#call-graph-markdown-body" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf summarize
+        Call Graph (markdown body)
       
     </span>
   </a>
@@ -884,10 +1078,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-install" class="md-nav__link">
+  <a href="#minimal-valid-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf install
+        Minimal Valid Example
       
     </span>
   </a>
@@ -895,21 +1089,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#okf-visualize" class="md-nav__link">
+  <a href="#versioning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        okf visualize
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#okf-serve" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf serve
+        Versioning
       
     </span>
   </a>
@@ -936,285 +1119,256 @@
   
 
 
-<h1 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h1>
-<h2 id="global">Global<a class="headerlink" href="#global" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>--help<span class="w">              </span>Show<span class="w"> </span>available<span class="w"> </span>commands
-okf<span class="w"> </span>&lt;command&gt;<span class="w"> </span>--help<span class="w">    </span>Show<span class="w"> </span>options<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span><span class="nb">command</span>
-okf<span class="w"> </span>--version<span class="w">           </span>Show<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<h1 id="bundle-format-reference">Bundle Format Reference<a class="headerlink" href="#bundle-format-reference" title="Permanent link">&para;</a></h1>
+<p>An OKF bundle is a directory of plain Markdown files with YAML frontmatter, generated by <code>okf generate</code>. Every file describes one <strong>Concept</strong> — a class, function, module, dependency, or other unit extracted from your codebase. This page documents the full schema so you can parse, script against, or manually author bundle files.</p>
+<h2 id="directory-layout">Directory Layout<a class="headerlink" href="#directory-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf_bundle/
+├── SUMMARY.md                  # Agent-facing index, regenerated by `okf summarize`
+├── index.md                    # Bundle metadata (name, okf_version, timestamp)
+├── log.md                      # Generation log
+├── src/
+│   └── mypackage/
+│       ├── module.md            # One concept per file, mirrors source tree
+│       └── utils/
+│           └── helpers.md
+└── _dependencies/
+    └── pip/
+        ├── requests.md
+        └── fastapi.md
 </code></pre></div>
-<hr />
-<h2 id="okf-generate"><code>okf generate</code><a class="headerlink" href="#okf-generate" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>&lt;source_dir&gt;<span class="w"> </span><span class="o">[</span>output_dir<span class="o">]</span><span class="w"> </span><span class="o">[</span>--exclude<span class="w"> </span>&lt;dir&gt;<span class="w"> </span>...<span class="o">]</span>
+<ul>
+<li>Source concepts mirror the path of the file they were extracted from, under the bundle root.</li>
+<li>Dependency concepts live under <code>_dependencies/{ecosystem}/{name}.md</code>, one file per package.</li>
+<li><code>SUMMARY.md</code> is a generated, human/agent-readable table of contents — do not hand-edit it, run <code>okf summarize</code> to regenerate.</li>
+</ul>
+<h2 id="concept-frontmatter-schema">Concept Frontmatter Schema<a class="headerlink" href="#concept-frontmatter-schema" title="Permanent link">&para;</a></h2>
+<p>Every concept file starts with YAML frontmatter followed by a Markdown body.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Function</span>
+<span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slugify</span>
+<span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">utils.py</span>
+<span class="nt">tags</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lang:python</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type:Function</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">module:utils</span>
+<span class="nt">timestamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2026-07-01T10:22:03Z</span>
+<span class="nt">signature</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;def</span><span class="nv"> </span><span class="s">slugify(text:</span><span class="nv"> </span><span class="s">str,</span><span class="nv"> </span><span class="s">max_length:</span><span class="nv"> </span><span class="s">int</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">80)</span><span class="nv"> </span><span class="s">-&gt;</span><span class="nv"> </span><span class="s">str&quot;</span>
+<span class="nn">---</span>
 </code></pre></div>
-<p>Scans a source directory and produces an OKF v0.1 knowledge bundle.</p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>--summarize &lt;bundle_dir&gt;</code></td>
-<td>Regenerate SUMMARY.md only (no re-scan)</td>
+<td><code>type</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Concept kind. See <a href="#concept-types">Concept Types</a> below.</td>
 </tr>
 <tr>
-<td><code>--exclude &lt;dir&gt;</code></td>
-<td>Skip directories matching this name (repeatable)</td>
+<td><code>title</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Concept name (<code>slugify</code>, <code>User</code>, <code>click</code>)</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Source file path relative to repo root</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>list[string]</td>
+<td>yes</td>
+<td>Structured tags, see <a href="#tag-reference">Tag Reference</a></td>
+</tr>
+<tr>
+<td><code>timestamp</code></td>
+<td>ISO 8601</td>
+<td>yes</td>
+<td>Generation time</td>
+</tr>
+<tr>
+<td><code>signature</code></td>
+<td>string</td>
+<td>for functions/methods</td>
+<td>Full signature in language-native syntax</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>no</td>
+<td>Short description (first line of docstring or enriched)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Environment variables (LLM enrichment):</strong></p>
+<h2 id="concept-types">Concept Types<a class="headerlink" href="#concept-types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Default</th>
+<th><code>type</code></th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Module</code></td>
+<td>A file or logical module</td>
+</tr>
+<tr>
+<td><code>Class</code></td>
+<td>A class, struct, or equivalent</td>
+</tr>
+<tr>
+<td><code>Function</code></td>
+<td>A top-level function or method</td>
+</tr>
+<tr>
+<td><code>Dependency</code></td>
+<td>An external package from a manifest file</td>
+</tr>
+<tr>
+<td><code>Interface</code></td>
+<td>Interfaces/protocols/traits</td>
+</tr>
+<tr>
+<td><code>Enum</code></td>
+<td>Enumeration types</td>
+</tr>
+<tr>
+<td><code>Constant</code></td>
+<td>Module-level constants</td>
+</tr>
+<tr>
+<td><code>Table</code></td>
+<td>SQL tables</td>
+</tr>
+<tr>
+<td><code>Trigger</code></td>
+<td>SQL triggers</td>
+</tr>
+<tr>
+<td><code>Type</code></td>
+<td>Type aliases</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tag-reference">Tag Reference<a class="headerlink" href="#tag-reference" title="Permanent link">&para;</a></h2>
+<p>Tags are flat strings in <code>key:value</code> form, used for filtering in <code>okf lookup</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lang:</code></td>
+<td>Source language</td>
+<td><code>lang:python</code>, <code>lang:rust</code></td>
+</tr>
+<tr>
+<td><code>type:</code></td>
+<td>Concept type (redundant with frontmatter, kept for grep)</td>
+<td><code>type:Function</code></td>
+</tr>
+<tr>
+<td><code>module:</code></td>
+<td>Owning module</td>
+<td><code>module:utils</code></td>
+</tr>
+<tr>
+<td><code>ecosystem:</code></td>
+<td>Dependency ecosystem</td>
+<td><code>ecosystem:pip</code></td>
+</tr>
+<tr>
+<td><code>version:</code></td>
+<td>Dependency version constraint</td>
+<td><code>version:==8.1.7</code></td>
+</tr>
+<tr>
+<td><code>manifest:</code></td>
+<td>Source manifest file</td>
+<td><code>manifest:requirements.txt</code></td>
+</tr>
+<tr>
+<td><code>git:</code></td>
+<td>Git metadata</td>
+<td><code>git:branch:main</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependency-body_extra">Dependency body_extra<a class="headerlink" href="#dependency-body_extra" title="Permanent link">&para;</a></h2>
+<p>Dependency concepts include a markdown table with:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>OKF_ENRICH=1</code></td>
-<td>—</td>
-<td>Enable LLM enrichment</td>
+<td>Ecosystem</td>
+<td>Package ecosystem (<code>pip</code>, <code>npm</code>, <code>cargo</code>, etc.)</td>
 </tr>
 <tr>
-<td><code>OKF_BASE_URL</code></td>
-<td><code>https://api.anthropic.com/v1</code></td>
-<td>OpenAI-compat endpoint</td>
+<td>Version constraint</td>
+<td>Version spec as declared</td>
 </tr>
 <tr>
-<td><code>OKF_API_KEY</code></td>
-<td>—</td>
-<td>API key</td>
+<td>Source manifest</td>
+<td>Filename the dependency was parsed from</td>
 </tr>
 <tr>
-<td><code>OKF_MODEL</code></td>
-<td><code>claude-sonnet-4-6</code></td>
-<td>Model name</td>
+<td>Dev dependency</td>
+<td><code>yes</code> or <code>no</code></td>
 </tr>
 <tr>
-<td><code>OKF_MAX_WORKERS</code></td>
-<td><code>2</code></td>
-<td>Parallel workers</td>
+<td>Used by</td>
+<td>Number of modules importing this dep</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="okf-lookup"><code>okf lookup</code><a class="headerlink" href="#okf-lookup" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span><span class="o">[</span>query<span class="o">]</span><span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
+<h2 id="call-graph-markdown-body">Call Graph (markdown body)<a class="headerlink" href="#call-graph-markdown-body" title="Permanent link">&para;</a></h2>
+<p>Functions and modules may include <code>## Calls</code> / <code>## Called By</code> / <code>## Related</code> sections, generated by the linker:</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## Calls</span>
+<span class="k">-</span><span class="w"> </span><span class="sb">`requests.get`</span> (_dependencies/pip/requests)
+
+<span class="gu">## Called By</span>
+<span class="k">-</span><span class="w"> </span><span class="sb">`main.run_pipeline`</span> (<span class="ge">_dependencies/_</span>modules/main)
+
+<span class="gu">## Related</span>
+<span class="k">-</span><span class="w"> </span>[<span class="nt">slugify</span>](<span class="na">utils/slugify.md</span>)
+<span class="k">-</span><span class="w"> </span>[<span class="nt">chunk_list</span>](<span class="na">utils/chunk_list.md</span>)
 </code></pre></div>
-<p>Search for concepts in a bundle.</p>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>--bundle PATH</code></td>
-<td>Bundle directory (default: <code>./okf_bundle</code>)</td>
-</tr>
-<tr>
-<td><code>--file PATH</code></td>
-<td>Filter by source file</td>
-</tr>
-<tr>
-<td><code>--type TYPE</code></td>
-<td>Filter by concept type: <code>Function</code>, <code>Class</code>, <code>Module</code>, <code>Dependency</code></td>
-</tr>
-<tr>
-<td><code>--tag TAG</code></td>
-<td>Filter by tag, repeatable (e.g. <code>--tag lang:python</code>)</td>
-</tr>
-<tr>
-<td><code>--limit N</code></td>
-<td>Max results (default: 10)</td>
-</tr>
-<tr>
-<td><code>--compact</code></td>
-<td>One-line output per result</td>
-</tr>
-<tr>
-<td><code>--json</code></td>
-<td>JSON output for programmatic use</td>
-</tr>
-<tr>
-<td><code>--full</code></td>
-<td>Raw <code>.md</code> file content</td>
-</tr>
-<tr>
-<td><code>--min-score N</code></td>
-<td>Minimum relevance score 0–1 (default: 0.1)</td>
-</tr>
-<tr>
-<td><code>--no-cache</code></td>
-<td>Bypass and skip writing the lookup cache</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="okf-diff"><code>okf diff</code><a class="headerlink" href="#okf-diff" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>diff<span class="w"> </span>&lt;old_bundle&gt;<span class="w"> </span>&lt;new_bundle&gt;
+<h2 id="minimal-valid-example">Minimal Valid Example<a class="headerlink" href="#minimal-valid-example" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>---
+type: Function
+title: add_numbers
+resource: math_utils.py
+tags:
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>lang:python
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>type:Function
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>module:math_utils
+timestamp: 2026-07-01T09:00:00Z
+<span class="gu">signature: &quot;def add_numbers(a: int, b: int) -&gt; int&quot;</span>
+<span class="gu">---</span>
+
+Adds two integers and returns the sum.
 </code></pre></div>
-<p>Compare two bundles — shows added, removed, and changed concepts.
-Changes are detected via content hash (description, signature, tags).</p>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>--compact</code></td>
-<td>One-line output per concept</td>
-</tr>
-<tr>
-<td><code>--json</code></td>
-<td>JSON output</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="okf-pairs"><code>okf pairs</code><a class="headerlink" href="#okf-pairs" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>pairs<span class="w"> </span>&lt;bundle_dir&gt;<span class="w"> </span><span class="o">[</span>output_file<span class="o">]</span>
-</code></pre></div>
-<p>Convert bundle to JSONL training pairs.</p>
-<p><strong>Environment variables:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>SKIP_SYNTH=1</code></td>
-<td>Static pairs only (no LLM)</td>
-</tr>
-<tr>
-<td><code>SYNTH_BASE_URL</code></td>
-<td>API endpoint</td>
-</tr>
-<tr>
-<td><code>SYNTH_API_KEY</code></td>
-<td>API key</td>
-</tr>
-<tr>
-<td><code>SYNTH_MODEL</code></td>
-<td>Model name</td>
-</tr>
-<tr>
-<td><code>MAX_WORKERS</code></td>
-<td>Parallel workers (default: 3)</td>
-</tr>
-<tr>
-<td><code>QA_PER_CONCEPT</code></td>
-<td>Q&amp;A pairs per concept (default: 3)</td>
-</tr>
-<tr>
-<td><code>PAIR_TYPES</code></td>
-<td>Comma-separated: <code>codegen</code>, <code>qa</code>, <code>doc</code>, <code>summarize</code>, <code>crosslink</code></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="okf-summarize"><code>okf summarize</code><a class="headerlink" href="#okf-summarize" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>summarize<span class="w"> </span>&lt;bundle_dir&gt;
-</code></pre></div>
-<p>Regenerate SUMMARY.md from an existing bundle (no re-scan).</p>
-<hr />
-<h2 id="okf-install"><code>okf install</code><a class="headerlink" href="#okf-install" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>install<span class="w"> </span><span class="o">[</span>agent<span class="o">]</span><span class="w"> </span><span class="o">[</span>agent<span class="w"> </span>...<span class="o">]</span>
-</code></pre></div>
-<p>Install integration for AI coding agents.</p>
-<table>
-<thead>
-<tr>
-<th>Agent</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>claude</code></td>
-<td>Copies SKILL.md to Claude Code skills directory</td>
-</tr>
-<tr>
-<td><code>opencode</code></td>
-<td>Creates <code>.opencode/commands/lookup.md</code></td>
-</tr>
-<tr>
-<td><code>copilot</code></td>
-<td>Creates <code>.github/copilot-instructions.md</code></td>
-</tr>
-<tr>
-<td><code>cursor</code></td>
-<td>Creates <code>.cursorrules</code></td>
-</tr>
-<tr>
-<td><code>windsurf</code></td>
-<td>Creates <code>.windsurfrules</code></td>
-</tr>
-<tr>
-<td><code>cline</code></td>
-<td>Creates <code>.clinerules</code></td>
-</tr>
-<tr>
-<td><code>all</code></td>
-<td>Runs all of the above</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="okf-visualize"><code>okf visualize</code><a class="headerlink" href="#okf-visualize" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>visualize<span class="w"> </span>&lt;bundle_dir&gt;<span class="w"> </span><span class="o">[</span>output.html<span class="o">]</span>
-</code></pre></div>
-<p>Generate an interactive HTML graph of an OKF bundle. Uses D3.js force-directed graph with:
-- Color-coded nodes by concept type (Class, Function, Module, Dependency, etc.)
-- Relationship edges (calls, called-by, imports, related)
-- Search/filter by name
-- Tooltip on hover showing description and resource
-- Pan/zoom</p>
-<p>Output is a self-contained HTML file (no server, no install).</p>
-<hr />
-<h2 id="okf-serve"><code>okf serve</code><a class="headerlink" href="#okf-serve" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>serve<span class="w"> </span><span class="o">[</span>bundle_dir<span class="o">]</span><span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
-</code></pre></div>
-<p>Launch a local HTTP server for browsing an OKF bundle.</p>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>--port, -p PORT</code></td>
-<td>Port (default: 8000)</td>
-</tr>
-<tr>
-<td><code>--open, -o</code></td>
-<td>Open browser automatically</td>
-</tr>
-<tr>
-<td><code>--quiet, -q</code></td>
-<td>Suppress request logs</td>
-</tr>
-<tr>
-<td><code>--host HOST</code></td>
-<td>Host (default: 127.0.0.1)</td>
-</tr>
-</tbody>
-</table>
+<h2 id="versioning">Versioning<a class="headerlink" href="#versioning" title="Permanent link">&para;</a></h2>
+<p>This schema targets <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">OKF v0.1</a>. Breaking changes will be called out in the <a href="../../changelog/">Changelog</a>.</p>
 
 
 
@@ -1235,6 +1389,12 @@ Changes are detected via content hash (description, signature, tags).</p>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
       </main>
       
         <footer class="md-footer">
@@ -1247,33 +1407,6 @@ Changes are detected via content hash (description, signature, tags).</p>
     Made with
     <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
       Material for MkDocs
-    </a>
-  
-</div>
-      
-        
-<div class="md-social">
-  
-    
-    
-    
-    
-      
-      
-    
-    <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
-    </a>
-  
-    
-    
-    
-    
-      
-      
-    
-    <a href="https://pypi.org/project/okf-generator/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
     </a>
   
 </div>
@@ -1291,10 +1424,10 @@ Changes are detected via content hash (description, signature, tags).</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

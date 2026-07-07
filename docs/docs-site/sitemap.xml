@@ -5,15 +5,7 @@
          <lastmod>2026-07-07</lastmod>
     </url>
     <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/agent-integration/</loc>
-         <lastmod>2026-07-07</lastmod>
-    </url>
-    <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/ci-cd/</loc>
-         <lastmod>2026-07-07</lastmod>
-    </url>
-    <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/cli-reference/</loc>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/changelog/</loc>
          <lastmod>2026-07-07</lastmod>
     </url>
     <url>
@@ -21,19 +13,7 @@
          <lastmod>2026-07-07</lastmod>
     </url>
     <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/installation/</loc>
-         <lastmod>2026-07-07</lastmod>
-    </url>
-    <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/languages-and-manifests/</loc>
-         <lastmod>2026-07-07</lastmod>
-    </url>
-    <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/python-api/</loc>
-         <lastmod>2026-07-07</lastmod>
-    </url>
-    <url>
-         <loc>https://umairbaig8.github.io/okf-generator/docs-site/quick-start/</loc>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/troubleshooting/</loc>
          <lastmod>2026-07-07</lastmod>
     </url>
     <url>
@@ -46,6 +26,54 @@
     </url>
     <url>
          <loc>https://umairbaig8.github.io/okf-generator/docs-site/comparison/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/getting-started/configuration/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/getting-started/installation/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/getting-started/quick-start/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/agent-integration/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/bundle-format/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/ci-cd/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/cli-reference/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/enrichment/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/languages-and-manifests/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/mcp-server/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/python-api/</loc>
+         <lastmod>2026-07-07</lastmod>
+    </url>
+    <url>
+         <loc>https://umairbaig8.github.io/okf-generator/docs-site/user-guide/visualization/</loc>
          <lastmod>2026-07-07</lastmod>
     </url>
 </urlset>

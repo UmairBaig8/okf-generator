@@ -10,29 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/">
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/user-guide/mcp-server/">
       
       
+        <link rel="prev" href="../agent-integration/">
       
-        <link rel="next" href="getting-started/installation/">
+      
+        <link rel="next" href="../enrichment/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>okf-generator</title>
+        <title>MCP Server - okf-generator</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,7 +53,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#okf-generator" class="md-skip">
+        <a href="#mcp-server" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="okf-generator" class="md-header__button md-logo" aria-label="okf-generator" data-md-component="logo">
+    <a href="../.." title="okf-generator" class="md-header__button md-logo" aria-label="okf-generator" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              MCP Server
             
           </span>
         </div>
@@ -202,7 +204,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="okf-generator" class="md-nav__button md-logo" aria-label="okf-generator" data-md-component="logo">
+    <a href="../.." title="okf-generator" class="md-nav__button md-logo" aria-label="okf-generator" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -229,37 +231,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -275,59 +250,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why-okf-generator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why okf-generator?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-you-get" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What you get
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -391,7 +313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   
@@ -419,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/quick-start/" class="md-nav__link">
+      <a href="../../getting-started/quick-start/" class="md-nav__link">
         
   
   
@@ -447,7 +369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/configuration/" class="md-nav__link">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
         
   
   
@@ -479,8 +401,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -491,11 +415,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -516,7 +440,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -534,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/cli-reference/" class="md-nav__link">
+      <a href="../cli-reference/" class="md-nav__link">
         
   
   
@@ -562,7 +486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/bundle-format/" class="md-nav__link">
+      <a href="../bundle-format/" class="md-nav__link">
         
   
   
@@ -590,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/languages-and-manifests/" class="md-nav__link">
+      <a href="../languages-and-manifests/" class="md-nav__link">
         
   
   
@@ -618,7 +542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/agent-integration/" class="md-nav__link">
+      <a href="../agent-integration/" class="md-nav__link">
         
   
   
@@ -643,10 +567,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="user-guide/mcp-server/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -662,6 +613,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claude-desktop-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Desktop setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -674,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/enrichment/" class="md-nav__link">
+      <a href="../enrichment/" class="md-nav__link">
         
   
   
@@ -702,7 +728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/ci-cd/" class="md-nav__link">
+      <a href="../ci-cd/" class="md-nav__link">
         
   
   
@@ -730,7 +756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/visualization/" class="md-nav__link">
+      <a href="../visualization/" class="md-nav__link">
         
   
   
@@ -765,7 +791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="troubleshooting/" class="md-nav__link">
+      <a href="../../troubleshooting/" class="md-nav__link">
         
   
   
@@ -844,7 +870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development/" class="md-nav__link">
+      <a href="../../development/" class="md-nav__link">
         
   
   
@@ -879,7 +905,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/python-api/" class="md-nav__link">
+      <a href="../python-api/" class="md-nav__link">
         
   
   
@@ -906,7 +932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="changelog/" class="md-nav__link">
+      <a href="../../changelog/" class="md-nav__link">
         
   
   
@@ -953,10 +979,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-okf-generator" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why okf-generator?
+        Quick start
       
     </span>
   </a>
@@ -964,10 +990,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-you-get" class="md-nav__link">
+  <a href="#available-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What you get
+        Available tools
       
     </span>
   </a>
@@ -975,10 +1001,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
+  <a href="#example-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next steps
+        Example usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claude-desktop-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claude Desktop setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol
       
     </span>
   </a>
@@ -1005,64 +1053,82 @@
   
 
 
-<h1 id="okf-generator">okf-generator<a class="headerlink" href="#okf-generator" title="Permanent link">&para;</a></h1>
-<p><strong>Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</strong></p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>okf-generator
-okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle
-okf<span class="w"> </span>lookup<span class="w"> </span>--bundle<span class="w"> </span>./okf_bundle<span class="w"> </span>FunctionName
+<h1 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h1>
+<p>okf-generator includes a built-in Model Context Protocol (MCP) server, letting any MCP-compatible agent (Claude Desktop, Cursor, etc.) browse and search bundle concepts natively.</p>
+<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle
 </code></pre></div>
-<h2 id="why-okf-generator">Why okf-generator?<a class="headerlink" href="#why-okf-generator" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Zero-LLM extraction</strong> — Fully deterministic, offline. tree-sitter AST parsers extract every symbol with no API calls. Works in airgapped environments.</li>
-<li><strong>Surgical token efficiency</strong> — Agents retrieve one concept card (signature + params + callers) instead of reading entire files. 80-95% fewer tokens.</li>
-<li><strong>Cross-linked knowledge</strong> — Imports → dependencies, function calls → caller/callee resolved across all 17 languages. Multi-hop reasoning without grep.</li>
-</ul>
-<h2 id="what-you-get">What you get<a class="headerlink" href="#what-you-get" title="Permanent link">&para;</a></h2>
-<p>Every function, class, module, and dependency becomes a structured markdown file with YAML frontmatter:</p>
-<div class="highlight"><pre><span></span><code><span class="nn">---</span>
-<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Function</span>
-<span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slugify</span>
-<span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">utils.py</span>
-<span class="nt">signature</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;def</span><span class="nv"> </span><span class="s">slugify(text:</span><span class="nv"> </span><span class="s">str,</span><span class="nv"> </span><span class="s">max_length:</span><span class="nv"> </span><span class="s">int</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">80)</span><span class="nv"> </span><span class="s">-&gt;</span><span class="nv"> </span><span class="s">str&quot;</span>
-<span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">lang</span><span class="p p-Indicator">:</span><span class="nv">python</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">type</span><span class="p p-Indicator">:</span><span class="nv">Function</span><span class="p p-Indicator">]</span>
-<span class="nn">---</span>
+<p>This starts the server in stdio mode — most MCP clients connect this way automatically.</p>
+<p>For HTTP mode:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle<span class="w"> </span>--port<span class="w"> </span><span class="m">9000</span>
 </code></pre></div>
-<p>Searchable via CLI, browseable via interactive dashboard, consumable via MCP protocol — all from one <code>okf generate</code> command.</p>
-<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h2 id="available-tools">Available tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Step</th>
-<th>Command</th>
+<th>Tool</th>
+<th>Description</th>
+<th>Parameters</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="getting-started/installation/">Installation</a></td>
-<td><code>pip install okf-generator</code></td>
+<td><code>lookup</code></td>
+<td>Search concepts by name, type, or tag</td>
+<td><code>query</code> (req), <code>type</code>, <code>tag</code>, <code>limit</code>, <code>detail</code></td>
 </tr>
 <tr>
-<td><a href="getting-started/quick-start/">Quick Start</a></td>
-<td>Generate your first bundle in 30 seconds</td>
+<td><code>get_concept</code></td>
+<td>Full detail by concept_id</td>
+<td><code>concept_id</code> (req)</td>
 </tr>
 <tr>
-<td><a href="user-guide/cli-reference/">CLI Reference</a></td>
-<td>Full command reference</td>
+<td><code>find_callers</code></td>
+<td>Concepts that reference a given concept_id</td>
+<td><code>concept_id</code> (req)</td>
 </tr>
 <tr>
-<td><a href="user-guide/bundle-format/">Bundle Format</a></td>
-<td>How the output is structured</td>
+<td><code>list_by_file</code></td>
+<td>All concepts from a source file</td>
+<td><code>file</code> (req)</td>
 </tr>
 <tr>
-<td><a href="user-guide/visualization/">Dashboard</a></td>
-<td>Launch the live bundle browser</td>
+<td><code>list_dependencies</code></td>
+<td>List dependencies, optionally filtered</td>
+<td><code>ecosystem</code></td>
 </tr>
 <tr>
-<td><a href="changelog/">Changelog</a></td>
-<td>Release history</td>
+<td><code>bundle_info</code></td>
+<td>Bundle statistics</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>list_by_type</code></td>
+<td>All concepts of a specific type</td>
+<td><code>type</code> (req)</td>
 </tr>
 </tbody>
 </table>
+<h2 id="example-usage">Example usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># List all tools</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{&quot;id&quot;:1,&quot;method&quot;:&quot;tools/list&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle
+
+<span class="c1"># Search for a concept</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{&quot;id&quot;:1,&quot;method&quot;:&quot;tools/call&quot;,&quot;params&quot;:{&quot;name&quot;:&quot;lookup&quot;,&quot;arguments&quot;:{&quot;query&quot;:&quot;slugify&quot;}}}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle
+</code></pre></div>
+<h2 id="claude-desktop-setup">Claude Desktop setup<a class="headerlink" href="#claude-desktop-setup" title="Permanent link">&para;</a></h2>
+<p>Add to your <code>claude_desktop_config.json</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;okf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;okf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mcp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/path/to/okf_bundle&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="protocol">Protocol<a class="headerlink" href="#protocol" title="Permanent link">&para;</a></h2>
+<p>The server implements MCP protocol version <code>2024-11-05</code> over stdio or HTTP+SSE. Resources are exposed under <code>okf://{concept_id}</code> URIs — one per concept.</p>
 
 
 
@@ -1118,10 +1184,10 @@ okf<span class="w"> </span>lookup<span class="w"> </span>--bundle<span class="w"
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
