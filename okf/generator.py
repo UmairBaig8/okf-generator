@@ -1678,7 +1678,7 @@ def main():
 
     # Save --enrich flag + optional mode before removing from argv
     _has_enrich_flag = "--enrich" in sys.argv
-    _enrich_mode = "base"
+    _enrich_mode = "base" if _has_enrich_flag else ""
     if _has_enrich_flag:
         idx = sys.argv.index("--enrich")
         del sys.argv[idx]

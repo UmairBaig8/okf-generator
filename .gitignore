@@ -18,3 +18,6 @@ build/
 tests/fixtures/**/.gradle/
 tests/fixtures/**/build/
 site/
+okf_bundle/
+.okfconfig
+opencode.json

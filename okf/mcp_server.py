@@ -285,7 +285,7 @@ class BundleMCPServer:
             return None
 
         if method == "resources/list":
-            return jsonrpc(rid, self.list_resources())
+            return jsonrpc(rid, {"resources": self.list_resources()})
 
         if method == "resources/read":
             uri = params.get("uri", "")
@@ -293,7 +293,7 @@ class BundleMCPServer:
             return jsonrpc(rid, [{"uri": uri, "mimeType": "text/markdown", "text": content}])
 
         if method == "tools/list":
-            return jsonrpc(rid, self.list_tools())
+            return jsonrpc(rid, {"tools": self.list_tools()})
 
         if method == "tools/call":
             result = self.handle_tool_call(params.get("name", ""), params.get("arguments", {}))
