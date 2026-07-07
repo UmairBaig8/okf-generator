@@ -98,6 +98,20 @@ Runs `base` + `deep` + `security`, plus a semantic related-links pass:
 
 ---
 
+## When to use which mode
+
+| Use case | Recommended mode | Why |
+|----------|-----------------|-----|
+| You just want cleaner docs descriptions | `base` | No source code sent to LLM, fastest, resumable |
+| You want usage examples and complexity estimates for a library you're documenting | `deep` | Reads source body — good for public docs where accuracy matters |
+| You're auditing a codebase for visible risk patterns before a security review | `security` | Flags SQL injection, hardcoded secrets, unsafe `eval()` patterns |
+| You're preparing a bundle for an AI agent and want the richest possible context | `full` | Runs all passes + semantic cross-links between related modules |
+| You're in CI and want to enrich incrementally | `base` (CI safe) | `deep`/`security` need source body which may not be available in CI |
+
+**Rule of thumb:** Start with `base`. Add `deep` or `security` only when you need the specific fields they provide and have verified the LLM provider is acceptable for your codebase.
+
+---
+
 ## Fields reference
 
 | Field | Appears in | Description |

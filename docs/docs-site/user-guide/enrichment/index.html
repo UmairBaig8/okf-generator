@@ -791,6 +791,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#when-to-use-which-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to use which mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fields-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1275,6 +1286,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#when-to-use-which-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to use which mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fields-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1500,6 +1522,45 @@ Use <span class="sb">`fetch_series_v2`</span> instead — this method is depreca
 <ul>
 <li><code>related_semantic</code> — LLM-suggested cross-links beyond the call graph (e.g., conceptually similar functions in different modules)</li>
 </ul>
+<hr />
+<h2 id="when-to-use-which-mode">When to use which mode<a class="headerlink" href="#when-to-use-which-mode" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Use case</th>
+<th>Recommended mode</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You just want cleaner docs descriptions</td>
+<td><code>base</code></td>
+<td>No source code sent to LLM, fastest, resumable</td>
+</tr>
+<tr>
+<td>You want usage examples and complexity estimates for a library you're documenting</td>
+<td><code>deep</code></td>
+<td>Reads source body — good for public docs where accuracy matters</td>
+</tr>
+<tr>
+<td>You're auditing a codebase for visible risk patterns before a security review</td>
+<td><code>security</code></td>
+<td>Flags SQL injection, hardcoded secrets, unsafe <code>eval()</code> patterns</td>
+</tr>
+<tr>
+<td>You're preparing a bundle for an AI agent and want the richest possible context</td>
+<td><code>full</code></td>
+<td>Runs all passes + semantic cross-links between related modules</td>
+</tr>
+<tr>
+<td>You're in CI and want to enrich incrementally</td>
+<td><code>base</code> (CI safe)</td>
+<td><code>deep</code>/<code>security</code> need source body which may not be available in CI</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> Start with <code>base</code>. Add <code>deep</code> or <code>security</code> only when you need the specific fields they provide and have verified the LLM provider is acceptable for your codebase.</p>
 <hr />
 <h2 id="fields-reference">Fields reference<a class="headerlink" href="#fields-reference" title="Permanent link">&para;</a></h2>
 <table>
