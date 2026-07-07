@@ -16,6 +16,7 @@
   <meta name="twitter:description" content="Map any codebase into a structured knowledge graph. ~100x fewer tokens." />
   <meta name="twitter:image" content="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/banner.png" />
   <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/" />
+  <link rel="icon" type="image/svg+xml" href="images/okf-icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -91,7 +92,7 @@
     .nav-scrolled .nav-badge { font-size: 10px; padding: 2px 6px; }
     .nav-inner { display: flex; align-items: center; gap: 32px; height: 100%; }
     .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: var(--text); flex-shrink: 0; }
-    .nav-logo-icon { width: 132px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 800; }
+    .nav-logo-icon { display: flex; align-items: center; justify-content: center; }
     .nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; }
     .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
@@ -286,7 +287,10 @@
   <nav class="nav" aria-label="Main navigation">
     <div class="container nav-inner">
       <a href="/" class="nav-logo" aria-label="okf-generator home">
-        <div class="nav-logo-icon" aria-hidden="true">OKF Generator</div>
+        <div class="nav-logo-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 220 220" fill="none"><defs><linearGradient id="navIcon" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="20" y="46" width="20" height="10" rx="5" fill="#c4b5fd"/><rect x="46" y="46" width="35" height="10" rx="5" fill="url(#navIcon)"/><rect x="10" y="72" width="16" height="12" rx="6" fill="#7c3aed"/><rect x="32" y="72" width="52" height="12" rx="6" fill="url(#navIcon)"/><rect x="22" y="96" width="28" height="12" rx="6" fill="#a78bfa"/><circle cx="140" cy="104" r="14" fill="url(#navIcon)"/><circle cx="140" cy="104" r="6" fill="#fff"/><rect x="10" y="126" width="42" height="12" rx="6" fill="url(#navIcon)"/><rect x="26" y="156" width="30" height="10" rx="5" fill="#c4b5fd"/></svg>
+        </div>
+        okf-generator
       </a>
       <div class="nav-links" role="list">
         <a href="#how-it-works" role="listitem">How it works</a>
