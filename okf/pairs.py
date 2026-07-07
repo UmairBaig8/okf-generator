@@ -644,12 +644,27 @@ def setup_logging():
 def main():
     setup_logging()
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 or (len(sys.argv) == 2 and sys.argv[1] in ("-h", "--help")):
         print(__doc__)
-        sys.exit(1)
+        sys.exit(0)
 
-    bundle_dir = Path(sys.argv[1]).resolve()
-    out_file = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_pairs.jsonl").resolve()
+    # --bundle flag overrides positional, otherwise default ./okf_bundle
+    bundle_dir = Path("okf_bundle").resolve()
+    out_file = Path("okf_pairs.jsonl").resolve()
+    skip_next = False
+    for i, a in enumerate(sys.argv[1:], 1):
+        if skip_next:
+            skip_next = False
+            continue
+        if a == "--bundle" and i + 1 < len(sys.argv):
+            bundle_dir = Path(sys.argv[i + 1]).resolve()
+            skip_next = True
+        elif not a.startswith("-"):
+            # First non-flag positional = bundle_dir, second = output
+            if str(bundle_dir) == str(Path("okf_bundle").resolve()):
+                bundle_dir = Path(a).resolve()
+            else:
+                out_file = Path(a).resolve()
 
     if not bundle_dir.exists():
         log.error(f"Bundle directory not found: {bundle_dir}")

@@ -4,8 +4,9 @@ Lets any MCP-compatible agent (Claude Desktop, Cursor, etc.)
 browse and search bundle concepts natively over stdio.
 
 Usage:
-  okf mcp <bundle_dir>              Start MCP server (stdio mode)
-  okf mcp <bundle_dir> --port 9000  Start MCP server (HTTP+SSE mode)
+  okf mcp [bundle_dir]              Start MCP server (stdio mode, default: ./okf_bundle)
+  okf mcp [bundle_dir] --port 9000  Start MCP server (HTTP+SSE mode)
+  okf mcp --bundle <path>           Explicit bundle path
 
 Tools:
   lookup             Search concepts by name/type/tag
@@ -350,11 +351,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
-    parser.add_argument("bundle_dir", help="Path to OKF bundle directory")
+    parser.add_argument("bundle_dir", nargs="?", default="./okf_bundle", help="Path to OKF bundle directory (default: ./okf_bundle)")
+    parser.add_argument("--bundle", help="Path to OKF bundle (overrides positional)")
     parser.add_argument("--port", "-p", type=int, default=0, help="HTTP port (omit or 0 for stdio mode)")
     args = parser.parse_args()
 
-    bundle_dir = Path(args.bundle_dir).resolve()
+    bundle_dir = Path(args.bundle or args.bundle_dir).resolve()
     if not bundle_dir.exists():
         print(f"ERROR: Bundle not found: {bundle_dir}", file=sys.stderr)
         sys.exit(1)

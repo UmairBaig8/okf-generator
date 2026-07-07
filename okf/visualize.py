@@ -1,7 +1,8 @@
 """okf visualize — generate an interactive HTML explorer for an OKF bundle.
 
 Usage:
-  okf visualize <bundle_dir> [output_file]
+  okf visualize [bundle_dir] [output_file]
+  okf visualize --bundle <path> [output_file]
 """
 
 import argparse
@@ -262,11 +263,12 @@ def main():
     parser = argparse.ArgumentParser(
         description="Generate an interactive HTML explorer for an OKF bundle.",
     )
-    parser.add_argument("bundle_dir", help="Path to the OKF bundle directory")
+    parser.add_argument("bundle_dir", nargs="?", default="./okf_bundle", help="Path to the OKF bundle directory (default: ./okf_bundle)")
+    parser.add_argument("--bundle", help="Path to OKF bundle (overrides positional)")
     parser.add_argument("output", nargs="?", default=None, help="Output HTML file (default: bundle_path/bundle_name.html)")
     args = parser.parse_args()
 
-    bundle_dir = Path(args.bundle_dir).resolve()
+    bundle_dir = Path(args.bundle or args.bundle_dir).resolve()
     if not bundle_dir.exists():
         print(f"ERROR: Bundle not found: {bundle_dir}", file=sys.stderr)
         sys.exit(1)
