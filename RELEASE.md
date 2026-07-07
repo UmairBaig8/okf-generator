@@ -81,12 +81,18 @@ vim okf/__init__.py         # __version__ = "x.y.z"
 - **RELEASE.md**: If release process changed, update this file.
 - **mkdocs docs-site**: If docs content changed, rebuild and commit the static site:
   ```bash
+  # 1. Sync changelog from root to docs/
+  cp CHANGELOG.md docs/changelog.md
+
+  # 2. Rebuild mkdocs site
   mkdocs build
   rm -rf docs/docs-site && cp -r build/docs-site docs/docs-site
   rm -rf docs/docs-site/docs-site  # remove nested copy from site_url path
-  git add docs/docs-site && git commit -m "docs: rebuild docs-site" && git push
+
+  # 3. Commit everything
+  git add docs/ && git commit -m "docs: rebuild docs-site" && git push
   ```
-  The docs-site is served at `https://umairbaig8.github.io/okf-generator/docs-site/`.
+  The docs-site is served at `https://umairbaig8.github.io/okf-generator/docs-site/`. The changelog page must be kept in sync with the root `CHANGELOG.md` — copy it every release.
 
 ### 4. Update fixtures (if new languages/features)
 
