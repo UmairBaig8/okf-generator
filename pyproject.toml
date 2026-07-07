@@ -76,6 +76,24 @@ all = [
 [project.scripts]
 okf = "okf.cli:main"
 
+[project.entry-points."okf.parsers"]
+python     = "okf.parsers.python:PythonParser"
+javascript = "okf.parsers.javascript:JSTSParser"
+go         = "okf.parsers.go:GoParser"
+java       = "okf.parsers.java:JavaParser"
+rust       = "okf.parsers.rust:RustParser"
+ruby       = "okf.parsers.ruby:RubyParser"
+c          = "okf.parsers.c:CParser"
+cpp        = "okf.parsers.cpp:CppParser"
+csharp     = "okf.parsers.csharp:CSharpParser"
+sql        = "okf.parsers.sql:SQLParser"
+swift      = "okf.parsers.swift:SwiftParser"
+kotlin     = "okf.parsers.kotlin:KotlinParser"
+php        = "okf.parsers.php:PHPParser"
+dart       = "okf.parsers.dart:DartParser"
+scala      = "okf.parsers.scala:ScalaParser"
+julia      = "okf.parsers.julia:JuliaParser"
+
 [project.urls]
 Homepage      = "https://umairbaig8.github.io/okf-generator/"
 Documentation = "https://umairbaig8.github.io/okf-generator/docs-site/"
