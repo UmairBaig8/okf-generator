@@ -90,8 +90,11 @@
     .nav-scrolled .btn-primary { font-size: 12px; padding: 6px 14px; }
     .nav-scrolled .nav-badge { font-size: 10px; padding: 2px 6px; }
     .nav-inner { display: flex; align-items: center; gap: 32px; height: 100%; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: var(--text); flex-shrink: 0; }
-    .nav-logo-icon { width: 132px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 800; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: var(--text); flex-shrink: 0; text-decoration: none; }
+    .nav-logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 900; letter-spacing: -0.5px; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 2px 8px rgba(91,33,182,0.25); }
+    .nav-logo:hover .nav-logo-icon { transform: scale(1.08); box-shadow: 0 4px 16px rgba(91,33,182,0.35); }
+    .nav-logo-text { font-size: 16px; font-weight: 800; background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-logo-dot { display: inline-block; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; margin: 0 0 2px 1px; vertical-align: middle; }
     .nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; }
     .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
@@ -273,7 +276,8 @@
   <nav class="nav" aria-label="Main navigation">
     <div class="container nav-inner">
       <a href="/" class="nav-logo" aria-label="okf-generator home">
-        <div class="nav-logo-icon" aria-hidden="true">OKF Generator</div>
+        <div class="nav-logo-icon" aria-hidden="true">OK</div>
+        <span class="nav-logo-text">okf-generator<span class="nav-logo-dot"></span></span>
       </a>
       <div class="nav-links" role="list">
         <a href="#how-it-works" role="listitem">How it works</a>
