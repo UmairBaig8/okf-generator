@@ -30,6 +30,7 @@ theme:
     - search.suggest
     - search.highlight
     - search.share
+    - content.action.edit
     - content.code.copy
     - content.code.annotate
     - toc.follow
@@ -44,8 +45,6 @@ extra:
       name: PyPI
   generator: false
 
-extra_css:
-  - stylesheets/extra.css
 
 copyright: Copyright &copy; 2026 Umair Baig — MIT License
 
