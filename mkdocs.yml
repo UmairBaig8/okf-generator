@@ -1,4 +1,4 @@
-site_name: okf-generator
+site_name: OKF Generator
 site_description: High-velocity codebase parser — structured, agent-ready knowledge across 17 languages
 site_url: https://umairbaig8.github.io/okf-generator/docs-site/
 site_dir: build/docs-site
@@ -43,6 +43,9 @@ extra:
       link: https://pypi.org/project/okf-generator/
       name: PyPI
   generator: false
+
+extra_css:
+  - stylesheets/extra.css
 
 copyright: Copyright &copy; 2026 Umair Baig — MIT License
 

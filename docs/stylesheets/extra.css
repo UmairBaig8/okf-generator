@@ -1,0 +1,7 @@
+/* Push palette toggle and source link to far right */
+.md-header__inner {
+  justify-content: flex-start;
+}
+.md-header__source {
+  margin-left: auto;
+}
