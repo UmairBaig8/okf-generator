@@ -1603,6 +1603,7 @@ def main():
 
     # --security mode: audit an EXISTING bundle for security/complexity only.
     if len(sys.argv) >= 2 and sys.argv[1] == "--security":
+        _ENRICH_TOKENS.clear()
         if len(sys.argv) < 3:
             print("Usage: okf generate --security <source_dir> [bundle_dir] [--force]")
             sys.exit(1)
@@ -1661,7 +1662,7 @@ def main():
                 except Exception as e:
                     errors += 1
                     log.debug(f"Security audit error: {e}")
-        log.info(f"Security audit complete: {done} patched, {skipped} skipped, {errors} errors")
+        log.info(f"Security audit complete: {done} patched, {skipped} skipped, {errors} errors | {_fmt_enrich_tokens()}")
         return
 
     # Determine source_dir: positional arg or auto-detect
