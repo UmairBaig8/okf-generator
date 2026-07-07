@@ -227,6 +227,29 @@ The bundled viz is ideal for exploring relationships across projects; per-bundle
 
 ---
 
+## Live Dashboard (FastAPI)
+
+`okf dashboard` launches an interactive web UI — live search, detail inspection, and concept graph in your browser:
+
+```bash
+okf dashboard ./okf_bundle --open
+```
+
+Opens a 3-panel layout at `http://127.0.0.1:8700`:
+
+| Panel | What it does |
+|-------|-------------|
+| **Sidebar tree** | Grouped by type, collapsible groups, search + type/language filters |
+| **Detail panel** | Structured metadata grid (type, language, signature), expandable sections for params/returns/docstring, linked concept navigation (related, calls, called-by, used-by) |
+| **Global Graph** | Force-directed vis-network of the top 120 connected concepts — color-coded by type, click-to-navigate, zoom/pan, legend bar |
+| **Subgraph** | Per-concept connection graph showing immediate neighbors |
+
+**Theme switch** — light/dark toggle persisted to localStorage. All graphs re-render on theme change.
+
+**Keyboard shortcuts** — `Esc` close detail, `/` focus search, Enter to navigate.
+
+---
+
 ## For AI Agents
 
 Every concept in the bundle is deterministic, typed, and cross-referenced — agents get surgical precision without burning context:

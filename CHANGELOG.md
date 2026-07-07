@@ -93,18 +93,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
+- **mkdocs documentation site**
+
+---
+
+## [0.1.38] — 2026-07-07
+
 ### Added
 - **PHP parser** — `okf/parsers/php.py` extracts classes, interfaces, traits, enums, functions, methods, visibility, typed params, return types, PHPDoc blocks. Fixtures at `tests/fixtures/realworld/php/{easy,complex}/`. 3 new fixture tests.
 - **Dart parser** — `okf/parsers/dart.py` extracts classes, mixins, enums, functions, constructors, methods. Fixtures at `tests/fixtures/realworld/dart/{easy,complex}/`. 3 new fixture tests.
 - **Scala parser** — `okf/parsers/scala.py` extracts classes, objects, traits (→Interface), enums, functions, methods, visibility, typed params. Fixtures at `tests/fixtures/realworld/scala/{easy,complex}/`. 3 new fixture tests.
 - **Julia parser** — `okf/parsers/julia.py` extracts functions, structs (→Class), abstract types (→Interface), constants, macros. Fixtures at `tests/fixtures/realworld/julia/{easy,complex}/`. 3 new fixture tests.
-
-### Added
 - **Web dashboard** — `okf dashboard <bundle_dir>` launches a FastAPI-based live bundle browser. Search/filter concepts, view full detail (signature, params, docstring, source), explore interactive dependency graph per concept. API endpoints: `/api/info`, `/api/types`, `/api/languages`, `/api/search`, `/api/concept/{id}`, `/api/graph`. Optional dep: `pip install "okf-generator[dashboard]"`.
 
-### Planned
-- **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
-- **mkdocs documentation site**
+### Changed
+- Language coverage expanded from 13→17 languages (added PHP, Dart, Scala, Julia).
+- `tests/test_realworld_fixtures.py`: 61 total tests (12 new for 4 new languages).
+- Fixture corpus: 106 files across 17 languages, 28 projects.
 
 ---
 
@@ -545,7 +552,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.37...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.38...HEAD
+[0.1.38]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.38
 [0.1.37]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.37
 [0.1.36]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.36
 [0.1.35]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.35
