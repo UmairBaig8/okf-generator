@@ -30,7 +30,7 @@ Or, if you've already run `okf install claude`, this registration is handled for
 ## Tools Exposed
 
 | Tool | Purpose | Key Args |
-|---|---|---|---|
+|---|---|---|
 | `lookup` | Exact-match concept search by name | `query: str`, `type?: str` |
 | `get_concept` | Fetch full concept card by exact title | `title: str` |
 | `find_callers` | Reverse call-graph — who calls this function | `concept_id: str` |

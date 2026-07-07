@@ -1556,19 +1556,72 @@
 </code></pre></div>
 <p>Or, if you've already run <code>okf install claude</code>, this registration is handled for you automatically.</p>
 <h2 id="tools-exposed">Tools Exposed<a class="headerlink" href="#tools-exposed" title="Permanent link">&para;</a></h2>
-<p>| Tool | Purpose | Key Args |
-|---|---|---|---|
-| <code>lookup</code> | Exact-match concept search by name | <code>query: str</code>, <code>type?: str</code> |
-| <code>get_concept</code> | Fetch full concept card by exact title | <code>title: str</code> |
-| <code>find_callers</code> | Reverse call-graph — who calls this function | <code>concept_id: str</code> |
-| <code>find_callees</code> | Forward call-graph — what does this function call | <code>concept_id: str</code> |
-| <code>list_by_file</code> | All concepts extracted from a given source file | <code>file: str</code> |
-| <code>list_dependencies</code> | All dependency concepts, optionally filtered by ecosystem | <code>ecosystem?: str</code> |
-| <code>bundle_info</code> | Bundle-level metadata: concept counts, languages | none |
-| <code>list_by_type</code> | All concepts of a given type | <code>type: str</code> |
-| <code>search_by_tag</code> | Filter concepts by tag prefix (<code>lang:python</code>, <code>ecosystem:pip</code>) | <code>tag: str</code> |
-| <code>get_related</code> | Related/referenced concepts for a given concept_id | <code>concept_id: str</code> |
-| <code>get_manifest_source</code> | Manifest file info for a dependency | <code>concept_id: str</code> |</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>Key Args</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lookup</code></td>
+<td>Exact-match concept search by name</td>
+<td><code>query: str</code>, <code>type?: str</code></td>
+</tr>
+<tr>
+<td><code>get_concept</code></td>
+<td>Fetch full concept card by exact title</td>
+<td><code>title: str</code></td>
+</tr>
+<tr>
+<td><code>find_callers</code></td>
+<td>Reverse call-graph — who calls this function</td>
+<td><code>concept_id: str</code></td>
+</tr>
+<tr>
+<td><code>find_callees</code></td>
+<td>Forward call-graph — what does this function call</td>
+<td><code>concept_id: str</code></td>
+</tr>
+<tr>
+<td><code>list_by_file</code></td>
+<td>All concepts extracted from a given source file</td>
+<td><code>file: str</code></td>
+</tr>
+<tr>
+<td><code>list_dependencies</code></td>
+<td>All dependency concepts, optionally filtered by ecosystem</td>
+<td><code>ecosystem?: str</code></td>
+</tr>
+<tr>
+<td><code>bundle_info</code></td>
+<td>Bundle-level metadata: concept counts, languages</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>list_by_type</code></td>
+<td>All concepts of a given type</td>
+<td><code>type: str</code></td>
+</tr>
+<tr>
+<td><code>search_by_tag</code></td>
+<td>Filter concepts by tag prefix (<code>lang:python</code>, <code>ecosystem:pip</code>)</td>
+<td><code>tag: str</code></td>
+</tr>
+<tr>
+<td><code>get_related</code></td>
+<td>Related/referenced concepts for a given concept_id</td>
+<td><code>concept_id: str</code></td>
+</tr>
+<tr>
+<td><code>get_manifest_source</code></td>
+<td>Manifest file info for a dependency</td>
+<td><code>concept_id: str</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="lookup"><code>lookup</code><a class="headerlink" href="#lookup" title="Permanent link">&para;</a></h3>
 <p>Same semantics as <code>okf lookup</code> on the CLI — exact symbol match, not fuzzy/semantic.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WorldBankConnector&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;class&quot;</span><span class="w"> </span><span class="p">}</span>
