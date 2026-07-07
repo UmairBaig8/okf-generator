@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name            = "okf-generator"
-version         = "0.1.37"
+version         = "0.1.38"
 description     = "Generate OKF v0.1 knowledge bundles from codebases — Claude skill + OpenCode integration"
 readme          = "README.md"
 license         = { text = "MIT" }
