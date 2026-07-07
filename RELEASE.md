@@ -75,8 +75,8 @@ vim okf/__init__.py         # __version__ = "x.y.z"
 
 ### 3. Update documentation
 
-- **README**: New CLI flags? Update CLI Reference + Language table. New extraction features? Add to per-language table. New features like fuzzy search, Dockerfile parsing, config, pre-commit, `--enrich` must be called out in the feature sections and quickstart.
-- **docs/index.html (landing page)**: If a prominent feature was added (new language, new manifest format, major UX improvement), add it to the hero section feature list, the feature grid, or the comparison table. The landing page must highlight every major capability. Also update: (a) language counts (search `N languages`), (b) CLI reference table (search `okf ` in table rows), (c) feature cards if adding new capabilities. Version badge auto-fetches from PyPI — no manual version update needed.
+- **README**: New CLI flags? Update CLI Reference + Language table. New extraction features? Add to per-language table. New features like fuzzy search, Dockerfile parsing, config, pre-commit, `--enrich` must be called out in the feature sections and quickstart. Keep inline with `docs/index.md` content.
+- **docs/index.html (landing page)**: If a prominent feature was added (new language, new manifest format, major UX improvement), add it to the hero section feature list, the feature grid, or the comparison table. The landing page must highlight every major capability. Also update: (a) language counts (search `N languages`), (b) CLI reference table (search `okf ` in table rows), (c) feature cards if adding new capabilities, (d) step command examples and enrich command examples. Version badge auto-fetches from PyPI — no manual version update needed.
 - **TEST.md**: If new CLI commands or flags were added, add corresponding test phases.
 - **RELEASE.md**: If release process changed, update this file.
 - **mkdocs docs-site**: If docs content changed, rebuild and commit the static site:

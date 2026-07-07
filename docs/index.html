@@ -404,7 +404,7 @@
           <div class="step-num" aria-hidden="true">1</div>
           <h3>Scan your codebase</h3>
           <p>tree-sitter AST parsers extract every function, class, module, and dependency across 17 languages with full signatures and docstrings.</p>
-          <div class="step-cmd"><span class="cmd-text">okf generate ./my_project ./okf_bundle</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate ./my_project ./okf_bundle" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+          <div class="step-cmd"><span class="cmd-text">okf generate  # auto-detects project root</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
         <div class="step reveal">
           <div class="step-num" aria-hidden="true">2</div>
@@ -550,7 +550,7 @@
             <h3>Base Enrichment</h3>
           </div>
           <p>Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
-          <div class="enrich-cmd"><span>okf generate ./src ./okf_bundle --enrich base</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate ./src ./okf_bundle --enrich base" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+          <div class="enrich-cmd"><span>okf generate --enrich base</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate --enrich base" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -596,7 +596,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>generate</td><td>okf generate &lt;src&gt; [out] [--enrich]</td><td>Scan codebase and write OKF bundle</td></tr>
+            <tr><td>generate</td><td>okf generate [src] [out] [--enrich]</td><td>Scan codebase (auto-detects project root if src omitted)</td></tr>
             <tr><td>lookup</td><td>okf lookup &lt;query&gt; [--type] [--json]</td><td>Instant exact-symbol concept retrieval</td></tr>
             <tr><td>enrich</td><td>okf enrich &lt;bundle&gt; [--mode] [--src]</td><td>LLM-enhance an existing bundle</td></tr>
             <tr><td>diff</td><td>okf diff &lt;old&gt; &lt;new&gt; [--impact]</td><td>Compare two bundles, show impact</td></tr>
