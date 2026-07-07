@@ -15,6 +15,20 @@ okf generate --enrich deep
 okf enrich --mode full
 ```
 
+## Targeting specific concepts
+
+By default enrichment runs on all eligible concepts in the bundle. Use `--file` or `--concept` to target specific ones:
+
+```bash
+# Enrich only concepts from a specific source file
+okf enrich --file src/utils/helpers.py --mode deep
+
+# Enrich a single concept by ID
+okf enrich --concept utils/slugify --mode security
+```
+
+Both filters use substring matching against the concept's resource path or concept ID.
+
 ---
 
 ## Enrichment modes

@@ -730,6 +730,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#targeting-specific-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Targeting specific concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#enrichment-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1225,6 +1236,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#targeting-specific-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Targeting specific concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#enrichment-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1432,6 +1454,15 @@ okf<span class="w"> </span>generate<span class="w"> </span>--enrich<span class="
 <span class="c1"># Or enrich an existing bundle (no re-scan needed)</span>
 okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>full
 </code></pre></div>
+<h2 id="targeting-specific-concepts">Targeting specific concepts<a class="headerlink" href="#targeting-specific-concepts" title="Permanent link">&para;</a></h2>
+<p>By default enrichment runs on all eligible concepts in the bundle. Use <code>--file</code> or <code>--concept</code> to target specific ones:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enrich only concepts from a specific source file</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--file<span class="w"> </span>src/utils/helpers.py<span class="w"> </span>--mode<span class="w"> </span>deep
+
+<span class="c1"># Enrich a single concept by ID</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--concept<span class="w"> </span>utils/slugify<span class="w"> </span>--mode<span class="w"> </span>security
+</code></pre></div>
+<p>Both filters use substring matching against the concept's resource path or concept ID.</p>
 <hr />
 <h2 id="enrichment-modes">Enrichment modes<a class="headerlink" href="#enrichment-modes" title="Permanent link">&para;</a></h2>
 <table>
