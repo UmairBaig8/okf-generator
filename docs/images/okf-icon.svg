@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="32" height="32">
   <defs>
     <linearGradient id="icon_grad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#5b21b6" />
@@ -12,30 +12,24 @@
   </defs>
 
   <g transform="translate(5, 10)">
-    <!-- Stream Line 1 (Top) -->
     <rect x="20" y="30" width="30" height="12" rx="6" fill="#c4b5fd" />
     <rect x="60" y="30" width="50" height="12" rx="6" fill="url(#icon_grad)" />
     <path d="M 120 36 L 160 36 L 175 60" fill="none" stroke="url(#icon_grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
 
-    <!-- Stream Line 2 (Middle - Fast) -->
     <rect x="10" y="65" width="25" height="14" rx="7" fill="#7c3aed" />
     <rect x="45" y="65" width="75" height="14" rx="7" fill="url(#icon_grad_dark)" />
     <path d="M 130 72 L 180 72 L 195 90" fill="none" stroke="url(#icon_grad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
 
-    <!-- Stream Line 3 (Center Spark / Target Node) -->
     <rect x="30" y="100" width="40" height="14" rx="7" fill="#a78bfa" />
     <path d="M 80 107 L 150 107" fill="none" stroke="url(#icon_grad)" stroke-width="10" stroke-linecap="round" />
     
-    <!-- Convergence / Target AI Agent Node -->
     <circle cx="195" cy="107" r="16" fill="url(#icon_grad)" />
     <circle cx="195" cy="107" r="7" fill="#ffffff" />
     <circle cx="195" cy="107" r="3" fill="#4c1d95" />
 
-    <!-- Stream Line 4 (Lower Middle) -->
     <rect x="15" y="135" width="60" height="14" rx="7" fill="url(#icon_grad_dark)" />
     <path d="M 85 142 L 165 142 L 195 125" fill="none" stroke="url(#icon_grad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
 
-    <!-- Stream Line 5 (Bottom) -->
     <rect x="35" y="170" width="45" height="12" rx="6" fill="#c4b5fd" />
     <path d="M 90 176 L 140 176 L 175 150" fill="none" stroke="url(#icon_grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
   </g>
