@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/troubleshooting/">
       
       
-        <link rel="prev" href="../user-guide/visualization/">
+        <link rel="prev" href="../comparison/">
       
       
         <link rel="next" href="../development/">
@@ -684,6 +684,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -747,22 +774,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-errors" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common errors
+        Installation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Common errors">
+    <nav class="md-nav" aria-label="Installation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#error-okf-bundle-not-found" class="md-nav__link">
+  <a href="#pip-install-okf-generator-fails-with-a-build-error" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ERROR: OKF bundle not found
+        pip install okf-generator fails with a build error
       
     </span>
   </a>
@@ -770,54 +797,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#no-concepts-found" class="md-nav__link">
+  <a href="#okf-command-not-found-after-install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        No concepts found
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tree-sitter-parser-crashes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tree-sitter parser crashes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#okf-generate-is-slow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf generate is slow
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#llm-enrichment-fails-api-key-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        LLM enrichment fails / API key errors
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#okf-diff-impact-shows-no-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf diff --impact shows no dependencies
+        okf: command not found after install
       
     </span>
   </a>
@@ -830,21 +813,238 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-help" class="md-nav__link">
+  <a href="#okf-generate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting help
+        okf generate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf generate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scan-finds-0-concepts-empty-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan finds 0 concepts / empty bundle
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#known-limitations" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#migrations-or-sql-files-are-being-skipped" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Known limitations
+        migrations/ or SQL files are being skipped
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-is-slow-on-a-large-monorepo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generation is slow on a large monorepo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tree-sitter-node-type-errors-unknown-node-type-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tree-sitter node type errors (Unknown node type: X)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf lookup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf lookup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lookup-returns-nothing-for-a-symbol-you-know-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup returns nothing for a symbol you know exists
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-json-output-is-empty-but-non-json-mode-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --json output is empty but non-JSON mode works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-enrich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf enrich
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf enrich">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enrichment-doesnt-add-anything-silently-no-ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment doesn't add anything / silently no-ops
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep-or-security-mode-fails-with-source-body-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deep or security mode fails with "source body not found"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-key-errors-during-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API key errors during enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-visualize-okf-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf visualize / okf dashboard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf visualize / okf dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blank-page-when-opening-the-generated-html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blank page when opening the generated HTML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-wont-start-port-already-in-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard won't start / port already in use
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CI/CD">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-action-fails-on-okf-generate-but-works-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Action fails on okf generate but works locally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pr-comment-from-the-action-isnt-posting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PR comment from the Action isn't posting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#still-stuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Still stuck?
       
     </span>
   </a>
@@ -879,10 +1079,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -900,8 +1100,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1027,22 +1227,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-errors" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common errors
+        Installation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Common errors">
+    <nav class="md-nav" aria-label="Installation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#error-okf-bundle-not-found" class="md-nav__link">
+  <a href="#pip-install-okf-generator-fails-with-a-build-error" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ERROR: OKF bundle not found
+        pip install okf-generator fails with a build error
       
     </span>
   </a>
@@ -1050,54 +1250,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#no-concepts-found" class="md-nav__link">
+  <a href="#okf-command-not-found-after-install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        No concepts found
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tree-sitter-parser-crashes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tree-sitter parser crashes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#okf-generate-is-slow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf generate is slow
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#llm-enrichment-fails-api-key-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        LLM enrichment fails / API key errors
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#okf-diff-impact-shows-no-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        okf diff --impact shows no dependencies
+        okf: command not found after install
       
     </span>
   </a>
@@ -1110,21 +1266,238 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-help" class="md-nav__link">
+  <a href="#okf-generate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting help
+        okf generate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf generate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scan-finds-0-concepts-empty-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan finds 0 concepts / empty bundle
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#known-limitations" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#migrations-or-sql-files-are-being-skipped" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Known limitations
+        migrations/ or SQL files are being skipped
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-is-slow-on-a-large-monorepo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generation is slow on a large monorepo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tree-sitter-node-type-errors-unknown-node-type-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tree-sitter node type errors (Unknown node type: X)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf lookup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf lookup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lookup-returns-nothing-for-a-symbol-you-know-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup returns nothing for a symbol you know exists
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-json-output-is-empty-but-non-json-mode-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --json output is empty but non-JSON mode works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-enrich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf enrich
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf enrich">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enrichment-doesnt-add-anything-silently-no-ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment doesn't add anything / silently no-ops
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep-or-security-mode-fails-with-source-body-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deep or security mode fails with "source body not found"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-key-errors-during-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API key errors during enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-visualize-okf-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf visualize / okf dashboard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="okf visualize / okf dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blank-page-when-opening-the-generated-html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blank page when opening the generated HTML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-wont-start-port-already-in-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard won't start / port already in use
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CI/CD">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-action-fails-on-okf-generate-but-works-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Action fails on okf generate but works locally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pr-comment-from-the-action-isnt-posting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PR comment from the Action isn't posting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#still-stuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Still stuck?
       
     </span>
   </a>
@@ -1152,48 +1525,94 @@
 
 
 <h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h1>
-<h2 id="common-errors">Common errors<a class="headerlink" href="#common-errors" title="Permanent link">&para;</a></h2>
-<h3 id="error-okf-bundle-not-found"><code>ERROR: OKF bundle not found</code><a class="headerlink" href="#error-okf-bundle-not-found" title="Permanent link">&para;</a></h3>
-<p>The lookup or diff command can't find the bundle at the expected path.</p>
-<p><strong>Fix:</strong> Pass <code>--bundle /path/to/okf_bundle</code> explicitly, or generate one first:</p>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle
+<p>Common issues and fixes, grouped by command. If your issue isn't listed, <a href="https://github.com/UmairBaig8/okf-generator/issues">open an issue on GitHub</a> with your OS, Python version, and the full error output.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<h3 id="pip-install-okf-generator-fails-with-a-build-error"><code>pip install okf-generator</code> fails with a build error<a class="headerlink" href="#pip-install-okf-generator-fails-with-a-build-error" title="Permanent link">&para;</a></h3>
+<p>Usually a missing tree-sitter grammar wheel for your platform.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>okf-generator<span class="w"> </span>--no-cache-dir
 </code></pre></div>
-<h3 id="no-concepts-found"><code>No concepts found</code><a class="headerlink" href="#no-concepts-found" title="Permanent link">&para;</a></h3>
-<p>The scanner didn't recognize any files in the source directory.</p>
-<p><strong>Check:</strong>
-- Files have recognized extensions (<code>.py</code>, <code>.js</code>, <code>.ts</code>, <code>.go</code>, <code>.java</code>, <code>.rs</code>, etc.)
-- Directory is not empty
-- Files are not in a skipped directory (<code>node_modules</code>, <code>.venv</code>, <code>.git</code>, etc.)</p>
-<h3 id="tree-sitter-parser-crashes">Tree-sitter parser crashes<a class="headerlink" href="#tree-sitter-parser-crashes" title="Permanent link">&para;</a></h3>
-<p>Some language grammars may throw errors on unusual syntax:</p>
-<div class="highlight"><pre><span></span><code>Failed<span class="w"> </span>to<span class="w"> </span>parse<span class="w"> </span>src/weird.py:<span class="w"> </span>...
+<p>If it still fails, install without LLM extras first to isolate the problem:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>okf-generator<span class="w">  </span><span class="c1"># core only, no [llm] extra</span>
 </code></pre></div>
-<p><strong>Fix:</strong> This is usually non-fatal — the scanner creates a minimal Module concept for the file. If the file is important and should parse, check for syntax errors in the source.</p>
-<h3 id="okf-generate-is-slow"><code>okf generate</code> is slow<a class="headerlink" href="#okf-generate-is-slow" title="Permanent link">&para;</a></h3>
-<p>Large codebases with thousands of files can take a while.</p>
-<p><strong>Tips:</strong>
-- Scope generation to a subdirectory: <code>okf generate ./src/app ./okf_bundle</code>
-- The scanner is single-threaded for AST parsing (per-file)
-- Manifest scanning (dependencies) is fast — most time is in file I/O</p>
-<h3 id="llm-enrichment-fails-api-key-errors">LLM enrichment fails / API key errors<a class="headerlink" href="#llm-enrichment-fails-api-key-errors" title="Permanent link">&para;</a></h3>
-<p><strong>Check:</strong>
-- Did you set <code>llm.api_key</code> in <code>.okfconfig</code> or <code>OKF_API_KEY</code> env?
-- Is your endpoint reachable? Test with <code>curl http://localhost:8080/v1/chat/completions</code>
-- Does the model name exist? Check your provider's model list
-- Enrichment without a key skips gracefully with a warning — no crash</p>
-<h3 id="okf-diff-impact-shows-no-dependencies"><code>okf diff --impact</code> shows no dependencies<a class="headerlink" href="#okf-diff-impact-shows-no-dependencies" title="Permanent link">&para;</a></h3>
-<p>Dependencies only appear if the scanned codebase has manifest files (<code>requirements.txt</code>, <code>Cargo.toml</code>, etc.) AND the code imports from those packages. If your project uses only stdlib, there will be no dependency concepts.</p>
-<h2 id="getting-help">Getting help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<h3 id="okf-command-not-found-after-install"><code>okf: command not found</code> after install<a class="headerlink" href="#okf-command-not-found-after-install" title="Permanent link">&para;</a></h3>
+<p>Your install location isn't on <code>PATH</code>. Check where pip put it:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>okf<span class="w"> </span>--version<span class="w">   </span><span class="c1"># confirms the package is importable</span>
+python<span class="w"> </span>-m<span class="w"> </span>site<span class="w"> </span>--user-base<span class="w">  </span><span class="c1"># shows the base dir to add to PATH</span>
+</code></pre></div>
+<p>Add <code>&lt;user-base&gt;/bin</code> (Linux/macOS) or <code>&lt;user-base&gt;\Scripts</code> (Windows) to <code>PATH</code>, or reinstall inside a virtualenv and activate it.</p>
+<h2 id="okf-generate"><code>okf generate</code><a class="headerlink" href="#okf-generate" title="Permanent link">&para;</a></h2>
+<h3 id="scan-finds-0-concepts-empty-bundle">Scan finds 0 concepts / empty bundle<a class="headerlink" href="#scan-finds-0-concepts-empty-bundle" title="Permanent link">&para;</a></h3>
+<p>Most common causes, in order of likelihood:</p>
 <ul>
-<li><strong>GitHub Issues:</strong> <a href="https://github.com/UmairBaig8/okf-generator/issues">github.com/UmairBaig8/okf-generator/issues</a></li>
-<li><strong>Discussions:</strong> <a href="https://github.com/UmairBaig8/okf-generator/discussions">github.com/UmairBaig8/okf-generator/discussions</a></li>
-<li><strong>Quick check:</strong> Run <code>okf generate</code> on <code>tests/fixtures/realworld</code> to verify your installation works end-to-end</li>
+<li>You pointed it at the wrong directory — <code>okf generate</code> expects a source root, not a single file.</li>
+<li>All your files are in an excluded path. Check <code>SKIP_DIRS</code> isn't matching your source tree (e.g. a folder literally named <code>test</code> or <code>build</code> gets skipped by default).</li>
+<li>Your language isn't supported yet — check <a href="user-guide/languages.md">Language Coverage</a>.</li>
 </ul>
-<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
+<p>Run with verbose output to see what was scanned:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--verbose
+</code></pre></div>
+<h3 id="migrations-or-sql-files-are-being-skipped"><code>migrations/</code> or SQL files are being skipped<a class="headerlink" href="#migrations-or-sql-files-are-being-skipped" title="Permanent link">&para;</a></h3>
+<p>Known gotcha: some default exclude lists treat <code>migrations/</code> as a build artifact directory. If your SQL lives there and isn't showing up in the bundle, confirm your okf-generator version includes the fix (v0.1.15+), or explicitly include it:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--include<span class="w"> </span>migrations
+</code></pre></div>
+<h3 id="generation-is-slow-on-a-large-monorepo">Generation is slow on a large monorepo<a class="headerlink" href="#generation-is-slow-on-a-large-monorepo" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Python parser uses stdlib <code>ast</code> — some syntax from Python 3.13+ may not be fully supported</li>
-<li>Dynamic languages (Ruby, JS) have best-effort call graph resolution</li>
-<li>Very large monorepos (&gt;50K files) may need targeted subdirectory scoping</li>
+<li>Scope to a subdirectory instead of the whole repo: <code>okf generate ./services/api ./bundle</code>.</li>
+<li>Delete <code>.okf_lookup_cache.json</code> if it's stale and causing repeated re-parses — it's mtime-invalidated automatically, but a corrupted cache file can force full rescans. Safe to delete anytime; it regenerates.</li>
+</ul>
+<h3 id="tree-sitter-node-type-errors-unknown-node-type-x">Tree-sitter node type errors (<code>Unknown node type: X</code>)<a class="headerlink" href="#tree-sitter-node-type-errors-unknown-node-type-x" title="Permanent link">&para;</a></h3>
+<p>This means the installed tree-sitter grammar version doesn't match what the parser expects. Grammar APIs shift between versions. Fix:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>okf-generator
+</code></pre></div>
+<p>If it persists after upgrading, <a href="https://github.com/UmairBaig8/okf-generator/issues">open an issue</a> with the exact node type and language — this is a parser bug on our end, not something to work around locally.</p>
+<h2 id="okf-lookup"><code>okf lookup</code><a class="headerlink" href="#okf-lookup" title="Permanent link">&para;</a></h2>
+<h3 id="lookup-returns-nothing-for-a-symbol-you-know-exists">Lookup returns nothing for a symbol you know exists<a class="headerlink" href="#lookup-returns-nothing-for-a-symbol-you-know-exists" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Confirm the bundle was regenerated after the symbol was added — <code>okf lookup</code> reads from the bundle, not live source.</li>
+<li>Lookup is exact-match by design (not fuzzy/semantic). Check the exact casing and whether it's <code>ClassName.method_name</code> vs just <code>method_name</code>.</li>
+<li>Delete and regenerate the lookup cache if it seems stale: <code>rm .okf_lookup_cache.json</code>.</li>
+</ul>
+<h3 id="-json-output-is-empty-but-non-json-mode-works"><code>--json</code> output is empty but non-JSON mode works<a class="headerlink" href="#-json-output-is-empty-but-non-json-mode-works" title="Permanent link">&para;</a></h3>
+<p>Usually means the match found a concept with missing required fields (malformed manual edit to a bundle file). Validate the frontmatter against the <a href="../user-guide/bundle-format/">Bundle Format Reference</a>.</p>
+<h2 id="okf-enrich"><code>okf enrich</code><a class="headerlink" href="#okf-enrich" title="Permanent link">&para;</a></h2>
+<h3 id="enrichment-doesnt-add-anything-silently-no-ops">Enrichment doesn't add anything / silently no-ops<a class="headerlink" href="#enrichment-doesnt-add-anything-silently-no-ops" title="Permanent link">&para;</a></h3>
+<p>Enrichment is resumable and skips already-enriched concepts. If you want to re-run it:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>enrich<span class="w"> </span>./bundle<span class="w"> </span>--mode<span class="w"> </span>deep<span class="w"> </span>--force
+</code></pre></div>
+<h3 id="deep-or-security-mode-fails-with-source-body-not-found"><code>deep</code> or <code>security</code> mode fails with "source body not found"<a class="headerlink" href="#deep-or-security-mode-fails-with-source-body-not-found" title="Permanent link">&para;</a></h3>
+<p>These tiers need access to original source, not just the bundle. Pass <code>--src</code>:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>enrich<span class="w"> </span>./bundle<span class="w"> </span>--mode<span class="w"> </span>deep<span class="w"> </span>--src<span class="w"> </span>./my_project
+</code></pre></div>
+<h3 id="api-key-errors-during-enrichment">API key errors during enrichment<a class="headerlink" href="#api-key-errors-during-enrichment" title="Permanent link">&para;</a></h3>
+<p>Enrichment tiers other than <code>base</code> structural cleanup may call an LLM provider. Confirm your key is set:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">ANTHROPIC_API_KEY</span><span class="o">=</span>sk-...<span class="w">   </span><span class="c1"># or your configured provider&#39;s env var</span>
+</code></pre></div>
+<p>See <a href="../getting-started/configuration/">Configuration</a> for the full list of supported provider env vars.</p>
+<h2 id="okf-visualize-okf-dashboard"><code>okf visualize</code> / <code>okf dashboard</code><a class="headerlink" href="#okf-visualize-okf-dashboard" title="Permanent link">&para;</a></h2>
+<h3 id="blank-page-when-opening-the-generated-html">Blank page when opening the generated HTML<a class="headerlink" href="#blank-page-when-opening-the-generated-html" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Open via <code>okf serve</code> instead of double-clicking the file — some browsers block local <code>file://</code> JS execution for security reasons.</li>
+<li>Confirm the bundle path passed to <code>visualize</code> actually contains <code>.md</code> files, not an empty directory.</li>
+</ul>
+<h3 id="dashboard-wont-start-port-already-in-use">Dashboard won't start / port already in use<a class="headerlink" href="#dashboard-wont-start-port-already-in-use" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>dashboard<span class="w"> </span>./bundle<span class="w"> </span>--port<span class="w"> </span><span class="m">8081</span><span class="w">   </span><span class="c1"># pick a free port</span>
+</code></pre></div>
+<h2 id="cicd">CI/CD<a class="headerlink" href="#cicd" title="Permanent link">&para;</a></h2>
+<h3 id="github-action-fails-on-okf-generate-but-works-locally">GitHub Action fails on <code>okf generate</code> but works locally<a class="headerlink" href="#github-action-fails-on-okf-generate-but-works-locally" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Check the runner's Python version matches what you test locally — pin it explicitly in your workflow.</li>
+<li>Large repos may hit the runner's default timeout — increase <code>timeout-minutes</code> on the job.</li>
+</ul>
+<h3 id="pr-comment-from-the-action-isnt-posting">PR comment from the Action isn't posting<a class="headerlink" href="#pr-comment-from-the-action-isnt-posting" title="Permanent link">&para;</a></h3>
+<p>Confirm the workflow has <code>pull-requests: write</code> permission set:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+</code></pre></div>
+<h2 id="still-stuck">Still stuck?<a class="headerlink" href="#still-stuck" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Check <a href="https://github.com/UmairBaig8/okf-generator/issues">existing GitHub issues</a> — many edge cases are already tracked.</li>
+<li>Open a new issue with: OS, Python version, <code>okf --version</code> output, the exact command run, and full error text.</li>
 </ul>
 
 

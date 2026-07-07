@@ -47,6 +47,7 @@ nav:
       - LLM Enrichment: user-guide/enrichment.md
       - CI/CD Guide: user-guide/ci-cd.md
       - Visualization: user-guide/visualization.md
+  - Comparison: comparison.md
   - Troubleshooting: troubleshooting.md
   - Development:
       - Adding a Language: development.md

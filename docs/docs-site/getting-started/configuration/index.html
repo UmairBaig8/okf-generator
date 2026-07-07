@@ -431,10 +431,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#okfconfig-file" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start
+        .okfconfig file
       
     </span>
   </a>
@@ -442,33 +442,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-file-location" class="md-nav__link">
+  <a href="#all-config-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Config file location
+        All config keys
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section reference
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Section reference">
+    <nav class="md-nav" aria-label="All config keys">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#llm-llm-enrichment-settings" class="md-nav__link">
+  <a href="#llm-llm-enrichment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        llm.* — LLM enrichment settings
+        llm.* — LLM enrichment
       
     </span>
   </a>
@@ -476,10 +465,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#llmproviders-named-provider-presets" class="md-nav__link">
+  <a href="#providers-named-provider-presets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        llm.providers.* — Named provider presets
+        providers.* — Named provider presets
       
     </span>
   </a>
@@ -487,10 +476,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#enrich-enrichment-mode-routing" class="md-nav__link">
+  <a href="#enrich-per-mode-provider-routing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        enrich.* — Enrichment mode routing
+        enrich.* — Per-mode provider routing
       
     </span>
   </a>
@@ -509,10 +498,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lookup-concept-lookup-defaults" class="md-nav__link">
+  <a href="#lookup-search-defaults" class="md-nav__link">
     <span class="md-ellipsis">
       
-        lookup.* — Concept lookup defaults
+        lookup.* — Search defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcp-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mcp.* — MCP server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pairs-training-data-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pairs.* — Training data export
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global defaults
       
     </span>
   </a>
@@ -525,10 +547,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
+  <a href="#using-the-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment variables
+        Using the CLI
       
     </span>
   </a>
@@ -536,10 +558,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-file-precedence" class="md-nav__link">
+  <a href="#example-multi-provider-routing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Config file precedence
+        Example: multi-provider routing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-file-locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config file locations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validating-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validating config
       
     </span>
   </a>
@@ -852,6 +896,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../troubleshooting/" class="md-nav__link">
         
   
@@ -892,10 +963,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -913,8 +984,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1040,10 +1111,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#okfconfig-file" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start
+        .okfconfig file
       
     </span>
   </a>
@@ -1051,33 +1122,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-file-location" class="md-nav__link">
+  <a href="#all-config-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Config file location
+        All config keys
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section reference
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Section reference">
+    <nav class="md-nav" aria-label="All config keys">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#llm-llm-enrichment-settings" class="md-nav__link">
+  <a href="#llm-llm-enrichment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        llm.* — LLM enrichment settings
+        llm.* — LLM enrichment
       
     </span>
   </a>
@@ -1085,10 +1145,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#llmproviders-named-provider-presets" class="md-nav__link">
+  <a href="#providers-named-provider-presets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        llm.providers.* — Named provider presets
+        providers.* — Named provider presets
       
     </span>
   </a>
@@ -1096,10 +1156,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#enrich-enrichment-mode-routing" class="md-nav__link">
+  <a href="#enrich-per-mode-provider-routing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        enrich.* — Enrichment mode routing
+        enrich.* — Per-mode provider routing
       
     </span>
   </a>
@@ -1118,10 +1178,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lookup-concept-lookup-defaults" class="md-nav__link">
+  <a href="#lookup-search-defaults" class="md-nav__link">
     <span class="md-ellipsis">
       
-        lookup.* — Concept lookup defaults
+        lookup.* — Search defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcp-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mcp.* — MCP server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pairs-training-data-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pairs.* — Training data export
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global defaults
       
     </span>
   </a>
@@ -1134,10 +1227,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
+  <a href="#using-the-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment variables
+        Using the CLI
       
     </span>
   </a>
@@ -1145,10 +1238,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-file-precedence" class="md-nav__link">
+  <a href="#example-multi-provider-routing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Config file precedence
+        Example: multi-provider routing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-file-locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config file locations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validating-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validating config
       
     </span>
   </a>
@@ -1176,19 +1291,10 @@
 
 
 <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
-<p>okf-generator uses a project-level <code>.okfconfig</code> file for settings. No environment variables are needed — everything goes through the config file.</p>
-<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># View current config</span>
-okf<span class="w"> </span>config
-
-<span class="c1"># Set a value</span>
-okf<span class="w"> </span>config<span class="w"> </span>llm.base_url<span class="o">=</span>http://localhost:8080/v1
-
-<span class="c1"># Run the setup wizard</span>
-okf<span class="w"> </span>init
-</code></pre></div>
-<h2 id="config-file-location">Config file location<a class="headerlink" href="#config-file-location" title="Permanent link">&para;</a></h2>
-<p>okf-generator looks for <code>.okfconfig</code> in the current directory, then walks up to the parent directories. The file uses JSON format:</p>
+<p>okf-generator runs out of the box with zero config. This page covers everything you can tune.</p>
+<p>Precedence (highest to lowest): <strong>CLI flags &gt; <code>.okfconfig</code> &gt; built-in defaults</strong>.</p>
+<h2 id="okfconfig-file"><code>.okfconfig</code> file<a class="headerlink" href="#okfconfig-file" title="Permanent link">&para;</a></h2>
+<p>Place a <code>.okfconfig</code> file (JSON) at your project root. okf-generator auto-detects it from the current directory, walking up to parent directories.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/v1&quot;</span><span class="p">,</span>
@@ -1200,12 +1306,14 @@ okf<span class="w"> </span>init
 <span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;lookup&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bundle&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./okf_bundle&quot;</span>
+<span class="w">    </span><span class="nt">&quot;bundle&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./okf_bundle&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="section-reference">Section reference<a class="headerlink" href="#section-reference" title="Permanent link">&para;</a></h2>
-<h3 id="llm-llm-enrichment-settings"><code>llm.*</code> — LLM enrichment settings<a class="headerlink" href="#llm-llm-enrichment-settings" title="Permanent link">&para;</a></h3>
+<p>None of these sections are required — omit anything to leave it at default.</p>
+<h2 id="all-config-keys">All config keys<a class="headerlink" href="#all-config-keys" title="Permanent link">&para;</a></h2>
+<h3 id="llm-llm-enrichment"><code>llm.*</code> — LLM enrichment<a class="headerlink" href="#llm-llm-enrichment" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1216,19 +1324,29 @@ okf<span class="w"> </span>init
 </thead>
 <tbody>
 <tr>
+<td><code>llm.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable enrichment</td>
+</tr>
+<tr>
+<td><code>llm.provider</code></td>
+<td><code>"local"</code></td>
+<td>Provider name (<code>local</code>, <code>openai</code>, <code>anthropic</code>, <code>deepseek</code>, <code>gemini</code>, <code>ollama</code>, <code>lmstudio</code>, <code>openrouter</code>, <code>dashscope</code>, <code>minimax</code>)</td>
+</tr>
+<tr>
 <td><code>llm.base_url</code></td>
-<td><code>http://localhost:8080/v1</code></td>
+<td><code>"http://localhost:8080/v1"</code></td>
 <td>OpenAI-compatible endpoint</td>
 </tr>
 <tr>
 <td><code>llm.model</code></td>
-<td><code>gemma-3-4b-it-qat:Q4_0</code></td>
+<td><code>"local-model"</code></td>
 <td>Model name</td>
 </tr>
 <tr>
 <td><code>llm.api_key</code></td>
-<td>—</td>
-<td>API key (set via env <code>OKF_API_KEY</code> or here)</td>
+<td><code>""</code></td>
+<td>API key</td>
 </tr>
 <tr>
 <td><code>llm.max_workers</code></td>
@@ -1237,29 +1355,86 @@ okf<span class="w"> </span>init
 </tr>
 </tbody>
 </table>
-<h3 id="llmproviders-named-provider-presets"><code>llm.providers.*</code> — Named provider presets<a class="headerlink" href="#llmproviders-named-provider-presets" title="Permanent link">&para;</a></h3>
-<p>Built-in providers: <code>local</code>, <code>openai</code>, <code>anthropic</code>, <code>deepseek</code>, <code>gemini</code>, <code>ollama</code>, <code>lmstudio</code>, <code>openrouter</code>, <code>dashscope</code>, <code>minimax</code>.</p>
+<h3 id="providers-named-provider-presets"><code>providers.*</code> — Named provider presets<a class="headerlink" href="#providers-named-provider-presets" title="Permanent link">&para;</a></h3>
+<p>Built-in providers with default <code>base_url</code> values:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;providers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;anthropic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.anthropic.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;deepseek&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.deepseek.com/v1&quot;</span><span class="w"> </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">&quot;providers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;anthropic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.anthropic.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;openai&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.openai.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;deepseek&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.deepseek.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;gemini&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://generativelanguage.googleapis.com/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;ollama&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:11434/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;lmstudio&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:1234/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;openrouter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://openrouter.ai/api/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;dashscope&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;minimax&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.minimax.chat/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;local&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/v1&quot;</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="enrich-enrichment-mode-routing"><code>enrich.*</code> — Enrichment mode routing<a class="headerlink" href="#enrich-enrichment-mode-routing" title="Permanent link">&para;</a></h3>
-<p>Each mode resolves its own provider independently:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enrich&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;deep&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-chat&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;semantic_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>Resolution cascade: <code>enrich.{mode}.{key}</code> → <code>providers.{name}.{key}</code> → <code>llm.{key}</code>.</p>
+<h3 id="enrich-per-mode-provider-routing"><code>enrich.*</code> — Per-mode provider routing<a class="headerlink" href="#enrich-per-mode-provider-routing" title="Permanent link">&para;</a></h3>
+<p>Each enrichment mode resolves its own provider independently. Cascade: <code>enrich.{mode}.{key}</code> → <code>providers.{name}.{key}</code> → <code>llm.{key}</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enrich.description.model</code></td>
+<td><code>""</code></td>
+<td>Model for description enrichment (inherits <code>llm.model</code>)</td>
+</tr>
+<tr>
+<td><code>enrich.description.max_workers</code></td>
+<td><code>2</code></td>
+<td>Workers for description pass</td>
+</tr>
+<tr>
+<td><code>enrich.deep.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable deep enrichment (usage examples, side effects)</td>
+</tr>
+<tr>
+<td><code>enrich.deep.model</code></td>
+<td><code>""</code></td>
+<td>Model for deep enrichment</td>
+</tr>
+<tr>
+<td><code>enrich.deep.max_workers</code></td>
+<td><code>2</code></td>
+<td>Workers for deep pass</td>
+</tr>
+<tr>
+<td><code>enrich.security.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable security audit</td>
+</tr>
+<tr>
+<td><code>enrich.security.model</code></td>
+<td><code>""</code></td>
+<td>Model for security audit</td>
+</tr>
+<tr>
+<td><code>enrich.security.max_workers</code></td>
+<td><code>2</code></td>
+<td>Workers for security pass</td>
+</tr>
+<tr>
+<td><code>enrich.semantic_related.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable semantic related-link discovery</td>
+</tr>
+<tr>
+<td><code>enrich.semantic_related.max_workers</code></td>
+<td><code>2</code></td>
+<td>Workers for related-link pass</td>
+</tr>
+</tbody>
+</table>
 <h3 id="serve-dashboard-viz-server"><code>serve.*</code> — Dashboard / viz server<a class="headerlink" href="#serve-dashboard-viz-server" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1277,12 +1452,12 @@ okf<span class="w"> </span>init
 </tr>
 <tr>
 <td><code>serve.host</code></td>
-<td><code>127.0.0.1</code></td>
+<td><code>"127.0.0.1"</code></td>
 <td>Bind address</td>
 </tr>
 </tbody>
 </table>
-<h3 id="lookup-concept-lookup-defaults"><code>lookup.*</code> — Concept lookup defaults<a class="headerlink" href="#lookup-concept-lookup-defaults" title="Permanent link">&para;</a></h3>
+<h3 id="lookup-search-defaults"><code>lookup.*</code> — Search defaults<a class="headerlink" href="#lookup-search-defaults" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1294,19 +1469,118 @@ okf<span class="w"> </span>init
 <tbody>
 <tr>
 <td><code>lookup.bundle</code></td>
-<td><code>./okf_bundle</code></td>
+<td><code>"./okf_bundle"</code></td>
 <td>Default bundle path</td>
+</tr>
+<tr>
+<td><code>lookup.limit</code></td>
+<td><code>10</code></td>
+<td>Default max results</td>
+</tr>
+<tr>
+<td><code>lookup.min_score</code></td>
+<td><code>0.1</code></td>
+<td>Minimum relevance score</td>
 </tr>
 </tbody>
 </table>
-<h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
-<p>For CI/CD or ephemeral environments, you can use <code>OKF_API_KEY</code> as a fallback — the config file takes precedence when set.</p>
-<h2 id="config-file-precedence">Config file precedence<a class="headerlink" href="#config-file-precedence" title="Permanent link">&para;</a></h2>
+<h3 id="mcp-mcp-server"><code>mcp.*</code> — MCP server<a class="headerlink" href="#mcp-mcp-server" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp.port</code></td>
+<td><code>0</code></td>
+<td>Port (0 = stdio mode)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pairs-training-data-export"><code>pairs.*</code> — Training data export<a class="headerlink" href="#pairs-training-data-export" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pairs.output_file</code></td>
+<td><code>"./okf_pairs.jsonl"</code></td>
+<td>Output path</td>
+</tr>
+<tr>
+<td><code>pairs.qa_per_concept</code></td>
+<td><code>3</code></td>
+<td>QA pairs per concept</td>
+</tr>
+<tr>
+<td><code>pairs.max_workers</code></td>
+<td><code>3</code></td>
+<td>Parallel workers</td>
+</tr>
+<tr>
+<td><code>pairs.pair_types</code></td>
+<td><code>"codegen,qa,doc,summarize,crosslink"</code></td>
+<td>Enabled pair types</td>
+</tr>
+</tbody>
+</table>
+<h3 id="global-defaults">Global defaults<a class="headerlink" href="#global-defaults" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bundle_dir</code></td>
+<td><code>"./okf_bundle"</code></td>
+<td>Default output directory</td>
+</tr>
+</tbody>
+</table>
+<h2 id="using-the-cli">Using the CLI<a class="headerlink" href="#using-the-cli" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># View current config (merged)</span>
+okf<span class="w"> </span>config
+
+<span class="c1"># Set a value</span>
+okf<span class="w"> </span>config<span class="w"> </span>llm.base_url<span class="o">=</span>http://localhost:8080/v1
+
+<span class="c1"># Run setup wizard</span>
+okf<span class="w"> </span>init
+</code></pre></div>
+<h2 id="example-multi-provider-routing">Example: multi-provider routing<a class="headerlink" href="#example-multi-provider-routing" title="Permanent link">&para;</a></h2>
+<p>Route cheap description work to a local model and security audits to a cloud model:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;enrich&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;deep&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-chat&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="config-file-locations">Config file locations<a class="headerlink" href="#config-file-locations" title="Permanent link">&para;</a></h2>
+<p>okf-generator checks these paths in order (later files override earlier ones):</p>
 <ol>
-<li><code>.okfconfig</code> in current directory</li>
-<li><code>.okfconfig</code> in parent directories (walking up)</li>
 <li>Built-in defaults</li>
+<li><code>.okfconfig</code> in current directory (walks up to parent dirs)</li>
+<li><code>~/.config/okf/config.json</code> (user-level global defaults)</li>
 </ol>
+<h2 id="validating-config">Validating config<a class="headerlink" href="#validating-config" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>config
+</code></pre></div>
 
 
 
