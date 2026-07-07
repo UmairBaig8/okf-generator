@@ -1189,16 +1189,11 @@ def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]
         # per-run exclude patterns (e.g. --exclude tests, --exclude docs)
         if any(part in exclude for part in rel.parts):
             continue
-        # skip hidden / vendor dirs (only check relative to root, not absolute prefix)
-        if any(
-            part.startswith(".") or
-            part in SKIP_DIRS or
-            any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES)
-            for part in rel.parts
-        ):
-            continue
         if not path.is_file():
             continue
+
+        # Check manifest files BEFORE hidden-file skip — manifests like
+        # .env legitimately start with a dot and must not be filtered out.
         if manifest_scanner.is_manifest_file(path):
             try:
                 raw_deps = manifest_scanner.scan_manifest(path, root)
@@ -1219,6 +1214,14 @@ def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]
                 log.debug(f"Parsed manifest {path}: {len(raw_deps)} deps")
             except Exception as e:
                 log.warning(f"Failed to parse manifest {path}: {e}")
+            continue
+        # Skip hidden / vendor dirs for non-manifest files
+        if any(
+            part.startswith(".") or
+            part in SKIP_DIRS or
+            any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES)
+            for part in rel.parts
+        ):
             continue
         parser = get_parser(path.suffix.lower())
         if parser is None:

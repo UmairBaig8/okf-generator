@@ -60,18 +60,48 @@ MANIFEST_HANDLERS: dict[str, str] = {
 }
 
 
-def is_manifest_file(path: Path) -> bool:
-    return path.name in MANIFEST_HANDLERS
+def is_manifest_file(path: str | Path) -> bool:
+    fname = Path(path).name
+    if fname in MANIFEST_HANDLERS:
+        return True
+    return fname in _plugin_manifest_map()
+
+
+def _plugin_manifest_map() -> dict[str, object]:
+    """Lazy-load external manifest plugins → {filename: handler_instance}."""
+    if not hasattr(_plugin_manifest_map, "_cache"):
+        from okf.plugin import discover_manifests
+        raw = discover_manifests()
+        cache: dict[str, object] = {}
+        for fname, dotted_path in raw.items():
+            if fname in MANIFEST_HANDLERS:
+                continue  # built-in takes priority
+            try:
+                mod_path, cls_name = dotted_path.rsplit(":", 1)
+                import importlib
+                mod = importlib.import_module(mod_path)
+                cls = getattr(mod, cls_name)
+                cache[fname] = cls()
+            except Exception:
+                pass
+        _plugin_manifest_map._cache = cache
+    return _plugin_manifest_map._cache
 
 
 def scan_manifest(path: Path, repo_root: Path) -> list[dict[str, Any]]:
     """Dispatch to the right parser and return Dependency concept dicts.
     Caller converts to Concept objects to avoid circular imports."""
-    handler_name = MANIFEST_HANDLERS.get(path.name)
-    if handler_name is None:
-        return []
-    handler = globals()[handler_name]
-    raw_deps = handler(path)
+    fname = path.name
+    handler_name = MANIFEST_HANDLERS.get(fname)
+    if handler_name:
+        handler = globals()[handler_name]
+        raw_deps = handler(path)
+    else:
+        plugin_handlers = _plugin_manifest_map()
+        handler = plugin_handlers.get(fname)
+        if handler is None:
+            return []
+        raw_deps = handler.parse(path, repo_root)
 
     resource = str(path.relative_to(repo_root))
     ts = _ts(path)
