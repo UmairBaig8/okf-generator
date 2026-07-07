@@ -33,7 +33,7 @@ okf-generator scans any codebase and generates an [OKF v0.1](https://github.com/
 
 ```bash
 pip install okf-generator
-okf generate ./my_project ./okf_bundle
+cd my_project && okf generate
 okf lookup WorldBankConnector
 ```
 

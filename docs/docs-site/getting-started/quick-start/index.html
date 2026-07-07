@@ -1357,9 +1357,14 @@
 <p>In 3 minutes you'll generate a knowledge bundle from any codebase and look up any function, class, or dependency — no LLM, no API key, no setup.</p>
 <hr />
 <h2 id="1-generate-a-bundle">1. Generate a bundle<a class="headerlink" href="#1-generate-a-bundle" title="Permanent link">&para;</a></h2>
-<p>Point <code>okf generate</code> at any source directory:</p>
+<p>Run <code>okf generate</code> from your project root — it auto-detects the source directory:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>my_project
+okf<span class="w"> </span>generate
+</code></pre></div>
+<p>Or specify paths explicitly:</p>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle
 </code></pre></div>
+<p>Auto-detection walks up the directory tree looking for project markers (<code>pyproject.toml</code>, <code>Cargo.toml</code>, <code>package.json</code>, <code>go.mod</code>, <code>.git/</code>, etc.) across all languages. If nothing is found, it uses the current directory.</p>
 <p>This scans all recognized files using tree-sitter AST parsers (17 languages) and writes a structured knowledge bundle to <code>./okf_bundle/</code>.</p>
 <p><strong>What you get:</strong>
 - Every function, class, method, and module as a concept card

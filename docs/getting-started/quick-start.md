@@ -6,11 +6,20 @@ In 3 minutes you'll generate a knowledge bundle from any codebase and look up an
 
 ## 1. Generate a bundle
 
-Point `okf generate` at any source directory:
+Run `okf generate` from your project root — it auto-detects the source directory:
+
+```bash
+cd my_project
+okf generate
+```
+
+Or specify paths explicitly:
 
 ```bash
 okf generate ./my_project ./okf_bundle
 ```
+
+Auto-detection walks up the directory tree looking for project markers (`pyproject.toml`, `Cargo.toml`, `package.json`, `go.mod`, `.git/`, etc.) across all languages. If nothing is found, it uses the current directory.
 
 This scans all recognized files using tree-sitter AST parsers (17 languages) and writes a structured knowledge bundle to `./okf_bundle/`.
 

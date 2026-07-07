@@ -1543,12 +1543,16 @@ def main():
         log.info(f"Security audit complete: {done} patched, {skipped} skipped, {errors} errors")
         return
 
-    if len(sys.argv) < 2:
-        print(__doc__)
-        sys.exit(1)
-
-    source_dir = Path(sys.argv[1]).resolve()
-    output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
+    # Determine source_dir: positional arg or auto-detect
+    _has_pos_arg = len(sys.argv) >= 2 and not sys.argv[1].startswith("-")
+    if _has_pos_arg:
+        source_dir = Path(sys.argv[1]).resolve()
+        output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path("okf_bundle").resolve()
+    else:
+        from okf.root_detector import detect_root
+        source_dir = detect_root()
+        output_dir = Path("okf_bundle").resolve()
+        log.info(f"Auto-detected project root: {source_dir}")
 
     # Save --enrich flag + optional mode before removing from argv
     _has_enrich_flag = "--enrich" in sys.argv

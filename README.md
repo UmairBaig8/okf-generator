@@ -46,14 +46,14 @@
 `okf generate` scans any repo using tree-sitter AST parsers, resolves cross-references across 17 languages, and outputs a structured knowledge graph. Explore it interactively or consume it programmatically — no LLM required.
 
 ```bash
-# Generate a knowledge bundle from any codebase
+# Auto-detect project root and generate bundle
+okf generate
+
+# Or specify explicitly
 okf generate ./my_project ./okf_bundle
 
 # Explore as an interactive HTML dashboard
-okf visualize ./okf_bundle
-
-# Browse via local HTTP
-okf serve ./okf_bundle --open
+okf dashboard ./okf_bundle --open
 
 # Look up any concept in milliseconds
 okf lookup WorldBankConnector

@@ -93,6 +93,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Project root auto-detection** — `okf generate` can now be run without arguments. It walks up the directory tree looking for project markers (`pyproject.toml`, `Cargo.toml`, `package.json`, `go.mod`, `.git/`, etc.) across all languages and auto-detects the source root. Falls back to current directory.
+
 ### Planned
 - **Plugin system** — `okf plugin install <lang>` to add parsers without modifying core
 
