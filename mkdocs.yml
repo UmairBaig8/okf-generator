@@ -79,22 +79,26 @@ nav:
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quick-start.md
       - Configuration: getting-started/configuration.md
-  - User Guide:
-      - CLI Reference: user-guide/cli-reference.md
+  - Core Concepts:
       - Bundle Format: user-guide/bundle-format.md
       - Language Coverage: user-guide/languages-and-manifests.md
+      - LLM Enrichment: user-guide/enrichment.md
+  - Using OKF:
+      - CLI Reference: user-guide/cli-reference.md
+      - Codebase Q&A: user-guide/ask.md
+      - Visualization: user-guide/visualization.md
+  - Integration:
       - Agent Integration: user-guide/agent-integration.md
       - MCP Server: user-guide/mcp-server.md
-      - LLM Enrichment: user-guide/enrichment.md
-      - Codebase Q&A: user-guide/ask.md
       - CI/CD Guide: user-guide/ci-cd.md
-      - Visualization: user-guide/visualization.md
+  - Extending:
       - Plugin Development: user-guide/plugins.md
-  - Comparison: comparison.md
-  - Troubleshooting: troubleshooting.md
+      - Adding a Language: development.md
+  - Reference:
+      - Python API: user-guide/python-api.md
+      - Comparison: comparison.md
+      - Troubleshooting: troubleshooting.md
   - Development:
       - Architecture Overview: development/architecture.md
-      - Adding a Language: development.md
       - Contributing: development/contributing.md
-  - API Reference: user-guide/python-api.md
   - Changelog: changelog.md
