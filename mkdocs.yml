@@ -7,7 +7,7 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: images/okf-icon.svg
+  logo: images/okf-icon-white.svg
   favicon: images/okf-icon.svg
   palette:
     - scheme: default
