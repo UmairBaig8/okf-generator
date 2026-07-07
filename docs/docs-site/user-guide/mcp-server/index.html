@@ -803,6 +803,50 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#find_callees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_callees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search_by_tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        search_by_tag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_related
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_manifest_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_manifest_source
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1354,6 +1398,50 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#find_callees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_callees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search_by_tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        search_by_tag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_related
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_manifest_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_manifest_source
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1450,7 +1538,7 @@
 
 
 <h1 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h1>
-<p><code>okf mcp</code> starts a Model Context Protocol server over your bundle, exposing 7 tools that let any MCP-compatible agent (Claude Desktop, Claude Code, or any MCP client) query your codebase's knowledge graph directly — no manual <code>okf lookup</code> calls, no copy-pasting output into chat.</p>
+<p><code>okf mcp</code> starts a Model Context Protocol server over your bundle, exposing 11 tools that let any MCP-compatible agent (Claude Desktop, Claude Code, or any MCP client) query your codebase's knowledge graph directly — no manual <code>okf lookup</code> calls, no copy-pasting output into chat.</p>
 <h2 id="starting-the-server">Starting the Server<a class="headerlink" href="#starting-the-server" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle
 </code></pre></div>
@@ -1468,64 +1556,31 @@
 </code></pre></div>
 <p>Or, if you've already run <code>okf install claude</code>, this registration is handled for you automatically.</p>
 <h2 id="tools-exposed">Tools Exposed<a class="headerlink" href="#tools-exposed" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Purpose</th>
-<th>Key Args</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>lookup</code></td>
-<td>Exact-match concept search by name</td>
-<td><code>query: str</code>, <code>type?: str</code></td>
-</tr>
-<tr>
-<td><code>get_concept</code></td>
-<td>Fetch full concept card by exact title</td>
-<td><code>title: str</code></td>
-</tr>
-<tr>
-<td><code>find_callers</code></td>
-<td>Reverse call-graph lookup — who calls this function</td>
-<td><code>title: str</code></td>
-</tr>
-<tr>
-<td><code>list_by_file</code></td>
-<td>All concepts extracted from a given source file</td>
-<td><code>path: str</code></td>
-</tr>
-<tr>
-<td><code>list_dependencies</code></td>
-<td>All dependency concepts, optionally filtered by ecosystem</td>
-<td><code>ecosystem?: str</code></td>
-</tr>
-<tr>
-<td><code>bundle_info</code></td>
-<td>Bundle-level metadata: concept counts, languages, generation timestamp</td>
-<td>none</td>
-</tr>
-<tr>
-<td><code>list_by_type</code></td>
-<td>All concepts of a given type (<code>class</code>, <code>function</code>, <code>dependency</code>, etc.)</td>
-<td><code>type: str</code></td>
-</tr>
-</tbody>
-</table>
+<p>| Tool | Purpose | Key Args |
+|---|---|---|---|
+| <code>lookup</code> | Exact-match concept search by name | <code>query: str</code>, <code>type?: str</code> |
+| <code>get_concept</code> | Fetch full concept card by exact title | <code>title: str</code> |
+| <code>find_callers</code> | Reverse call-graph — who calls this function | <code>concept_id: str</code> |
+| <code>find_callees</code> | Forward call-graph — what does this function call | <code>concept_id: str</code> |
+| <code>list_by_file</code> | All concepts extracted from a given source file | <code>file: str</code> |
+| <code>list_dependencies</code> | All dependency concepts, optionally filtered by ecosystem | <code>ecosystem?: str</code> |
+| <code>bundle_info</code> | Bundle-level metadata: concept counts, languages | none |
+| <code>list_by_type</code> | All concepts of a given type | <code>type: str</code> |
+| <code>search_by_tag</code> | Filter concepts by tag prefix (<code>lang:python</code>, <code>ecosystem:pip</code>) | <code>tag: str</code> |
+| <code>get_related</code> | Related/referenced concepts for a given concept_id | <code>concept_id: str</code> |
+| <code>get_manifest_source</code> | Manifest file info for a dependency | <code>concept_id: str</code> |</p>
 <h3 id="lookup"><code>lookup</code><a class="headerlink" href="#lookup" title="Permanent link">&para;</a></h3>
 <p>Same semantics as <code>okf lookup</code> on the CLI — exact symbol match, not fuzzy/semantic.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WorldBankConnector&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;class&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <p>Returns the full concept card: signature, docstring, params, methods, calls/called-by.</p>
 <h3 id="get_concept"><code>get_concept</code><a class="headerlink" href="#get_concept" title="Permanent link">&para;</a></h3>
-<p>Use when you already know the exact fully-qualified title (e.g. from a previous <code>lookup</code> or <code>find_callers</code> result) and want the full card without re-searching.</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WorldBankConnector.fetch_series&quot;</span><span class="w"> </span><span class="p">}</span>
+<p>Use when you already know the exact <code>concept_id</code> (e.g. from a previous <code>lookup</code> or <code>find_callers</code> result) and want the full card without re-searching.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;services/WorldBankConnector&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <h3 id="find_callers"><code>find_callers</code><a class="headerlink" href="#find_callers" title="Permanent link">&para;</a></h3>
 <p>Reverse edge traversal — returns everything in the bundle that calls the given concept. Useful before refactoring a function to see blast radius.</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fetch_series&quot;</span><span class="w"> </span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;services/fetch_series&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <p>Returns entries from that concept's <code>Called By</code> section (see <a href="../bundle-format/#call-graph-edges">Bundle Format Reference</a>), plus anything flagged under <code>Possible Calls</code> if resolution was ambiguous.</p>
 <h3 id="list_by_file"><code>list_by_file</code><a class="headerlink" href="#list_by_file" title="Permanent link">&para;</a></h3>
@@ -1550,11 +1605,47 @@
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;class&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <p>Valid <code>type</code> values match the <a href="../bundle-format/#concept-types">Concept Types</a> table: <code>module</code>, <code>class</code>, <code>function</code>, <code>method</code>, <code>dependency</code>, <code>constant</code>, <code>interface</code>.</p>
+<h3 id="find_callees"><code>find_callees</code><a class="headerlink" href="#find_callees" title="Permanent link">&para;</a></h3>
+<p>Forward edge traversal — returns everything in the bundle that the given concept references (calls, imports, or links to). Opposite of <code>find_callers</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;services/fetch_series&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Useful when understanding a function's dependencies before refactoring.</p>
+<h3 id="search_by_tag"><code>search_by_tag</code><a class="headerlink" href="#search_by_tag" title="Permanent link">&para;</a></h3>
+<p>List all concepts matching a tag prefix. Tags are key:value pairs stored on each concept during generation.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ecosystem:cargo&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lang:python&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;domain:api&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Common tag prefixes: <code>lang:</code>, <code>ecosystem:</code>, <code>domain:</code>, <code>module:</code>, <code>manifest:</code>, <code>git:branch:</code>, <code>git:repo:</code>.</p>
+<h3 id="get_related"><code>get_related</code><a class="headerlink" href="#get_related" title="Permanent link">&para;</a></h3>
+<p>Returns structured related-concept links for a given concept_id. Includes both <code>related</code> (static call-graph links resolved during generation) and <code>related_semantic</code> (LLM-enriched cross-links, present only if <code>--enrich</code> was used).</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cli&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Response shape:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cli/main&quot;</span><span class="w"> </span><span class="p">}],</span>
+<span class="w">  </span><span class="nt">&quot;related_semantic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="get_manifest_source"><code>get_manifest_source</code><a class="headerlink" href="#get_manifest_source" title="Permanent link">&para;</a></h3>
+<p>For a dependency concept, returns which manifest file declared it.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_dependencies/pip/requests&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Response:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;concept_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_dependencies/pip/requests&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requests&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;manifest_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/requirements.txt&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;ecosystem&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pip&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Only works for <code>Dependency</code>-type concepts.</p>
 <h2 id="why-mcp-instead-of-just-reading-the-bundle-files">Why MCP Instead of Just Reading the Bundle Files<a class="headerlink" href="#why-mcp-instead-of-just-reading-the-bundle-files" title="Permanent link">&para;</a></h2>
 <p>An agent <em>could</em> just <code>cat</code> bundle markdown files directly — bundles are plain files after all. MCP tools exist because:</p>
 <ul>
 <li>Exact-match <code>lookup</code> avoids the agent guessing file paths.</li>
-<li><code>find_callers</code> does graph traversal the agent would otherwise have to do manually across many files.</li>
+<li><code>find_callers</code> / <code>find_callees</code> do graph traversal the agent would otherwise have to do manually across many files.</li>
 <li>Structured JSON responses are cheaper to parse than markdown scraping.</li>
 <li>Works identically whether the bundle is local or the agent connects over a remote MCP transport.</li>
 </ul>
