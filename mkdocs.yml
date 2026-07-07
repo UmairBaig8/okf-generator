@@ -3,7 +3,6 @@ site_description: High-velocity codebase parser — structured, agent-ready know
 site_url: https://umairbaig8.github.io/okf-generator/docs-site/
 site_dir: build/docs-site
 repo_url: https://github.com/UmairBaig8/okf-generator
-edit_uri: edit/main/docs/
 
 theme:
   name: material
@@ -30,7 +29,6 @@ theme:
     - search.suggest
     - search.highlight
     - search.share
-    - content.action.edit
     - content.code.copy
     - content.code.annotate
     - toc.follow
