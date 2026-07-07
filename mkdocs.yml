@@ -15,6 +15,7 @@ theme:
     - navigation.tracking
     - navigation.expand
     - search.suggest
+    - content.code.copy
 
 nav:
   - Home: index.md
