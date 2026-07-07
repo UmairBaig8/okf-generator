@@ -191,6 +191,44 @@ okf config llm.api_key=sk-...
 
 See [Configuration](../getting-started/configuration.md) for full details.
 
+## Time and cost estimates
+
+Enrichment speed depends on your LLM provider and model. These are rough estimates per 100 concepts:
+
+| Mode | Local LLM (gemma-3-4b) | Cloud API (DeepSeek) | Cloud API (GPT-4o) |
+|------|----------------------|---------------------|-------------------|
+| `base` | ~2–5 min | ~30 sec | ~1 min |
+| `deep` | ~5–10 min | ~2–3 min | ~3–5 min |
+| `security` | ~5–10 min | ~2–3 min | ~3–5 min |
+| `full` | ~10–20 min | ~5–8 min | ~8–12 min |
+
+**Cost notes:**
+- **Local LLM** — free (runs on your machine via Ollama, llama.cpp, etc.)
+- **DeepSeek** — ~$0.01–0.03 per 100 concepts (base mode)
+- **Anthropic/GPT** — ~$0.05–0.15 per 100 concepts depending on mode
+- `base` mode is cheapest (smaller prompts, no source body)
+- `deep` and `security` include source body in prompts → ~3–5x more tokens per call
+
+## FAQ
+
+**Does enrichment send my code to a third party?**
+`base` mode never reads source code — only metadata already in the bundle. `deep`, `security`, and `full` read the source body and send it to the configured LLM provider. Check your provider's data policy before using these modes on proprietary code.
+
+**Can I run enrichment without an API key?**
+`okf enrich` without a configured LLM silently skips all concepts. Core extraction (`okf generate`) never requires an API key.
+
+**What happens if I interrupt enrichment mid-way?**
+Enrichment is resumable — already-processed concepts are skipped on re-run. Use `--force` to re-process everything.
+
+**Why is my local LLM slower than cloud?**
+Local models run on your hardware. Gemma-3-4B on a MacBook processes ~5–15 concepts per minute. For production workloads, consider a cloud provider or a faster local model.
+
+**Does deep enrichment modify my source code?**
+No. Enrichment only modifies the bundle files (`.md` in the bundle directory). Your source code is never altered.
+
+**How do I know which concepts have been enriched?**
+Check the concept file — if it has `## Usage Example`, `## Side Effects`, `## Security`, or `## Complexity` sections, deep enrichment has run. The `description` field in frontmatter is also enhanced by base enrichment.
+
 ## How it works
 
 1. Enrichment runs after initial scanning

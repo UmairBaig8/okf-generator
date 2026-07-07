@@ -857,6 +857,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#time-and-cost-estimates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time and cost estimates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1363,6 +1385,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#time-and-cost-estimates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time and cost estimates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1687,6 +1731,63 @@ okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> 
 okf<span class="w"> </span>config<span class="w"> </span>llm.api_key<span class="o">=</span>sk-...
 </code></pre></div>
 <p>See <a href="../../getting-started/configuration/">Configuration</a> for full details.</p>
+<h2 id="time-and-cost-estimates">Time and cost estimates<a class="headerlink" href="#time-and-cost-estimates" title="Permanent link">&para;</a></h2>
+<p>Enrichment speed depends on your LLM provider and model. These are rough estimates per 100 concepts:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Local LLM (gemma-3-4b)</th>
+<th>Cloud API (DeepSeek)</th>
+<th>Cloud API (GPT-4o)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base</code></td>
+<td>~2–5 min</td>
+<td>~30 sec</td>
+<td>~1 min</td>
+</tr>
+<tr>
+<td><code>deep</code></td>
+<td>~5–10 min</td>
+<td>~2–3 min</td>
+<td>~3–5 min</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>~5–10 min</td>
+<td>~2–3 min</td>
+<td>~3–5 min</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>~10–20 min</td>
+<td>~5–8 min</td>
+<td>~8–12 min</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cost notes:</strong>
+- <strong>Local LLM</strong> — free (runs on your machine via Ollama, llama.cpp, etc.)
+- <strong>DeepSeek</strong> — ~$0.01–0.03 per 100 concepts (base mode)
+- <strong>Anthropic/GPT</strong> — ~$0.05–0.15 per 100 concepts depending on mode
+- <code>base</code> mode is cheapest (smaller prompts, no source body)
+- <code>deep</code> and <code>security</code> include source body in prompts → ~3–5x more tokens per call</p>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<p><strong>Does enrichment send my code to a third party?</strong>
+<code>base</code> mode never reads source code — only metadata already in the bundle. <code>deep</code>, <code>security</code>, and <code>full</code> read the source body and send it to the configured LLM provider. Check your provider's data policy before using these modes on proprietary code.</p>
+<p><strong>Can I run enrichment without an API key?</strong>
+<code>okf enrich</code> without a configured LLM silently skips all concepts. Core extraction (<code>okf generate</code>) never requires an API key.</p>
+<p><strong>What happens if I interrupt enrichment mid-way?</strong>
+Enrichment is resumable — already-processed concepts are skipped on re-run. Use <code>--force</code> to re-process everything.</p>
+<p><strong>Why is my local LLM slower than cloud?</strong>
+Local models run on your hardware. Gemma-3-4B on a MacBook processes ~5–15 concepts per minute. For production workloads, consider a cloud provider or a faster local model.</p>
+<p><strong>Does deep enrichment modify my source code?</strong>
+No. Enrichment only modifies the bundle files (<code>.md</code> in the bundle directory). Your source code is never altered.</p>
+<p><strong>How do I know which concepts have been enriched?</strong>
+Check the concept file — if it has <code>## Usage Example</code>, <code>## Side Effects</code>, <code>## Security</code>, or <code>## Complexity</code> sections, deep enrichment has run. The <code>description</code> field in frontmatter is also enhanced by base enrichment.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Enrichment runs after initial scanning</li>
