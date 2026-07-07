@@ -261,6 +261,8 @@ def main():
             rest_args = list(rest)
         mode = "base"
         source_dir = None
+        file_filter = None
+        concept_filter = None
         for i, a in enumerate(rest_args):
             if a == "--bundle" and i + 1 < len(rest_args):
                 bundle_dir = Path(rest_args[i + 1]).resolve()
@@ -268,12 +270,16 @@ def main():
                 mode = rest_args[i + 1]
             elif a == "--src" and i + 1 < len(rest_args):
                 source_dir = Path(rest_args[i + 1]).resolve()
+            elif a == "--file" and i + 1 < len(rest_args):
+                file_filter = rest_args[i + 1]
+            elif a == "--concept" and i + 1 < len(rest_args):
+                concept_filter = rest_args[i + 1]
             elif a == "--force":
                 pass  # passed through
         if mode not in {"base", "deep", "security", "full"}:
             print(f"Unknown mode: {mode!r}. Use: base, deep, security, full")
             sys.exit(1)
-        enrich_bundle(bundle_dir, mode=mode, source_dir=source_dir, force="--force" in rest_args or "--force" in rest)
+        enrich_bundle(bundle_dir, mode=mode, source_dir=source_dir, force="--force" in rest_args or "--force" in rest, file_filter=file_filter, concept_filter=concept_filter)
         sys.exit(0)
 
     elif cmd == "config":

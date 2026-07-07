@@ -1349,12 +1349,18 @@ def enrich_bundle(
     mode: str = "base",
     source_dir: Path | None = None,
     force: bool = False,
+    file_filter: str | None = None,
+    concept_filter: str | None = None,
 ):
     """Run an enrich pass against an EXISTING bundle without re-scanning.
 
     Reads source_root from bundle index.md frontmatter (stored at generate time),
     or uses the provided source_dir. Supports modes: base, deep, security, full.
     Default is 'base' (safe, no source code sent to LLM).
+
+    Args:
+        file_filter: If set, only enrich concepts from this source file path.
+        concept_filter: If set, only enrich the concept with this concept_id.
     """
     if not bundle_dir.exists():
         log.error(f"Bundle directory not found: {bundle_dir}")
@@ -1378,6 +1384,17 @@ def enrich_bundle(
 
     from okf.pairs import load_bundle as _load_md
     raw = _load_md(bundle_dir)
+
+    # Apply filters
+    if file_filter:
+        raw = [r2 for r2 in raw if file_filter in r2.get("resource", "")]
+        log.info(f"Filtered by file '{file_filter}': {len(raw)} concepts")
+    if concept_filter:
+        raw = [r2 for r2 in raw if concept_filter in r2.get("concept_id", "")]
+        log.info(f"Filtered by concept '{concept_filter}': {len(raw)} concepts")
+    if not raw:
+        log.info("No concepts match the filter.")
+        return
 
     if mode == "security":
         targets = []
