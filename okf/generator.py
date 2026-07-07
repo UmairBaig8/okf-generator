@@ -727,7 +727,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=400,
+            max_tokens=2000,
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
@@ -840,7 +840,7 @@ def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) 
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=500,
+            max_tokens=2000,
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
