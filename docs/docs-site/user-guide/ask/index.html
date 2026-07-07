@@ -771,10 +771,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#token-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
+        Token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-chat-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive chat mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controlling token usage
       
     </span>
   </a>
@@ -786,17 +808,6 @@
     <span class="md-ellipsis">
       
         Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#no-llm-use-okf-lookup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        No LLM? Use okf lookup
       
     </span>
   </a>
@@ -1205,10 +1216,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#token-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
+        Token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-chat-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive chat mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controlling token usage
       
     </span>
   </a>
@@ -1220,17 +1253,6 @@
     <span class="md-ellipsis">
       
         Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#no-llm-use-okf-lookup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        No LLM? Use okf lookup
       
     </span>
   </a>
@@ -1328,7 +1350,7 @@
 
 
 <h1 id="codebase-qa-okf-ask">Codebase Q&amp;A (<code>okf ask</code>)<a class="headerlink" href="#codebase-qa-okf-ask" title="Permanent link">&para;</a></h1>
-<p><code>okf ask</code> lets you ask natural language questions about your codebase. It searches the knowledge bundle for relevant concepts and uses your configured LLM to answer — no more grepping through files or guessing function names.</p>
+<p><code>okf ask</code> lets you ask natural language questions about your codebase. It uses your configured LLM to extract key search terms from your question, finds the most relevant concepts in the bundle, and answers based on that context.</p>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Configure an LLM provider first</span>
 okf<span class="w"> </span>config<span class="w"> </span>llm.api_key<span class="o">=</span>sk-...
@@ -1338,66 +1360,78 @@ okf<span class="w"> </span>config<span class="w"> </span>llm.model<span class="o
 <span class="c1"># Ask questions</span>
 okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how does the payment service work&quot;</span>
 okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what dependencies does this project use&quot;</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;find all API endpoints&quot;</span>
 </code></pre></div>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>Your question
     │
     ▼
 ┌─────────────────┐
-│  1. Parse query  │  Remove stop words (how, does, the, what...)
+│  1. LLM extracts │  LLM reads the question and extracts
+│     search terms │  2-5 key search terms
 └────────┬────────┘
-         │ tokens: [&quot;slugify&quot;, &quot;function&quot;]
+         │ terms: [&quot;payment&quot;, &quot;service&quot;, &quot;api&quot;]
          ▼
 ┌─────────────────┐
 │  2. Search       │  Fuzzy match against concept titles,
-│     bundle       │  descriptions, and tags via okf.lookup
+│     bundle       │  descriptions, and tags
 └────────┬────────┘
          │ top 8 relevant concepts
          ▼
 ┌─────────────────┐
-│  3. Build        │  Pack title, type, signature, description,
-│     context      │  related links into a text block
+│  3. Build        │  Pack title, type, signature, description
+│     context      │  into a text block
 └────────┬────────┘
          │ context + question → LLM
          ▼
 ┌─────────────────┐
-│  4. LLM answers  │  Uses only the provided context —
-│                  │  no internet, no training data
+│  4. LLM answers  │  Uses only the provided context
 └────────┬────────┘
-         │ natural language answer
+         │ answer + token usage
          ▼
-      You see the answer
+      Q: what does slugify do?
+      Converts text to a URL-safe slug...
+      Tokens: 635 total · 395 reasoning
 </code></pre></div>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># Architecture questions</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how does the payment service work&quot;</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what classes handle user authentication&quot;</span>
-
-<span class="c1"># Dependency questions</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what dependencies does this project use&quot;</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;which packages use serde&quot;</span>
-
-<span class="c1"># API discovery</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;find all API endpoints&quot;</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what functions are available in the utils module&quot;</span>
-
-<span class="c1"># Specific file questions</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what does slugify do&quot;</span>
-okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how is the database configured&quot;</span>
+<h2 id="token-usage">Token usage<a class="headerlink" href="#token-usage" title="Permanent link">&para;</a></h2>
+<p>Each response shows token consumption:</p>
+<div class="highlight"><pre><span></span><code>  Tokens: 635 total · 395 reasoning
 </code></pre></div>
+<p>This includes both the term extraction step and the answer generation. Reasoning tokens (for models like DeepSeek) are shown separately. In chat mode, a session total is printed when you exit.</p>
+<h2 id="interactive-chat-mode">Interactive chat mode<a class="headerlink" href="#interactive-chat-mode" title="Permanent link">&para;</a></h2>
+<p>Run <code>okf ask</code> without a question to enter interactive chat:</p>
+<div class="highlight"><pre><span></span><code>$ okf ask
+OKF Ask — interactive chat. Type your questions or /exit.
+
+&gt;&gt;&gt; what does slugify do
+
+Converts text to a URL-safe slug...
+
+Sources:
+  [1] Function: slugify — utils.py
+  Tokens: 635 total · 395 reasoning
+
+&gt;&gt;&gt; how is it different from chunk_list
+
+slugify transforms strings, chunk_list splits sequences...
+
+  Session total: 1240 total · 780 reasoning
+</code></pre></div>
+<p>Chat history is preserved across turns for follow-up questions. Type <code>/exit</code> or <code>Ctrl+C</code> to quit.</p>
+<h2 id="controlling-token-usage">Controlling token usage<a class="headerlink" href="#controlling-token-usage" title="Permanent link">&para;</a></h2>
+<p>Set <code>llm.max_tokens</code> in <code>.okfconfig</code> to cap the maximum tokens per LLM call:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Default is 2000. Lower values are cheaper and faster but may truncate responses.</p>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
 <li>A configured LLM provider (see <a href="../../getting-started/configuration/">Configuration</a>)</li>
 <li>A generated bundle (<code>okf generate</code>)</li>
 <li><code>openai</code> package installed (<code>pip install "okf-generator[llm]"</code>)</li>
 </ul>
-<h2 id="no-llm-use-okf-lookup">No LLM? Use <code>okf lookup</code><a class="headerlink" href="#no-llm-use-okf-lookup" title="Permanent link">&para;</a></h2>
-<p>If you don't have an LLM configured, <code>okf ask</code> will tell you. Use <code>okf lookup</code> instead for exact-symbol search — it's faster and works offline:</p>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span>slugify
-okf<span class="w"> </span>lookup<span class="w"> </span>--type<span class="w"> </span>Function<span class="w"> </span>--tag<span class="w"> </span>lang:rust
-okf<span class="w"> </span>lookup<span class="w"> </span>--file<span class="w"> </span>src/payment/handler.py
-</code></pre></div>
 <h2 id="how-its-different-from-okf-lookup">How it's different from <code>okf lookup</code><a class="headerlink" href="#how-its-different-from-okf-lookup" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1429,6 +1463,11 @@ okf<span class="w"> </span>lookup<span class="w"> </span>--file<span class="w"> 
 <td>Natural language answer</td>
 </tr>
 <tr>
+<td>Token usage</td>
+<td>—</td>
+<td>Displayed per answer</td>
+</tr>
+<tr>
 <td>Use case</td>
 <td>"Find this function"</td>
 <td>"How does this work?"</td>
@@ -1436,8 +1475,7 @@ okf<span class="w"> </span>lookup<span class="w"> </span>--file<span class="w"> 
 </tbody>
 </table>
 <h2 id="privacy">Privacy<a class="headerlink" href="#privacy" title="Permanent link">&para;</a></h2>
-<p><code>okf ask</code> only sends concept cards from the bundle to the LLM — these are the same markdown files that are already stored in your bundle directory. No raw source code is sent. The question is sent alongside the concept context.</p>
-<p>If you use a local LLM (Ollama, llama.cpp), nothing leaves your machine.</p>
+<p><code>okf ask</code> only sends concept cards from the bundle to the LLM — no raw source code. The question is sent alongside the concept context. With a local LLM (Ollama, llama.cpp), nothing leaves your machine.</p>
 
 
 

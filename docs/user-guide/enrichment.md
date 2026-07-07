@@ -143,6 +143,32 @@ Runs `base` + `deep` + `security`, plus a semantic related-links pass:
 
 ---
 
+## Token usage
+
+Each enrich pass logs token consumption at completion:
+
+```
+Enrich complete: 11 done, 0 errors | Tokens: 4850 total (3200 prompt + 1650 completion) | 1200 reasoning
+```
+
+This shows total prompt tokens, completion tokens, and reasoning tokens (for reasoning models like DeepSeek). All concepts processed in a single `okf enrich` call are aggregated into one report.
+
+## Controlling token usage
+
+Set `llm.max_tokens` in `.okfconfig` to cap tokens per LLM call:
+
+```json
+{
+  "llm": {
+    "max_tokens": 1000
+  }
+}
+```
+
+Default is 2000. Lower values reduce cost and speed up processing, but may truncate enriched fields. Per-mode overrides are also supported via `enrich.{mode}.max_tokens`.
+
+---
+
 ## Resumable execution
 
 All modes are resumable — already-enriched concepts are skipped on re-run:

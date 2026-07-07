@@ -826,6 +826,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controlling token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resumable-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1382,6 +1404,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-token-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controlling token usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resumable-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1729,6 +1773,21 @@ Use <span class="sb">`fetch_series_v2`</span> instead — this method is depreca
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="token-usage">Token usage<a class="headerlink" href="#token-usage" title="Permanent link">&para;</a></h2>
+<p>Each enrich pass logs token consumption at completion:</p>
+<div class="highlight"><pre><span></span><code>Enrich complete: 11 done, 0 errors | Tokens: 4850 total (3200 prompt + 1650 completion) | 1200 reasoning
+</code></pre></div>
+<p>This shows total prompt tokens, completion tokens, and reasoning tokens (for reasoning models like DeepSeek). All concepts processed in a single <code>okf enrich</code> call are aggregated into one report.</p>
+<h2 id="controlling-token-usage">Controlling token usage<a class="headerlink" href="#controlling-token-usage" title="Permanent link">&para;</a></h2>
+<p>Set <code>llm.max_tokens</code> in <code>.okfconfig</code> to cap tokens per LLM call:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Default is 2000. Lower values reduce cost and speed up processing, but may truncate enriched fields. Per-mode overrides are also supported via <code>enrich.{mode}.max_tokens</code>.</p>
 <hr />
 <h2 id="resumable-execution">Resumable execution<a class="headerlink" href="#resumable-execution" title="Permanent link">&para;</a></h2>
 <p>All modes are resumable — already-enriched concepts are skipped on re-run:</p>

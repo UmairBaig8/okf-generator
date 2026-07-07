@@ -40,6 +40,7 @@ None of these sections are required — omit anything to leave it at default.
 | `llm.model` | `"local-model"` | Model name |
 | `llm.api_key` | `""` | API key |
 | `llm.max_workers` | `2` | Parallel enrichment workers |
+`llm.max_tokens` | `2000` | Max tokens per LLM call (covers cost, shorter = cheaper) |
 
 ### `providers.*` — Named provider presets
 
