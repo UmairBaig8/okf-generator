@@ -83,6 +83,7 @@ vim okf/__init__.py         # __version__ = "x.y.z"
   ```bash
   mkdocs build
   rm -rf docs/docs-site && cp -r build/docs-site docs/docs-site
+  rm -rf docs/docs-site/docs-site  # remove nested copy from site_url path
   git add docs/docs-site && git commit -m "docs: rebuild docs-site" && git push
   ```
   The docs-site is served at `https://umairbaig8.github.io/okf-generator/docs-site/`.
