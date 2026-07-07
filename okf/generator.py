@@ -1392,6 +1392,8 @@ def enrich_bundle(
         log.error(f"Bundle directory not found: {bundle_dir}")
         return
 
+    _ENRICH_TOKENS.clear()
+
     src = source_dir or _read_source_root(bundle_dir)
     if not src:
         log.error("No source directory available. Either pass --src or generate the bundle first.")
@@ -1735,6 +1737,9 @@ def main():
         _do_enrich["base"] = True
     client = None
 
+    # Reset token accumulator
+    _ENRICH_TOKENS.clear()
+
     # Resolve clients per mode
     if enrich:
         try:
@@ -1807,7 +1812,7 @@ def main():
                     errors += 1
                     log.debug(f"Enrichment error: {e}")
 
-        log.info(f"Enrichment complete: {done} enriched, {errors} errors, {skipped_ok} skipped")
+        log.info(f"Enrichment complete: {done} enriched, {errors} errors, {skipped_ok} skipped | {_fmt_enrich_tokens()}")
 
         # --- Optional third pass: semantic related-links ---
         if _do_enrich["semantic"] and client:
