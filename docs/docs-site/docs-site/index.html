@@ -1,0 +1,2284 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="High-velocity codebase parser — structured, agent-ready knowledge across 17 languages">
+      
+      
+      
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/">
+      
+      
+      
+        <link rel="next" href="cli-reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>okf-generator</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep_purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#visual-showcase" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="okf-generator" class="md-header__button md-logo" aria-label="okf-generator" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            okf-generator
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/UmairBaig8/okf-generator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="okf-generator" class="md-nav__button md-logo" aria-label="okf-generator" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    okf-generator
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/UmairBaig8/okf-generator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#visual-showcase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Showcase
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-code-level-knowledge-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why — Code-Level Knowledge Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#used-by-built-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Used by / Built for
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bundle-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle at a Glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive Visualization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-bundle-monorepo-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-bundle monorepo support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#live-dashboard-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Dashboard (FastAPI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-ai-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For AI Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For AI Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-setup-for-any-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick setup for any agent:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token efficiency
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-local-ai-slms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Local AI &amp; SLMs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For Local AI &amp; SLMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enrichment-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-provider-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-provider routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-cicd-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For CI/CD Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language-manifest-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language &amp; Manifest Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Language &amp; Manifest Coverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-languages-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Languages (17)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifest-build-formats-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manifest / Build Formats (17)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-compares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Compares
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contributing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.md#installation" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.md#quick-start" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="languages-and-manifests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="agent-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ci-cd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding a Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="python-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#visual-showcase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Showcase
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-code-level-knowledge-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why — Code-Level Knowledge Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#used-by-built-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Used by / Built for
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bundle-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle at a Glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive Visualization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-bundle-monorepo-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-bundle monorepo support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#live-dashboard-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Dashboard (FastAPI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-ai-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For AI Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For AI Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-setup-for-any-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick setup for any agent:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token efficiency
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-local-ai-slms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Local AI &amp; SLMs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For Local AI &amp; SLMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enrichment-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-provider-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-provider routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-cicd-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For CI/CD Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language-manifest-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language &amp; Manifest Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Language &amp; Manifest Coverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-languages-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Languages (17)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifest-build-formats-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manifest / Build Formats (17)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-compares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Compares
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contributing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Home</h1>
+
+<!-- <p align="center">
+  <img src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/okf-logo-light.svg?v=2" alt="okf-generator" width="500">
+</p> -->
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/okf_banner.png?v=2" alt="okf-generator demo" width="700">
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/okf-generator/"><img src="https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI" alt="PyPI"></a>
+  <a href="https://pypi.org/project/okf-generator/"><img src="https://img.shields.io/pypi/dm/okf-generator?style=flat-square" alt="Downloads"></a>
+  <a href="https://pypi.org/project/okf-generator/"><img src="https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square" alt="Python"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/actions"><img src="https://img.shields.io/github/actions/workflow/status/UmairBaig8/okf-generator/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/commits/main"><img src="https://img.shields.io/github/last-commit/UmairBaig8/okf-generator?style=flat-square" alt="Last commit"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/blob/main/SKILL.md"><img src="https://img.shields.io/badge/Claude-Skill-orange?style=flat-square&logo=anthropic" alt="Claude Skill"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/blob/main/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"></a>
+  <a href="https://umairbaig8.github.io/okf-generator/"><img src="https://img.shields.io/badge/🌐-Site-7c3aed?style=flat-square" alt="Site"></a>
+</p>
+
+<p align="center">
+  <b>Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</b>
+</p>
+
+<p align="center">
+  <a href="#installation">Installation</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#how-it-works">Architecture</a> ·
+  <a href="#for-ai-agents">Agents</a> ·
+  <a href="#for-local-ai--slms">Local AI</a> ·
+  <a href="#for-cicd-pipelines">CI/CD</a> ·
+  <a href="#language--manifest-coverage">Languages</a> ·
+  <a href="#faq">FAQ</a>
+</p>
+
+<p><br></p>
+<h2 id="visual-showcase">Visual Showcase<a class="headerlink" href="#visual-showcase" title="Permanent link">&para;</a></h2>
+<p><img alt="okf-generator demo" src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/demo.gif" /></p>
+<p><code>okf generate</code> scans any repo using tree-sitter AST parsers, resolves cross-references across 17 languages, and outputs a structured knowledge graph. Explore it interactively or consume it programmatically — no LLM required.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate a knowledge bundle from any codebase</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle
+
+<span class="c1"># Explore as an interactive HTML dashboard</span>
+okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle
+
+<span class="c1"># Browse via local HTTP</span>
+okf<span class="w"> </span>serve<span class="w"> </span>./okf_bundle<span class="w"> </span>--open
+
+<span class="c1"># Look up any concept in milliseconds</span>
+okf<span class="w"> </span>lookup<span class="w"> </span>WorldBankConnector
+</code></pre></div>
+<hr />
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install</span>
+pip<span class="w"> </span>install<span class="w"> </span>okf-generator
+
+<span class="c1"># Generate a bundle from your project</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle
+
+<span class="c1"># Look up a concept (zero LLM, instant)</span>
+okf<span class="w"> </span>lookup<span class="w"> </span>WorldBankConnector
+
+<span class="c1"># List all dependencies</span>
+okf<span class="w"> </span>lookup<span class="w"> </span>--deps
+
+<span class="c1"># Interactive bundle setup wizard</span>
+okf<span class="w"> </span>init
+
+<span class="c1"># Visualize as interactive HTML</span>
+okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle
+</code></pre></div>
+<hr />
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># One-liner (macOS / Linux)</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+
+<span class="c1"># Or via pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>okf-generator<span class="w">                        </span><span class="c1"># core (offline extraction)</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;okf-generator[llm]&quot;</span><span class="w">                  </span><span class="c1"># with LLM enrichment + training pairs</span>
+</code></pre></div>
+<hr />
+<h2 id="why-code-level-knowledge-graphs">Why — Code-Level Knowledge Graphs<a class="headerlink" href="#why-code-level-knowledge-graphs" title="Permanent link">&para;</a></h2>
+<p>AI coding agents waste enormous amounts of context re-reading entire files to find one function signature or dependency version. Cloud models with 200K token windows mask this cost; local SLMs (Gemma, Llama, Phi) on a MacBook run out of memory immediately.</p>
+<p><code>okf-generator</code> solves this by converting source code into a <strong>deterministic, cross-referenced knowledge graph</strong>. Using tree-sitter AST parsers across 17 languages, every function, class, module, and dependency becomes a structured node with typed edges (calls, called-by, imports, depends-on).</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Before touching WorldBankConnector, get its full graph context</span>
+okf<span class="w"> </span>lookup<span class="w"> </span>WorldBankConnector
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>CLASS: WorldBankConnector
+Source      : StockAI/RnD/python/connectors/economic_data.py  line 51
+Description : Fetches World Bank development indicators via wbdata API.
+Methods     : get_indicator, search
+Signature   : class WorldBankConnector
+Calls       : [wbdata.get_indicator, pandas.DataFrame]
+Called-by   : [DataPipeline.fetch_economic]
+</code></pre></div>
+<p>No re-reading the file. No guessing. No LLM call required.</p>
+<p><img alt="Before and after comparison" src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/before_after.svg" /></p>
+<hr />
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<p><img alt="okf-generator pipeline" src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/workflow.png" /></p>
+<p><strong>1. Scan</strong> — tree-sitter AST parsers extract every function, class, method, and module with signature, params, docstring, and return types across 17 languages.</p>
+<p><strong>2. Link</strong> — the cross-reference linker resolves two edge types:
+- Imports → Dependencies — module imports matched against the dependency index.
+- Calls → Callees — function call sites resolved to concept IDs.</p>
+<p><strong>3. Write</strong> — outputs an OKF v0.1 bundle: structured markdown files (one per concept) mirroring the source tree.</p>
+<p><strong>4. Consume</strong> — 8 commands: <code>lookup</code>, <code>pairs</code>, <code>diff</code>, <code>visualize</code>, <code>mcp</code>, <code>serve</code>, <code>init</code>, <code>summarize</code>.</p>
+<p><strong>5. Enrich (optional)</strong> — 4 modes to enhance description, docstring, security, and cross-links. Runs at generate time or standalone against an existing bundle.</p>
+<p>Extraction is fully deterministic and offline-capable. Enrichment is optional, resumable, and works with any AI provider.</p>
+<h3 id="used-by-built-for">Used by / Built for<a class="headerlink" href="#used-by-built-for" title="Permanent link">&para;</a></h3>
+<p><code>okf-generator</code> was originally built to index a large, multi-domain codebase (<code>StockAI</code>/<code>TrainLLMs</code>) spanning Python data connectors, ML pipelines, and SQL schemas — the kind of project where giving an agent the whole repo as context is both slow and unaffordable in tokens. If you are working in a sprawling codebase and tired of re-explaining your own code to your AI agent every session, this is the tool that problem was built to solve.</p>
+<hr />
+<h2 id="bundle-at-a-glance">Bundle at a Glance<a class="headerlink" href="#bundle-at-a-glance" title="Permanent link">&para;</a></h2>
+<p>The output mirrors your source tree — dependencies get their own organized namespace:</p>
+<div class="highlight"><pre><span></span><code>okf_bundle/
+├── SUMMARY.md                        ← bird&#39;s-eye view for AI agents
+├── index.md                          ← root navigation
+├── log.md                            ← generation history
+├── _dependencies/                    ← all dependency concepts
+│   ├── index.md                      ← lists ecosystems: pip, npm, cargo, ...
+│   ├── pip/
+│   │   ├── index.md
+│   │   ├── requests.md               ← Dependency concept
+│   │   └── flask.md
+│   └── npm/
+│       ├── index.md
+│       ├── express.md
+│       └── react.md
+└── StockAI/
+    └── RnD/
+        └── python/
+            └── connectors/
+                ├── index.md          ← lists all concepts in this folder
+                ├── economic_data.md  ← Module concept
+                └── economic_data/
+                    ├── WorldBankConnector.md   ← Class
+                    ├── get_indicator.md        ← Function
+                    └── search.md               ← Function
+</code></pre></div>
+<p>Each file is OKF v0.1 conformant with YAML frontmatter:</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Class</span>
+<span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WorldBankConnector</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Fetches World Bank development indicators via wbdata API.</span>
+<span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">StockAI/RnD/python/connectors/economic_data.py</span>
+<span class="nt">tags</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lang:python</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type:Class</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">module:StockAI</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">domain:RnD</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git:branch:main</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git:repo:TrainLLMs</span>
+<span class="nt">timestamp</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2026-05-23T09:01:21Z&#39;</span>
+<span class="nn">---</span>
+</code></pre></div>
+<hr />
+<h2 id="interactive-visualization">Interactive Visualization<a class="headerlink" href="#interactive-visualization" title="Permanent link">&para;</a></h2>
+<p><code>okf visualize</code> generates a self-contained HTML dashboard — no server, no installation, works offline:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle<span class="w"> </span>./viz.html
+<span class="c1"># Open viz.html in any browser</span>
+</code></pre></div>
+<p>The visualization uses D3.js with:
+- <strong>Force-directed graph</strong> — color-coded nodes by concept type (Class, Function, Module, Dependency)
+- <strong>Relationship edges</strong> — calls, called-by, imports, related
+- <strong>Search/filter</strong> — by name, type, ecosystem
+- <strong>Tooltip on hover</strong> — description + resource location
+- <strong>Pan/zoom</strong> — navigate large graphs
+- <strong>Dark/light theme</strong> — toggle at runtime</p>
+<h3 id="multi-bundle-monorepo-support">Multi-bundle monorepo support<a class="headerlink" href="#multi-bundle-monorepo-support" title="Permanent link">&para;</a></h3>
+<p>If your bundle contains sub-bundles (detected by <code>SUMMARY.md</code> in subdirectories), the viz adds a <strong>bundle selector</strong> dropdown in the topbar to filter by project. Each sub-bundle's dependencies and source files are scoped under its own namespace.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Combined viz with bundle switcher (cross-bundle edges preserved)</span>
+okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle
+
+<span class="c1"># Standalone viz per sub-bundle (smaller, faster)</span>
+okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle/AgentBox<span class="w"> </span>agentbox.html
+okf<span class="w"> </span>visualize<span class="w"> </span>./okf_bundle/StockAI<span class="w"> </span>stockai.html
+</code></pre></div>
+<p>The bundled viz is ideal for exploring relationships across projects; per-bundle viz files are better for focused navigation on a single project.</p>
+<hr />
+<h2 id="live-dashboard-fastapi">Live Dashboard (FastAPI)<a class="headerlink" href="#live-dashboard-fastapi" title="Permanent link">&para;</a></h2>
+<p><code>okf dashboard</code> launches an interactive web UI — live search, detail inspection, and concept graph in your browser:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>dashboard<span class="w"> </span>./okf_bundle<span class="w"> </span>--open
+</code></pre></div>
+<p>Opens a 3-panel layout at <code>http://127.0.0.1:8700</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sidebar tree</strong></td>
+<td>Grouped by type, collapsible groups, search + type/language filters</td>
+</tr>
+<tr>
+<td><strong>Detail panel</strong></td>
+<td>Structured metadata grid (type, language, signature), expandable sections for params/returns/docstring, linked concept navigation (related, calls, called-by, used-by)</td>
+</tr>
+<tr>
+<td><strong>Global Graph</strong></td>
+<td>Force-directed vis-network of the top 120 connected concepts — color-coded by type, click-to-navigate, zoom/pan, legend bar</td>
+</tr>
+<tr>
+<td><strong>Subgraph</strong></td>
+<td>Per-concept connection graph showing immediate neighbors</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theme switch</strong> — light/dark toggle persisted to localStorage. All graphs re-render on theme change.</p>
+<p><strong>Keyboard shortcuts</strong> — <code>Esc</code> close detail, <code>/</code> focus search, Enter to navigate.</p>
+<hr />
+<h2 id="for-ai-agents">For AI Agents<a class="headerlink" href="#for-ai-agents" title="Permanent link">&para;</a></h2>
+<p>Every concept in the bundle is deterministic, typed, and cross-referenced — agents get surgical precision without burning context:</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manifest coverage</td>
+<td>19 formats incl. <strong>Dockerfile</strong>, <strong>Containerfile</strong>, <strong>docker-compose.yml</strong></td>
+</tr>
+<tr>
+<td>Smart config</td>
+<td><code>okf config</code> / <code>.okfconfig</code> — global + per-section settings, no env vars</td>
+</tr>
+<tr>
+<td>Quick setup wizard</td>
+<td><code>okf init</code> — interactive prompts for source, bundle, LLM enrichment</td>
+</tr>
+<tr>
+<td>Pre-commit hook</td>
+<td>Auto-regenerates bundle on commit when source files change</td>
+</tr>
+<tr>
+<td>Docker image</td>
+<td><code>ghcr.io/umairbaig8/okf-generator/okf-generator</code> — CI-ready</td>
+</tr>
+<tr>
+<td>Zero-LLM lookups</td>
+<td><code>okf lookup &lt;Name&gt;</code> returns full concept detail in milliseconds</td>
+</tr>
+<tr>
+<td>Fuzzy / camelCase search</td>
+<td><code>okf lookup repo</code> finds <code>UserRepository</code>; <code>okf lookup ur</code> matches acronyms</td>
+</tr>
+<tr>
+<td>Type filters</td>
+<td><code>okf lookup --type Function | Class | Dependency</code></td>
+</tr>
+<tr>
+<td>Ecosystem queries</td>
+<td><code>okf lookup --tag ecosystem:pip</code></td>
+</tr>
+<tr>
+<td>Source file queries</td>
+<td><code>okf lookup --file path/to/file.py</code></td>
+</tr>
+<tr>
+<td>JSON output</td>
+<td><code>okf lookup --json &lt;Name&gt;</code> for programmatic agent use</td>
+</tr>
+<tr>
+<td>MCP protocol</td>
+<td><code>okf mcp ./okf_bundle</code> exposes 7 tools: <code>lookup</code>, <code>get_concept</code>, <code>find_callers</code>, <code>list_by_file</code>, <code>list_dependencies</code>, <code>bundle_info</code>, <code>list_by_type</code></td>
+</tr>
+<tr>
+<td>Summary map</td>
+<td><code>cat ./okf_bundle/SUMMARY.md</code> primes full context</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quick-setup-for-any-agent">Quick setup for any agent:<a class="headerlink" href="#quick-setup-for-any-agent" title="Permanent link">&para;</a></h3>
+<p>Add to your agent instructions or custom rules:</p>
+<div class="highlight"><pre><span></span><code>This project has an OKF knowledge bundle at ./okf_bundle/.
+<span class="k">-</span><span class="w"> </span>Use <span class="sb">`okf lookup &lt;Name&gt;`</span> for full concept context.
+<span class="k">-</span><span class="w"> </span>Use <span class="sb">`okf lookup --type &lt;Type&gt;`</span> to filter by type.
+<span class="k">-</span><span class="w"> </span>Read <span class="sb">`SUMMARY.md`</span> for the full knowledge map.
+</code></pre></div>
+<h3 id="token-efficiency">Token efficiency<a class="headerlink" href="#token-efficiency" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Optimization</th>
+<th>Agent impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incremental access — one concept, not whole files</td>
+<td>Saves 80-95% token cost vs reading source</td>
+</tr>
+<tr>
+<td>Structured metadata in YAML frontmatter</td>
+<td>Agent extracts info without parsing code</td>
+</tr>
+<tr>
+<td>Cross-reference edges (calls/called-by)</td>
+<td>Multi-hop reasoning without grep</td>
+</tr>
+<tr>
+<td>Deterministic types</td>
+<td>Agent filters by type precisely</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Full agent integration guide — OpenCode commands, Cursor rules, Copilot instructions, MCP setup: <strong><a href="docs/agent-integration.md">docs/agent-integration.md</a></strong></p>
+<p>Automated agent setup — <code>okf install claude</code>, <code>okf install opencode</code>, <code>okf install cursor</code>, etc: see <a href="#agent-installation">Agent Installation</a>.</p>
+</blockquote>
+<hr />
+<h2 id="for-local-ai-slms">For Local AI &amp; SLMs<a class="headerlink" href="#for-local-ai-slms" title="Permanent link">&para;</a></h2>
+<p>Cloud models have massive context windows. Local SLMs (Gemma 3 4B, Llama 3.2, Phi-3) running on a MacBook Pro or Air do not — they run out of memory if you try to feed an entire repository.</p>
+<p><code>okf lookup</code> solves this with <strong>exact-symbol retrieval</strong>: the agent sends a 50-token query and gets back a 200-token concept card. No embeddings, no vector DB, no RAG pipeline. This makes local coding assistants viable for enterprise-scale codebases.</p>
+<h3 id="enrichment-modes">Enrichment modes<a class="headerlink" href="#enrichment-modes" title="Permanent link">&para;</a></h3>
+<p>Choose how deep the LLM goes — all modes are resumable (interrupt and rerun freely, already-enriched concepts are skipped):</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it does</th>
+<th style="text-align: center;">Needs source body?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base</code></td>
+<td>Improves descriptions + docstrings (Google-style)</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td><code>deep</code></td>
+<td>Adds usage examples, side effects, security notes, complexity estimates</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>Audits existing bundle for visible risk patterns only</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>All of the above + semantic related-links</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enrich at generate time</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle<span class="w"> </span>--enrich<span class="w"> </span>deep
+
+<span class="c1"># Or enrich an existing bundle (no re-scan needed)</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>./okf_bundle<span class="w"> </span>--mode<span class="w"> </span>full
+</code></pre></div>
+<h3 id="multi-provider-routing">Multi-provider routing<a class="headerlink" href="#multi-provider-routing" title="Permanent link">&para;</a></h3>
+<p>Each enrich mode can use a different provider. Route cheap description work to local llama.cpp and security audits to a stronger cloud model — all from one config file:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;llm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;base_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/v1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;enrich&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;deep&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-chat&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Built-in provider presets: <code>local</code>, <code>openai</code>, <code>anthropic</code>, <code>deepseek</code>, <code>gemini</code>, <code>glm</code>, <code>ollama</code>, <code>lmstudio</code>, <code>openrouter</code>, <code>dashscope</code>, <code>minimax</code>.</p>
+<p>Enrichment works with any OpenAI-compatible endpoint — Ollama, llama.cpp, vLLM, or cloud APIs (Claude, GPT, DeepSeek, GLM).</p>
+<hr />
+<h2 id="for-cicd-pipelines">For CI/CD Pipelines<a class="headerlink" href="#for-cicd-pipelines" title="Permanent link">&para;</a></h2>
+<p>Deterministic + fully offline = ideal for automated pipelines:</p>
+<p>A pre-built <strong>GitHub Action</strong> (<code>.github/workflows/okf-bundle.yml</code>) auto-generates the bundle on every push/PR to <code>main</code>, caches previous bundles per branch, diffs with <code>--impact</code>, and posts a PR comment showing which dependency changes affect which code:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/okf-bundle.yml  (ships with the package)</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OKF Bundle</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w">     </span><span class="p p-Indicator">{</span><span class="nt"> branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">generate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> contents</span><span class="p">:</span><span class="w"> </span><span class="nv">read</span><span class="p p-Indicator">,</span><span class="nt"> pull-requests</span><span class="p">:</span><span class="w"> </span><span class="nv">write</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5          { python-version</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;3.12&quot;</span><span class="w"> </span><span class="err">}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install okf-generator</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf generate . okf_bundle</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache/restore@v4          { ... }</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf diff .okf_bundle_prev okf_bundle --impact</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v7</span><span class="w">          </span><span class="c1"># post/update PR comment</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4         { name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf-bundle, path</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf_bundle/ }</span>
+</code></pre></div>
+<p>Push bundles to S3/GCS/Azure for centralized multi-tenant access. Serve them as static websites for zero-infrastructure browsing.</p>
+<blockquote>
+<p>Full CI/CD guide — GitLab, pre-commit hooks, S3 static hosting, monorepo strategies: <strong><a href="docs/ci-cd.md">docs/ci-cd.md</a></strong></p>
+</blockquote>
+<hr />
+<h2 id="language-manifest-coverage">Language &amp; Manifest Coverage<a class="headerlink" href="#language-manifest-coverage" title="Permanent link">&para;</a></h2>
+<h3 id="code-languages-17">Code Languages (17)<a class="headerlink" href="#code-languages-17" title="Permanent link">&para;</a></h3>
+<p>Each language lives in its own file under <code>okf/parsers/</code>. Adding a new language requires one file + one registry entry — no changes to the core generator.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>File</th>
+<th>Parser</th>
+<th>Extracts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>parsers/python.py</code></td>
+<td>stdlib <code>ast</code></td>
+<td>Functions, classes, methods, params, return types, docstrings, decorators, inheritance, type params</td>
+</tr>
+<tr>
+<td>JavaScript / TypeScript</td>
+<td><code>parsers/javascript.py</code></td>
+<td>tree-sitter</td>
+<td>Functions, arrow fns, methods, classes, interfaces, type aliases, enums, JSDoc, generics, heritage, visibility</td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>parsers/go.py</code></td>
+<td>tree-sitter</td>
+<td>Funcs, methods, structs, interfaces, GoDoc, type params (Go 1.18+)</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>parsers/java.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, interfaces, enums, methods, constructors, Javadoc, generics, annotations, visibility, inheritance, fields</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><code>parsers/rust.py</code></td>
+<td>tree-sitter</td>
+<td>Fns, structs, enums, traits, impl blocks, <code>///</code>/<code>//!</code>, generics, <code>#[derive]</code>, visibility</td>
+</tr>
+<tr>
+<td>Swift</td>
+<td><code>parsers/swift.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, structs, enums, protocols (→Interface), generics, methods, init, doc comments</td>
+</tr>
+<tr>
+<td>Kotlin</td>
+<td><code>parsers/kotlin.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, data classes, objects, enums, interfaces, generics, constructor params, visibility</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>parsers/php.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, interfaces, traits, enums, functions, methods, visibility, typed params, return types, PHPDoc</td>
+</tr>
+<tr>
+<td>Dart</td>
+<td><code>parsers/dart.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, mixins, enums, functions, constructors, methods</td>
+</tr>
+<tr>
+<td>Scala</td>
+<td><code>parsers/scala.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, objects, traits (→Interface), enums, functions, visibility, typed params</td>
+</tr>
+<tr>
+<td>Julia</td>
+<td><code>parsers/julia.py</code></td>
+<td>tree-sitter</td>
+<td>Functions, structs (→Class), abstract types (→Interface), constants, macros</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><code>parsers/ruby.py</code></td>
+<td>tree-sitter</td>
+<td>Defs, classes, modules, <code>#</code>/YARD doc comments, superclass</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>parsers/c.py</code></td>
+<td>tree-sitter</td>
+<td>Functions, structs, enums, typedefs, <code>/**</code> doc comments</td>
+</tr>
+<tr>
+<td>C++</td>
+<td><code>parsers/cpp.py</code></td>
+<td>tree-sitter</td>
+<td>Functions, classes, methods, templates, base classes, visibility</td>
+</tr>
+<tr>
+<td>C#</td>
+<td><code>parsers/csharp.py</code></td>
+<td>tree-sitter</td>
+<td>Classes, methods, generics, attributes, base types, visibility, fields</td>
+</tr>
+<tr>
+<td>SQL</td>
+<td><code>parsers/sql.py</code></td>
+<td>tree-sitter</td>
+<td>Tables (columns, PK, FK, constraints), views, functions, indexes, triggers</td>
+</tr>
+<tr>
+<td><em>new</em></td>
+<td><code>parsers/your_lang.py</code></td>
+<td>tree-sitter</td>
+<td>You define it — see <a href="docs/development.md">development guide</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="manifest-build-formats-17">Manifest / Build Formats (17)<a class="headerlink" href="#manifest-build-formats-17" title="Permanent link">&para;</a></h3>
+<p><code>requirements.txt</code> · <code>pyproject.toml</code> · <code>package.json</code> · <code>Cargo.toml</code> · <code>Cargo.lock</code> · <code>yarn.lock</code> · <code>pnpm-lock.yaml</code> · <code>go.mod</code> · <code>go.sum</code> · <code>poetry.lock</code> · <code>composer.json</code> · <code>pom.xml</code> · <code>Gemfile</code> · <code>build.gradle</code> / <code>.kts</code> · <code>Package.swift</code> · <code>project.clj</code> · <code>mix.exs</code> · <code>Dockerfile</code> / <code>Containerfile</code> · <code>docker-compose.yml</code></p>
+<blockquote>
+<p>Full table with parser details + architectural query examples: <strong><a href="docs/languages-and-manifests.md">docs/languages-and-manifests.md</a></strong></p>
+</blockquote>
+<p><strong>Architectural query example</strong> — find every microservice depending on a deprecated Rust crate:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span>--type<span class="w"> </span>Dependency<span class="w"> </span>--tag<span class="w"> </span>ecosystem:cargo<span class="w"> </span>--compact
+okf<span class="w"> </span>lookup<span class="w"> </span>--type<span class="w"> </span>Dependency<span class="w"> </span>openssl
+</code></pre></div>
+<p>Same logic works for pip, npm, go, maven — any of the 17 supported formats. Pin a vulnerable package version across every service in seconds.</p>
+<hr />
+<h2 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>--help<span class="w">              </span>Show<span class="w"> </span>available<span class="w"> </span>commands
+okf<span class="w"> </span>&lt;command&gt;<span class="w"> </span>--help<span class="w">    </span>Show<span class="w"> </span>options<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span><span class="nb">command</span>
+okf<span class="w"> </span>--version<span class="w">           </span>Show<span class="w"> </span>version
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>generate</code></td>
+<td><code>okf generate &lt;source_dir&gt; [output_dir] [--enrich [mode]]</code></td>
+</tr>
+<tr>
+<td><code>enrich</code></td>
+<td><code>okf enrich &lt;bundle_dir&gt; [--mode mode] [--src path]</code></td>
+</tr>
+<tr>
+<td><code>lookup</code></td>
+<td><code>okf lookup &lt;query&gt;</code></td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td><code>okf diff &lt;old_bundle&gt; &lt;new_bundle&gt;</code></td>
+</tr>
+<tr>
+<td><code>pairs</code></td>
+<td><code>okf pairs &lt;bundle_dir&gt; [output_file]</code></td>
+</tr>
+<tr>
+<td><code>summarize</code></td>
+<td><code>okf summarize &lt;bundle_dir&gt;</code></td>
+</tr>
+<tr>
+<td><code>install</code></td>
+<td><code>okf install [claude \| opencode \| copilot \| cursor \| windsurf \| cline]</code></td>
+</tr>
+<tr>
+<td><code>init</code></td>
+<td><code>okf init [dir]</code></td>
+</tr>
+<tr>
+<td><code>visualize</code></td>
+<td><code>okf visualize &lt;bundle_dir&gt; [output.html]</code></td>
+</tr>
+<tr>
+<td><code>mcp</code></td>
+<td><code>okf mcp &lt;bundle_dir&gt;</code></td>
+</tr>
+<tr>
+<td><code>serve</code></td>
+<td><code>okf serve [dir] [--port] [--open]</code></td>
+</tr>
+<tr>
+<td><code>dashboard</code></td>
+<td><code>okf dashboard &lt;bundle_dir&gt; [--port] [--open]</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Full options, environment variables, and examples: <strong><a href="docs/cli-reference.md">docs/cli-reference.md</a></strong></p>
+</blockquote>
+<hr />
+<h2 id="training-data">Training Data<a class="headerlink" href="#training-data" title="Permanent link">&para;</a></h2>
+<p>Convert your OKF bundle into JSONL training pairs for fine-tuning:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 5 pair types: codegen, qa, doc, summarize, crosslink</span>
+okf<span class="w"> </span>pairs<span class="w"> </span>./okf_bundle<span class="w"> </span>./train.jsonl
+</code></pre></div>
+<p>Each pair is in chat format compatible with most fine-tuning pipelines.</p>
+<ul>
+<li><strong>Static pairs</strong> (no LLM): <code>SKIP_SYNTH=1 okf pairs ...</code></li>
+<li><strong>LLM-synthesized pairs</strong>: set <code>SYNTH_MODEL</code>, <code>QA_PER_CONCEPT</code>, <code>PAIR_TYPES</code></li>
+</ul>
+<hr />
+<h2 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">okf.generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">scan_codebase</span><span class="p">,</span> <span class="n">write_bundle</span><span class="p">,</span> <span class="n">write_summary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">okf.lookup</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_bundle</span><span class="p">,</span> <span class="n">search</span>
+
+<span class="n">concepts</span> <span class="o">=</span> <span class="n">scan_codebase</span><span class="p">(</span><span class="s2">&quot;./my_project&quot;</span><span class="p">)</span>
+<span class="n">write_bundle</span><span class="p">(</span><span class="n">concepts</span><span class="p">,</span> <span class="s2">&quot;./okf_bundle&quot;</span><span class="p">,</span> <span class="s2">&quot;my_project&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;initial generation&quot;</span><span class="p">])</span>
+<span class="n">write_summary</span><span class="p">(</span><span class="s2">&quot;my_project&quot;</span><span class="p">,</span> <span class="n">concepts</span><span class="p">,</span> <span class="s2">&quot;./okf_bundle&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="n">bundle</span> <span class="o">=</span> <span class="n">load_bundle</span><span class="p">(</span><span class="s2">&quot;./okf_bundle&quot;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">bundle</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;WorldBankConnector&quot;</span><span class="p">])</span>
+</code></pre></div>
+<blockquote>
+<p>Full API reference with <code>Concept</code> dataclass: <strong><a href="docs/python-api.md">docs/python-api.md</a></strong></p>
+</blockquote>
+<hr />
+<h2 id="agent-installation">Agent Installation<a class="headerlink" href="#agent-installation" title="Permanent link">&para;</a></h2>
+<p>Install integration for any AI agent in one command:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install for all detected agents</span>
+okf<span class="w"> </span>install<span class="w"> </span>all
+
+<span class="c1"># Or pick specific agents</span>
+okf<span class="w"> </span>install<span class="w"> </span>claude<span class="w">      </span><span class="c1"># Claude Code skill</span>
+okf<span class="w"> </span>install<span class="w"> </span>opencode<span class="w">    </span><span class="c1"># OpenCode /lookup command</span>
+okf<span class="w"> </span>install<span class="w"> </span>copilot<span class="w">     </span><span class="c1"># GitHub Copilot instructions</span>
+okf<span class="w"> </span>install<span class="w"> </span>cursor<span class="w">      </span><span class="c1"># Cursor rules</span>
+okf<span class="w"> </span>install<span class="w"> </span>windsurf<span class="w">    </span><span class="c1"># Windsurf rules</span>
+okf<span class="w"> </span>install<span class="w"> </span>cline<span class="w">       </span><span class="c1"># Cline rules</span>
+</code></pre></div>
+<p><strong>What each install does:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Files created</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Code</td>
+<td><code>~/.config/opencode/skills/okf-generator/SKILL.md</code></td>
+<td>Auto-triggers on phrases like "index my codebase"</td>
+</tr>
+<tr>
+<td>OpenCode</td>
+<td><code>.opencode/commands/lookup.md</code></td>
+<td><code>/lookup NAME=&lt;ConceptName&gt;</code></td>
+</tr>
+<tr>
+<td>Copilot</td>
+<td><code>.github/copilot-instructions.md</code></td>
+<td>Auto-loaded in VS Code</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td><code>.cursorrules</code></td>
+<td>Auto-loaded by Cursor</td>
+</tr>
+<tr>
+<td>Windsurf</td>
+<td><code>.windsurfrules</code></td>
+<td>Auto-loaded by Windsurf</td>
+</tr>
+<tr>
+<td>Cline</td>
+<td><code>.clinerules</code></td>
+<td>Auto-loaded by Cline</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="how-it-compares">How It Compares<a class="headerlink" href="#how-it-compares" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>okf-generator</strong></th>
+<th>Other OKF producers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language coverage</td>
+<td>17 languages, modular parsers (<code>okf/parsers/*.py</code>) — add one in minutes</td>
+<td>Usually 1 language or doc-only</td>
+</tr>
+<tr>
+<td>Cross-reference linking</td>
+<td>Imports → dependencies, function calls → caller/callee across all languages</td>
+<td>Not typically supported</td>
+</tr>
+<tr>
+<td>Dependency/manifest parsing</td>
+<td>17 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, +7)</td>
+<td>Not typically supported</td>
+</tr>
+<tr>
+<td>Extraction</td>
+<td>Zero-LLM, deterministic, offline</td>
+<td>Often LLM-required for every concept</td>
+</tr>
+<tr>
+<td>Enrichment modes</td>
+<td>4 tiers (<code>base</code>, <code>deep</code>, <code>security</code>, <code>full</code>) — per-model provider routing</td>
+<td>Usually 1 mode, 1 provider</td>
+</tr>
+<tr>
+<td>Multi-provider routing</td>
+<td>Route each enrich mode to a different provider (local LLM for descriptions, cloud for security)</td>
+<td>Often locked to one vendor</td>
+</tr>
+<tr>
+<td>Post-hoc enrichment</td>
+<td><code>okf enrich</code> runs against existing bundle — no re-scan. Source origin auto-loaded from bundle metadata</td>
+<td>Not supported</td>
+</tr>
+<tr>
+<td>Training data export</td>
+<td>Built-in JSONL pair generator (5 pair types)</td>
+<td>Not typically included</td>
+</tr>
+<tr>
+<td>Agent compatibility</td>
+<td>Any agent that can run a CLI (Claude Code, Cursor, Windsurf, Copilot, OpenCode, Cline)</td>
+<td>Often single-agent focused</td>
+</tr>
+<tr>
+<td>CI/CD integration</td>
+<td>Built-in GitHub Action (<code>okf-bundle.yml</code>) — bundle generation + impact diff + PR comments</td>
+<td>Not typically included</td>
+</tr>
+</tbody>
+</table>
+<p>If you are choosing between OKF producers: pick <code>okf-generator</code> when you want broad language + dependency coverage with zero mandatory LLM cost, and you want the bundle to double as a fine-tuning data source.</p>
+<hr />
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<p><strong>Does this require an API key or internet connection?</strong>
+No. Core extraction (<code>okf generate</code>) is fully offline and deterministic — no LLM call is made unless you explicitly enable <code>OKF_ENRICH=1</code>.</p>
+<p><strong>How is this different from RAG / vector search?</strong>
+RAG retrieves chunks by semantic similarity, which is approximate and can miss exact symbols. <code>okf lookup</code> is exact: it indexes real functions, classes, modules, and dependencies by name and resolves to the precise concept, with zero embedding/vector infrastructure required.</p>
+<p><strong>What happens if my language is not supported?</strong>
+Unsupported files are skipped, not dropped silently — <code>log.md</code> records what was scanned. Adding a new language is a self-contained tree-sitter grammar mapping: create <code>okf/parsers/your_lang.py</code> and add one line to the extension registry. See <a href="docs/development.md">docs/development.md</a> for the step-by-step guide.</p>
+<p><strong>Does this work on monorepos / very large codebases?</strong>
+Yes — the bundle mirrors your source tree, so scanning is linear in file count. For very large repos, scope <code>okf generate</code> to a subdirectory if you only need part of the codebase indexed.</p>
+<p><strong>Can I use this without any LLM at all, ever?</strong>
+Yes. <code>okf generate</code> + <code>okf lookup</code> together form a complete, zero-LLM workflow. LLM enrichment and <code>okf pairs</code> synthesis are optional layers on top.</p>
+<p><strong>Is the bundle safe to commit to git?</strong>
+Yes, and that is the intended workflow — bundles are plain markdown, diff cleanly, and version alongside the code they describe.</p>
+<hr />
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/UmairBaig8/okf-generator
+<span class="nb">cd</span><span class="w"> </span>okf-generator
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+pytest<span class="w"> </span>tests/
+</code></pre></div>
+<p><strong>Good first issues:</strong> adding a new language parser, improving fuzzy search scoring, adding incremental/diff-based regeneration.</p>
+<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for full guidelines.</p>
+<hr />
+<h2 id="acknowledgments">Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permanent link">&para;</a></h2>
+<p><code>okf-generator</code> is an independent, third-party implementation of the <a href="https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing">Open Knowledge Format (OKF) v0.1</a>, a knowledge-representation spec introduced by Google Cloud in June 2026. See the <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">full v0.1 specification</a> for the conformance rules this generator targets.</p>
+<p>This project is not built, maintained, or endorsed by Google.</p>
+<hr />
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
+<p><a href="LICENSE">MIT</a> — Copyright © 2026 Umair Baig</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/okf-generator/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
