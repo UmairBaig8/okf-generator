@@ -143,6 +143,7 @@ The `publish.yml` workflow automatically:
 | Publish to PyPI | `pypa/gh-action-pypi-publish` |
 | Smoke test | Installs published wheel, generates from realworld fixtures, runs lookup + pairs + summarize |
 | Full test report | Runs `tests/test.sh`, attaches `TEST_REPORT.html` + `TEST_REPORT.md` to release |
+| Docker image | `docker-publish.yml` builds and pushes `ghcr.io/umairbaig8/okf-generator/okf-generator` tagged with semver + `latest` |
 | GitHub Release | Creates release from CHANGELOG section, includes test report artifacts |
 
 ### 10. Verify
@@ -151,6 +152,11 @@ The `publish.yml` workflow automatically:
 # Wait for CI, then:
 pip install okf-generator==x.y.z
 okf --version
+
+# Verify Docker image (if Docker is available)
+docker pull ghcr.io/umairbaig8/okf-generator/okf-generator:latest
+docker run ghcr.io/umairbaig8/okf-generator/okf-generator --version
+
 # Download TEST_REPORT.html from the release and verify 0 failures
 ```
 
