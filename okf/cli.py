@@ -3,8 +3,8 @@
 Commands:
   okf generate   <source_dir> [output_dir]   Generate OKF bundle from codebase
   okf generate --enrich [base|deep|security|full]  Enrich with mode selection
-  okf enrich     <bundle_dir> [--mode base|deep|security|full] [--src <path>]
-                                               Enrich an EXISTING bundle
+  okf enrich     [--bundle <bundle_dir>] [--mode base|deep|security|full] [--src <path>]
+                                               Enrich an EXISTING bundle (default: ./okf_bundle)
   okf lookup     <query> [options]            Look up a concept in a bundle
   okf diff       <old> <new>                  Diff two bundles (added/removed/changed)
   okf pairs      <bundle_dir> [output_file]  Convert bundle to training pairs
@@ -252,12 +252,19 @@ def main():
     elif cmd == "enrich":
         from pathlib import Path
         from okf.generator import enrich_bundle
-        bundle_dir = Path(rest[0]).resolve() if rest else Path("okf_bundle").resolve()
+        # --bundle flag takes precedence, otherwise positional arg, otherwise ./okf_bundle
+        if rest and not rest[0].startswith("--"):
+            bundle_dir = Path(rest[0]).resolve()
+            rest_args = list(rest[1:])
+        else:
+            bundle_dir = Path("okf_bundle").resolve()
+            rest_args = list(rest)
         mode = "security"
         source_dir = None
-        rest_args = rest[1:] if len(rest) > 1 else []
         for i, a in enumerate(rest_args):
-            if a == "--mode" and i + 1 < len(rest_args):
+            if a == "--bundle" and i + 1 < len(rest_args):
+                bundle_dir = Path(rest_args[i + 1]).resolve()
+            elif a == "--mode" and i + 1 < len(rest_args):
                 mode = rest_args[i + 1]
             elif a == "--src" and i + 1 < len(rest_args):
                 source_dir = Path(rest_args[i + 1]).resolve()
