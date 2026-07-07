@@ -172,23 +172,37 @@ Returns structured JSON:
 ]
 ```
 
-## MCP Integration
+## MCP Integration (Preferred)
 
-Expose your OKF bundle via Model Context Protocol:
+Expose your OKF bundle via Model Context Protocol — gives the agent direct tools for lookup, call-graph traversal, tag search, and manifest inspection, without running shell commands.
 
 ```bash
-# Start MCP server
+# Register MCP server in OpenCode and/or Claude Desktop configs
+okf mcp --install
+
+# Or start in stdio mode (for clients that auto-launch the server)
 okf mcp ./okf_bundle
 ```
 
-This works with any MCP client — Claude Desktop, Cursor, VS Code extensions, and custom MCP hosts.
+This works with any MCP client — OpenCode, Claude Desktop, Cursor, VS Code extensions, and custom MCP hosts.
+
+**11 MCP tools exposed:** `lookup`, `get_concept`, `find_callers`, `find_callees`, `list_by_file`, `list_dependencies`, `bundle_info`, `list_by_type`, `search_by_tag`, `get_related`, `get_manifest_source`.
+
+### Skill vs MCP: Two Separate Concerns
+
+| Concern | What it does | Install command |
+|---|---|---|
+| **Skills / Rules** | Text instructions telling the AI *how* to use okf (read SUMMARY.md, run lookup, etc.) | `okf install <agent>` |
+| **MCP Server** | Registers the server so the AI can call tools directly without shell commands | `okf mcp --install` or `okf install mcp` |
+
+You can install skills without MCP (the AI reads instructions and runs shell commands), or use MCP without skills (the AI discovers tools automatically). For the best experience, do both.
 
 ## Agent Installation Command
 
-The `okf install` command automates all of the above:
+The `okf install` command automates skill installation:
 
 ```bash
-# Install for all detected agents
+# Install skills for all agents + register MCP
 okf install all
 
 # Or pick specific agents
@@ -198,15 +212,17 @@ okf install copilot     # GitHub Copilot instructions
 okf install cursor      # Cursor rules
 okf install windsurf    # Windsurf rules
 okf install cline       # Cline rules
+okf install mcp         # Register MCP server (same as okf mcp --install)
 ```
 
 **What each install does:**
 
-| Agent | Files created | Effect |
+| Command | Files created | Effect |
 |---|---|---|
-| Claude Code | `~/.config/opencode/skills/okf-generator/SKILL.md` | Auto-triggers on phrases like "index my codebase" |
-| OpenCode | `.opencode/commands/lookup.md` | `/lookup NAME=<ConceptName>` |
-| Copilot | `.github/copilot-instructions.md` | Auto-loaded in VS Code |
-| Cursor | `.cursorrules` | Auto-loaded by Cursor |
-| Windsurf | `.windsurfrules` | Auto-loaded by Windsurf |
-| Cline | `.clinerules` | Auto-loaded by Cline |
+| `okf install claude` | `~/.config/opencode/skills/okf-generator/SKILL.md` | Auto-triggers on phrases like "index my codebase" |
+| `okf install opencode` | `.opencode/commands/lookup.md` | `/lookup NAME=<ConceptName>` |
+| `okf install copilot` | `.github/copilot-instructions.md` | Auto-loaded in VS Code |
+| `okf install cursor` | `.cursorrules` | Auto-loaded by Cursor |
+| `okf install windsurf` | `.windsurfrules` | Auto-loaded by Windsurf |
+| `okf install cline` | `.clinerules` | Auto-loaded by Cline |
+| `okf install mcp` | `opencode.json` + `claude_desktop_config.json` | Registers MCP server for tool-based access |

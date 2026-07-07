@@ -798,13 +798,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mcp-integration" class="md-nav__link">
+  <a href="#mcp-integration-preferred" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MCP Integration
+        MCP Integration (Preferred)
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="MCP Integration (Preferred)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#skill-vs-mcp-two-separate-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skill vs MCP: Two Separate Concerns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1394,13 +1411,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mcp-integration" class="md-nav__link">
+  <a href="#mcp-integration-preferred" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MCP Integration
+        MCP Integration (Preferred)
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="MCP Integration (Preferred)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#skill-vs-mcp-two-separate-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skill vs MCP: Two Separate Concerns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1634,15 +1668,42 @@ okf<span class="w"> </span>lookup<span class="w"> </span>--bundle<span class="w"
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
-<h2 id="mcp-integration">MCP Integration<a class="headerlink" href="#mcp-integration" title="Permanent link">&para;</a></h2>
-<p>Expose your OKF bundle via Model Context Protocol:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Start MCP server</span>
+<h2 id="mcp-integration-preferred">MCP Integration (Preferred)<a class="headerlink" href="#mcp-integration-preferred" title="Permanent link">&para;</a></h2>
+<p>Expose your OKF bundle via Model Context Protocol — gives the agent direct tools for lookup, call-graph traversal, tag search, and manifest inspection, without running shell commands.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Register MCP server in OpenCode and/or Claude Desktop configs</span>
+okf<span class="w"> </span>mcp<span class="w"> </span>--install
+
+<span class="c1"># Or start in stdio mode (for clients that auto-launch the server)</span>
 okf<span class="w"> </span>mcp<span class="w"> </span>./okf_bundle
 </code></pre></div>
-<p>This works with any MCP client — Claude Desktop, Cursor, VS Code extensions, and custom MCP hosts.</p>
+<p>This works with any MCP client — OpenCode, Claude Desktop, Cursor, VS Code extensions, and custom MCP hosts.</p>
+<p><strong>11 MCP tools exposed:</strong> <code>lookup</code>, <code>get_concept</code>, <code>find_callers</code>, <code>find_callees</code>, <code>list_by_file</code>, <code>list_dependencies</code>, <code>bundle_info</code>, <code>list_by_type</code>, <code>search_by_tag</code>, <code>get_related</code>, <code>get_manifest_source</code>.</p>
+<h3 id="skill-vs-mcp-two-separate-concerns">Skill vs MCP: Two Separate Concerns<a class="headerlink" href="#skill-vs-mcp-two-separate-concerns" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>What it does</th>
+<th>Install command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Skills / Rules</strong></td>
+<td>Text instructions telling the AI <em>how</em> to use okf (read SUMMARY.md, run lookup, etc.)</td>
+<td><code>okf install &lt;agent&gt;</code></td>
+</tr>
+<tr>
+<td><strong>MCP Server</strong></td>
+<td>Registers the server so the AI can call tools directly without shell commands</td>
+<td><code>okf mcp --install</code> or <code>okf install mcp</code></td>
+</tr>
+</tbody>
+</table>
+<p>You can install skills without MCP (the AI reads instructions and runs shell commands), or use MCP without skills (the AI discovers tools automatically). For the best experience, do both.</p>
 <h2 id="agent-installation-command">Agent Installation Command<a class="headerlink" href="#agent-installation-command" title="Permanent link">&para;</a></h2>
-<p>The <code>okf install</code> command automates all of the above:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Install for all detected agents</span>
+<p>The <code>okf install</code> command automates skill installation:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install skills for all agents + register MCP</span>
 okf<span class="w"> </span>install<span class="w"> </span>all
 
 <span class="c1"># Or pick specific agents</span>
@@ -1652,46 +1713,52 @@ okf<span class="w"> </span>install<span class="w"> </span>copilot<span class="w"
 okf<span class="w"> </span>install<span class="w"> </span>cursor<span class="w">      </span><span class="c1"># Cursor rules</span>
 okf<span class="w"> </span>install<span class="w"> </span>windsurf<span class="w">    </span><span class="c1"># Windsurf rules</span>
 okf<span class="w"> </span>install<span class="w"> </span>cline<span class="w">       </span><span class="c1"># Cline rules</span>
+okf<span class="w"> </span>install<span class="w"> </span>mcp<span class="w">         </span><span class="c1"># Register MCP server (same as okf mcp --install)</span>
 </code></pre></div>
 <p><strong>What each install does:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Agent</th>
+<th>Command</th>
 <th>Files created</th>
 <th>Effect</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Claude Code</td>
+<td><code>okf install claude</code></td>
 <td><code>~/.config/opencode/skills/okf-generator/SKILL.md</code></td>
 <td>Auto-triggers on phrases like "index my codebase"</td>
 </tr>
 <tr>
-<td>OpenCode</td>
+<td><code>okf install opencode</code></td>
 <td><code>.opencode/commands/lookup.md</code></td>
 <td><code>/lookup NAME=&lt;ConceptName&gt;</code></td>
 </tr>
 <tr>
-<td>Copilot</td>
+<td><code>okf install copilot</code></td>
 <td><code>.github/copilot-instructions.md</code></td>
 <td>Auto-loaded in VS Code</td>
 </tr>
 <tr>
-<td>Cursor</td>
+<td><code>okf install cursor</code></td>
 <td><code>.cursorrules</code></td>
 <td>Auto-loaded by Cursor</td>
 </tr>
 <tr>
-<td>Windsurf</td>
+<td><code>okf install windsurf</code></td>
 <td><code>.windsurfrules</code></td>
 <td>Auto-loaded by Windsurf</td>
 </tr>
 <tr>
-<td>Cline</td>
+<td><code>okf install cline</code></td>
 <td><code>.clinerules</code></td>
 <td>Auto-loaded by Cline</td>
+</tr>
+<tr>
+<td><code>okf install mcp</code></td>
+<td><code>opencode.json</code> + <code>claude_desktop_config.json</code></td>
+<td>Registers MCP server for tool-based access</td>
 </tr>
 </tbody>
 </table>

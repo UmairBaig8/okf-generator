@@ -478,6 +478,82 @@ class BundleMCPServer:
             sys.exit(0)
 
 
+def _install_mcp_config(bundle_dir: Path):
+    """Register MCP server in detected client configs."""
+    import json, os
+    abs_bundle = str(bundle_dir.resolve())
+    okf_path = shutil.which("okf") or ""
+    if not okf_path:
+        print("WARNING: okf not found in PATH — MCP config will use bare 'okf' command", file=sys.stderr)
+        okf_path = "okf"
+
+    mcp_entry = {
+        "command": okf_path,
+        "args": ["mcp", abs_bundle],
+    }
+
+    written = []
+
+    # ── OpenCode (project opencode.json / opencode.jsonc) ──
+    for cfg_name in ("opencode.json", "opencode.jsonc"):
+        cfg_path = Path.cwd() / cfg_name
+        if cfg_path.exists():
+            try:
+                data = json.loads(cfg_path.read_text(encoding="utf-8"))
+            except Exception:
+                data = {}
+            data.setdefault("mcp", {})["okf-generator"] = {
+                "type": "local",
+                "command": [okf_path, "mcp", abs_bundle],
+                "enabled": True,
+            }
+            cfg_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+            written.append(f"OpenCode ({cfg_path})")
+            break
+    else:
+        # No config file exists — create opencode.json
+        cfg_path = Path.cwd() / "opencode.json"
+        data = {
+            "$schema": "https://opencode.ai/config.json",
+            "mcp": {
+                "okf-generator": {
+                    "type": "local",
+                    "command": [okf_path, "mcp", abs_bundle],
+                    "enabled": True,
+                }
+            },
+        }
+        cfg_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        written.append(f"OpenCode (created {cfg_path})")
+
+    # ── Claude Desktop (claude_desktop_config.json) ──
+    claude_candidates = [
+        Path.home() / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json",
+        Path.home() / ".config" / "Claude" / "claude_desktop_config.json",
+        Path.home() / "AppData" / "Roaming" / "Claude" / "claude_desktop_config.json",
+    ]
+    claude_path = None
+    for p in claude_candidates:
+        if p.exists():
+            claude_path = p
+            break
+    if claude_path:
+        try:
+            data = json.loads(claude_path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+        data.setdefault("mcpServers", {})["okf-generator"] = mcp_entry
+        claude_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        written.append(f"Claude Desktop ({claude_path})")
+
+    if written:
+        print(f"MCP server registered for: {', '.join(written)}")
+        print("Restart your MCP client to pick up the changes.")
+    else:
+        print("No MCP clients detected. Created opencode.json for OpenCode.")
+        print("For other clients, see: https://umairbaig8.github.io/okf-generator/docs-site/user-guide/mcp-server/")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="MCP server for OKF bundles.",
@@ -487,9 +563,17 @@ def main():
     parser.add_argument("bundle_dir", nargs="?", default="./okf_bundle", help="Path to OKF bundle directory (default: ./okf_bundle)")
     parser.add_argument("--bundle", help="Path to OKF bundle (overrides positional)")
     parser.add_argument("--port", "-p", type=int, default=0, help="HTTP port (omit or 0 for stdio mode)")
+    parser.add_argument("--install", action="store_true", help="Register MCP server in detected client configs (opencode.json, claude_desktop_config.json) then exit")
     args = parser.parse_args()
 
     bundle_dir = Path(args.bundle or args.bundle_dir).resolve()
+
+    if args.install:
+        if not bundle_dir.exists():
+            print(f"WARNING: Bundle not found at {bundle_dir}. MCP config will still be written but the server won't start until you generate a bundle.", file=sys.stderr)
+        _install_mcp_config(bundle_dir)
+        return
+
     if not bundle_dir.exists():
         print(f"ERROR: Bundle not found: {bundle_dir}", file=sys.stderr)
         sys.exit(1)

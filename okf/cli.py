@@ -15,7 +15,7 @@ Commands:
   okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
   okf serve      [dir] [--port] [--open]     Serve bundle + auto-open viz
   okf dashboard  <bundle> [--port] [--open]   Live bundle browser (FastAPI + interactive graph)
-  okf mcp        <bundle> [--port]            MCP server for AI agents (Claude, Cursor, etc.)
+  okf mcp        <bundle> [--port] [--install] MCP server for AI agents. --install registers in opencode.json / claude_desktop_config.json
 
 Run `okf <command> --help` for per-command options.
 """
@@ -26,8 +26,6 @@ from pathlib import Path
 
 
 SKILL_SOURCE = Path(__file__).resolve().parent.parent / "SKILL.md"
-AGENTS_MD_SOURCE = Path(__file__).resolve().parent.parent / "AGENTS.md"
-COPILOT_SOURCE = Path(__file__).resolve().parent.parent / ".github" / "copilot-instructions.md"
 
 
 def _find_skill() -> Path:
@@ -69,17 +67,14 @@ def _install_agent(agent: str):
         target.write_text("RUN okf lookup --bundle ./okf_bundle $NAME\n")
         print(f"OpenCode command → {target}")
         print("  Use: /lookup NAME=<ConceptName>")
+        print("  Tip: also run 'okf mcp --install' to set up MCP tools (preferred over shell commands)")
 
     elif agent == "copilot":
         target = root / ".github" / "copilot-instructions.md"
         if not _maybe_overwrite(target, "Copilot instructions"):
             return
-        if COPILOT_SOURCE.exists():
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(COPILOT_SOURCE, target)
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(_copilot_default())
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(_copilot_default())
         print(f"Copilot instructions → {target}")
         print("  Copilot loads this file automatically.")
 
@@ -89,6 +84,7 @@ def _install_agent(agent: str):
             return
         target.write_text(_agent_rules("Cursor"))
         print(f"Cursor rules → {target}")
+        print("  Tip: also run 'okf mcp --install' to set up MCP tools (preferred over shell commands)")
 
     elif agent == "windsurf":
         target = root / ".windsurfrules"
@@ -96,6 +92,7 @@ def _install_agent(agent: str):
             return
         target.write_text(_agent_rules("Windsurf"))
         print(f"Windsurf rules → {target}")
+        print("  Tip: also run 'okf mcp --install' to set up MCP tools (preferred over shell commands)")
 
     elif agent == "cline":
         target = root / ".clinerules"
@@ -103,28 +100,59 @@ def _install_agent(agent: str):
             return
         target.write_text(_agent_rules("Cline"))
         print(f"Cline rules → {target}")
+        print("  Tip: also run 'okf mcp --install' to set up MCP tools (preferred over shell commands)")
+
+    elif agent == "mcp":
+        _install_mcp()
+        return
 
     elif agent == "all":
         for a in ("claude", "opencode", "copilot", "cursor", "windsurf", "cline"):
             _install_agent(a)
+        _install_agent("mcp")
         return
 
     else:
         print(f"Unknown agent: {agent!r}", file=sys.stderr)
-        print("Available: claude, opencode, copilot, cursor, windsurf, cline, all", file=sys.stderr)
+        print("Available: claude, opencode, copilot, cursor, windsurf, cline, mcp, all", file=sys.stderr)
         sys.exit(1)
+
+
+def _install_mcp():
+    """Run okf mcp --install with auto-detected bundle dir."""
+    bundle = Path("okf_bundle").resolve()
+    from okf.mcp_server import _install_mcp_config
+    _install_mcp_config(bundle)
 
 
 def _copilot_default() -> str:
     return """# OKF Knowledge Bundle — Copilot Instructions
 
 This project uses okf-generator to produce an OKF v0.1 knowledge bundle at ./okf_bundle/.
-Before editing any source file, run:
+Every function, class, module, and dependency has a structured markdown card.
 
+## MCP Tools (preferred)
+
+If an MCP server is running, use lookup/get_concept/find_callers etc. via MCP.
+Otherwise, use the shell commands below.
+
+## CRITICAL RULE: Never grep source files first
+
+BEFORE reading or editing any source file, ALWAYS run:
   okf lookup --bundle ./okf_bundle <ConceptName>
 
-For dependencies: okf lookup --bundle ./okf_bundle --type Dependency
-For JSON output:  okf lookup --bundle ./okf_bundle --json <Name>
+This returns signature, parameters, docstring, dependencies, callers,
+and callees in milliseconds — faster and more accurate than reading source.
+
+## Common lookups
+
+  okf lookup --bundle ./okf_bundle --type Function <Name>
+  okf lookup --bundle ./okf_bundle --type Class <Name>
+  okf lookup --bundle ./okf_bundle --type Dependency
+  okf lookup --bundle ./okf_bundle --tag lang:python
+  okf lookup --bundle ./okf_bundle --tag ecosystem:npm
+  okf lookup --bundle ./okf_bundle --json <Name>
+  okf diff ./okf_bundle.bak ./okf_bundle --compact
 """
 
 
@@ -132,7 +160,16 @@ def _agent_rules(name: str) -> str:
     return f"""# {name} Rules — OKF Knowledge Bundle
 
 This project is indexed as an OKF v0.1 bundle at ./okf_bundle/.
-Every function, class, module, and dependency has a structured markdown file.
+Every function, class, module, and dependency has a structured markdown card.
+
+## MCP Tools (preferred)
+
+If this agent supports MCP, the OKF MCP server exposes 11 tools:
+  lookup, get_concept, find_callers, find_callees, list_by_file,
+  list_dependencies, bundle_info, list_by_type, search_by_tag,
+  get_related, get_manifest_source
+
+Use these instead of shell commands when available.
 
 ## CRITICAL RULE: Never grep source files first
 
@@ -158,16 +195,20 @@ HELP = """Usage: okf install [agent]
 
 Install okf-generator integration for an AI coding agent.
 
-Agents:
+Skill installation (instructions/rules for the AI):
   claude      Install Claude Code skill (SKILL.md → ~/.config/opencode/skills/)
   opencode    Add /lookup command (.opencode/commands/lookup.md)
   copilot     Add GitHub Copilot instructions (.github/copilot-instructions.md)
   cursor      Add Cursor rules (.cursorrules)
   windsurf    Add Windsurf rules (.windsurfrules)
   cline       Add Cline rules (.clinerules)
-  all         Install for all agents above
 
-Run without arguments to see this help.
+MCP server registration (preferred — gives agent direct tools):
+  mcp         Register OKF MCP server in OpenCode + Claude configs
+  all         Install skills for all agents + register MCP
+
+Tip: MCP tools (lookup, find_callers, etc.) are preferred over RUN commands.
+Run 'okf mcp --install' for the same effect as 'okf install mcp'.
 """
 
 
@@ -221,7 +262,8 @@ def main():
         print("  summarize       Regenerate SUMMARY.md from existing bundle")
         print("  dashboard       Launch live bundle browser (FastAPI + interactive graph)")
         print("  init            Interactive bundle setup wizard")
-        print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline)")
+        print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline, mcp)")
+        print("  mcp             Start MCP server (stdio or HTTP). Use --install to register in client configs")
         sys.exit(0)
 
     cmd, rest = sys.argv[1], sys.argv[2:]

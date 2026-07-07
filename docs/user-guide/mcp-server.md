@@ -25,7 +25,7 @@ Add to your MCP client config (e.g. `claude_desktop_config.json`):
 }
 ```
 
-Or, if you've already run `okf install claude`, this registration is handled for you automatically.
+Or run `okf mcp --install` to auto-detect OpenCode and Claude Desktop configs and register the server automatically.
 
 ## Tools Exposed
 
