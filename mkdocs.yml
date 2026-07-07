@@ -19,7 +19,8 @@ theme:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: index.md
+    - Installation: installation.md
+    - Quick Start: quick-start.md
   - User Guide:
     - CLI Reference: cli-reference.md
     - Language Support: languages-and-manifests.md
