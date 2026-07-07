@@ -33,8 +33,10 @@ def _search_context(concepts, query_parts, llm_client=None, llm_model=None):
     """Search bundle and build context string from top results.
     
     Uses LLM to extract search terms if available, otherwise falls back to stop word filtering.
+    Returns (context_string, results, term_usage_dict).
     """
     query = " ".join(query_parts)
+    term_usage = {}
     
     # Try LLM-based term extraction first
     tokens = None
@@ -57,6 +59,14 @@ Question: {query}"""
             terms = data.get("terms", [])
             if terms:
                 tokens = [t for t in terms if isinstance(t, str) and t.strip()]
+            u = resp.usage
+            if u:
+                term_usage = {
+                    "prompt": u.prompt_tokens,
+                    "completion": u.completion_tokens,
+                    "total": u.total_tokens,
+                    "reasoning": (u.completion_tokens_details.reasoning_tokens or 0) if u.completion_tokens_details else 0,
+                }
         except Exception:
             pass
     
@@ -74,11 +84,11 @@ Question: {query}"""
         related = c.get("sections", {}).get("related", "")[:200]
         entry = f"--- {c['type']}: {c['title']} ---\nFile: {c.get('resource', '')}\nDescription: {desc}\nSignature: {sig}\nRelated: {related}"
         context_parts.append(entry)
-    return "\n\n".join(context_parts), results
+    return "\n\n".join(context_parts), results, term_usage
 
 
 def _ask_llm(client, model, question, context, messages):
-    """Send question + context to LLM and return answer."""
+    """Send question + context to LLM. Returns (answer, usage_dict)."""
     system = f"""You are a codebase expert. Answer based on the context below.
 If the context doesn't contain enough information, say so.
 
@@ -92,7 +102,15 @@ Context from the knowledge bundle:
     resp = client.chat.completions.create(
         model=model, messages=msgs, max_tokens=1000, temperature=0.1,
     )
-    return (resp.choices[0].message.content or "").strip()
+    answer = (resp.choices[0].message.content or "").strip()
+    u = resp.usage
+    usage = {
+        "prompt": u.prompt_tokens if u else 0,
+        "completion": u.completion_tokens if u else 0,
+        "total": u.total_tokens if u else 0,
+        "reasoning": (u.completion_tokens_details.reasoning_tokens or 0) if u and u.completion_tokens_details else 0,
+    }
+    return answer, usage
 
 
 def main():
@@ -135,10 +153,17 @@ def main():
     from openai import OpenAI
     client = OpenAI(api_key=api_key, base_url=base_url)
 
+    def _fmt_usage(u):
+        parts = [f"{u['total']} total"]
+        if u.get("reasoning"):
+            parts.append(f"{u['reasoning']} reasoning")
+        return " · ".join(parts)
+
     # ── Interactive chat mode ──
     if not query_parts:
         print("OKF Ask — interactive chat. Type your questions or /exit.\n")
         history = []
+        total_usage = {"prompt": 0, "completion": 0, "total": 0, "reasoning": 0}
         while True:
             try:
                 q = input(">>> ").strip()
@@ -149,11 +174,15 @@ def main():
                 continue
             if q.lower() in ("/exit", "/quit", "exit", "quit"):
                 break
-            context, results = _search_context(concepts, q.split(), client, model)
+            context, results, term_u = _search_context(concepts, q.split(), client, model)
+            for k in total_usage:
+                total_usage[k] += term_u.get(k, 0)
             if not context:
                 print("  No relevant concepts found. Try different keywords.\n")
                 continue
-            answer = _ask_llm(client, model, q, context, history)
+            answer, ans_u = _ask_llm(client, model, q, context, history)
+            for k in total_usage:
+                total_usage[k] += ans_u.get(k, 0)
             history.append(("user", q))
             history.append(("assistant", answer))
             print(f"\n  {answer}\n")
@@ -161,17 +190,21 @@ def main():
             for i, c in enumerate(results[:5], 1):
                 desc = c.get("description", "")[:60]
                 print(f"  [{i}] {c['type']}: {c['title']} — {c.get('resource', '')}")
+            print(f"  Tokens: {_fmt_usage(ans_u)}")
             print()
+        if total_usage["total"]:
+            print(f"  Session total: {_fmt_usage(total_usage)}")
         return
 
     # ── Single question mode ──
-    context, results = _search_context(concepts, query_parts, client, model)
+    context, results, term_u = _search_context(concepts, query_parts, client, model)
     if not context:
         print(f"No relevant concepts found for: {' '.join(query_parts)}")
         print("Try different keywords or check the bundle is up to date.")
         sys.exit(1)
 
-    answer = _ask_llm(client, model, " ".join(query_parts), context, [])
+    answer, ans_u = _ask_llm(client, model, " ".join(query_parts), context, [])
+    total_u = {k: term_u.get(k, 0) + ans_u.get(k, 0) for k in ("prompt", "completion", "total", "reasoning")}
     print(f"\n  Q: {' '.join(query_parts)}\n")
     print(answer)
     print(f"\nSources:")
@@ -180,4 +213,5 @@ def main():
         desc_str = f" — {desc}" if desc else ""
         print(f"  [{i}] {c['type']}: {c['title']}{desc_str}")
         print(f"      {c.get('resource', '')}")
-    print(f"\n  Run okf lookup <Name> for full detail.")
+    print(f"\n  Tokens: {_fmt_usage(total_u)}")
+    print(f"  Run okf lookup <Name> for full detail.")
