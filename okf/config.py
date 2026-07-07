@@ -94,7 +94,7 @@ DEFAULTS = {
     },
     "providers": dict(BUILTIN_PROVIDERS),
     "enrich": {
-        "description": {"model": "", "max_workers": 2},
+        "description": {"enabled": False, "model": "", "max_workers": 2},
         "deep": {"enabled": False, "model": "", "max_workers": 2},
         "security": {"enabled": False, "model": "", "max_workers": 2},
         "semantic_related": {"enabled": False, "max_workers": 2},

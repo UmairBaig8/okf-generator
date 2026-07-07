@@ -1731,7 +1731,8 @@ def main():
     from okf.config import load as load_config, _get
     _cfg = load_config()
     config_enabled = _get(_cfg, "llm.enabled", False)
-    if config_enabled and not any(_do_enrich.values()):
+    desc_enabled = _get(_cfg, "enrich.description.enabled", False)
+    if config_enabled and desc_enabled and not any(_do_enrich.values()):
         _do_enrich["base"] = True
     enrich = any(_do_enrich.values()) or _has_enrich_flag
     if enrich and not any(_do_enrich.values()):

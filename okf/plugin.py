@@ -1,22 +1,17 @@
-"""Plugin system — discovers parser plugins via Python entry points.
+"""Plugin system — discovers parser and manifest plugins via Python entry points.
 
-A plugin is any package that registers an entry point in the ``okf.parsers``
-group and exports a class matching ParserPlugin.
+Parser plugins register in the ``okf.parsers`` group.
+Manifest plugins register in the ``okf.manifests`` group.
 
-Example plugin ``pyproject.toml``::
+Example ``pyproject.toml`` for a parser plugin::
 
     [project.entry-points."okf.parsers"]
     cobol = "okf_parser_cobol:Parser"
 
-The plugin class must implement:
+Example for a manifest plugin::
 
-.. code-block:: python
-
-    class Parser:
-        LANGUAGE: str           # "cobol"
-        EXTENSIONS: set[str]    # {".cbl", ".cob"}
-
-        def parse_file(self, path: Path, repo_root: Path) -> list[Concept]: ...
+    [project.entry-points."okf.manifests"]
+    pdm = "okf_manifest_pdm:Handler"
 """
 
 import logging
@@ -28,7 +23,7 @@ from okf.parsers.base import Concept
 log = logging.getLogger("okf_gen")
 
 # ---------------------------------------------------------------------------
-# ParserPlugin interface (documented — structural subtyping, no ABC)
+# ParserPlugin interface
 # ---------------------------------------------------------------------------
 
 class ParserPlugin:
@@ -51,7 +46,25 @@ class ParserPlugin:
 
 
 # ---------------------------------------------------------------------------
-# Built-in parser entry points (same format as external plugins)
+# ManifestPlugin interface
+# ---------------------------------------------------------------------------
+
+class ManifestPlugin:
+    """Interface for a manifest handler plugin.
+
+    Set ``MANIFEST_FILES`` to the list of filenames this handler recognises.
+    The ``parse`` method receives the file path and repo root and returns
+    a list of raw dependency dicts (same shape as ``manifest_scanner.py``
+    handlers).
+    """
+    MANIFEST_FILES: list[str] = []
+
+    def parse(self, path: Path, repo_root: Path) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+
+# ---------------------------------------------------------------------------
+# Built-in parser entry points
 # ---------------------------------------------------------------------------
 
 _BUILTIN_PARSERS: dict[str, str] = {
@@ -73,9 +86,35 @@ _BUILTIN_PARSERS: dict[str, str] = {
     "julia":      "okf.parsers.julia:JuliaParser",
 }
 
-# JS/TS needs special runtime config (_path_ext for grammar selection).
-# Mark it so get_parser can special-case instantiation.
-_JS_TS_KEY = "javascript"
+
+# ---------------------------------------------------------------------------
+# Built-in manifest entry points
+# ---------------------------------------------------------------------------
+
+_BUILTIN_MANIFESTS: dict[str, str] = {
+    "requirements.txt":  "okf.manifest_scanner:parse_requirements_txt",
+    "pyproject.toml":    "okf.manifest_scanner:parse_pyproject_toml",
+    "package.json":      "okf.manifest_scanner:parse_package_json",
+    "Cargo.toml":        "okf.manifest_scanner:parse_cargo_toml",
+    "Cargo.lock":        "okf.manifest_scanner:parse_cargo_lock",
+    "yarn.lock":         "okf.manifest_scanner:parse_yarn_lock",
+    "pnpm-lock.yaml":    "okf.manifest_scanner:parse_pnpm_lock",
+    "go.mod":            "okf.manifest_scanner:parse_go_mod",
+    "go.sum":            "okf.manifest_scanner:parse_go_sum",
+    "poetry.lock":       "okf.manifest_scanner:parse_poetry_lock",
+    "composer.json":     "okf.manifest_scanner:parse_composer_json",
+    "pom.xml":           "okf.manifest_scanner:parse_pom_xml",
+    "Gemfile":           "okf.manifest_scanner:parse_gemfile",
+    "build.gradle":      "okf.manifest_scanner:parse_build_gradle",
+    "build.gradle.kts":  "okf.manifest_scanner:parse_build_gradle",
+    "Package.swift":     "okf.manifest_scanner:parse_package_swift",
+    "project.clj":       "okf.manifest_scanner:parse_project_clj",
+    "mix.exs":           "okf.manifest_scanner:parse_mix_exs",
+    "Dockerfile":        "okf.manifest_scanner:parse_dockerfile",
+    "Containerfile":     "okf.manifest_scanner:parse_dockerfile",
+    "docker-compose.yml": "okf.manifest_scanner:parse_docker_compose",
+    "docker-compose.yaml": "okf.manifest_scanner:parse_docker_compose",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -83,6 +122,7 @@ _JS_TS_KEY = "javascript"
 # ---------------------------------------------------------------------------
 
 _registry: dict[str, type[ParserPlugin]] | None = None
+_manifest_registry: dict[str, str] | None = None
 _errors: list[str] = []
 
 
@@ -119,21 +159,56 @@ def discover_parsers() -> dict[str, type[ParserPlugin]]:
     _load_all("builtin", _BUILTIN_PARSERS)
 
     # 2. Load external plugins via entry points
-    try:
-        from importlib.metadata import entry_points
-        for ep in entry_points(group="okf.parsers"):
-            try:
-                cls = ep.load()
-                for ext in cls.EXTENSIONS:
-                    ext_map[ext] = cls
-            except Exception as e:
-                _errors.append(f"plugin/{ep.name}: {e}")
-                log.warning(f"Failed to load plugin {ep.name}: {e}")
-    except Exception as e:
-        log.debug(f"Entry point discovery failed: {e}")
+    _load_entry_points("okf.parsers", "plugin", ext_map, lambda cls: [(ext, cls) for ext in cls.EXTENSIONS])
 
     _registry = ext_map
     return _registry
+
+
+def discover_manifests() -> dict[str, str]:
+    """Discover manifest handlers and return ``{filename: handler_function_path}``.
+
+    External manifest plugins are discovered via ``importlib.metadata.entry_points``
+    (group ``okf.manifests``).
+    """
+    global _manifest_registry
+    if _manifest_registry is not None:
+        return _manifest_registry
+
+    result: dict[str, str] = {}
+
+    # 1. Load built-in manifests
+    for name, dotted_path in _BUILTIN_MANIFESTS.items():
+        result[name] = dotted_path
+
+    # 2. Load external manifest plugins via entry points
+    def _on_load(cls):
+        if hasattr(cls, "MANIFEST_FILES"):
+            return [(f, f"{cls.__module__}:{cls.__qualname__}") for f in cls.MANIFEST_FILES]
+        return []
+
+    _load_entry_points("okf.manifests", "manifest", result, _on_load)
+
+    _manifest_registry = result
+    return result
+
+
+def _load_entry_points(group: str, namespace: str, target: dict, expand_fn) -> None:
+    """Load entry points from *group* into *target* using *expand_fn* to
+    produce ``(key, value)`` pairs from each loaded class."""
+    global _errors
+    try:
+        from importlib.metadata import entry_points
+        for ep in entry_points(group=group):
+            try:
+                cls = ep.load()
+                for k, v in expand_fn(cls):
+                    target[k] = v
+            except Exception as e:
+                _errors.append(f"{namespace}/{ep.name}: {e}")
+                log.warning(f"Failed to load {namespace} {ep.name}: {e}")
+    except Exception as e:
+        log.debug(f"Entry point discovery for {group} failed: {e}")
 
 
 def get_parser(ext: str) -> ParserPlugin | None:
@@ -156,23 +231,32 @@ def plugin_errors() -> list[str]:
     return list(_errors)
 
 
-def list_plugins() -> list[dict]:
-    """Return a human-readable list of discovered plugins."""
-    registry = discover_parsers()
-    seen: dict[str, dict] = {}
-    for ext, cls in registry.items():
+def list_plugins() -> dict:
+    """Return a dict with ``parsers`` and ``manifests`` lists."""
+    parsers = discover_parsers()
+    manifests = discover_manifests()
+
+    seen_parsers: dict[str, dict] = {}
+    for ext, cls in parsers.items():
         lang = getattr(cls, "LANGUAGE", "unknown")
-        if lang not in seen:
-            seen[lang] = {
+        if lang not in seen_parsers:
+            seen_parsers[lang] = {
                 "language": lang,
                 "extensions": set(),
                 "class": f"{cls.__module__}.{cls.__qualname__}",
             }
-        seen[lang]["extensions"].add(ext)
-    result = sorted(seen.values(), key=lambda x: x["language"])
-    for r in result:
+        seen_parsers[lang]["extensions"].add(ext)
+
+    parser_list = sorted(seen_parsers.values(), key=lambda x: x["language"])
+    for r in parser_list:
         r["extensions"] = sorted(r["extensions"])
-    return result
+
+    manifest_list = sorted(
+        [{"file": k, "handler": v} for k, v in manifests.items()],
+        key=lambda x: x["file"],
+    )
+
+    return {"parsers": parser_list, "manifests": manifest_list}
 
 
 # ---------------------------------------------------------------------------
@@ -191,12 +275,20 @@ def cli():
     cmd = args[0]
 
     if cmd == "list":
-        plugins = list_plugins()
+        data = list_plugins()
         errors = plugin_errors()
-        print(f"\n  Discovered parsers ({len(plugins)} languages, {len(discover_parsers())} extensions):\n")
-        for p in plugins:
+        parsers = data["parsers"]
+        manifests = data["manifests"]
+
+        print(f"\n  Parsers ({len(parsers)} languages, {len(discover_parsers())} extensions):\n")
+        for p in parsers:
             exts = ", ".join(p["extensions"])
             print(f"    {p['language']:15s} [{exts}]")
+
+        print(f"\n  Manifests ({len(manifests)} files):\n")
+        for m in manifests:
+            print(f"    {m['file']:25s} → {m['handler']}")
+
         if errors:
             print(f"\n  Errors ({len(errors)}):")
             for e in errors:
