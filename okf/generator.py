@@ -188,7 +188,11 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
             if t.startswith("lang:"):
                 lang_fence = t.removeprefix("lang:")
                 break
-        lines.append(f"```{lang_fence}\n{concept.signature}\n```\n")
+        sig = concept.signature
+        # Strip existing markdown fences if concept already has them
+        sig = re.sub(r"^```\w*\s*", "", sig)
+        sig = re.sub(r"\s*```$", "", sig)
+        lines.append(f"```{lang_fence}\n{sig.strip()}\n```\n")
 
     if concept.type_params:
         lines.append("## Type Parameters\n")
@@ -230,8 +234,11 @@ def _body(concept: Concept, all_concepts: dict[str, Concept]) -> str:
         lines.append("## Parameters\n")
         lines.append("| Name | Type | Default |")
         lines.append("|------|------|---------|")
-        for p in concept.params:
-            lines.append(f"| `{p['name']}` | `{p['annotation'] or '—'}` | `{p['default'] or '—'}` |")
+    for p in concept.params:
+        name = p['name'].strip('`').strip()
+        ann = (p['annotation'] or '—').strip('`').strip()
+        default = (p['default'] or '—').strip('`').strip()
+        lines.append(f"| `{name}` | `{ann}` | `{default}` |")
         lines.append("")
 
     if concept.returns:
