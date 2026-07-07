@@ -286,8 +286,37 @@ def cli():
             print(f"    {p['language']:15s} [{exts}]")
 
         print(f"\n  Manifests ({len(manifests)} files):\n")
+        # Group by handler for cleaner display
+        from collections import defaultdict
+        by_handler: dict[str, list[str]] = defaultdict(list)
         for m in manifests:
-            print(f"    {m['file']:25s} → {m['handler']}")
+            by_handler[m["handler"]].append(m["file"])
+        _MANIFEST_LABELS = {
+            "parse_requirements_txt": "pip",
+            "parse_pyproject_toml": "Python (pip/poetry)",
+            "parse_package_json": "npm",
+            "parse_cargo_toml": "Cargo",
+            "parse_cargo_lock": "Cargo.lock",
+            "parse_yarn_lock": "Yarn",
+            "parse_pnpm_lock": "pnpm",
+            "parse_go_mod": "Go Module",
+            "parse_go_sum": "Go Sum",
+            "parse_poetry_lock": "Poetry",
+            "parse_composer_json": "Composer",
+            "parse_pom_xml": "Maven",
+            "parse_gemfile": "Gemfile",
+            "parse_build_gradle": "Gradle",
+            "parse_package_swift": "Swift Package",
+            "parse_project_clj": "Leiningen",
+            "parse_mix_exs": "Mix (Elixir)",
+            "parse_dockerfile": "Docker",
+            "parse_docker_compose": "Docker Compose",
+        }
+        for handler, files in sorted(by_handler.items()):
+            func_name = handler.rsplit(":", 1)[1]
+            label = _MANIFEST_LABELS.get(func_name, func_name.replace("parse_", "").replace("_", " "))
+            files_str = ", ".join(sorted(files))
+            print(f"    {label:25s} [{files_str}]")
 
         if errors:
             print(f"\n  Errors ({len(errors)}):")
