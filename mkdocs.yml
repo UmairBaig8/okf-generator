@@ -7,9 +7,21 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  logo: images/okf-icon.svg
+  favicon: images/okf-icon.svg
   palette:
-    primary: deep_purple
-    accent: amber
+    - scheme: default
+      primary: deep_purple
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep_purple
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
   features:
     - navigation.instant
     - navigation.tracking
@@ -17,9 +29,22 @@ theme:
     - navigation.top
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
     - content.code.annotate
     - toc.follow
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/UmairBaig8/okf-generator
+      name: GitHub
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/okf-generator/
+      name: PyPI
+  generator: false
+
+copyright: Copyright &copy; 2026 Umair Baig — MIT License
 
 markdown_extensions:
   - admonition
@@ -28,6 +53,9 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - tables
   - toc:
       permalink: true
