@@ -25,6 +25,7 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.sections
+    - navigation.indexes
     - navigation.top
     - navigation.path
     - header.autohide
@@ -35,7 +36,15 @@ theme:
     - content.code.annotate
     - toc.follow
 
+plugins:
+  - search
+  - mike:
+      version_selector: true
+
 extra:
+  version:
+    provider: mike
+  announce: 🚀 v0.1.39 shipped — PHP/Dart/Scala/Julia parsers + Web Dashboard
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/UmairBaig8/okf-generator

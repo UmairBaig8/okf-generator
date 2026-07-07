@@ -13,10 +13,6 @@
         <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/development/">
       
       
-        <link rel="prev" href="architecture/">
-      
-      
-        <link rel="next" href="contributing/">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Adding a Language - OKF Generator</title>
+        <title>Development - OKF Generator</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#development-guide" class="md-skip">
+        <a href="#development" class="md-skip">
           Skip to content
         </a>
       
@@ -86,6 +82,10 @@
     <div data-md-component="announce">
       
     </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
     
     
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding a Language
+              Development
             
           </span>
         </div>
@@ -293,6 +293,14 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+    
     
     
       
@@ -435,6 +443,24 @@
   
   
     
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -769,11 +795,17 @@
       
   
   
-    
-  
   
   
     
+    
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -783,11 +815,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
@@ -808,7 +840,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -851,37 +883,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Adding a Language
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="./" class="md-nav__link">
         
   
   
@@ -897,170 +902,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-new-language-parser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding a New Language Parser
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding a New Language Parser">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-by-step" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step-by-step
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Step-by-step">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-create-the-parser-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Create the parser file
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-register-the-parser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Register the parser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-add-test-fixtures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Add test fixtures
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-install-the-tree-sitter-dependency" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Install the tree-sitter dependency
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parser-interface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parser Interface
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#shared-utilities-from-okfparsersbase" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Shared Utilities (from okf.parsers.base)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concept-fields-set-by-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Concept Fields Set by Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-tree-sitter-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Non-tree-sitter Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1175,158 +1016,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-new-language-parser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding a New Language Parser
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding a New Language Parser">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-by-step" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step-by-step
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Step-by-step">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-create-the-parser-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Create the parser file
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-register-the-parser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Register the parser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-add-test-fixtures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Add test fixtures
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-install-the-tree-sitter-dependency" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Install the tree-sitter dependency
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parser-interface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parser Interface
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#shared-utilities-from-okfparsersbase" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Shared Utilities (from okf.parsers.base)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concept-fields-set-by-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Concept Fields Set by Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-tree-sitter-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Non-tree-sitter Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1343,46 +1032,6 @@
   
 
 
-  <nav class="md-path" aria-label="Navigation" >
-    <ol class="md-path__list">
-      
-        
-  
-  
-    <li class="md-path__item">
-      <a href=".." class="md-path__link">
-        
-  <span class="md-ellipsis">
-    Home
-  </span>
-
-      </a>
-    </li>
-  
-
-      
-      
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="architecture/" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    Development
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
-    </ol>
-  </nav>
-
               
               <article class="md-content__inner md-typeset">
                 
@@ -1393,284 +1042,30 @@
   
 
 
-<h1 id="development-guide">Development Guide<a class="headerlink" href="#development-guide" title="Permanent link">&para;</a></h1>
-<h2 id="adding-a-new-language-parser">Adding a New Language Parser<a class="headerlink" href="#adding-a-new-language-parser" title="Permanent link">&para;</a></h2>
-<h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
-<p>Each parser lives in its own file under <code>okf/parsers/</code>. The registry in <code>__init__.py</code> maps file extensions to parser classes.</p>
-<p>Adding a new language requires <strong>2 files</strong> and <strong>1 line</strong> in the registry.</p>
-<h3 id="step-by-step">Step-by-step<a class="headerlink" href="#step-by-step" title="Permanent link">&para;</a></h3>
-<h4 id="1-create-the-parser-file">1. Create the parser file<a class="headerlink" href="#1-create-the-parser-file" title="Permanent link">&para;</a></h4>
-<p><code>okf/parsers/my_lang.py</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;MyLang (tree-sitter).&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">okf.parsers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_prev_comment</span><span class="p">,</span> <span class="n">_find_all</span><span class="p">,</span> <span class="n">_node_text</span><span class="p">,</span> <span class="n">TreeSitterParser</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">MyLangParser</span><span class="p">(</span><span class="n">TreeSitterParser</span><span class="p">):</span>
-    <span class="n">LANGUAGE</span>   <span class="o">=</span> <span class="s2">&quot;my_lang&quot;</span>
-    <span class="n">EXTENSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;.my&quot;</span><span class="p">,</span> <span class="s2">&quot;.myl&quot;</span><span class="p">}</span>
-    <span class="n">_TS_MODULE</span> <span class="o">=</span> <span class="s2">&quot;tree_sitter_my_lang&quot;</span>
-    <span class="n">_lang_obj</span>  <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_module_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;comment&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">_prev_comment</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_symbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">,</span> <span class="n">resource</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">):</span>
-        <span class="n">concepts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">_find_all</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;function_definition&quot;</span><span class="p">,</span> <span class="s2">&quot;class_definition&quot;</span><span class="p">):</span>
-            <span class="o">...</span>
-        <span class="k">return</span> <span class="n">concepts</span>
-</code></pre></div>
-<p><strong>Required class attributes:</strong>
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| <code>LANGUAGE</code> | <code>str</code> | Language identifier (used in tags) |
-| <code>EXTENSIONS</code> | <code>set[str]</code> | File extensions this parser handles |
-| <code>_TS_MODULE</code> | <code>str</code> | tree-sitter pip package name |
-| <code>_lang_obj</code> | <code>None</code> | Class-level cache for the Language object |</p>
-<p><strong>Methods you can override:</strong></p>
+<h1 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h1>
+<p>Guides for contributors and advanced users.</p>
 <table>
 <thead>
 <tr>
-<th>Method</th>
-<th>Default</th>
-<th>When to override</th>
+<th>Page</th>
+<th>What it covers</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>parse_file()</code></td>
-<td>Calls <code>_parse_symbols()</code> + wraps in Module</td>
-<td>Override only if the TS grammar needs special setup (see <code>JSTSParser</code>)</td>
+<td><a href="architecture/">Architecture Overview</a></td>
+<td>Pipeline: scanner → parsers → linker → writer → enrich → consume</td>
 </tr>
 <tr>
-<td><code>_module_doc()</code></td>
-<td>Returns <code>""</code></td>
-<td>Language has file-level doc comments</td>
+<td><a href="./">Adding a Language</a></td>
+<td>Step-by-step guide for creating a new parser</td>
 </tr>
 <tr>
-<td><code>_collect_imports()</code></td>
-<td>Returns <code>[]</code></td>
-<td>Language has import statements</td>
-</tr>
-<tr>
-<td><code>_collect_calls()</code></td>
-<td>Returns <code>[]</code></td>
-<td>Language has function calls</td>
-</tr>
-<tr>
-<td><code>_parse_symbols()</code></td>
-<td>Returns <code>[]</code></td>
-<td><strong>Always override</strong> — extract functions, classes, etc.</td>
+<td><a href="contributing/">Contributing</a></td>
+<td>Setup, testing, PR workflow</td>
 </tr>
 </tbody>
 </table>
-<h4 id="2-register-the-parser">2. Register the parser<a class="headerlink" href="#2-register-the-parser" title="Permanent link">&para;</a></h4>
-<p>Add <strong>one line</strong> to <code>okf/parsers/__init__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">okf.parsers.my_lang</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyLangParser</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_parser</span><span class="p">(</span><span class="n">ext</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="o">...</span>
-    <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">MyLangParser</span><span class="o">.</span><span class="n">EXTENSIONS</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">MyLangParser</span><span class="p">()</span>
-    <span class="o">...</span>
-</code></pre></div>
-<h4 id="3-add-test-fixtures">3. Add test fixtures<a class="headerlink" href="#3-add-test-fixtures" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>tests/fixtures/realworld/my_lang/
-├── easy/
-│   └── hello.my
-└── complex/
-    └── app.my
-</code></pre></div>
-<h4 id="4-install-the-tree-sitter-dependency">4. Install the tree-sitter dependency<a class="headerlink" href="#4-install-the-tree-sitter-dependency" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>tree-sitter-my-lang
-</code></pre></div>
-<p>Add to <code>pyproject.toml</code> under <code>[project.dependencies]</code>.</p>
-<p>If the package lacks pre-built wheels, add a Rust toolchain step to CI workflows.</p>
-<h3 id="parser-interface">Parser Interface<a class="headerlink" href="#parser-interface" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TreeSitterParser</span><span class="p">:</span>
-    <span class="n">LANGUAGE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-    <span class="n">EXTENSIONS</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">repo_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Concept</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse one source file into OKF concepts.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [Module concept, ...symbol concepts]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_module_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract file-level doc comment.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect raw import names for the module concept.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_calls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect raw callee names inside a function body.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_symbols</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ts</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Concept</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract functions, classes, methods, and other symbols.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_make_concept</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ctype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sig</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ts</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">lineno</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_bytes</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="o">...</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Concept</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a Concept with the common fields filled in.&quot;&quot;&quot;</span>
-</code></pre></div>
-<h3 id="shared-utilities-from-okfparsersbase">Shared Utilities (from <code>okf.parsers.base</code>)<a class="headerlink" href="#shared-utilities-from-okfparsersbase" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>_ts(path)</code></td>
-<td>ISO-8601 timestamp from file mtime</td>
-</tr>
-<tr>
-<td><code>_prev_comment(node, src_bytes)</code></td>
-<td>Extract doc comment preceding a node</td>
-</tr>
-<tr>
-<td><code>_find_all(node, *kinds)</code></td>
-<td>Recursively find child nodes by type</td>
-</tr>
-<tr>
-<td><code>_node_text(node)</code></td>
-<td>Decode node bytes to string</td>
-</tr>
-<tr>
-<td><code>_parse_doc_tags(docstring, lang)</code></td>
-<td>Parse <code>@param</code>/<code>@return</code> tags</td>
-</tr>
-<tr>
-<td><code>_safe_id(name)</code></td>
-<td>Sanitize symbol name for file ID</td>
-</tr>
-<tr>
-<td><code>_first_line(text)</code></td>
-<td>First non-empty line of text</td>
-</tr>
-<tr>
-<td><code>Concept</code></td>
-<td>OKF concept dataclass</td>
-</tr>
-</tbody>
-</table>
-<h3 id="concept-fields-set-by-parsers">Concept Fields Set by Parsers<a class="headerlink" href="#concept-fields-set-by-parsers" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>type</code></td>
-<td><code>Module</code> / <code>Function</code> / <code>Class</code> / <code>Method</code></td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>Display name</td>
-</tr>
-<tr>
-<td><code>description</code></td>
-<td>First line of doc comment</td>
-</tr>
-<tr>
-<td><code>docstring</code></td>
-<td>Full doc comment text</td>
-</tr>
-<tr>
-<td><code>signature</code></td>
-<td>Function/class signature string</td>
-</tr>
-<tr>
-<td><code>resource</code></td>
-<td>Relative source path</td>
-</tr>
-<tr>
-<td><code>tags</code></td>
-<td><code>[language, concept_type]</code></td>
-</tr>
-<tr>
-<td><code>timestamp</code></td>
-<td>ISO-8601 file mtime</td>
-</tr>
-<tr>
-<td><code>source_lines</code></td>
-<td><code>(start_line, end_line)</code> 1-indexed</td>
-</tr>
-<tr>
-<td><code>concept_id</code></td>
-<td>Unique ID for cross-referencing</td>
-</tr>
-<tr>
-<td><code>params</code></td>
-<td><code>[{name, annotation, default}]</code></td>
-</tr>
-<tr>
-<td><code>returns</code></td>
-<td>Return type string</td>
-</tr>
-<tr>
-<td><code>methods</code></td>
-<td>Method names (for classes)</td>
-</tr>
-<tr>
-<td><code>type_params</code></td>
-<td>Generic type parameters <code>["T", "U"]</code></td>
-</tr>
-<tr>
-<td><code>inheritance</code></td>
-<td>Base classes/interfaces</td>
-</tr>
-<tr>
-<td><code>decorators</code></td>
-<td>Decorators/attributes</td>
-</tr>
-<tr>
-<td><code>visibility</code></td>
-<td>Access modifiers <code>["public"]</code></td>
-</tr>
-<tr>
-<td><code>fields</code></td>
-<td><code>[{name, type, visibility}]</code></td>
-</tr>
-<tr>
-<td><code>imports</code></td>
-<td>Raw import names (Module only)</td>
-</tr>
-<tr>
-<td><code>calls_raw</code></td>
-<td>Raw callee names</td>
-</tr>
-<tr>
-<td><code>related</code></td>
-<td>Related concept IDs</td>
-</tr>
-</tbody>
-</table>
-<h3 id="non-tree-sitter-parsers">Non-tree-sitter Parsers<a class="headerlink" href="#non-tree-sitter-parsers" title="Permanent link">&para;</a></h3>
-<p>For languages without a tree-sitter grammar, subclass <code>object</code> directly and implement <code>parse_file()</code> from scratch. See <code>okf/parsers/python.py</code>.</p>
-<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="c1"># After adding fixtures:</span>
-pytest<span class="w"> </span>tests/<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;my_lang&quot;</span><span class="w"> </span>-q
-
-<span class="c1"># Full suite:</span>
-pytest<span class="w"> </span>tests/<span class="w"> </span>-q
-</code></pre></div>
 
 
 
@@ -1746,7 +1141,7 @@ pytest<span class="w"> </span>tests/<span class="w"> </span>-q
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "navigation.path", "header.autohide", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.path", "header.autohide", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
