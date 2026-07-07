@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <b>Map any codebase into an interactive knowledge graph — for AI agents, local SLMs, and human architectural review.</b>
+  <b>Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</b>
 </p>
 
 <p align="center">
