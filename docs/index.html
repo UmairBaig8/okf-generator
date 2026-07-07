@@ -151,7 +151,11 @@
     .step-num { width: 40px; height: 40px; background: var(--accent-light); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin-bottom: 20px; }
     .step h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .step p { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; }
-    .step-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--text); border: 1px solid var(--border); }
+    .step-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .step-cmd .cmd-text { flex: 1; overflow-x: auto; white-space: nowrap; }
+    .step-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
+    .step-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
+    .step-cmd .copy-mini.copied { color: var(--green); }
     @media (max-width: 768px) { .steps { grid-template-columns: 1fr; } }
 
     /* FEATURES */
@@ -177,7 +181,10 @@
     .agent-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
     .agent-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
     .agent-card .agent-note { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
-    .agent-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--accent); border: 1px solid var(--border); }
+    .agent-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--accent); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .agent-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
+    .agent-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
+    .agent-cmd .copy-mini.copied { color: var(--green); }
     @media (max-width: 900px) { .agent-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 560px) { .agent-grid { grid-template-columns: 1fr; } }
 
@@ -333,10 +340,12 @@
       <div class="agent-badges" role="list">
         <span class="agent-badge" role="listitem">Claude Code</span>
         <span class="agent-badge" role="listitem">Cursor</span>
+        <span class="agent-badge" role="listitem">Codex</span>
         <span class="agent-badge" role="listitem">GitHub Copilot</span>
         <span class="agent-badge" role="listitem">Windsurf</span>
         <span class="agent-badge" role="listitem">Cline</span>
         <span class="agent-badge" role="listitem">OpenCode</span>
+        <span class="agent-badge" role="listitem">Hermes Agent</span>
       </div>
     </div>
   </div>
@@ -383,19 +392,19 @@
           <div class="step-num" aria-hidden="true">1</div>
           <h3>Scan your codebase</h3>
           <p>tree-sitter AST parsers extract every function, class, module, and dependency across 17 languages with full signatures and docstrings.</p>
-          <div class="step-cmd" aria-label="Command: okf generate">okf generate ./my_project ./okf_bundle</div>
+          <div class="step-cmd"><span class="cmd-text">okf generate ./my_project ./okf_bundle</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate ./my_project ./okf_bundle" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="step reveal">
           <div class="step-num" aria-hidden="true">2</div>
           <h3>Retrieve any concept</h3>
           <p>Exact-symbol lookup returns full concept cards — signature, parameters, callers, callees — in milliseconds. Zero embeddings, zero RAG.</p>
-          <div class="step-cmd" aria-label="Command: okf lookup">okf lookup WorldBankConnector</div>
+          <div class="step-cmd"><span class="cmd-text">okf lookup WorldBankConnector</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf lookup WorldBankConnector" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="step reveal">
           <div class="step-num" aria-hidden="true">3</div>
           <h3>Integrate with any agent</h3>
           <p>One command installs okf-generator into Claude Code, Cursor, Copilot, Windsurf, Cline, or OpenCode with auto-trigger rules.</p>
-          <div class="step-cmd" aria-label="Command: okf install">okf install claude  # or cursor, copilot…</div>
+          <div class="step-cmd"><span class="cmd-text">okf install claude  # or cursor, copilot…</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install claude" aria-label="Copy command">Copy</button></div>
         </div>
       </div>
     </div>
@@ -481,27 +490,27 @@
         <div class="agent-card reveal">
           <h3>Claude Code</h3>
           <p class="agent-note">Auto-triggers on "index my codebase"</p>
-          <div class="agent-cmd">okf install claude</div>
+          <div class="agent-cmd"><span>okf install claude</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install claude" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="agent-card reveal">
           <h3>Cursor</h3>
           <p class="agent-note">Writes .cursorrules — auto-loaded</p>
-          <div class="agent-cmd">okf install cursor</div>
+          <div class="agent-cmd"><span>okf install cursor</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install cursor" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="agent-card reveal">
           <h3>GitHub Copilot</h3>
           <p class="agent-note">Writes copilot-instructions.md for VS Code</p>
-          <div class="agent-cmd">okf install copilot</div>
+          <div class="agent-cmd"><span>okf install copilot</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install copilot" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="agent-card reveal">
           <h3>Windsurf</h3>
           <p class="agent-note">Writes .windsurfrules — auto-loaded</p>
-          <div class="agent-cmd">okf install windsurf</div>
+          <div class="agent-cmd"><span>okf install windsurf</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install windsurf" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="agent-card reveal">
           <h3>Cline</h3>
           <p class="agent-note">Writes .clinerules — auto-loaded</p>
-          <div class="agent-cmd">okf install cline</div>
+          <div class="agent-cmd"><span>okf install cline</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install cline" aria-label="Copy command">Copy</button></div>
         </div>
         <div class="agent-card reveal">
           <h3>OpenCode</h3>
@@ -529,7 +538,7 @@
             <h3>Base Enrichment</h3>
           </div>
           <p>Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
-          <div class="enrich-cmd">okf generate ./src ./bundle --enrich base</div>
+          <div class="enrich-cmd">okf generate ./src ./okf_bundle --enrich base</div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -537,7 +546,7 @@
             <h3>Deep Enrichment</h3>
           </div>
           <p>Adds usage examples, side effects, security notes, and complexity estimates. Requires source body for full context.</p>
-          <div class="enrich-cmd">okf enrich ./bundle --mode deep</div>
+          <div class="enrich-cmd">okf enrich ./okf_bundle --mode deep</div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -545,7 +554,7 @@
             <h3>Security Audit</h3>
           </div>
           <p>Audits the bundle for visible risk patterns — injection vectors, auth bypasses, unsafe deserialization. Flags risks with remediation hints.</p>
-          <div class="enrich-cmd">okf enrich ./bundle --mode security</div>
+          <div class="enrich-cmd">okf enrich ./okf_bundle --mode security</div>
         </div>
         <div class="enrich-card reveal">
           <div class="enrich-card-header">
@@ -553,7 +562,7 @@
             <h3>Full Enrichment</h3>
           </div>
           <p>All tiers plus semantic related-links across concepts. Best for training data generation and comprehensive architectural review.</p>
-          <div class="enrich-cmd">okf enrich ./bundle --mode full</div>
+          <div class="enrich-cmd">okf enrich ./okf_bundle --mode full</div>
         </div>
       </div>
     </div>
@@ -785,6 +794,28 @@
 
   <script>
     // Copy-to-clipboard helper
+    function copyMini(btn) {
+      const text = btn.getAttribute('data-text');
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
     function copyInstall(btn, text) {
       navigator.clipboard.writeText(text).then(() => {
         const orig = btn.innerHTML;
