@@ -1,6 +1,6 @@
 # MCP Server
 
-`okf mcp` starts a Model Context Protocol server over your bundle, exposing 7 tools that let any MCP-compatible agent (Claude Desktop, Claude Code, or any MCP client) query your codebase's knowledge graph directly — no manual `okf lookup` calls, no copy-pasting output into chat.
+`okf mcp` starts a Model Context Protocol server over your bundle, exposing 11 tools that let any MCP-compatible agent (Claude Desktop, Claude Code, or any MCP client) query your codebase's knowledge graph directly — no manual `okf lookup` calls, no copy-pasting output into chat.
 
 ## Starting the Server
 
@@ -30,14 +30,18 @@ Or, if you've already run `okf install claude`, this registration is handled for
 ## Tools Exposed
 
 | Tool | Purpose | Key Args |
-|---|---|---|
+|---|---|---|---|
 | `lookup` | Exact-match concept search by name | `query: str`, `type?: str` |
 | `get_concept` | Fetch full concept card by exact title | `title: str` |
-| `find_callers` | Reverse call-graph lookup — who calls this function | `title: str` |
-| `list_by_file` | All concepts extracted from a given source file | `path: str` |
+| `find_callers` | Reverse call-graph — who calls this function | `concept_id: str` |
+| `find_callees` | Forward call-graph — what does this function call | `concept_id: str` |
+| `list_by_file` | All concepts extracted from a given source file | `file: str` |
 | `list_dependencies` | All dependency concepts, optionally filtered by ecosystem | `ecosystem?: str` |
-| `bundle_info` | Bundle-level metadata: concept counts, languages, generation timestamp | none |
-| `list_by_type` | All concepts of a given type (`class`, `function`, `dependency`, etc.) | `type: str` |
+| `bundle_info` | Bundle-level metadata: concept counts, languages | none |
+| `list_by_type` | All concepts of a given type | `type: str` |
+| `search_by_tag` | Filter concepts by tag prefix (`lang:python`, `ecosystem:pip`) | `tag: str` |
+| `get_related` | Related/referenced concepts for a given concept_id | `concept_id: str` |
+| `get_manifest_source` | Manifest file info for a dependency | `concept_id: str` |
 
 ### `lookup`
 
@@ -51,10 +55,10 @@ Returns the full concept card: signature, docstring, params, methods, calls/call
 
 ### `get_concept`
 
-Use when you already know the exact fully-qualified title (e.g. from a previous `lookup` or `find_callers` result) and want the full card without re-searching.
+Use when you already know the exact `concept_id` (e.g. from a previous `lookup` or `find_callers` result) and want the full card without re-searching.
 
 ```json
-{ "title": "WorldBankConnector.fetch_series" }
+{ "concept_id": "services/WorldBankConnector" }
 ```
 
 ### `find_callers`
@@ -62,7 +66,7 @@ Use when you already know the exact fully-qualified title (e.g. from a previous 
 Reverse edge traversal — returns everything in the bundle that calls the given concept. Useful before refactoring a function to see blast radius.
 
 ```json
-{ "title": "fetch_series" }
+{ "concept_id": "services/fetch_series" }
 ```
 
 Returns entries from that concept's `Called By` section (see [Bundle Format Reference](bundle-format.md#call-graph-edges)), plus anything flagged under `Possible Calls` if resolution was ambiguous.
@@ -106,12 +110,73 @@ Useful for an agent to sanity-check it's talking to a fresh bundle before relyin
 
 Valid `type` values match the [Concept Types](bundle-format.md#concept-types) table: `module`, `class`, `function`, `method`, `dependency`, `constant`, `interface`.
 
+### `find_callees`
+
+Forward edge traversal — returns everything in the bundle that the given concept references (calls, imports, or links to). Opposite of `find_callers`.
+
+```json
+{ "concept_id": "services/fetch_series" }
+```
+
+Useful when understanding a function's dependencies before refactoring.
+
+### `search_by_tag`
+
+List all concepts matching a tag prefix. Tags are key:value pairs stored on each concept during generation.
+
+```json
+{ "tag": "ecosystem:cargo" }
+{ "tag": "lang:python" }
+{ "tag": "domain:api" }
+```
+
+Common tag prefixes: `lang:`, `ecosystem:`, `domain:`, `module:`, `manifest:`, `git:branch:`, `git:repo:`.
+
+### `get_related`
+
+Returns structured related-concept links for a given concept_id. Includes both `related` (static call-graph links resolved during generation) and `related_semantic` (LLM-enriched cross-links, present only if `--enrich` was used).
+
+```json
+{ "concept_id": "cli" }
+```
+
+Response shape:
+
+```json
+{
+  "related": [{ "title": "main", "concept_id": "cli/main" }],
+  "related_semantic": []
+}
+```
+
+### `get_manifest_source`
+
+For a dependency concept, returns which manifest file declared it.
+
+```json
+{ "concept_id": "_dependencies/pip/requests" }
+```
+
+Response:
+
+```json
+{
+  "concept_id": "_dependencies/pip/requests",
+  "title": "requests",
+  "manifest_file": "requirements.txt",
+  "source_file": "src/requirements.txt",
+  "ecosystem": "pip"
+}
+```
+
+Only works for `Dependency`-type concepts.
+
 ## Why MCP Instead of Just Reading the Bundle Files
 
 An agent *could* just `cat` bundle markdown files directly — bundles are plain files after all. MCP tools exist because:
 
 - Exact-match `lookup` avoids the agent guessing file paths.
-- `find_callers` does graph traversal the agent would otherwise have to do manually across many files.
+- `find_callers` / `find_callees` do graph traversal the agent would otherwise have to do manually across many files.
 - Structured JSON responses are cheaper to parse than markdown scraping.
 - Works identically whether the bundle is local or the agent connects over a remote MCP transport.
 
