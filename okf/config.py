@@ -90,6 +90,7 @@ DEFAULTS = {
         "model": "local-model",
         "api_key": "",
         "max_workers": 2,
+        "max_tokens": 2000,
     },
     "providers": dict(BUILTIN_PROVIDERS),
     "enrich": {
@@ -161,7 +162,7 @@ def resolve_provider(cfg: dict, mode: str) -> dict:
       2. llm.provider                — global provider
       3. "local"                     — fallback
 
-    Returns dict with keys: provider, base_url, model, api_key, max_workers
+    Returns dict with keys: provider, base_url, model, api_key, max_workers, max_tokens
     """
     provider = _get(cfg, f"enrich.{mode}.provider") or _get(cfg, "llm.provider", "local")
     prov_cfg = _get(cfg, f"providers.{provider}", {})
@@ -185,6 +186,10 @@ def resolve_provider(cfg: dict, mode: str) -> dict:
         "max_workers": int(
             _get(cfg, f"enrich.{mode}.max_workers")
             or _get(cfg, "llm.max_workers", 2)
+        ),
+        "max_tokens": int(
+            _get(cfg, f"enrich.{mode}.max_tokens")
+            or _get(cfg, "llm.max_tokens", 2000)
         ),
     }
 

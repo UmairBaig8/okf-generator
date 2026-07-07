@@ -709,7 +709,7 @@ def _detect_deprecation(concept: Concept) -> str:
     return ""
 
 
-def enrich_concept(concept: Concept, client, model: str) -> Concept:
+def enrich_concept(concept: Concept, client, model: str, max_tokens: int = 2000) -> Concept:
     needs_desc = not concept.description or len(concept.description) <= 120
     needs_doc  = not concept.docstring or len(concept.docstring) <= 80
 
@@ -749,7 +749,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000,
+            max_tokens=max_tokens,
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
@@ -833,7 +833,7 @@ Source body:
 """
 
 
-def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) -> Concept:
+def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path, max_tokens: int = 2000) -> Concept:
     """Second-pass enrichment that requires the actual source body.
     Skips silently (no call made) if the body can't be resolved, rather than
     falling back to signature-only guessing for fields that need real code.
@@ -923,7 +923,7 @@ Source body:
 """
 
 
-def enrich_security(concept: Concept, client, model: str, source_dir: Path) -> Concept:
+def enrich_security(concept: Concept, client, model: str, source_dir: Path, max_tokens: int = 2000) -> Concept:
     """Lean, security/complexity-only enrichment."""
     if concept.type not in {"Function", "Class", "Method"}:
         return concept
@@ -1450,7 +1450,7 @@ def enrich_bundle(
 
         done_seen = errors = 0
         with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
-            futures = {pool.submit(_enrich_one_base, c, client, r["model"], bundle_dir, all_map): c for c in concepts}
+            futures = {pool.submit(_enrich_one_base, c, client, r["model"], bundle_dir, all_map, r["max_tokens"]): c for c in concepts}
             for future in tqdm(as_completed(futures), total=len(futures), desc="Enriching"):
                 try:
                     future.result()
@@ -1481,7 +1481,7 @@ def enrich_bundle(
         with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
             futures = {}
             for c, path in targets:
-                futures[pool.submit(_audit_one, c, client, r["model"], src, path)] = (c, path)
+                futures[pool.submit(_audit_one, c, client, r["model"], src, path, r["max_tokens"])] = (c, path)
             for future in tqdm(as_completed(futures), total=len(futures), desc="Security audit"):
                 try:
                     result = future.result()
@@ -1519,8 +1519,9 @@ def enrich_bundle(
             all_map[c.concept_id] = c
 
         def _deep_and_write(c):
-            enriched = enrich_concept(c, client, r["model"])
-            enriched = enrich_concept_deep(enriched, client, r["model"], src)
+            mt = r["max_tokens"]
+            enriched = enrich_concept(c, client, r["model"], max_tokens=mt)
+            enriched = enrich_concept_deep(enriched, client, r["model"], src, max_tokens=mt)
             p = _concept_output_path(enriched, bundle_dir)
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(render_concept(enriched, all_map), encoding="utf-8")
@@ -1539,9 +1540,9 @@ def enrich_bundle(
         log.info(f"Enrich complete: {done_seen} done, {errors} errors | {_fmt_enrich_tokens()}")
 
 
-def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path) -> str:
+def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path, max_tokens: int = 2000) -> str:
     """Helper for enrich_bundle security mode."""
-    enrich_security(c, client, model, source_dir)
+    enrich_security(c, client, model, source_dir, max_tokens=max_tokens)
     if c.security or c.complexity:
         if _patch_security_complexity(path, c.security, c.complexity):
             return "done"
@@ -1561,9 +1562,9 @@ def _fmt_enrich_tokens():
     return " | ".join(parts)
 
 
-def _enrich_one_base(c: Concept, client, model: str, bundle_dir: Path, all_map: dict) -> None:
+def _enrich_one_base(c: Concept, client, model: str, bundle_dir: Path, all_map: dict, max_tokens: int = 2000) -> None:
     """Enrich a single concept with base mode and write it back."""
-    enriched = enrich_concept(c, client, model)
+    enriched = enrich_concept(c, client, model, max_tokens=max_tokens)
     p = _concept_output_path(enriched, bundle_dir)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(render_concept(enriched, all_map), encoding="utf-8")

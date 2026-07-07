@@ -87,7 +87,7 @@ Question: {query}"""
     return "\n\n".join(context_parts), results, term_usage
 
 
-def _ask_llm(client, model, question, context, messages):
+def _ask_llm(client, model, question, context, messages, max_tokens=2000):
     """Send question + context to LLM. Returns (answer, usage_dict)."""
     system = f"""You are a codebase expert. Answer based on the context below.
 If the context doesn't contain enough information, say so.
@@ -100,7 +100,7 @@ Context from the knowledge bundle:
     msgs.append({"role": "user", "content": question})
 
     resp = client.chat.completions.create(
-        model=model, messages=msgs, max_tokens=1000, temperature=0.1,
+        model=model, messages=msgs, max_tokens=max_tokens, temperature=0.1,
     )
     answer = (resp.choices[0].message.content or "").strip()
     u = resp.usage
@@ -141,6 +141,7 @@ def main():
     api_key = _get(cfg, "llm.api_key", "")
     base_url = _get(cfg, "llm.base_url", "http://localhost:8080/v1")
     model = _get(cfg, "llm.model", "local-model")
+    max_tokens = int(_get(cfg, "llm.max_tokens", 2000))
 
     if not api_key:
         print("No LLM configured. Set llm.api_key in .okfconfig.", file=sys.stderr)
@@ -180,7 +181,7 @@ def main():
             if not context:
                 print("  No relevant concepts found. Try different keywords.\n")
                 continue
-            answer, ans_u = _ask_llm(client, model, q, context, history)
+            answer, ans_u = _ask_llm(client, model, q, context, history, max_tokens)
             for k in total_usage:
                 total_usage[k] += ans_u.get(k, 0)
             history.append(("user", q))
@@ -203,7 +204,7 @@ def main():
         print("Try different keywords or check the bundle is up to date.")
         sys.exit(1)
 
-    answer, ans_u = _ask_llm(client, model, " ".join(query_parts), context, [])
+    answer, ans_u = _ask_llm(client, model, " ".join(query_parts), context, [], max_tokens)
     total_u = {k: term_u.get(k, 0) + ans_u.get(k, 0) for k in ("prompt", "completion", "total", "reasoning")}
     print(f"\n  Q: {' '.join(query_parts)}\n")
     print(answer)
