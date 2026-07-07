@@ -72,6 +72,21 @@ from okf.parsers.base import Concept, SKIP_DIRS, SKIP_DIR_SUFFIXES
 
 log = logging.getLogger("okf_gen")
 
+# Token usage accumulator for enrich commands (thread-safe via GIL)
+_ENRICH_TOKENS: list[dict] = []
+
+def _log_usage(resp):
+    """Extract and accumulate token usage from an LLM response."""
+    u = getattr(resp, "usage", None)
+    if u is None:
+        return
+    _ENRICH_TOKENS.append({
+        "prompt": u.prompt_tokens or 0,
+        "completion": u.completion_tokens or 0,
+        "total": u.total_tokens or 0,
+        "reasoning": (u.completion_tokens_details.reasoning_tokens or 0) if u.completion_tokens_details else 0,
+    })
+
 def _git_info(repo_root: Path) -> dict:
     """Get git metadata for tagging. Returns empty dict if not a git repo."""
     info = {}
@@ -738,6 +753,7 @@ def enrich_concept(concept: Concept, client, model: str) -> Concept:
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
+        _log_usage(resp)
 
         # strip markdown fences if model wraps anyway
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
@@ -851,6 +867,7 @@ def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path) 
             temperature=0.1,
         )
         raw = (resp.choices[0].message.content or "").strip()
+        _log_usage(resp)
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw).strip()
         data = json.loads(raw)
@@ -921,6 +938,7 @@ def enrich_security(concept: Concept, client, model: str, source_dir: Path) -> C
     )
     try:
         resp = client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300, temperature=0.1)
+        _log_usage(resp)
         raw = (resp.choices[0].message.content or "").strip()
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw).strip()
@@ -1073,6 +1091,7 @@ def enrich_related_semantic(
     prompt = RELATED_PROMPT.format(top_k=top_k, type=concept.type, title=concept.title, description=concept.description or "none", candidates=candidate_text)
     try:
         resp = client.chat.completions.create(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=200, temperature=0.1)
+        _log_usage(resp)
         raw = (resp.choices[0].message.content or "").strip()
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw).strip()
@@ -1439,7 +1458,7 @@ def enrich_bundle(
                 except Exception as e:
                     errors += 1
                     log.debug(f"Enrich error: {e}")
-        log.info(f"Enrich complete: {done_seen} done, {errors} errors")
+        log.info(f"Enrich complete: {done_seen} done, {errors} errors | {_fmt_enrich_tokens()}")
 
     elif mode == "security":
         targets = []
@@ -1473,7 +1492,7 @@ def enrich_bundle(
                 except Exception as e:
                     errors += 1
                     log.debug(f"Security audit error: {e}")
-        log.info(f"Security audit complete: {done_seen} patched, {skipped} skipped, {errors} errors")
+        log.info(f"Security audit complete: {done_seen} patched, {skipped} skipped, {errors} errors | {_fmt_enrich_tokens()}")
 
     elif mode in ("deep", "full"):
         log.info(f"Deep enrich for {len(raw)} concepts...")
@@ -1517,7 +1536,7 @@ def enrich_bundle(
                 except Exception as e:
                     errors += 1
                     log.debug(f"Enrich error: {e}")
-        log.info(f"Enrich complete: {done_seen} done, {errors} errors")
+        log.info(f"Enrich complete: {done_seen} done, {errors} errors | {_fmt_enrich_tokens()}")
 
 
 def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path) -> str:
@@ -1527,6 +1546,19 @@ def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path) -> 
         if _patch_security_complexity(path, c.security, c.complexity):
             return "done"
     return "skipped"
+
+
+def _fmt_enrich_tokens():
+    tot = _ENRICH_TOKENS
+    if not tot:
+        return ""
+    p = sum(t.get("prompt", 0) for t in tot)
+    c = sum(t.get("completion", 0) for t in tot)
+    r = sum(t.get("reasoning", 0) for t in tot)
+    parts = [f"Tokens: {p + c} total ({p} prompt + {c} completion)"]
+    if r:
+        parts.append(f"{r} reasoning")
+    return " | ".join(parts)
 
 
 def _enrich_one_base(c: Concept, client, model: str, bundle_dir: Path, all_map: dict) -> None:
