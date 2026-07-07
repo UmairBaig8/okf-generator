@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/user-guide/enrichment/">
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/docs-site/user-guide/ask/">
       
       
-        <link rel="prev" href="../mcp-server/">
+        <link rel="prev" href="../enrichment/">
       
       
-        <link rel="next" href="../ask/">
+        <link rel="next" href="../ci-cd/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>LLM Enrichment - OKF Generator</title>
+        <title>Codebase Q&A - OKF Generator</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#llm-enrichment" class="md-skip">
+        <a href="#codebase-qa-okf-ask" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              LLM Enrichment
+              Codebase Q&A
             
           </span>
         </div>
@@ -658,6 +658,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -677,7 +705,7 @@
   <span class="md-ellipsis">
     
   
-    LLM Enrichment
+    Codebase Q&A
   
 
     
@@ -695,7 +723,7 @@
   <span class="md-ellipsis">
     
   
-    LLM Enrichment
+    Codebase Q&A
   
 
     
@@ -732,155 +760,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#targeting-specific-concepts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Targeting specific concepts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enrichment-modes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Enrichment modes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Enrichment modes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#base-description-improvement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        base — Description improvement
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#deep-source-aware-enrichment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        deep — Source-aware enrichment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#security-risk-audit" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        security — Risk audit
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#full-all-passes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        full — All passes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#when-to-use-which-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        When to use which mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fields-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fields reference
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resumable-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resumable execution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multi-provider-routing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multi-provider routing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#time-and-cost-estimates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Time and cost estimates
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faq" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FAQ
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -891,38 +770,65 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#no-llm-use-okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No LLM? Use okf lookup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-its-different-from-okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it's different from okf lookup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacy
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ask/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Codebase Q&A
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1288,159 +1194,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#targeting-specific-concepts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Targeting specific concepts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enrichment-modes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Enrichment modes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Enrichment modes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#base-description-improvement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        base — Description improvement
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#deep-source-aware-enrichment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        deep — Source-aware enrichment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#security-risk-audit" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        security — Risk audit
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#full-all-passes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        full — All passes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#when-to-use-which-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        When to use which mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fields-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fields reference
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resumable-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resumable execution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multi-provider-routing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multi-provider routing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#time-and-cost-estimates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Time and cost estimates
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faq" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FAQ
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
         How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#no-llm-use-okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No LLM? Use okf lookup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-its-different-from-okf-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it's different from okf lookup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacy
       
     </span>
   </a>
@@ -1515,316 +1327,117 @@
   
 
 
-<h1 id="llm-enrichment">LLM Enrichment<a class="headerlink" href="#llm-enrichment" title="Permanent link">&para;</a></h1>
-<p>okf-generator supports optional LLM-powered enrichment to enhance concept descriptions, add usage examples, audit security, and find semantic cross-links.</p>
-<div class="admonition tip">
-<p class="admonition-title">Privacy first</p>
-<p>The default mode is <code>base</code> — it never sends source code to an LLM, only improves existing descriptions and docstrings. Modes <code>deep</code>, <code>security</code>, and <code>full</code> send source code and require explicit opt-in via <code>--mode</code>.</p>
-</div>
+<h1 id="codebase-qa-okf-ask">Codebase Q&amp;A (<code>okf ask</code>)<a class="headerlink" href="#codebase-qa-okf-ask" title="Permanent link">&para;</a></h1>
+<p><code>okf ask</code> lets you ask natural language questions about your codebase. It searches the knowledge bundle for relevant concepts and uses your configured LLM to answer — no more grepping through files or guessing function names.</p>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># Enrich at generate time</span>
-okf<span class="w"> </span>generate<span class="w"> </span>--enrich<span class="w"> </span>deep
-
-<span class="c1"># Or enrich an existing bundle (no re-scan needed)</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>full
-</code></pre></div>
-<h2 id="targeting-specific-concepts">Targeting specific concepts<a class="headerlink" href="#targeting-specific-concepts" title="Permanent link">&para;</a></h2>
-<p>By default enrichment runs on all eligible concepts in the bundle. Use <code>--file</code> or <code>--concept</code> to target specific ones:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Enrich only concepts from a specific source file</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--file<span class="w"> </span>src/utils/helpers.py<span class="w"> </span>--mode<span class="w"> </span>deep
-
-<span class="c1"># Enrich a single concept by ID</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--concept<span class="w"> </span>utils/slugify<span class="w"> </span>--mode<span class="w"> </span>security
-</code></pre></div>
-<p>Both filters use substring matching against the concept's resource path or concept ID.</p>
-<hr />
-<h2 id="enrichment-modes">Enrichment modes<a class="headerlink" href="#enrichment-modes" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Mode</th>
-<th>What it does</th>
-<th style="text-align: center;">Source body needed?</th>
-<th style="text-align: center;">LLM call?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>base</code></td>
-<td>Improves descriptions + docstrings (Google-style)</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">Yes</td>
-</tr>
-<tr>
-<td><code>deep</code></td>
-<td>Adds usage examples, side effects, security notes, complexity estimates</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Yes</td>
-</tr>
-<tr>
-<td><code>security</code></td>
-<td>Audits existing bundle for visible risk patterns only</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Yes</td>
-</tr>
-<tr>
-<td><code>full</code></td>
-<td>All of the above + semantic related-links</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Yes</td>
-</tr>
-</tbody>
-</table>
-<h3 id="base-description-improvement"><code>base</code> — Description improvement<a class="headerlink" href="#base-description-improvement" title="Permanent link">&para;</a></h3>
-<p>Improves existing descriptions and docstrings to Google-style format. Does <strong>not</strong> read the source body — only improves what's already in the bundle.</p>
-<p><strong>What gets enriched:</strong>
-- <code>description</code> — rewritten to be more concise and informative
-- <code>docstring</code> — reformatted with consistent style
-- <code>design_pattern</code> — pattern detected from signature (e.g., "Factory", "Singleton")
-- <code>tags</code> — LLM-suggested semantic tags merged and deduplicated</p>
-<p><strong>Example — before:</strong>
-<div class="highlight"><pre><span></span><code><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A</span><span class="nv"> </span><span class="s">function</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">numbers.&quot;</span>
-</code></pre></div></p>
-<p><strong>Example — after:</strong>
-<div class="highlight"><pre><span></span><code><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Adds</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">integers</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">returns</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">sum.&quot;</span>
-<span class="nt">tags</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lang:python</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type:Function</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">domain:math</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pattern:utility</span>
-</code></pre></div></p>
-<h3 id="deep-source-aware-enrichment"><code>deep</code> — Source-aware enrichment<a class="headerlink" href="#deep-source-aware-enrichment" title="Permanent link">&para;</a></h3>
-<p>Reads the actual source body via <code>source_lines</code> to produce detailed fields.</p>
-<p><strong>What gets enriched:</strong>
-- <code>usage_example</code> — realistic code example showing how to call the function/class
-- <code>side_effects</code> — describes any side effects (I/O, mutation, network calls)
-- <code>security</code> — flags visible risk patterns
-- <code>complexity</code> — estimated complexity (e.g., O(n), "moderate")</p>
-<p><strong>Example — after deep enrichment:</strong>
-<div class="highlight"><pre><span></span><code><span class="nt">usage_example</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w">  </span><span class="no">connector = WorldBankConnector(api_key=&quot;sk-...&quot;)</span>
-<span class="w">  </span><span class="no">df = connector.fetch_series(&quot;NY.GDP.MKTP.CD&quot;, start_date, end_date)</span>
-<span class="nt">side_effects</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Makes</span><span class="nv"> </span><span class="s">HTTP</span><span class="nv"> </span><span class="s">request</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">api.worldbank.org&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Raises</span><span class="nv"> </span><span class="s">requests.HTTPError</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">non-2xx</span><span class="nv"> </span><span class="s">response&quot;</span>
-<span class="nt">complexity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">O(n) where n = number of days in the date range</span>
-</code></pre></div></p>
-<h3 id="security-risk-audit"><code>security</code> — Risk audit<a class="headerlink" href="#security-risk-audit" title="Permanent link">&para;</a></h3>
-<p>Audits concepts for visible risk patterns in the source body.</p>
-<p><strong>What gets enriched:</strong>
-- <code>security</code> — risk assessment (e.g., "SQL injection risk: raw string concatenation detected")
-- <code>deprecation_notes</code> — deprecation notices found in docstring or decorators (deterministic, no LLM needed)</p>
-<p><strong>Example — after security audit:</strong>
-<div class="highlight"><pre><span></span><code><span class="gu">## Security ⚠️ AI-estimated — verify manually</span>
-<span class="k">-</span><span class="w"> </span>SQL injection risk: raw string concatenation detected in <span class="sb">`query`</span> parameter
-<span class="k">-</span><span class="w"> </span>No input validation on <span class="sb">`user_id`</span>
-
-<span class="gu">## Deprecation</span>
-Use <span class="sb">`fetch_series_v2`</span> instead — this method is deprecated.
-</code></pre></div></p>
-<h3 id="full-all-passes"><code>full</code> — All passes<a class="headerlink" href="#full-all-passes" title="Permanent link">&para;</a></h3>
-<p>Runs <code>base</code> + <code>deep</code> + <code>security</code>, plus a semantic related-links pass:</p>
-<ul>
-<li><code>related_semantic</code> — LLM-suggested cross-links beyond the call graph (e.g., conceptually similar functions in different modules)</li>
-</ul>
-<hr />
-<h2 id="when-to-use-which-mode">When to use which mode<a class="headerlink" href="#when-to-use-which-mode" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Use case</th>
-<th>Recommended mode</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>You just want cleaner docs descriptions</td>
-<td><code>base</code></td>
-<td>No source code sent to LLM, fastest, resumable</td>
-</tr>
-<tr>
-<td>You want usage examples and complexity estimates for a library you're documenting</td>
-<td><code>deep</code></td>
-<td>Reads source body — good for public docs where accuracy matters</td>
-</tr>
-<tr>
-<td>You're auditing a codebase for visible risk patterns before a security review</td>
-<td><code>security</code></td>
-<td>Flags SQL injection, hardcoded secrets, unsafe <code>eval()</code> patterns</td>
-</tr>
-<tr>
-<td>You're preparing a bundle for an AI agent and want the richest possible context</td>
-<td><code>full</code></td>
-<td>Runs all passes + semantic cross-links between related modules</td>
-</tr>
-<tr>
-<td>You're in CI and want to enrich incrementally</td>
-<td><code>base</code> (CI safe)</td>
-<td><code>deep</code>/<code>security</code> need source body which may not be available in CI</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rule of thumb:</strong> Start with <code>base</code>. Add <code>deep</code> or <code>security</code> only when you need the specific fields they provide and have verified the LLM provider is acceptable for your codebase.</p>
-<hr />
-<h2 id="fields-reference">Fields reference<a class="headerlink" href="#fields-reference" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Appears in</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>description</code></td>
-<td>Frontmatter</td>
-<td>Improved short description</td>
-</tr>
-<tr>
-<td><code>docstring</code></td>
-<td>Body</td>
-<td>Reformatted docstring</td>
-</tr>
-<tr>
-<td><code>design_pattern</code></td>
-<td>Body</td>
-<td>Detected design pattern</td>
-</tr>
-<tr>
-<td><code>tags</code></td>
-<td>Frontmatter</td>
-<td>Merged LLM-suggested tags</td>
-</tr>
-<tr>
-<td><code>usage_example</code></td>
-<td>Body</td>
-<td>Code example from deep pass</td>
-</tr>
-<tr>
-<td><code>side_effects</code></td>
-<td>Body</td>
-<td>Side effects from deep pass</td>
-</tr>
-<tr>
-<td><code>complexity</code></td>
-<td>Body</td>
-<td>Complexity estimate from deep pass</td>
-</tr>
-<tr>
-<td><code>security</code></td>
-<td>Body</td>
-<td>Risk patterns from security pass</td>
-</tr>
-<tr>
-<td><code>deprecation_notes</code></td>
-<td>Body</td>
-<td>Deprecation detection (deterministic)</td>
-</tr>
-<tr>
-<td><code>related_semantic</code></td>
-<td>Body</td>
-<td>AI-suggested cross-links from full pass</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="resumable-execution">Resumable execution<a class="headerlink" href="#resumable-execution" title="Permanent link">&para;</a></h2>
-<p>All modes are resumable — already-enriched concepts are skipped on re-run:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Run base enrichment</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>base
-
-<span class="c1"># Interrupt mid-way (Ctrl+C), then resume — already-done concepts are skipped</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>deep
-
-<span class="c1"># Force re-run all concepts</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>full<span class="w"> </span>--force
-</code></pre></div>
-<hr />
-<h2 id="multi-provider-routing">Multi-provider routing<a class="headerlink" href="#multi-provider-routing" title="Permanent link">&para;</a></h2>
-<p>Each enrich mode resolves its own provider independently via:</p>
-<div class="highlight"><pre><span></span><code>enrich.{mode}.{key} → providers.{name}.{key} → llm.{key}
-</code></pre></div>
-<p>Example — route cheap description work to a local model, security audits to Anthropic:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enrich&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gemma-3-4b-it-qat:Q4_0&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;deep&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-chat&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>Built-in providers: <code>local</code>, <code>openai</code>, <code>anthropic</code>, <code>deepseek</code>, <code>gemini</code>, <code>ollama</code>, <code>lmstudio</code>, <code>openrouter</code>, <code>dashscope</code>, <code>minimax</code>.</p>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>config<span class="w"> </span>llm.base_url<span class="o">=</span>http://localhost:8080/v1
+<div class="highlight"><pre><span></span><code><span class="c1"># Configure an LLM provider first</span>
 okf<span class="w"> </span>config<span class="w"> </span>llm.api_key<span class="o">=</span>sk-...
+okf<span class="w"> </span>config<span class="w"> </span>llm.base_url<span class="o">=</span>https://api.deepseek.com/v1
+okf<span class="w"> </span>config<span class="w"> </span>llm.model<span class="o">=</span>deepseek-v4-flash
+
+<span class="c1"># Ask questions</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how does the payment service work&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what dependencies does this project use&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;find all API endpoints&quot;</span>
 </code></pre></div>
-<p>See <a href="../../getting-started/configuration/">Configuration</a> for full details.</p>
-<h2 id="time-and-cost-estimates">Time and cost estimates<a class="headerlink" href="#time-and-cost-estimates" title="Permanent link">&para;</a></h2>
-<p>Enrichment speed depends on your LLM provider and model. These are rough estimates per 100 concepts:</p>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>Your question
+    │
+    ▼
+┌─────────────────┐
+│  1. Parse query  │  Remove stop words (how, does, the, what...)
+└────────┬────────┘
+         │ tokens: [&quot;slugify&quot;, &quot;function&quot;]
+         ▼
+┌─────────────────┐
+│  2. Search       │  Fuzzy match against concept titles,
+│     bundle       │  descriptions, and tags via okf.lookup
+└────────┬────────┘
+         │ top 8 relevant concepts
+         ▼
+┌─────────────────┐
+│  3. Build        │  Pack title, type, signature, description,
+│     context      │  related links into a text block
+└────────┬────────┘
+         │ context + question → LLM
+         ▼
+┌─────────────────┐
+│  4. LLM answers  │  Uses only the provided context —
+│                  │  no internet, no training data
+└────────┬────────┘
+         │ natural language answer
+         ▼
+      You see the answer
+</code></pre></div>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Architecture questions</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how does the payment service work&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what classes handle user authentication&quot;</span>
+
+<span class="c1"># Dependency questions</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what dependencies does this project use&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;which packages use serde&quot;</span>
+
+<span class="c1"># API discovery</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;find all API endpoints&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what functions are available in the utils module&quot;</span>
+
+<span class="c1"># Specific file questions</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;what does slugify do&quot;</span>
+okf<span class="w"> </span>ask<span class="w"> </span><span class="s2">&quot;how is the database configured&quot;</span>
+</code></pre></div>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<ul>
+<li>A configured LLM provider (see <a href="../../getting-started/configuration/">Configuration</a>)</li>
+<li>A generated bundle (<code>okf generate</code>)</li>
+<li><code>openai</code> package installed (<code>pip install "okf-generator[llm]"</code>)</li>
+</ul>
+<h2 id="no-llm-use-okf-lookup">No LLM? Use <code>okf lookup</code><a class="headerlink" href="#no-llm-use-okf-lookup" title="Permanent link">&para;</a></h2>
+<p>If you don't have an LLM configured, <code>okf ask</code> will tell you. Use <code>okf lookup</code> instead for exact-symbol search — it's faster and works offline:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span>slugify
+okf<span class="w"> </span>lookup<span class="w"> </span>--type<span class="w"> </span>Function<span class="w"> </span>--tag<span class="w"> </span>lang:rust
+okf<span class="w"> </span>lookup<span class="w"> </span>--file<span class="w"> </span>src/payment/handler.py
+</code></pre></div>
+<h2 id="how-its-different-from-okf-lookup">How it's different from <code>okf lookup</code><a class="headerlink" href="#how-its-different-from-okf-lookup" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Mode</th>
-<th>Local LLM (gemma-3-4b)</th>
-<th>Cloud API (DeepSeek)</th>
-<th>Cloud API (GPT-4o)</th>
+<th></th>
+<th><code>okf lookup</code></th>
+<th><code>okf ask</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>base</code></td>
-<td>~2–5 min</td>
-<td>~30 sec</td>
-<td>~1 min</td>
+<td>Query type</td>
+<td>Symbol name (exact/fuzzy)</td>
+<td>Natural language question</td>
 </tr>
 <tr>
-<td><code>deep</code></td>
-<td>~5–10 min</td>
-<td>~2–3 min</td>
-<td>~3–5 min</td>
+<td>LLM needed</td>
+<td>No</td>
+<td>Yes</td>
 </tr>
 <tr>
-<td><code>security</code></td>
-<td>~5–10 min</td>
-<td>~2–3 min</td>
-<td>~3–5 min</td>
+<td>Speed</td>
+<td>Milliseconds</td>
+<td>Seconds</td>
 </tr>
 <tr>
-<td><code>full</code></td>
-<td>~10–20 min</td>
-<td>~5–8 min</td>
-<td>~8–12 min</td>
+<td>Output</td>
+<td>Structured concept card</td>
+<td>Natural language answer</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>"Find this function"</td>
+<td>"How does this work?"</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Cost notes:</strong>
-- <strong>Local LLM</strong> — free (runs on your machine via Ollama, llama.cpp, etc.)
-- <strong>DeepSeek</strong> — ~$0.01–0.03 per 100 concepts (base mode)
-- <strong>Anthropic/GPT</strong> — ~$0.05–0.15 per 100 concepts depending on mode
-- <code>base</code> mode is cheapest (smaller prompts, no source body)
-- <code>deep</code> and <code>security</code> include source body in prompts → ~3–5x more tokens per call</p>
-<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
-<p><strong>Does enrichment send my code to a third party?</strong>
-<code>base</code> mode never reads source code — only metadata already in the bundle. <code>deep</code>, <code>security</code>, and <code>full</code> read the source body and send it to the configured LLM provider. Check your provider's data policy before using these modes on proprietary code.</p>
-<p><strong>Can I run enrichment without an API key?</strong>
-<code>okf enrich</code> without a configured LLM silently skips all concepts. Core extraction (<code>okf generate</code>) never requires an API key.</p>
-<p><strong>What happens if I interrupt enrichment mid-way?</strong>
-Enrichment is resumable — already-processed concepts are skipped on re-run. Use <code>--force</code> to re-process everything.</p>
-<p><strong>Why is my local LLM slower than cloud?</strong>
-Local models run on your hardware. Gemma-3-4B on a MacBook processes ~5–15 concepts per minute. For production workloads, consider a cloud provider or a faster local model.</p>
-<p><strong>Does deep enrichment modify my source code?</strong>
-No. Enrichment only modifies the bundle files (<code>.md</code> in the bundle directory). Your source code is never altered.</p>
-<p><strong>How do I know which concepts have been enriched?</strong>
-Check the concept file — if it has <code>## Usage Example</code>, <code>## Side Effects</code>, <code>## Security</code>, or <code>## Complexity</code> sections, deep enrichment has run. The <code>description</code> field in frontmatter is also enhanced by base enrichment.</p>
-<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Enrichment runs after initial scanning</li>
-<li>Already-enriched concepts are skipped (resumable)</li>
-<li>Each mode resolves its provider independently via the cascade</li>
-<li>Fields are appended to concept files — original data is preserved</li>
-</ol>
+<h2 id="privacy">Privacy<a class="headerlink" href="#privacy" title="Permanent link">&para;</a></h2>
+<p><code>okf ask</code> only sends concept cards from the bundle to the LLM — these are the same markdown files that are already stored in your bundle directory. No raw source code is sent. The question is sent alongside the concept context.</p>
+<p>If you use a local LLM (Ollama, llama.cpp), nothing leaves your machine.</p>
 
 
 

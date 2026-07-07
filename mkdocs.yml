@@ -86,6 +86,7 @@ nav:
       - Agent Integration: user-guide/agent-integration.md
       - MCP Server: user-guide/mcp-server.md
       - LLM Enrichment: user-guide/enrichment.md
+      - Codebase Q&A: user-guide/ask.md
       - CI/CD Guide: user-guide/ci-cd.md
       - Visualization: user-guide/visualization.md
   - Comparison: comparison.md
