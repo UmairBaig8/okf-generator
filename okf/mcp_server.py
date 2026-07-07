@@ -9,13 +9,17 @@ Usage:
   okf mcp --bundle <path>           Explicit bundle path
 
 Tools:
-  lookup             Search concepts by name/type/tag
-  get_concept        Full detail by concept_id
-  find_callers       Concepts that reference a given concept_id
-  list_by_file       Concepts extracted from a source file
-  list_dependencies  List dependency concepts
-  bundle_info        Bundle statistics
-  list_by_type       List concepts of a specific type
+  lookup              Search concepts by name/type/tag
+  get_concept         Full detail by concept_id
+  find_callers        Concepts that reference a given concept_id
+  find_callees        Concepts that a given concept_id references (forward edge)
+  list_by_file        Concepts extracted from a source file
+  list_dependencies   List dependency concepts
+  bundle_info         Bundle statistics
+  list_by_type        List concepts of a specific type
+  search_by_tag       List concepts matching a tag prefix (e.g. lang:python, ecosystem:pip)
+  get_related         Get concepts related (called/referenced) by a given concept
+  get_manifest_source Get manifest file info for a dependency concept
 """
 
 import argparse
@@ -74,6 +78,19 @@ class BundleMCPServer:
             refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
             for ref in refs:
                 idx.setdefault(ref, []).append(c)
+        return idx
+
+    def _build_callees_index(self) -> dict[str, list[dict]]:
+        """Build {caller_cid: [concepts_it_references]} from all concepts."""
+        idx: dict[str, list[dict]] = {}
+        for c in self.concepts:
+            related_text = c.get("sections", {}).get("related", "")
+            refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
+            if refs:
+                idx[c["concept_id"]] = [
+                    {"concept_id": ref, "title": ref.split("/")[-1]}
+                    for ref in refs
+                ]
         return idx
 
     def _concept_detail(self, c: dict) -> dict:
@@ -193,6 +210,51 @@ class BundleMCPServer:
                     "required": ["type"],
                 },
             },
+            {
+                "name": "find_callees",
+                "description": "List all concepts that a given concept references (calls, imports, or links to) — forward edge, opposite of find_callers",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "concept_id": {"type": "string", "description": "Caller concept_id to find callees for"},
+                    },
+                    "required": ["concept_id"],
+                },
+            },
+            {
+                "name": "search_by_tag",
+                "description": "List all concepts matching a tag prefix (e.g. lang:python, ecosystem:pip, domain:api, manifest:pyproject.toml)",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "tag": {"type": "string", "description": "Tag prefix to match (e.g. 'lang:python', 'ecosystem:')"},
+                        "limit": {"type": "integer", "description": "Max results (default 50)"},
+                    },
+                    "required": ["tag"],
+                },
+            },
+            {
+                "name": "get_related",
+                "description": "Get concepts semantically related to or referenced by a given concept_id. Returns both related links and called-by edges.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "concept_id": {"type": "string", "description": "Concept_id to find related concepts for"},
+                    },
+                    "required": ["concept_id"],
+                },
+            },
+            {
+                "name": "get_manifest_source",
+                "description": "Get the manifest file (e.g. requirements.txt, Cargo.toml, package.json) that declared a dependency. Only works for Dependency-type concepts.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "concept_id": {"type": "string", "description": "Dependency concept_id (e.g. '_dependencies/pip/requests')"},
+                    },
+                    "required": ["concept_id"],
+                },
+            },
         ]
 
     def handle_tool_call(self, name: str, args: dict) -> Any:
@@ -256,6 +318,77 @@ class BundleMCPServer:
         if name == "list_by_type":
             ctype = self._require(args, "type")
             return [{"title": c["title"], "resource": c.get("resource", ""), "description": c.get("description", "")} for c in self.concepts if c["type"] == ctype]
+
+        if name == "find_callees":
+            cid = self._require(args, "concept_id")
+            idx = self._build_callees_index()
+            callees = idx.get(cid, [])
+            return callees
+
+        if name == "search_by_tag":
+            tag_prefix = self._require(args, "tag")
+            limit = args.get("limit", 50)
+            results = []
+            for c in self.concepts:
+                for t in c.get("tags", []):
+                    if t.startswith(tag_prefix):
+                        results.append({
+                            "title": c["title"],
+                            "type": c["type"],
+                            "concept_id": c["concept_id"],
+                            "resource": c.get("resource", ""),
+                            "description": c.get("description", ""),
+                        })
+                        break
+                if len(results) >= limit:
+                    break
+            return results
+
+        if name == "get_related":
+            cid = self._require(args, "concept_id")
+            for c in self.concepts:
+                if c["concept_id"] != cid:
+                    continue
+                sec = c.get("sections", {})
+                related = sec.get("related", "")
+                sem = sec.get("related_semantic", "")
+                # Parse related markdown links into structured results
+                refs = re.findall(r"\[(.+?)\]\(/(.+?)\.md\)", related)
+                related_concepts = [
+                    {"title": t, "concept_id": cid2}
+                    for t, cid2 in refs
+                ]
+                semantic_concepts = []
+                if sem:
+                    sem_refs = re.findall(r"\[(.+?)\]\(/(.+?)\.md\)", sem)
+                    semantic_concepts = [
+                        {"title": t, "concept_id": cid2}
+                        for t, cid2 in sem_refs
+                    ]
+                return {
+                    "related": related_concepts,
+                    "related_semantic": semantic_concepts,
+                }
+            raise ToolError(f"Concept not found: {cid}", code=-32001)
+
+        if name == "get_manifest_source":
+            cid = self._require(args, "concept_id")
+            for c in self.concepts:
+                if c["concept_id"] != cid:
+                    continue
+                if c["type"] != "Dependency":
+                    raise ToolError(f"Not a Dependency concept: {cid}")
+                tags = c.get("tags", [])
+                ecosystem = next((t.split(":", 1)[1] for t in tags if t.startswith("ecosystem:")), "")
+                manifest = next((t.split(":", 1)[1] for t in tags if t.startswith("manifest:")), "")
+                return {
+                    "concept_id": cid,
+                    "title": c["title"],
+                    "manifest_file": manifest,
+                    "source_file": c.get("resource", ""),
+                    "ecosystem": ecosystem,
+                }
+            raise ToolError(f"Dependency not found: {cid}", code=-32001)
 
         raise ToolError(f"Unknown tool: {name}", code=-32601)
 
