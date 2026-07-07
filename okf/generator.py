@@ -1346,14 +1346,15 @@ def setup_logging():
 
 def enrich_bundle(
     bundle_dir: Path,
-    mode: str = "security",
+    mode: str = "base",
     source_dir: Path | None = None,
     force: bool = False,
 ):
     """Run an enrich pass against an EXISTING bundle without re-scanning.
 
     Reads source_root from bundle index.md frontmatter (stored at generate time),
-    or uses the provided source_dir. Supports modes: security, deep, full.
+    or uses the provided source_dir. Supports modes: base, deep, security, full.
+    Default is 'base' (safe, no source code sent to LLM).
     """
     if not bundle_dir.exists():
         log.error(f"Bundle directory not found: {bundle_dir}")

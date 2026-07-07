@@ -2,6 +2,9 @@
 
 okf-generator supports optional LLM-powered enrichment to enhance concept descriptions, add usage examples, audit security, and find semantic cross-links.
 
+!!! tip "Privacy first"
+    The default mode is `base` — it never sends source code to an LLM, only improves existing descriptions and docstrings. Modes `deep`, `security`, and `full` send source code and require explicit opt-in via `--mode`.
+
 ## Quick start
 
 ```bash
@@ -9,7 +12,7 @@ okf-generator supports optional LLM-powered enrichment to enhance concept descri
 okf generate ./my_project ./okf_bundle --enrich deep
 
 # Or enrich an existing bundle (no re-scan needed)
-okf enrich ./okf_bundle --mode full
+okf enrich --mode full
 ```
 
 ## Enrichment modes

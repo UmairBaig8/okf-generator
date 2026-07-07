@@ -259,7 +259,7 @@ def main():
         else:
             bundle_dir = Path("okf_bundle").resolve()
             rest_args = list(rest)
-        mode = "security"
+        mode = "base"
         source_dir = None
         for i, a in enumerate(rest_args):
             if a == "--bundle" and i + 1 < len(rest_args):

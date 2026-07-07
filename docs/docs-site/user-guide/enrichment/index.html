@@ -1255,12 +1255,16 @@
 
 <h1 id="llm-enrichment">LLM Enrichment<a class="headerlink" href="#llm-enrichment" title="Permanent link">&para;</a></h1>
 <p>okf-generator supports optional LLM-powered enrichment to enhance concept descriptions, add usage examples, audit security, and find semantic cross-links.</p>
+<div class="admonition tip">
+<p class="admonition-title">Privacy first</p>
+<p>The default mode is <code>base</code> — it never sends source code to an LLM, only improves existing descriptions and docstrings. Modes <code>deep</code>, <code>security</code>, and <code>full</code> send source code and require explicit opt-in via <code>--mode</code>.</p>
+</div>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Enrich at generate time</span>
 okf<span class="w"> </span>generate<span class="w"> </span>./my_project<span class="w"> </span>./okf_bundle<span class="w"> </span>--enrich<span class="w"> </span>deep
 
 <span class="c1"># Or enrich an existing bundle (no re-scan needed)</span>
-okf<span class="w"> </span>enrich<span class="w"> </span>./okf_bundle<span class="w"> </span>--mode<span class="w"> </span>full
+okf<span class="w"> </span>enrich<span class="w"> </span>--mode<span class="w"> </span>full
 </code></pre></div>
 <h2 id="enrichment-modes">Enrichment modes<a class="headerlink" href="#enrichment-modes" title="Permanent link">&para;</a></h2>
 <table>
