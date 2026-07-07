@@ -49,11 +49,11 @@ uv pip install "okf-generator[llm,dashboard]"
 ## Docker
 
 ```bash
-docker pull ghcr.io/umairbaig8/okf-generator:latest
+docker pull ghcr.io/umairbaig8/okf-generator/okf-generator:latest
 
 # Generate a bundle
-docker run -v "$PWD:/repo" ghcr.io/umairbaig8/okf-generator \
-  okf generate /repo/src /repo/okf_bundle
+docker run -v "$PWD:/repo" ghcr.io/umairbaig8/okf-generator/okf-generator \
+  generate /repo/src /repo/okf_bundle
 ```
 
 ---
