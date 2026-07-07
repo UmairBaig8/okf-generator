@@ -78,7 +78,7 @@ okf = "okf.cli:main"
 
 [project.urls]
 Homepage      = "https://umairbaig8.github.io/okf-generator/"
-Documentation = "https://github.com/UmairBaig8/okf-generator#readme"
+Documentation = "https://umairbaig8.github.io/okf-generator/docs-site/"
 Repository    = "https://github.com/UmairBaig8/okf-generator"
 Issues        = "https://github.com/UmairBaig8/okf-generator/issues"
 Changelog     = "https://github.com/UmairBaig8/okf-generator/releases"
