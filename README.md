@@ -612,20 +612,20 @@ okf install mcp         # Register MCP server (OpenCode + Claude Desktop)
 
 ## How It Compares
 
-| | **okf-generator** | Other OKF producers |
-|---|---|---|
-| Language coverage | 17 languages, modular parsers (`okf/parsers/*.py`) — add one in minutes | Usually 1 language or doc-only |
-| Cross-reference linking | Imports → dependencies, function calls → caller/callee across all languages | Not typically supported |
-| Dependency/manifest parsing | 22 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, docker, +10) | Not typically supported |
-| Extraction | Zero-LLM, deterministic, offline | Often LLM-required for every concept |
-| Enrichment modes | 4 tiers (`base`, `deep`, `security`, `full`) — per-model provider routing | Usually 1 mode, 1 provider |
-| Multi-provider routing | Route each enrich mode to a different provider (local LLM for descriptions, cloud for security) | Often locked to one vendor |
-| Post-hoc enrichment | `okf enrich` runs against existing bundle — no re-scan. Source origin auto-loaded from bundle metadata | Not supported |
-| Training data export | Built-in JSONL pair generator (5 pair types) | Not typically included |
-| Agent compatibility | Any agent that can run a CLI (Claude Code, Cursor, Windsurf, Copilot, OpenCode, Cline) | Often single-agent focused |
-| CI/CD integration | Built-in GitHub Action (`okf-bundle.yml`) — bundle generation + impact diff + PR comments | Not typically included |
+| | **okf-generator** | RAG / Vector Search | Read Whole File |
+|---|---|---|---|
+| Exact symbol retrieval | ✓ Precise AST lookup | ~ Approximate (chunk similarity) | ⚠ Manual scan |
+| Token cost per lookup | ✓ ~140 tokens | ~ Varies by chunk strategy | ✗ 14,000+ tokens |
+| Cross-reference edges | ✓ Calls / called-by / imports | ✗ Not supported | ✗ Not supported |
+| Offline / no API key | ✓ Fully offline | ✗ Needs embeddings API | ✓ Offline |
+| Dependency manifest parsing | ✓ 17 formats | ✗ Not designed for this | ✗ Manual |
+| Search speed | ✓ ~3-4ms (indexed) | ~ 200-500ms (embed + search) | ⚠ Manual (seconds+) |
+| CI/CD integration | ✓ Built-in GitHub Action | ✗ Custom pipeline required | ✗ N/A |
+| Training data export | ✓ Built-in JSONL pairs | ✗ Not a feature | ✗ Not a feature |
+| Context compression | ✓ ~97% reduction | ~ Varies by chunk strategy | ✗ 0% (full file) |
+| Setup complexity | ✓ pip install + 1 command | ⚠ Vector DB + embedding pipeline | ✓ None |
 
-If you are choosing between OKF producers: pick `okf-generator` when you want broad language + dependency coverage with zero mandatory LLM cost, and you want the bundle to double as a fine-tuning data source.
+Full comparison with Sourcegraph, Graphify/CodeSee, and dep-graph tools: **[docs/comparison.md](docs/comparison.md)**
 
 ---
 
