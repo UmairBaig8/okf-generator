@@ -1,921 +1,743 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>okf-generator — Knowledge graph for AI coding agents</title>
-  <meta name="description" content="Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required." />
-  <meta name="keywords" content="okf-generator, knowledge graph, AI agents, codebase indexing, tree-sitter, code analysis" />
-  <meta property="og:title" content="okf-generator — Knowledge graph for AI coding agents" />
-  <meta property="og:description" content="Map any codebase into a structured knowledge graph. ~100x fewer tokens. Works with Claude, Cursor, Copilot, Windsurf, Cline, OpenCode." />
-  <meta property="og:image" content="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/banner.png" />
-  <meta property="og:url" content="https://umairbaig8.github.io/okf-generator/" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="okf-generator — Knowledge graph for AI coding agents" />
-  <meta name="twitter:description" content="Map any codebase into a structured knowledge graph. ~100x fewer tokens." />
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/banner.png" />
-  <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/" />
-  <link rel="icon" type="image/svg+xml" href="images/okf-icon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "okf-generator",
-    "description": "Map any codebase into a structured knowledge graph for AI agents.",
-    "url": "https://umairbaig8.github.io/okf-generator/",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Linux, macOS, Windows",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "author": { "@type": "Person", "name": "Umair Baig" },
-    "license": "https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE"
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>okf-generator — Codebase Knowledge Graphs for Enterprise AI Teams</title>
+  <meta name="description" content="Deploy deterministic, tree-sitter AST knowledge graphs. Slash AI agent context costs by 80%, run fully-local SLMs, and integrate seamlessly via Model Context Protocol (MCP).">
+  <meta property="og:title" content="okf-generator — Code-Level Knowledge Graphs for AI Teams">
+  <meta property="og:description" content="Map any codebase into an interactive, structured knowledge graph. Drop context token bloat, maximize local model intelligence, and protect your privacy.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/banner.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "sans-serif"], mono: ["JetBrains Mono", "monospace"] },
+          colors: { brand: { 50: "#f5f3ff", 100: "#ede9fe", 200: "#ddd6fe", 300: "#c084fc", 400: "#a855f7", 500: "#8b5cf6", 600: "#7c3aed", 700: "#6d28d9", 800: "#5b21b6", 900: "#4c1d95", 950: "#0b041a" } },
+          animation: { "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite", float: "float 6s ease-in-out infinite" },
+          transitionProperty: { height: "height" }
+        }
+      }
+    }
   </script>
   <style>
-    :root {
-      --bg: #ffffff;
-      --bg-alt: #f8f9fb;
-      --text: #0f0f10;
-      --text-muted: #4a4f5a;
-      --accent: #5b21b6;
-      --accent-hover: #4c1d95;
-      --accent-light: #ede9fe;
-      --border: #e5e7eb;
-      --green: #16a34a;
-      --green-light: #dcfce7;
-      --red-light: #fee2e2;
-      --red: #dc2626;
-      --code-bg: #f3f4f6;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
-      --radius: 10px;
-      --radius-lg: 16px;
-      --font: 'Inter', system-ui, sans-serif;
-      --mono: 'JetBrains Mono', 'Fira Code', monospace;
-      --max-w: 1120px;
-      --nav-h: 64px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; }
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
-    code, pre { font-family: var(--mono); }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } html { scroll-behavior: auto; } }
-
-    /* Layout */
-    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
-    section { padding: 88px 0; }
-    .section-label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-    .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 16px; }
-    .section-sub { font-size: 18px; color: var(--text-muted); max-width: 560px; }
-
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* NAV */
-    .nav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); width: 100%; display: flex; align-items: center; justify-content: center; }
-    .nav-inner { display: flex; align-items: center; gap: 32px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 32px; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-    .nav-scrolled .nav-inner { max-width: 1120px; border-radius: 18px; background: rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0,0,0,0.08); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 0 24px; gap: 20px; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #020205; }
+    ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #312e81; }
+    .dark .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(124,58,237,0.04) 1px, transparent 1px); }
+    .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(124,58,237,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(124,58,237,0.06) 1px, transparent 1px); }
+    .nav-inner { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    .nav-scrolled .nav-inner { border-radius: 18px; background: rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0,0,0,0.08); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 0 24px; gap: 20px; }
     .nav-scrolled .nav-links { gap: 20px; }
     .nav-scrolled .nav-links a { font-size: 13px; }
-    .nav-scrolled .btn-ghost { font-size: 12px; padding: 5px 12px; }
-    .nav-scrolled .btn-primary { font-size: 12px; padding: 6px 14px; }
+    .nav-scrolled .nav-actions a, .nav-scrolled .nav-actions button { font-size: 12px; padding: 5px 12px; }
     .nav-scrolled .nav-badge { font-size: 10px; padding: 2px 6px; }
-    .nav-inner { display: flex; align-items: center; gap: 32px; height: 100%; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: var(--text); flex-shrink: 0; }
-    .nav-logo-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex-shrink: 0; }
-    .nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; }
-    .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-badge { font-family: var(--mono); font-size: 11px; font-weight: 600; background: var(--accent-light); color: var(--accent); padding: 3px 8px; border-radius: 20px; }
-    .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .btn-ghost { font-size: 13px; font-weight: 600; color: var(--text-muted); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-    .btn-ghost:hover { background: var(--bg-alt); color: var(--text); border-color: #d1d5db; }
-    .btn-primary { font-size: 13px; font-weight: 600; background: var(--accent); color: #fff; border-radius: 8px; padding: 8px 18px; transition: background 0.2s; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    @media (max-width: 768px) { .nav-links { display: none; } }
-
-    /* HERO */
-    .hero { padding: 96px 0 80px; text-align: center; background: linear-gradient(180deg, #fdfbff 0%, #ffffff 100%); }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; margin-bottom: 28px; }
-    .hero h1 { font-size: clamp(36px, 6vw, 68px); font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; color: var(--text); max-width: 820px; margin: 0 auto 20px; }
-    .hero h1 span { color: var(--accent); }
-    .hero-sub { font-size: clamp(16px, 2vw, 20px); color: var(--text-muted); max-width: 540px; margin: 0 auto 40px; line-height: 1.6; }
-    .hero-actions { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
-    .btn-hero-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; padding: 14px 28px; border-radius: 10px; transition: all 0.2s; box-shadow: 0 4px 16px rgba(91,33,182,0.25); }
-    .btn-hero-primary:hover { background: var(--accent-hover); box-shadow: 0 6px 24px rgba(91,33,182,0.35); transform: translateY(-1px); }
-    .btn-hero-secondary { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); color: var(--text); font-size: 15px; font-weight: 600; padding: 13px 26px; border-radius: 10px; transition: all 0.2s; }
-    .btn-hero-secondary:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-    .hero-code { display: inline-flex; align-items: center; gap: 10px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 18px; font-family: var(--mono); font-size: 14px; color: var(--text); }
-    .hero-pills { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-    .stat-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 20px; padding: 8px 18px; font-size: 14px; font-weight: 600; color: var(--text-muted); background: #fff; box-shadow: var(--shadow-sm); }
-    .stat-pill strong { color: var(--accent); font-weight: 800; }
-
-    /* SOCIAL PROOF */
-    .social-proof { padding: 40px 0; background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .social-proof-label { text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px; }
-    .agent-badges { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .agent-badge { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 18px; font-size: 14px; font-weight: 600; color: var(--text); box-shadow: var(--shadow-sm); transition: all 0.2s; }
-    .agent-badge:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-md); }
-
-    /* PROBLEM */
-    .problem { background: var(--bg); }
-    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
-    .problem-card { border-radius: var(--radius-lg); padding: 36px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-    .problem-card.before { background: var(--red-light); border-color: #fca5a5; }
-    .problem-card.after { background: var(--green-light); border-color: #86efac; }
-    .problem-card-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
-    .problem-card.before .problem-card-label { color: var(--red); }
-    .problem-card.after .problem-card-label { color: var(--green); }
-    .problem-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 16px; line-height: 1.3; }
-    .problem-tokens { font-size: clamp(40px, 6vw, 64px); font-weight: 900; line-height: 1; margin-bottom: 8px; }
-    .problem-card.before .problem-tokens { color: var(--red); }
-    .problem-card.after .problem-tokens { color: var(--green); }
-    .problem-card p { font-size: 15px; color: var(--text-muted); margin-top: 8px; }
-    .problem-code { margin-top: 16px; background: rgba(0,0,0,0.04); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-    .problem-code .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 4px; display: flex; transition: all 0.2s; margin-top: 2px; }
-    .problem-code .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
-    .problem-code .copy-mini.copied { color: var(--green); }
-    @media (max-width: 640px) { .problem-grid { grid-template-columns: 1fr; } }
-
-    /* HOW IT WORKS */
-    .how { background: var(--bg-alt); }
-    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
-    .step { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
-    .step::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-    .step-num { width: 40px; height: 40px; background: var(--accent-light); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; margin-bottom: 20px; }
-    .step h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .step p { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; }
-    .step-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 12px; font-family: var(--mono); font-size: 13px; color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .step-cmd .cmd-text { flex: 1; overflow-wrap: anywhere; font-size: 12px; }
-    .step-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
-    .step-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
-    .step-cmd .copy-mini.copied { color: var(--green); }
-    @media (max-width: 768px) { .steps { grid-template-columns: 1fr; } }
-
-    /* FEATURES */
-    .features { background: var(--bg); }
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
-    .feature-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); transition: all 0.2s; }
-    .feature-card:hover { box-shadow: var(--shadow-md); border-color: #d1d5db; transform: translateY(-2px); }
-    .feature-icon { width: 44px; height: 44px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
-    .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-    .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-    @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
-
-    /* LANGUAGES */
-    .languages { background: var(--bg-alt); }
-    .lang-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
-    .lang-pill { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; color: var(--text); box-shadow: var(--shadow-sm); }
-    .lang-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    /* AGENT INSTALL */
-    .agent-install { background: var(--bg); }
-    .agent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
-    .agent-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
-    .agent-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .agent-card .agent-note { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
-    .agent-cmd { background: var(--code-bg); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 13px; color: var(--accent); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .agent-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
-    .agent-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
-    .agent-cmd .copy-mini.copied { color: var(--green); }
-    @media (max-width: 900px) { .agent-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px) { .agent-grid { grid-template-columns: 1fr; } }
-
-    /* ENRICHMENT */
-    .enrichment { background: var(--bg-alt); }
-    .enrich-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
-    .enrich-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); }
-    .enrich-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .enrich-badge { font-family: var(--mono); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
-    .enrich-badge.base { background: #dbeafe; color: #1d4ed8; }
-    .enrich-badge.deep { background: #fef9c3; color: #a16207; }
-    .enrich-badge.security { background: var(--red-light); color: var(--red); }
-    .enrich-badge.full { background: var(--accent-light); color: var(--accent); }
-    .enrich-card h3 { font-size: 17px; font-weight: 700; }
-    .enrich-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
-    .enrich-cmd { background: var(--code-bg); border-radius: 8px; padding: 9px 14px; font-family: var(--mono); font-size: 12px; color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .enrich-cmd .copy-mini { flex-shrink: 0; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 4px; display: flex; transition: all 0.2s; }
-    .enrich-cmd .copy-mini:hover { color: var(--accent); background: var(--accent-light); }
-    .enrich-cmd .copy-mini.copied { color: var(--green); }
-    @media (max-width: 640px) { .enrich-grid { grid-template-columns: 1fr; } }
-
-    /* CLI TABLE */
-    .cli-ref { background: var(--bg); }
-    .cli-table-wrap { margin-top: 36px; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .cli-table { width: 100%; border-collapse: collapse; }
-    .cli-table thead { background: var(--bg-alt); }
-    .cli-table th { padding: 14px 20px; text-align: left; font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
-    .cli-table td { padding: 14px 20px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-    .cli-table tr:last-child td { border-bottom: none; }
-    .cli-table tr:hover td { background: var(--bg-alt); }
-    .cli-table td:first-child { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
-    .cli-table td:last-child { color: var(--text-muted); }
-
-    /* COMPARISON */
-    .comparison { background: var(--bg-alt); }
-    .comp-table-wrap { margin-top: 36px; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); overflow-x: auto; }
-    .comp-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-    .comp-table thead { background: var(--accent); }
-    .comp-table thead th { padding: 14px 20px; text-align: left; font-size: 14px; font-weight: 700; color: #fff; }
-    .comp-table td { padding: 13px 20px; font-size: 14px; border-bottom: 1px solid var(--border); }
-    .comp-table tr:last-child td { border-bottom: none; }
-    .comp-table tr:nth-child(even) td { background: var(--bg-alt); }
-    .comp-table td:first-child { font-weight: 600; }
-    .check { color: var(--green); font-weight: 700; }
-    .cross { color: #9ca3af; }
-
-    /* FAQ */
-    .faq { background: var(--bg); }
-    .faq-list { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
-    .faq-list details { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .faq-list summary { padding: 18px 24px; font-size: 16px; font-weight: 600; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; user-select: none; }
-    .faq-list summary::-webkit-details-marker { display: none; }
-    .faq-list summary::after { content: '+'; font-size: 20px; font-weight: 400; color: var(--text-muted); flex-shrink: 0; transition: transform 0.2s; }
-    .faq-list details[open] summary::after { content: '−'; }
-    .faq-list details[open] summary { background: var(--bg-alt); }
-    .faq-answer { padding: 0 24px 20px; font-size: 15px; color: var(--text-muted); line-height: 1.7; }
-    .faq-answer code { background: var(--code-bg); padding: 2px 7px; border-radius: 5px; font-family: var(--mono); font-size: 13px; color: var(--text); }
-
-    /* INSTALL CTA */
-    .install-cta { background: linear-gradient(135deg, #1e0a47 0%, var(--accent) 100%); padding: 96px 0; text-align: center; }
-    .install-cta h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 900; color: #fff; margin-bottom: 12px; letter-spacing: -0.02em; }
-    .install-cta p { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; }
-    .install-box { display: inline-flex; align-items: center; gap: 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; overflow: hidden; backdrop-filter: blur(8px); }
-    .install-cmd { font-family: var(--mono); font-size: 16px; font-weight: 500; color: #fff; padding: 16px 24px; }
-    .copy-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 16px 20px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
-    .copy-btn:hover { background: rgba(255,255,255,0.25); }
-    .copy-btn.copied { background: rgba(22,163,74,0.4); }
-    .install-alt { margin-top: 20px; font-size: 14px; color: rgba(255,255,255,0.6); }
-    .install-alt a { color: rgba(255,255,255,0.85); text-decoration: underline; text-underline-offset: 3px; }
-
-    /* FOOTER */
-    .footer { background: var(--bg-alt); border-top: 1px solid var(--border); padding: 56px 0 32px; }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-brand { max-width: 280px; }
-    .footer-brand-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; margin-bottom: 12px; }
-    .footer-brand-logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 800; }
-    .footer-brand p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
-    .footer-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .footer-badge { display: inline-block; }
-    .footer-col h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text); margin-bottom: 16px; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul li a { font-size: 14px; color: var(--text-muted); transition: color 0.2s; }
-    .footer-col ul li a:hover { color: var(--accent); }
-    .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .footer-bottom p { font-size: 13px; color: var(--text-muted); }
-    .footer-bottom a { color: var(--accent); }
-    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+    input[type="range"]::-webkit-slider-runnable-track { background: #e4e4e7; height: 6px; border-radius: 3px; }
+    .dark input[type="range"]::-webkit-slider-runnable-track { background: #1e1b4b; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -5px; background-color: #8b5cf6; height: 16px; width: 16px; border-radius: 50%; box-shadow: 0 0 10px rgba(139,92,246,0.5); transition: all 0.1s ease; }
+    .dark input[type="range"]::-webkit-slider-thumb { background-color: #a855f7; box-shadow: 0 0 10px #a855f7; }
+    input[type="range"]::-webkit-slider-thumb:hover { background-color: #a78bfa; transform: scale(1.2); }
+    .dark input[type="range"]::-webkit-slider-thumb:hover { background-color: #c084fc; }
   </style>
 </head>
-
-<body>
-  <a href="#main" class="sr-only">Skip to main content</a>
-
-  <!-- NAV -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav-inner">
-      <a href="/" class="nav-logo" aria-label="okf-generator home">
-        <div class="nav-logo-icon" aria-hidden="true">
-          <img src="images/okf-icon.svg" width="32" height="32" alt="">        </div>
-        OKF Generator
+<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-brand-500 selection:text-white overflow-x-hidden transition-colors duration-300">
+  <a href="#main" class="sr-only fixed top-2 left-2 z-[200] bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-0 focus:opacity-100 transition-opacity" style="position:fixed">Skip to main content</a>
+  <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-600/5 dark:bg-brand-600/10 rounded-full blur-[120px] pointer-events-none -translate-x-1/2"></div>
+  <div class="absolute top-[800px] right-0 w-[600px] h-[600px] bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+  <div class="absolute bottom-[1000px] left-10 w-[400px] h-[400px] bg-pink-600/5 rounded-full blur-[100px] pointer-events-none"></div>
+  <nav class="nav sticky top-0 z-50 flex items-center justify-center transition-colors duration-300">
+    <div class="nav-inner container max-w-7xl mx-auto px-6 h-16 flex items-center justify-between" style="max-width:1200px">
+      <a href="/" class="flex items-center gap-3 nav-logo" aria-label="okf-generator home">
+        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+          <img src="images/okf-icon.svg" width="32" height="32" alt="">
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-zinc-800 dark:text-zinc-100">OKF Generator</span>
       </a>
-      <div class="nav-links" role="list">
-        <a href="#how-it-works" role="listitem">How it works</a>
-        <a href="#features" role="listitem">Features</a>
-        <a href="#languages" role="listitem">Languages</a>
-        <a href="#cli" role="listitem">CLI</a>
-        <a href="#faq" role="listitem">FAQ</a>
-        <a href="docs-site/" role="listitem">Docs</a>
-        <span class="nav-badge" id="version-badge">v0.1.41</span>
+      <div class="nav-links hidden md:flex items-center gap-8">
+        <a href="#how-it-works" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">How it works</a>
+        <a href="#features" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Features</a>
+        <a href="#languages" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Languages</a>
+        <a href="#cli" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">CLI</a>
+        <a href="#comparison" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Comparison</a>
+        <a href="#faq" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">FAQ</a>
+        <a href="docs-site/" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Docs</a>
+        <span class="nav-badge font-mono text-xs font-semibold bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full" id="version-badge">v0.1.41</span>
       </div>
-      <div class="nav-actions">
-        <a href="https://github.com/UmairBaig8/okf-generator" class="btn-ghost" target="_blank" rel="noopener" aria-label="View on GitHub">
+      <div class="nav-actions flex items-center gap-3 flex-shrink-0">
+        <button onclick="toggleTheme()" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-2.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900/50 transition duration-200" title="Toggle theme"><i id="theme-icon" class="fa-solid fa-sun text-base dark:hidden"></i><i id="theme-icon-dark" class="fa-solid fa-moon text-base hidden dark:block"></i></button>
+        <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition border border-zinc-200 dark:border-zinc-800/80" aria-label="View on GitHub">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          <span id="gh-stars">GitHub</span>
+          <span id="gh-stars" class="font-mono text-xs font-bold">GitHub</span>
         </a>
-        <a href="https://pypi.org/project/okf-generator/" class="btn-ghost" target="_blank" rel="noopener" aria-label="View on PyPI">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>PyPI</span>
-        </a>
-        <a href="#install" class="btn-primary">Install</a>
+        <a href="#install" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-500 transition shadow-lg shadow-brand-600/20">Install</a>
       </div>
     </div>
   </nav>
-
   <main id="main">
-
-  <!-- HERO -->
-  <section class="hero" aria-labelledby="hero-heading">
-    <div class="container">
-      <div class="hero-eyebrow" aria-label="New release">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        OKF v0.1 conformant · MIT License
+  <header class="relative pt-12 pb-24 overflow-hidden bg-grid-pattern">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <img src="images/okf_banner.png" alt="okf-generator pipeline overview" class="max-w-full mx-auto mb-10 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800" style="max-width:100%;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.1)" />
+      <br><br>
+      <div class="inline-flex items-center gap-2 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 rounded-full px-4 py-1.5 mb-6">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="text-brand-600 dark:text-brand-400"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span class="text-xs font-bold text-brand-600 dark:text-brand-300">OKF v0.1 conformant · MIT License</span>
       </div>
-      <img src="images/okf-logo-light.svg" alt="OKF Generator" width="500" style="max-width:90%;margin:0 auto 32px;display:block;padding-left:20px;" />
-      <h1 id="hero-heading">The <span>knowledge layer</span><br>for AI coding agents</h1>
-      <p class="hero-sub">Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</p>
-      <div class="hero-actions">
-        <a href="#install" class="btn-hero-primary">
+
+      <img src="images/okf-logo-light.svg" alt="OKF Generator" width="580" style="max-width:85%;margin:0 auto 24px;display:block;padding-left:16px;" class="dark:brightness-110" />
+
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-white max-w-5xl mx-auto leading-[1.08] mb-6">
+        The <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 via-fuchsia-500 to-pink-500 dark:from-brand-400 dark:via-fuchsia-500 dark:to-pink-500">knowledge layer</span><br>
+        for AI coding agents
+      </h1>
+      <p class="text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed mb-10">
+        Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across <strong class="text-zinc-900 dark:text-white">17 languages</strong> — zero LLM required.
+      </p>
+      <br>
+      <div class="flex items-center justify-center gap-4 flex-wrap mb-8">
+        <a href="#install" class="inline-flex items-center gap-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl transition shadow-xl shadow-brand-600/20 transform hover:-translate-y-0.5">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2v14m0 0l-4-4m4 4l4-4M2 20h20"/></svg>
           pip install okf-generator
         </a>
-        <a href="viz.html" class="btn-hero-secondary" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          Viz Demo
-        </a>
-        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" class="btn-hero-secondary" target="_blank" rel="noopener">
+        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 backdrop-blur-md hover:border-zinc-400 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-800 dark:text-zinc-200 font-bold text-base px-8 py-4 rounded-xl transition transform hover:-translate-y-0.5">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           Codespaces Demo
         </a>
       </div>
-      <div class="hero-pills" role="list" aria-label="Key stats">
-        <div class="stat-pill" role="listitem"><strong>17</strong> languages</div>
-        <div class="stat-pill" role="listitem"><strong>22</strong> manifest formats</div>
-        <div class="stat-pill" role="listitem"><strong>~100×</strong> fewer tokens</div>
+      <div class="flex items-center justify-center gap-3 flex-wrap mb-10">
+        <span class="text-xs font-medium text-zinc-500 dark:text-zinc-500 uppercase tracking-wider mr-2">Try it live:</span>
+        <a href="viz.html" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Viz Graph
+        </a>
+        <span class="text-zinc-300 dark:text-zinc-700 text-xs">|</span>
+        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+          Dev Container
+        </a>
+        <span class="text-zinc-300 dark:text-zinc-700 text-xs">|</span>
+        <a href="https://okf-generator.onrender.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          Render App
+        </a>
       </div>
-      <img src="images/okf_banner.png" alt="okf-generator demo screenshot" style="max-width:100%;margin-top:48px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.1)" />
-    </div>
-  </section>
+      <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">17</strong> languages</span>
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">22</strong> manifest formats</span>
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">~100×</strong> fewer tokens</span>
+      </div>
 
-  <!-- SOCIAL PROOF BAR -->
-  <div class="social-proof" aria-label="Supported AI agents">
-    <div class="container">
-      <p class="social-proof-label">Works with the agents you already use</p>
-      <div class="agent-badges" role="list">
-        <span class="agent-badge" role="listitem">Claude Code</span>
-        <span class="agent-badge" role="listitem">Cursor</span>
-        <span class="agent-badge" role="listitem">Codex</span>
-        <span class="agent-badge" role="listitem">GitHub Copilot</span>
-        <span class="agent-badge" role="listitem">Windsurf</span>
-        <span class="agent-badge" role="listitem">Cline</span>
-        <span class="agent-badge" role="listitem">OpenCode</span>
-        <span class="agent-badge" role="listitem">Hermes Agent</span>
+      <div class="relative max-w-5xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/30 backdrop-blur-md p-2 shadow-2xl shadow-zinc-200/50 dark:shadow-indigo-950/20 transition duration-300">
+        <div class="absolute -top-12 left-12 w-48 h-48 bg-brand-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="absolute -bottom-12 right-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950/50 rounded-t-xl transition duration-300">
+          <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500/80"></span><span class="w-3 h-3 rounded-full bg-yellow-500/80"></span><span class="w-3 h-3 rounded-full bg-emerald-500/80"></span></div>
+          <div class="font-mono text-xs text-zinc-500">okf-interactive-concept-bundle.md</div>
+          <div class="w-4"></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 min-h-[460px]">
+          <div class="lg:col-span-2 border-r border-zinc-200 dark:border-zinc-900 p-4 text-left font-mono text-sm bg-zinc-50/50 dark:bg-zinc-950/20 transition duration-300">
+            <div class="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wider font-bold mb-4">Workspace Tree</div>
+            <div class="space-y-2 select-none">
+              <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder-open text-amber-500/80"></i><span>my_project/</span></div>
+              <div class="pl-4 space-y-2">
+                <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder text-amber-500/70"></i><span>connectors/</span></div>
+                <button onclick="selectInteractiveNode('connector')" id="btn-node-connector" class="w-full flex items-center justify-between pl-4 text-left p-1.5 rounded bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition"><span class="flex items-center gap-2"><i class="fa-brands fa-python text-blue-500 dark:text-blue-400"></i><span>economic_data.py</span></span><span class="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400">Class</span></button>
+                <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder text-amber-500/70"></i><span>pipelines/</span></div>
+                <button onclick="selectInteractiveNode('pipeline')" id="btn-node-pipeline" class="w-full flex items-center justify-between pl-4 text-left p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-transparent transition"><span class="flex items-center gap-2"><i class="fa-brands fa-python text-blue-500 dark:text-blue-400"></i><span>ingest_pipeline.py</span></span><span class="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-600">Caller</span></button>
+              </div>
+              <div class="pl-4">
+                <button onclick="selectInteractiveNode('manifest')" id="btn-node-manifest" class="w-full flex items-center justify-between p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-transparent transition"><span class="flex items-center gap-2"><i class="fa-brands fa-node-js text-emerald-500"></i><span>package.json</span></span><span class="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-600">Manifest</span></button>
+              </div>
+            </div>
+            <div class="mt-8 pt-4 border-t border-zinc-200 dark:border-zinc-900 transition duration-300">
+              <div class="text-zinc-400 dark:text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Deterministic Link</div>
+              <div class="bg-zinc-100 dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-900 space-y-2 text-xs transition duration-300">
+                <div class="flex justify-between"><span class="text-zinc-500">AST Parser:</span><span class="text-zinc-800 dark:text-zinc-300 font-semibold" id="active-ast">tree-sitter-python</span></div>
+                <div class="flex justify-between"><span class="text-zinc-500">Identified Nodes:</span><span class="text-emerald-600 dark:text-emerald-400 font-bold" id="active-nodes">17 classes, 48 methods</span></div>
+                <div class="flex justify-between"><span class="text-zinc-500">Link Resolution:</span><span class="text-indigo-600 dark:text-indigo-400 font-semibold" id="active-resolution">Perfect Cross-Ref</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-3 p-6 text-left font-mono text-sm relative bg-zinc-50/20 dark:bg-zinc-950/40 rounded-r-xl flex flex-col justify-between transition duration-300">
+            <div>
+              <div class="flex items-center justify-between mb-4"><span class="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wider font-bold">Generated Knowledge Node</span><span class="bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800/30 flex items-center gap-1"><i class="fa-solid fa-code-fork"></i> Deterministic AST</span></div>
+              <div id="interactive-content-box" class="space-y-4">
+                <div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300">
+                  <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold text-base">CLASS: WorldBankConnector</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 51-140</span></div>
+                  <div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Fetches World Bank development indicators via wbdata API. Caches local payloads to speed up ML training loops.</div>
+                  <div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class WorldBankConnector(BaseConnector)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">get_indicator(), search_index(), validate()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Parameters:</span> <span class="text-zinc-600 dark:text-zinc-400">api_key: str (Optional), cache_ttl: int</span></div></div>
+                  <div class="grid grid-cols-2 gap-3 text-xs pt-1">
+                    <div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> wbdata.get_indicator</div></div>
+                    <div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> IngestPipeline.fetch_economic</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center justify-between text-xs text-zinc-500 transition duration-300"><span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> Code Context Size: <strong class="text-emerald-600 dark:text-emerald-400">350 Tokens</strong> (vs 42,000 raw)</span><span class="font-bold text-zinc-500 dark:text-zinc-400">Saved ~99% on Token API bills</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="py-12 border-t border-b border-zinc-200 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-950/30 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-5">Works with the agents you already use</p>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Claude Code</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Cursor</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Codex</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">GitHub Copilot</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Windsurf</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Cline</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">OpenCode</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Hermes Agent</span>
       </div>
     </div>
   </div>
-
-  <!-- PROBLEM SECTION -->
-  <section class="problem reveal" id="problem" aria-labelledby="problem-heading">
-    <div class="container">
-      <p class="section-label">The Problem</p>
-      <h2 class="section-title" id="problem-heading">AI agents waste tokens re-reading code</h2>
-      <p class="section-sub">Every context reset forces agents to re-read entire files to find one function signature. okf-generator eliminates that waste.</p>
-      <div class="problem-grid">
-        <div class="problem-card before reveal">
-          <div class="problem-card-label">⚠ Before — Without okf-generator</div>
-          <h3>AI re-reads 600 lines to find one class</h3>
-          <div class="problem-tokens" aria-label="14,000 tokens">14,000</div>
-          <p>tokens consumed reading the whole file</p>
-          <div class="problem-code" aria-label="Example: reading entire file">
-            <span># Agent reads entire economic_data.py<br># 600 lines · 14,000 tokens · slow</span>
-            <button class="copy-mini" onclick="copyMini(this)" data-text="# Agent reads entire economic_data.py\n# 600 lines · 14,000 tokens · slow" aria-label="Copy code"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-          </div>
+  <section id="why" class="py-24 border-t border-zinc-200 dark:border-zinc-900 bg-zinc-100/30 dark:bg-zinc-950/40 relative transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">The Architectural Paradigm Shift</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Why Traditional AI Context Fetching is Costing You a Fortune</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Vector databases (RAG) lose source code syntax structures, while full-file loading triggers model memory starvation. okf-generator offers a deterministic middle-ground.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-8 flex flex-col justify-between relative overflow-hidden group shadow-sm transition duration-300">
+          <div class="absolute top-0 left-0 w-1.5 h-full bg-red-500/60"></div>
+          <div><div class="flex items-center justify-between mb-6"><span class="text-xs font-black uppercase text-red-600 dark:text-red-400 tracking-wider bg-red-500/10 px-3 py-1 rounded border border-red-500/20">The Context Bloat (Without OKF)</span><i class="fa-solid fa-triangle-exclamation text-red-500/70 text-lg"></i></div>
+            <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-4">Naive File Loading & Semantic Vector Slices</h4>
+            <ul class="space-y-3.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>No call hierarchy tracking:</strong> Vectors chunk code raw, shredding class context and missing how methods connect.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>Heavy API bill overhead:</strong> Feeding entire class files (30K+ tokens) into the LLM just to get one method signature.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>SLM memory choke:</strong> Local models like Llama 8B or Phi-3 can't process massive code windows. They forget context or run out of memory.</span></li>
+            </ul></div>
+          <div class="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-900/60 bg-red-50 dark:bg-red-950/10 p-4 rounded-xl border border-red-100 dark:border-red-950/20 transition duration-300"><div class="text-xs text-zinc-500 font-mono mb-1">Average cost per AI coding task:</div><div class="flex items-baseline gap-2"><span class="text-3xl font-extrabold text-red-600 dark:text-red-400 font-mono">$1.35</span><span class="text-zinc-500 text-xs">/ task (45,000 raw tokens loaded)</span></div></div>
         </div>
-        <div class="problem-card after reveal">
-          <div class="problem-card-label">✓ After — With okf lookup</div>
-          <h3>Exact concept card in milliseconds</h3>
-          <div class="problem-tokens" aria-label="140 tokens">140</div>
-          <p>tokens for full concept: signature, params, callers</p>
-          <div class="problem-code" aria-label="Example: okf lookup command">
-            <span>okf lookup WorldBankConnector<br># Signature · Methods · Calls · Called-by</span>
-            <button class="copy-mini" onclick="copyMini(this)" data-text="okf lookup WorldBankConnector" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-          </div>
+        <div class="rounded-2xl border border-brand-200 dark:border-brand-900 bg-white dark:bg-zinc-950 p-8 flex flex-col justify-between relative overflow-hidden shadow-sm dark:shadow-xl dark:shadow-brand-950/10 transition duration-300">
+          <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+          <div><div class="flex items-center justify-between mb-6"><span class="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">The OKF Edge (AST Knowledge Graph)</span><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i></div>
+            <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-4">AST Extraction + Deterministic Cross-Linking</h4>
+            <ul class="space-y-3.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Full AST graph mapping:</strong> Captures exact callers, callees, parameters, types, and dependencies automatically.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Surgically tiny payloads:</strong> Feeds agents highly dense 300-token summaries containing explicit reference signatures.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Unlocks local LLMs:</strong> Tight context requirements fit into local SLM memory instantly, allowing laptops to achieve cloud-like results.</span></li>
+            </ul></div>
+          <div class="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-900/60 bg-emerald-50 dark:bg-emerald-950/10 p-4 rounded-xl border border-emerald-100 dark:border-emerald-950/20 transition duration-300"><div class="text-xs text-zinc-500 font-mono mb-1">Average cost per AI coding task:</div><div class="flex items-baseline gap-2"><span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">$0.0036</span><span class="text-zinc-500 text-xs">/ task (1,200 linked tokens loaded)</span></div></div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="how reveal" id="how-it-works" aria-labelledby="how-heading">
-    <div class="container">
-      <p class="section-label">How It Works</p>
-      <h2 class="section-title" id="how-heading">Three steps to a smarter agent</h2>
-      <p class="section-sub">From source code to structured knowledge graph in minutes. No LLM required.</p>
-      <div class="steps">
-        <div class="step reveal">
-          <div class="step-num" aria-hidden="true">1</div>
-          <h3>Scan your codebase</h3>
-          <p>tree-sitter AST parsers extract every function, class, module, and dependency across 17 languages with full signatures and docstrings.</p>
-          <div class="step-cmd"><span class="cmd-text">okf generate  # auto-detects project root</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+  <section id="how-it-works" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">How It Works</h2>
+      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">Three steps to a smarter agent</h3>
+      <p class="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-16">From source code to structured knowledge graph in minutes. No LLM required.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-brand-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-lg mb-5 border border-brand-200 dark:border-brand-800/30">1</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Scan your codebase</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">tree-sitter AST parsers extract every function, class, module, and dependency across 17 languages with full signatures and docstrings.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf generate</span><button onclick="copyText(this, 'okf generate')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
         </div>
-        <div class="step reveal">
-          <div class="step-num" aria-hidden="true">2</div>
-          <h3>Retrieve any concept</h3>
-          <p>Exact-symbol lookup returns full concept cards — signature, parameters, callers, callees — in milliseconds. Zero embeddings, zero RAG.</p>
-          <div class="step-cmd"><span class="cmd-text">okf ask "how does the payment service work"</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf ask \"how does the payment service work\"" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-lg mb-5 border border-indigo-200 dark:border-indigo-800/30">2</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Retrieve any concept</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">Exact-symbol lookup returns full concept cards — signature, parameters, callers, callees — in milliseconds. Zero embeddings, zero RAG.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-indigo-600 dark:text-indigo-400 flex items-center justify-between"><span>okf lookup WorldBankConnector</span><button onclick="copyText(this, 'okf lookup WorldBankConnector')" class="text-zinc-400 hover:text-indigo-500 transition"><i class="fa-regular fa-copy"></i></button></div>
         </div>
-        <div class="step reveal">
-          <div class="step-num" aria-hidden="true">3</div>
-          <h3>Integrate with any agent</h3>
-          <p>One command installs okf-generator into Claude Code, Cursor, Copilot, Windsurf, Cline, or OpenCode with auto-trigger rules.</p>
-          <div class="step-cmd"><span class="cmd-text">okf install claude  # or cursor, copilot…</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install claude" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section class="features reveal" id="features" aria-labelledby="features-heading">
-    <div class="container">
-      <p class="section-label">Features</p>
-      <h2 class="section-title" id="features-heading">Everything your agent needs</h2>
-      <p class="section-sub">A complete knowledge infrastructure — from zero-LLM extraction to interactive visualization and CI/CD integration.</p>
-      <div class="features-grid">
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">⚡</div>
-          <h3>Zero-LLM Extraction</h3>
-          <p>Fully deterministic, offline-capable. tree-sitter AST parsers extract every symbol with zero API calls. Works in air-gapped environments.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">🔗</div>
-          <h3>Cross-Reference Linker</h3>
-          <p>Resolves imports → dependencies and function calls → caller/callee across all 17 languages (22 manifest formats). Multi-hop reasoning without grep.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">🗺</div>
-          <h3>Interactive Visualization</h3>
-          <p>D3.js force-directed graph with search, filter, pan/zoom, and dark/light theme. Self-contained HTML, no server required.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">📊</div>
-          <h3>Bundle Diff &amp; Impact</h3>
-          <p>okf diff shows exactly what changed between runs. Built-in GitHub Action posts PR comments with dependency impact analysis.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">🔌</div>
-          <h3>MCP Server</h3>
-          <p>okf mcp exposes 11 tools — lookup, get_concept, find_callers, find_callees, list_by_file, list_dependencies, bundle_info, list_by_type, search_by_tag, get_related, get_manifest_source.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-icon" aria-hidden="true">🎓</div>
-          <h3>Training Data Export</h3>
-          <p>Convert any bundle into JSONL fine-tuning pairs — 5 types: codegen, QA, doc, summarize, crosslink. LLM-synthesized or static.</p>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-lg mb-5 border border-emerald-200 dark:border-emerald-800/30">3</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Integrate with any agent</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">One command installs okf-generator into Claude Code, Cursor, Copilot, Windsurf, Cline, or OpenCode with auto-trigger rules.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-emerald-600 dark:text-emerald-400 flex items-center justify-between"><span>okf install claude</span><button onclick="copyText(this, 'okf install claude')" class="text-zinc-400 hover:text-emerald-500 transition"><i class="fa-regular fa-copy"></i></button></div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- LANGUAGES -->
-  <section class="languages reveal" id="languages" aria-labelledby="languages-heading">
-    <div class="container">
-      <p class="section-label">Language Coverage</p>
-      <h2 class="section-title" id="languages-heading">17 languages, modular parsers</h2>
-      <p class="section-sub">Each language lives in its own parser file. Adding a new language is a self-contained tree-sitter grammar mapping — no core changes.</p>
-      <div class="lang-grid" role="list" aria-label="Supported languages">
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#3572A5" aria-hidden="true"></span>Python</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#f7df1e" aria-hidden="true"></span>JavaScript</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#3178c6" aria-hidden="true"></span>TypeScript</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#00ADD8" aria-hidden="true"></span>Go</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#b07219" aria-hidden="true"></span>Java</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#dea584" aria-hidden="true"></span>Rust</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#F05138" aria-hidden="true"></span>Swift</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#A97BFF" aria-hidden="true"></span>Kotlin</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#701516" aria-hidden="true"></span>Ruby</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#555555" aria-hidden="true"></span>C</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#f34b7d" aria-hidden="true"></span>C++</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#178600" aria-hidden="true"></span>C#</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#e38c00" aria-hidden="true"></span>SQL</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#777BB4" aria-hidden="true"></span>PHP</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#00D2B8" aria-hidden="true"></span>Dart</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#DC322F" aria-hidden="true"></span>Scala</span>
-        <span class="lang-pill" role="listitem"><span class="lang-dot" style="background:#4063D8" aria-hidden="true"></span>Julia</span>
+  <section id="features" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 relative transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Enterprise Capabilities</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Packed with Features Built for Production Systems</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Everything you need to compile codebases into structured metadata instantly ingestible by any AI agent.</p>
       </div>
-      <p style="margin-top:24px; font-size:14px; color:var(--text-muted);">Plus <strong>17 manifest formats</strong>: requirements.txt · pyproject.toml · package.json · Cargo.toml · go.mod · pom.xml · Gemfile · Dockerfile · docker-compose.yml and more.</p>
-    </div>
-  </section>
-
-  <!-- AGENT INSTALL -->
-  <section class="agent-install reveal" id="agent-install" aria-labelledby="agent-install-heading">
-    <div class="container">
-      <p class="section-label">Agent Integration</p>
-      <h2 class="section-title" id="agent-install-heading">One command per agent</h2>
-      <p class="section-sub">okf install writes the exact rules, instructions, and commands each agent needs. No manual configuration.</p>
-      <div class="agent-grid">
-        <div class="agent-card reveal">
-          <h3>Claude Code</h3>
-          <p class="agent-note">Auto-triggers on "index my codebase"</p>
-          <div class="agent-cmd"><span>okf install claude</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install claude" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg border border-brand-200 dark:border-brand-800/30 group-hover:bg-brand-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-code"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">AST Multi-Language Parsers</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Native Tree-Sitter parsing across <span class="text-zinc-800 dark:text-zinc-200 font-semibold">13 languages</span> (Python, Rust, Go, JS, TS, Java, C#, C, C++, Swift, Ruby, Kotlin, SQL) to identify classes, structures, and functions.</p>
         </div>
-        <div class="agent-card reveal">
-          <h3>Cursor</h3>
-          <p class="agent-note">Writes .cursorrules — auto-loaded</p>
-          <div class="agent-cmd"><span>okf install cursor</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install cursor" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg border border-indigo-200 dark:border-indigo-800/30 group-hover:bg-indigo-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-network-wired"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Cross-Reference Linker</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Resolves imports, call sites, and inheritance dependencies into logical graph edges (Calls, Called-by, Depends-on) across internal boundaries.</p>
         </div>
-        <div class="agent-card reveal">
-          <h3>GitHub Copilot</h3>
-          <p class="agent-note">Writes copilot-instructions.md for VS Code</p>
-          <div class="agent-cmd"><span>okf install copilot</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install copilot" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg border border-emerald-200 dark:border-emerald-800/30 group-hover:bg-emerald-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-box-open"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Manifest Dependency Scanners</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Scans and cross-indexes <span class="text-zinc-800 dark:text-zinc-200 font-semibold">17+ configuration manifests</span> (Cargo.toml, package.json, requirements.txt, build.gradle, go.mod, Mix, Gemfile) to map libraries.</p>
         </div>
-        <div class="agent-card reveal">
-          <h3>Windsurf</h3>
-          <p class="agent-note">Writes .windsurfrules — auto-loaded</p>
-          <div class="agent-cmd"><span>okf install windsurf</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install windsurf" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center text-lg border border-pink-200 dark:border-pink-800/30 group-hover:bg-pink-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-circle-nodes"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Native MCP Server Integration</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Exposes code concepts natively as tools via the <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Model Context Protocol</span>. Cursor, Claude Desktop, and Cline can explore, search, and parse code automatically.</p>
         </div>
-        <div class="agent-card reveal">
-          <h3>Cline</h3>
-          <p class="agent-note">Writes .clinerules — auto-loaded</p>
-          <div class="agent-cmd"><span>okf install cline</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install cline" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800/30 group-hover:bg-amber-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-chart-line"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Fine-Tuning Dataset Generator</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Extracts high-fidelity <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Instruction Pairs</span> (<code class="text-xs">okf pairs</code>) from AST nodes to train custom private coding SLMs tailored strictly to your architecture.</p>
         </div>
-        <div class="agent-card reveal">
-          <h3>OpenCode</h3>
-          <p class="agent-note">Adds /lookup command + MCP server</p>
-          <div class="agent-cmd"><span>okf install opencode</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install opencode" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
-        </div>
-        <div class="agent-card reveal">
-          <h3>MCP</h3>
-          <p class="agent-note">11 tools via Model Context Protocol for any client</p>
-          <div class="agent-cmd"><span>okf install mcp</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install mcp" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center text-lg border border-teal-200 dark:border-teal-800/30 group-hover:bg-teal-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-images"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Interactive Visual Dashboard</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Generates beautiful, search-enabled 2D interactive graphs of your codebase structure. Great for human onboarding, audits, and code architecture mapping.</p>
         </div>
       </div>
-      <p style="margin-top:24px; font-size:14px; color:var(--text-muted);">
-        Install for all at once: <code style="background:var(--code-bg);padding:2px 8px;border-radius:5px;font-family:var(--mono)">okf install all</code>
-        · Register MCP server: <code style="background:var(--code-bg);padding:2px 8px;border-radius:5px;font-family:var(--mono)">okf mcp --install</code>
-        · <a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/agent-integration.md" style="color:var(--accent)" target="_blank" rel="noopener">Full integration guide →</a>
-      </p>
     </div>
   </section>
-
-  <!-- ENRICHMENT -->
-  <section class="enrichment reveal" id="enrichment" aria-labelledby="enrichment-heading">
-    <div class="container">
-      <p class="section-label">LLM Enrichment</p>
-      <h2 class="section-title" id="enrichment-heading">Go deeper when you need it</h2>
-      <p class="section-sub">Four tiered enrichment modes. All are resumable — interrupt and rerun freely. Already-enriched concepts are skipped.</p>
-      <div class="enrich-grid">
-        <div class="enrich-card reveal">
-          <div class="enrich-card-header">
-            <span class="enrich-badge base">base</span>
-            <h3>Base Enrichment</h3>
+  <section id="languages" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Language Coverage</h2>
+      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">17 languages, modular parsers</h3>
+      <p class="text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto mb-12">Each language lives in its own parser file. Adding a new language is a self-contained tree-sitter grammar mapping — no core changes.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#3572A5"></span>Python</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#f7df1e"></span>JavaScript</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#3178c6"></span>TypeScript</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#00ADD8"></span>Go</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#b07219"></span>Java</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#dea584"></span>Rust</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#F05138"></span>Swift</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#A97BFF"></span>Kotlin</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#701516"></span>Ruby</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#555555"></span>C</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#f34b7d"></span>C++</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#178600"></span>C#</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#e38c00"></span>SQL</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#777BB4"></span>PHP</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#00D2B8"></span>Dart</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#DC322F"></span>Scala</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#4063D8"></span>Julia</span>
+      </div>
+      <p class="mt-8 text-sm text-zinc-500">Plus <strong class="text-zinc-700 dark:text-zinc-300">22 manifest formats</strong>: requirements.txt · pyproject.toml · package.json · Cargo.toml · go.mod · pom.xml · Gemfile and more.</p>
+    </div>
+  </section>
+  <section id="agent-install" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Agent Integration</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">One command per agent</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">okf install writes the exact rules, instructions, and commands each agent needs. No manual configuration.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Claude Code</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Auto-triggers on 'index my codebase'</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install claude</span><button onclick="copyText(this, 'okf install claude')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Cursor</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .cursorrules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install cursor</span><button onclick="copyText(this, 'okf install cursor')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">GitHub Copilot</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes copilot-instructions.md</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install copilot</span><button onclick="copyText(this, 'okf install copilot')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Windsurf</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .windsurfrules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install windsurf</span><button onclick="copyText(this, 'okf install windsurf')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Cline</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .clinerules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install cline</span><button onclick="copyText(this, 'okf install cline')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">OpenCode</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Adds /lookup command + MCP server</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install opencode</span><button onclick="copyText(this, 'okf install opencode')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">MCP</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">11 tools via Model Context Protocol</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install mcp</span><button onclick="copyText(this, 'okf install mcp')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">All Agents</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Install for every agent at once</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install all</span><button onclick="copyText(this, 'okf install all')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+      </div>
+      <p class="text-center mt-8 text-sm text-zinc-500">Register MCP server: <code class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded font-mono text-xs">okf mcp --install</code> · <a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/agent-integration.md" class="text-brand-600 dark:text-brand-400 hover:underline" target="_blank">Full integration guide →</a></p>
+    </div>
+  </section>
+  <section id="enrichment" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">LLM Enrichment</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">Go deeper when you need it</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">Four tiered enrichment modes. All are resumable — interrupt and rerun freely. Already-enriched concepts are skipped.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#dbeafe;color:#1d4ed8">base</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Base Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf generate --enrich base</span><button onclick="copyText(this, 'okf generate --enrich base')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#fef9c3;color:#a16207">deep</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Deep Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Adds usage examples, side effects, security notes, and complexity estimates. Requires source body for full context.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich ./okf_bundle --mode deep</span><button onclick="copyText(this, 'okf enrich ./okf_bundle --mode deep')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#fee2e2;color:#dc2626">security</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Security Audit</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Audits the bundle for visible risk patterns — injection vectors, auth bypasses, unsafe deserialization. Flags risks with remediation hints.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich ./okf_bundle --mode security</span><button onclick="copyText(this, 'okf enrich ./okf_bundle --mode security')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#ede9fe;color:#5b21b6">full</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Full Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">All tiers plus semantic related-links across concepts. Best for training data generation and comprehensive architectural review.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich ./okf_bundle --mode full</span><button onclick="copyText(this, 'okf enrich ./okf_bundle --mode full')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="cli" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-terminal"></i> Command Line Interface</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Comprehensive, Elegant CLI Toolkit</h2>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Manage files, map repositories, serve interactive diagrams, run diff analysis, or start the AI MCP server with one simple binary command structure.</p>
+          <div class="space-y-3 pt-4 select-none">
+            <button onclick="switchTerminalTab('generate')" id="tab-btn-generate" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400"></span><span class="font-mono text-sm font-semibold">okf generate</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Scan & Compile Graph</span>
+            </button>
+            <button onclick="switchTerminalTab('lookup')" id="tab-btn-lookup" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf lookup</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Instant offline search</span>
+            </button>
+            <button onclick="switchTerminalTab('mcp')" id="tab-btn-mcp" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf mcp</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Expose to Claude/Cursor</span>
+            </button>
+            <button onclick="switchTerminalTab('visualize')" id="tab-btn-visualize" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf visualize</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">D3/SVG HTML render</span>
+            </button>
+            <button onclick="switchTerminalTab('pairs')" id="tab-btn-pairs" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf pairs</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Dataset Generator</span>
+            </button>
           </div>
-          <p>Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
-          <div class="enrich-cmd"><span>okf generate --enrich base</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf generate --enrich base" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
-        <div class="enrich-card reveal">
-          <div class="enrich-card-header">
-            <span class="enrich-badge deep">deep</span>
-            <h3>Deep Enrichment</h3>
+        <div class="lg:col-span-7 bg-zinc-950 border border-zinc-900 rounded-2xl shadow-2xl p-6 relative min-h-[440px] flex flex-col justify-between font-mono">
+          <div class="flex items-center justify-between border-b border-zinc-900 pb-4 mb-4"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-zinc-800"></span><span class="w-3 h-3 rounded-full bg-zinc-800"></span><span class="w-3 h-3 rounded-full bg-zinc-800"></span></div><span class="text-xs text-zinc-500">okf-terminal-session</span><span class="text-xs text-zinc-600">zsh</span></div>
+          <div class="flex-grow space-y-4 text-xs leading-relaxed overflow-y-auto" id="terminal-content">
+            <div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf generate ./my_project ./okf_bundle --enrich deep</span></div><div class="text-zinc-500 mt-2">[1/4] Scanned codebase: 74 python, 12 javascript, 3 manifest files.<br>[2/4] Parsing Tree-Sitter AST nodes for method definitions...<br>[3/4] Resolving cross-references & library import matches...<br>[4/4] Optional LLM enrichment: Enhancing method docstrings (Deep Mode)...</div><div class="text-emerald-400 font-bold mt-2">✓ Generated knowledge bundle at './okf_bundle/' (124 concepts resolved).<br>✓ Code context compressed by 88.4% (avg. concept size 320 tokens).</div></div>
           </div>
-          <p>Adds usage examples, side effects, security notes, and complexity estimates. Requires source body for full context.</p>
-          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode deep</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode deep" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+          <div class="mt-6 pt-4 border-t border-zinc-900 flex justify-between items-center"><span class="text-[10px] text-zinc-500">Run in your workspace terminal</span><button onclick="copyTerminalCommand()" class="text-xs bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 rounded px-2.5 py-1.5 flex items-center gap-1.5 transition"><i class="fa-regular fa-copy"></i> <span id="copy-text">Copy Command</span></button></div>
         </div>
-        <div class="enrich-card reveal">
-          <div class="enrich-card-header">
-            <span class="enrich-badge security">security</span>
-            <h3>Security Audit</h3>
-          </div>
-          <p>Audits the bundle for visible risk patterns — injection vectors, auth bypasses, unsafe deserialization. Flags risks with remediation hints.</p>
-          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode security</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode security" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+      </div>
+      <div class="mt-24">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">CLI Reference</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">11 commands, full workflow</h3>
+          <p class="text-zinc-600 dark:text-zinc-400 mt-4">From initial generation to production CI/CD. Every command has a --help flag with full options.</p>
         </div>
-        <div class="enrich-card reveal">
-          <div class="enrich-card-header">
-            <span class="enrich-badge full">full</span>
-            <h3>Full Enrichment</h3>
-          </div>
-          <p>All tiers plus semantic related-links across concepts. Best for training data generation and comprehensive architectural review.</p>
-          <div class="enrich-cmd"><span>okf enrich ./okf_bundle --mode full</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf enrich ./okf_bundle --mode full" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <table class="w-full text-sm">
+            <thead class="bg-zinc-50 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800"><tr><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Command</th><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Usage</th><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Description</th></tr></thead>
+            <tbody>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">generate</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf generate [src] [out] [--enrich]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Scan codebase (auto-detects project root if src omitted)</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">lookup</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf lookup <query> [--type] [--json]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Instant exact-symbol concept retrieval</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">ask</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf ask <question></td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">AI-powered Q&A about your codebase (requires LLM)</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">enrich</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf enrich <bundle> [--mode] [--src]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">LLM-enhance an existing bundle</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">diff</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf diff <old> <new> [--impact]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Compare two bundles, show impact</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">visualize</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf visualize <bundle> [out.html]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Generate interactive D3 graph</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">mcp</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf mcp <bundle></td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Start MCP server with 7 agent tools</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">dashboard</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf dashboard <bundle> [--port]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Launch FastAPI live bundle browser + graph</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">serve</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf serve [dir] [--port] [--open]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Browse bundle via local HTTP server</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">install</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf install [claude|cursor|copilot|...]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Write agent integration rules/configs</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">pairs</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf pairs <bundle> [output.jsonl]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Export fine-tuning training pairs</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- CLI TABLE -->
-  <section class="cli-ref reveal" id="cli" aria-labelledby="cli-heading">
-    <div class="container">
-      <p class="section-label">CLI Reference</p>
-      <h2 class="section-title" id="cli-heading">11 commands, full workflow</h2>
-      <p class="section-sub">From initial generation to production CI/CD. Every command has a --help flag with full options.</p>
-      <div class="cli-table-wrap" role="region" aria-label="CLI commands table">
-        <table class="cli-table">
-          <thead>
-            <tr>
-              <th scope="col">Command</th>
-              <th scope="col">Usage</th>
-              <th scope="col">Description</th>
-            </tr>
-          </thead>
+  <section id="comparison" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Comparison</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">okf-generator vs the alternatives</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">How deterministic AST extraction compares to RAG and naive file loading for code context retrieval.</p>
+      </div>
+      <div class="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-brand-600 text-white"><tr><th class="text-left px-5 py-3.5 font-bold">Capability</th><th class="text-left px-5 py-3.5 font-bold">okf-generator</th><th class="text-left px-5 py-3.5 font-bold">RAG / Vector Search</th><th class="text-left px-5 py-3.5 font-bold">Read Whole File</th></tr></thead>
           <tbody>
-            <tr><td>generate</td><td>okf generate [src] [out] [--enrich]</td><td>Scan codebase (auto-detects project root if src omitted)</td></tr>
-            <tr><td>lookup</td><td>okf lookup &lt;query&gt; [--type] [--json]</td><td>Instant exact-symbol concept retrieval</td></tr>
-<tr><td>ask</td><td>okf ask &lt;question&gt;</td><td>AI-powered Q&A about your codebase (requires LLM)</td></tr>
-            <tr><td>enrich</td><td>okf enrich &lt;bundle&gt; [--mode] [--src]</td><td>LLM-enhance an existing bundle</td></tr>
-            <tr><td>diff</td><td>okf diff &lt;old&gt; &lt;new&gt; [--impact]</td><td>Compare two bundles, show impact</td></tr>
-            <tr><td>visualize</td><td>okf visualize &lt;bundle&gt; [out.html]</td><td>Generate interactive D3 graph</td></tr>
-            <tr><td>mcp</td><td>okf mcp &lt;bundle&gt;</td><td>Start MCP server with 7 agent tools</td></tr>
-<tr><td>dashboard</td><td>okf dashboard &lt;bundle&gt; [--port]</td><td>Launch FastAPI live bundle browser + graph</td></tr>
-            <tr><td>serve</td><td>okf serve [dir] [--port] [--open]</td><td>Browse bundle via local HTTP server</td></tr>
-            <tr><td>install</td><td>okf install [claude|cursor|copilot|…]</td><td>Write agent integration rules/configs</td></tr>
-            <tr><td>init</td><td>okf init [dir]</td><td>Interactive wizard for bundle setup</td></tr>
-            <tr><td>pairs</td><td>okf pairs &lt;bundle&gt; [output.jsonl]</td><td>Export fine-tuning training pairs</td></tr>
-            <tr><td>summarize</td><td>okf summarize &lt;bundle&gt;</td><td>Regenerate SUMMARY.md for agents</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Exact symbol retrieval</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Precise AST lookup</td><td class="px-5 py-3 text-zinc-400">~ Approximate (chunk similarity)</td><td class="px-5 py-3 text-zinc-400">⚠ Manual scan</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Token cost per lookup</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~140 tokens</td><td class="px-5 py-3 text-zinc-400">~ Varies by chunk strategy</td><td class="px-5 py-3 text-zinc-400">✗ 14,000+ tokens</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Cross-reference edges</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Calls / called-by / imports</td><td class="px-5 py-3 text-zinc-400">✗ Not supported</td><td class="px-5 py-3 text-zinc-400">✗ Not supported</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Offline / no API key</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Fully offline</td><td class="px-5 py-3 text-zinc-400">✗ Needs embeddings API</td><td class="px-5 py-3 text-zinc-400">✓ Offline</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Dependency manifest parsing</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ 17 formats</td><td class="px-5 py-3 text-zinc-400">✗ Not designed for this</td><td class="px-5 py-3 text-zinc-400">✗ Manual</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Search speed</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~3-4ms (indexed)</td><td class="px-5 py-3 text-zinc-400">~ 200-500ms (embed + search)</td><td class="px-5 py-3 text-zinc-400">⚠ Manual (seconds+)</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">CI/CD integration</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Built-in GitHub Action</td><td class="px-5 py-3 text-zinc-400">✗ Custom pipeline required</td><td class="px-5 py-3 text-zinc-400">✗ N/A</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Training data export</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Built-in JSONL pairs</td><td class="px-5 py-3 text-zinc-400">✗ Not a feature</td><td class="px-5 py-3 text-zinc-400">✗ Not a feature</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Context compression</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~97% reduction</td><td class="px-5 py-3 text-zinc-400">~ Varies by chunk strategy</td><td class="px-5 py-3 text-zinc-400">✗ 0% (full file)</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Setup complexity</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ pip install + 1 command</td><td class="px-5 py-3 text-zinc-400">⚠ Vector DB + embedding pipeline</td><td class="px-5 py-3 text-zinc-400">✓ None</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
-
-  <!-- COMPARISON -->
-  <section class="comparison reveal" id="comparison" aria-labelledby="comparison-heading">
-    <div class="container">
-      <p class="section-label">Comparison</p>
-      <h2 class="section-title" id="comparison-heading">okf vs RAG vs Read-whole-file</h2>
-      <p class="section-sub">Not all context retrieval strategies are equal. Here's how okf-generator compares to the alternatives.</p>
-      <div class="comp-table-wrap" role="region" aria-label="Comparison table">
-        <table class="comp-table">
-          <thead>
-            <tr>
-              <th scope="col">Capability</th>
-              <th scope="col">okf-generator</th>
-              <th scope="col">RAG / Vector Search</th>
-              <th scope="col">Read Whole File</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Exact symbol retrieval</td>
-              <td class="check">✓ Precise</td>
-              <td class="cross">~ Approximate</td>
-              <td class="cross">⚠ Manual scan</td>
-            </tr>
-            <tr>
-              <td>Token cost per lookup</td>
-              <td class="check">✓ ~140 tokens</td>
-              <td class="cross">~ Varies (chunks)</td>
-              <td class="cross">✗ 14,000+ tokens</td>
-            </tr>
-            <tr>
-              <td>Cross-reference edges</td>
-              <td class="check">✓ Calls / called-by</td>
-              <td class="cross">✗ Not supported</td>
-              <td class="cross">✗ Not supported</td>
-            </tr>
-            <tr>
-              <td>Offline / no API key</td>
-              <td class="check">✓ Fully offline</td>
-              <td class="cross">✗ Needs embeddings API</td>
-              <td class="check">✓ Offline</td>
-            </tr>
-            <tr>
-              <td>Dependency manifest parsing</td>
-              <td class="check">✓ 17 formats</td>
-              <td class="cross">✗ Not typical</td>
-              <td class="cross">✗ Manual</td>
-            </tr>
-            <tr>
-              <td>CI/CD integration</td>
-              <td class="check">✓ Built-in GitHub Action</td>
-              <td class="cross">✗ Custom required</td>
-              <td class="cross">✗ N/A</td>
-            </tr>
-            <tr>
-              <td>Training data export</td>
-              <td class="check">✓ Built-in JSONL</td>
-              <td class="cross">✗ Not typical</td>
-              <td class="cross">✗ Not typical</td>
-            </tr>
-            <tr>
-              <td>Setup complexity</td>
-              <td class="check">✓ pip install + 1 command</td>
-              <td class="cross">⚠ Vector DB + pipeline</td>
-              <td class="check">✓ None</td>
-            </tr>
-          </tbody>
-        </table>
+  <section id="calculator" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-calculator"></i> Business ROI Calculator</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Calculate Your AI Context API Savings</h2>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">AI coding agents query LLM APIs dozens of times daily. Because they lack local repository indexes, they read massive files repeatedly.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Drag the sliders to see how much your engineering team can save in raw API token expenditures by deploying deterministic <strong class="text-zinc-900 dark:text-white">okf-generator</strong> structures.</p>
+          <div class="pt-4 space-y-3 text-sm"><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Average context savings: <strong class="text-zinc-900 dark:text-white">~97.3% less tokens per prompt</strong></span></div><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Context loading delay: <strong class="text-zinc-900 dark:text-white">Reduced from 18 seconds to 1.5 seconds</strong></span></div><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Fully Local AI option: <strong class="text-zinc-900 dark:text-white">Save 100% of LLM costs</strong> using offline SLMs.</span></div></div>
+        </div>
+        <div class="lg:col-span-7 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 sm:p-8 relative transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full blur-[60px] pointer-events-none"></div>
+          <div class="space-y-6">
+            <div><div class="flex items-center justify-between mb-2"><span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><i class="fa-solid fa-users text-zinc-400"></i> Number of AI Developers</span><span class="font-mono text-base font-bold text-brand-600 dark:text-brand-300" id="calc-devs-display">25 devs</span></div><input type="range" id="calc-devs" min="1" max="250" value="25" class="w-full h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800" oninput="calculateSavings()"><div class="flex justify-between text-[10px] text-zinc-400 dark:text-zinc-600 font-mono mt-1"><span>1 Dev</span><span>250 Devs</span></div></div>
+            <div><div class="flex items-center justify-between mb-2"><span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><i class="fa-solid fa-message text-zinc-400"></i> Daily Queries / Dev</span><span class="font-mono text-base font-bold text-brand-600 dark:text-brand-300" id="calc-queries-display">20 queries</span></div><input type="range" id="calc-queries" min="5" max="100" value="20" class="w-full h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800" oninput="calculateSavings()"><div class="flex justify-between text-[10px] text-zinc-400 dark:text-zinc-600 font-mono mt-1"><span>5 Queries</span><span>100 Queries</span></div></div>
+            <div><label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-robot text-zinc-400"></i> Target AI Model Integration</label><select id="calc-model" class="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition duration-300" onchange="calculateSavings()"><option value="sonnet" selected>Claude 3.5 Sonnet / GPT-4o ($3.00 per 1M input tokens)</option><option value="opus">Claude 3 Opus ($15.00 per 1M input tokens)</option><option value="haiku">Claude 3.5 Haiku ($0.80 per 1M input tokens)</option><option value="llama">DeepSeek-V3 / Open LLM Cloud ($0.27 per 1M input tokens)</option><option value="local">Fully Local SLM ($0.00/1M - Unlimited offline)</option></select></div>
+          </div>
+          <div class="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800/80 text-center transition duration-300"><span class="text-xs uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Estimated Annual Savings</span><div class="mt-2 flex items-center justify-center gap-2"><span class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 font-mono" id="annual-savings">$12,470</span><span class="text-zinc-500 dark:text-zinc-400 text-xs font-semibold" id="pct-saved">/ year (saved 97%)</span></div><p class="text-xs text-zinc-500 mt-4 leading-relaxed bg-white dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-900 transition duration-300" id="savings-note">Calculated assuming an average raw codebase context load of 45K tokens (naive) versus 1,200 tokens using OKF structured AST lookups.</p></div>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- FAQ -->
-  <section class="faq reveal" id="faq" aria-labelledby="faq-heading">
-    <div class="container">
-      <p class="section-label">FAQ</p>
-      <h2 class="section-title" id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-list" role="list">
-        <details>
-          <summary>Does this require an API key or internet connection?</summary>
-          <div class="faq-answer">No. Core extraction (<code>okf generate</code>) is fully offline and deterministic — no LLM call is made unless you explicitly enable enrichment with <code>--enrich</code>. All 17 language parsers use tree-sitter or Python's stdlib AST and work completely air-gapped.</div>
-        </details>
-        <details>
-          <summary>How is this different from RAG or vector search?</summary>
-          <div class="faq-answer">RAG retrieves chunks by semantic similarity, which is approximate and can miss exact symbols. <code>okf lookup</code> is exact: it indexes real functions, classes, modules, and dependencies by name and resolves to the precise concept with zero embedding or vector infrastructure required. The result is deterministic and identical every run.</div>
-        </details>
-        <details>
-          <summary>Does this work on monorepos or very large codebases?</summary>
-          <div class="faq-answer">Yes. The bundle mirrors your source tree and scanning is linear in file count. For large repos, scope <code>okf generate</code> to a subdirectory if you only need part of the codebase indexed. Multi-bundle support lets you visualize cross-project edges with a bundle selector in the viz dashboard.</div>
-        </details>
-        <details>
-          <summary>Is the bundle safe to commit to git?</summary>
-          <div class="faq-answer">Yes, and that is the intended workflow. Bundles are plain Markdown files with YAML frontmatter — they diff cleanly, version alongside the code they describe, and can be reviewed in any code review tool. The pre-commit hook auto-regenerates the bundle when source files change.</div>
-        </details>
-        <details>
-          <summary>Can I use this without any LLM at all, ever?</summary>
-          <div class="faq-answer"><code>okf generate</code> + <code>okf lookup</code> together form a complete, zero-LLM workflow. LLM enrichment (<code>okf enrich</code>) and training pair synthesis (<code>okf pairs --synth</code>) are optional layers on top. You can get full value from okf-generator without ever providing an API key.</div>
-        </details>
+  <section id="mcp" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-950 p-6 shadow-2xl">
+          <div class="absolute -top-12 -left-12 w-48 h-48 bg-brand-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-900 mb-4"><span class="font-mono text-xs text-zinc-500">claude_desktop_config.json</span><span class="text-xs text-zinc-500 uppercase font-mono font-bold">MCP Server Configuration</span></div>
+          <pre class="font-mono text-xs text-indigo-300 overflow-x-auto leading-relaxed bg-zinc-950/50 p-4 rounded-xl border border-zinc-900">
+{
+  "mcpServers": {
+    "okf-generator": {
+      "command": "okf",
+      "args": [
+        "mcp",
+        "/Users/username/WSpace/my_project/okf_bundle",
+        "--port",
+        "4567"
+      ]
+    }
+  }
+}</pre>
+          <div class="mt-6 pt-4 border-t border-zinc-900"><div class="text-xs text-zinc-400 mb-2 font-bold">Connect your IDE client directly:</div><div class="grid grid-cols-3 gap-2 text-center text-[11px]"><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Cursor</div><div class="text-zinc-500 mt-1">Tools Panel</div></div><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Cline</div><div class="text-zinc-500 mt-1">Native MCP</div></div><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Claude Desktop</div><div class="text-zinc-500 mt-1">Desktop App</div></div></div></div>
+        </div>
+        <div class="space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-link"></i> Model Context Protocol</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Instantly Link Your Codebase Into IDE Agents</h2>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">The Model Context Protocol (MCP) allows client LLMs to invoke external scripts as specialized tools.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">By running <code class="text-brand-600 dark:text-brand-400 font-mono text-sm">okf mcp</code>, you instantly deploy an offline-first MCP server that exposes code definitions, dependencies, and structure maps. Now your agent in Cursor or Claude desktop doesn't guess filenames; it queries your AST-parsed database directly.</p>
+          <div class="pt-2 space-y-3 text-sm text-zinc-700 dark:text-zinc-300"><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Full tool support for <strong class="text-zinc-900 dark:text-white">okf-lookup</strong>, schema extraction, and call mapping.</span></div><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Integrates instantly with <strong class="text-zinc-900 dark:text-white">Cursor, Windsurf, Cline, and Claude Code</strong>.</span></div><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Zero-latency local network sockets for optimal speed.</span></div></div>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- INSTALL CTA -->
-  <section class="install-cta" id="install" aria-labelledby="install-heading">
-    <div class="container">
-      <h2 id="install-heading">Start in 30 seconds</h2>
-      <p>Install, generate your bundle, and do your first lookup.</p>
-      <div class="install-box" role="group" aria-label="pip install command">
-        <span class="install-cmd" aria-label="pip install okf-generator">pip install okf-generator</span>
-        <button class="copy-btn" onclick="copyInstall(this, 'pip install okf-generator')" aria-label="Copy pip install command">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copy
-        </button>
+  <section class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <div class="max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">CI/CD Automation</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Keep Your Knowledge Graphs Always Up To Date</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Automate knowledge graph generation on every commit or merge request to ensure your developers and AI agents are always operating on the absolute source of truth.</p>
       </div>
-      <p class="install-alt" style="margin-top:16px">
-        Or install via curl:
-        <a href="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh" target="_blank" rel="noopener">install.sh</a>
-        · Install with LLM support:
-        <code style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:5px;font-family:var(--mono);color:#fff">pip install "okf-generator[llm]"</code>
-      </p>
-      <div style="margin-top:40px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-        <a href="https://github.com/UmairBaig8/okf-generator" class="btn-ghost" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25)" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          View on GitHub
-        </a>
-        <a href="https://pypi.org/project/okf-generator/" class="btn-ghost" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25)" target="_blank" rel="noopener">PyPI →</a>
+      <div class="max-w-4xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-950 p-6 text-left relative shadow-2xl">
+        <div class="absolute top-0 right-10 bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[10px] font-mono text-zinc-500 font-bold">github-workflow.yml</div>
+        <div class="flex items-center gap-2 pb-4 border-b border-zinc-900 mb-4"><span class="w-3 h-3 rounded-full bg-emerald-500/80"></span><span class="font-mono text-xs text-zinc-500">Deploy via GitHub Actions</span></div>
+        <pre class="font-mono text-xs sm:text-sm text-zinc-300 overflow-x-auto leading-relaxed max-h-[380px]">
+<span class="text-zinc-500"># .github/workflows/okf-bundle.yml</span>
+<span class="text-brand-400">name:</span> okf-pipeline
+
+<span class="text-brand-400">on:</span>
+  <span class="text-brand-400">push:</span>
+    <span class="text-brand-400">branches:</span> [ main, develop ]
+
+<span class="text-brand-400">jobs:</span>
+  <span class="text-brand-400">build:</span>
+    <span class="text-brand-400">runs-on:</span> ubuntu-latest
+    <span class="text-brand-400">steps:</span>
+      - <span class="text-brand-400">uses:</span> actions/checkout@v4
+      - <span class="text-brand-400">name:</span> Set up Python
+        <span class="text-brand-400">uses:</span> actions/setup-python@v5
+        <span class="text-brand-400">with:</span>
+          <span class="text-brand-400">python-version:</span> <span class="text-emerald-400">'3.11'</span>
+      - <span class="text-brand-400">name:</span> Install OKF Generator
+        <span class="text-brand-400">run:</span> |
+          pip install okf-generator
+      - <span class="text-brand-400">name:</span> Compile AST Knowledge Bundle
+        <span class="text-brand-400">run:</span> |
+          okf generate ./src ./okf_bundle --enrich deep
+      - <span class="text-brand-400">name:</span> Deploy Dashboard to GitHub Pages
+        <span class="text-brand-400">run:</span> |
+          okf visualize ./okf_bundle docs/index.html</pre>
       </div>
     </div>
   </section>
-
+  <section id="quickstart" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Setup Guide</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Adopt in Less Than 2 Minutes</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Install the CLI, generate your code index, and plug it directly into your local IDE.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-200 dark:border-brand-800/30 mb-4">1</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Install Package</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Get the core package via pip, or download the lightweight binary shell runner directly.</p><pre class="bg-white dark:bg-zinc-950 text-brand-600 dark:text-brand-400 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">pip install okf-generator</pre></div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-mono font-bold text-sm border border-indigo-200 dark:border-indigo-800/30 mb-4">2</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Scan Codebase</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Generate your structural graph from your source repository instantly. Fully offline.</p><pre class="bg-white dark:bg-zinc-950 text-indigo-600 dark:text-indigo-300 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">okf generate ./src ./bundle</pre></div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-sm border border-emerald-200 dark:border-emerald-800/30 mb-4">3</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Start MCP Server</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Expose your knowledge bundle to Claude Code or Cursor via the local MCP protocol.</p><pre class="bg-white dark:bg-zinc-950 text-emerald-600 dark:text-emerald-300 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">okf mcp ./bundle --port 4567</pre></div>
+      </div>
+    </div>
+  </section>
+  <section id="faq" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Questions & Answers</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Frequently Asked Questions</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Can't find the answer you need? Get in touch with our engineering team directly via GitHub.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">How is okf-generator different from standard vector database (RAG) retrieval?</span><span id="faq-icon-1" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-1" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">Vector search (RAG) breaks code into arbitrary text chunks and generates embeddings. It is entirely unaware of code syntax. When an agent queries a function, RAG often returns irrelevant snippets while losing import pathways and parameters.<br><br><strong>okf-generator</strong> is deterministic. It maps code structurally using AST Tree-Sitter parsing. This ensures the agent is given an exact mathematical representation of variables, methods, calls, and dependencies with zero hallucination.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Does any part of my proprietary codebase leave my local environment?</span><span id="faq-icon-2" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-2" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">No. By default, core extraction runs 100% offline using your local CPU to execute Tree-Sitter parse commands. No code or metadata is sent to any third-party cloud. Optional LLM enrichment can be enabled manually and is compatible with any self-hosted model or private enterprise API.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Which AI coding agents and IDEs support OKF?</span><span id="faq-icon-3" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-3" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">Our native Model Context Protocol (MCP) server allows okf-generator to connect instantly to major client shells including <strong>Cursor, Cline, Windsurf, Claude Code, and Claude Desktop</strong>. Developers can run simple <code class=\'text-brand-600 dark:text-brand-400\'>okf install [agent]</code> directives to initialize system configurations.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">What are training pairs (`okf pairs`) used for?</span><span id="faq-icon-4" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-4" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300"><code>okf pairs</code> translates your code\'s structural graph into clean training instructions (JSONL format). This enables you to fine-tune local Small Language Models (SLMs) such as Llama 3 8B or Phi-3 so they natively understand your proprietary engineering patterns, internal libraries, and naming conventions.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Does this require an API key or internet connection?</span><span id="faq-icon-5" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-5" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">No. Core extraction (<code>okf generate</code>) is fully offline and deterministic — no LLM call is made unless you explicitly enable enrichment with <code>--enrich</code>. All 17 language parsers use tree-sitter or Python\'s stdlib AST and work completely air-gapped.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="install" class="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-950 text-zinc-300 py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+    <div class="absolute top-0 left-1/3 w-96 h-96 bg-brand-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+      <div class="relative">
+        <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-semibold text-brand-200">pip install in 30 seconds</span>
+        </div>
+        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">Start in 30 seconds</h3>
+        <p class="text-brand-200 max-w-2xl mx-auto text-lg leading-relaxed mb-10">Install, generate your bundle, and do your first lookup. No API keys, no signup, fully offline.</p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <div class="inline-flex items-center bg-white/10 border border-white/20 rounded-xl overflow-hidden backdrop-blur-sm shadow-xl shadow-brand-900/50"><span class="font-mono text-base font-medium text-white px-6 py-4">pip install okf-generator</span><button onclick="copyText(this, 'pip install okf-generator')" class="bg-white/15 hover:bg-white/25 text-white px-5 py-4 transition flex items-center gap-2 text-sm font-semibold border-l border-white/20"><i class="fa-regular fa-copy"></i> Copy</button></div>
+          <a href="https://umairbaig8.github.io/okf-generator/docs-site/getting-started/quick-start/" class="bg-white hover:bg-zinc-100 text-brand-900 font-bold px-8 py-4 rounded-xl transition shadow-xl transform hover:-translate-y-0.5">Get Started Free</a>
+        </div>
+        <div class="mt-6 flex items-center justify-center gap-4 text-sm text-brand-300">
+          <span>Or curl: <a href="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh" class="text-white hover:underline font-mono" target="_blank">install.sh</a></span>
+          <span class="text-brand-400/50">|</span>
+          <span>LLM support: <code class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs text-brand-200">pip install "okf-generator[llm]"</code></span>
+          <span class="text-brand-400/50">|</span>
+          <span>Dashboard support: <code class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs text-brand-200">pip install "okf-generator[dashboard]"</code></span>
+        </div>
+        <div class="mt-10 flex items-center justify-center gap-4 flex-wrap">
+          <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-brands fa-github"></i> GitHub</a>
+          <a href="https://pypi.org/project/okf-generator/" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-solid fa-box"></i> PyPI</a>
+          <a href="https://umairbaig8.github.io/okf-generator/docs-site/getting-started/quick-start/" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-solid fa-book"></i> Documentation</a>
+        </div>
+      </div>
+    </div>
+  </section>
   </main><!-- end #main -->
-
-  <!-- FOOTER -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="footer-brand-logo">
-            <div class="footer-brand-logo-icon" aria-hidden="true">OK</div>
-            okf-generator
-          </div>
-          <p>Map any codebase into a structured knowledge graph for AI agents, local SLMs, and architectural review. OKF v0.1 conformant.</p>
-          <div class="footer-badges">
-            <a href="https://pypi.org/project/okf-generator/" class="footer-badge" target="_blank" rel="noopener" aria-label="View on PyPI">
-              <img src="https://img.shields.io/pypi/v/okf-generator?style=flat-square&label=PyPI" alt="PyPI version" height="20" />
-            </a>
-            <a href="https://pypi.org/project/okf-generator/" class="footer-badge" target="_blank" rel="noopener" aria-label="Python versions">
-              <img src="https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square" alt="Python versions" height="20" />
-            </a>
-            <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" class="footer-badge" target="_blank" rel="noopener" aria-label="MIT License">
-              <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" height="20" />
-            </a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="#how-it-works">How it works</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#languages">Languages</a></li>
-            <li><a href="#enrichment">Enrichment</a></li>
-            <li><a href="viz.html">Live Demo</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Docs</h4>
-          <ul>
-            <li><a href="docs-site/">📖 Documentation Portal</a></li>
-            <li><a href="#cli">CLI Reference</a></li>
-            <li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/agent-integration.md" target="_blank" rel="noopener">Agent Integration</a></li>
-            <li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/ci-cd.md" target="_blank" rel="noopener">CI/CD Guide</a></li>
-            <li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/python-api.md" target="_blank" rel="noopener">Python API</a></li>
-            <li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Links</h4>
-          <ul>
-            <li><a href="https://github.com/UmairBaig8/okf-generator" target="_blank" rel="noopener">GitHub</a></li>
-            <li><a href="https://pypi.org/project/okf-generator/" target="_blank" rel="noopener">PyPI</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#install">Install</a></li>
-          </ul>
-        </div>
+  <footer class="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 text-sm border-t border-zinc-200 dark:border-zinc-800 pt-20 pb-12 relative overflow-hidden">
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-600/5 dark:bg-brand-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute -top-12 left-1/3 w-80 h-80 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-left">
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Project</div><ul class="space-y-2 text-xs"><li><a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">GitHub</a></li><li><a href="https://pypi.org/project/okf-generator/" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">PyPI</a></li><li><a href="docs-site/" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Documentation</a></li><li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">MIT License</a></li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Docs</div><ul class="space-y-2 text-xs"><li><a href="#cli" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">CLI Reference</a></li><li><a href="#comparison" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Comparison</a></li><li><a href="#enrichment" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Enrichment</a></li><li><a href="#faq" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">FAQ</a></li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Languages</div><ul class="space-y-2 text-xs"><li class="text-zinc-500 dark:text-zinc-400">Python, JS, TS, Go, Rust</li><li class="text-zinc-500 dark:text-zinc-400">Java, Kotlin, C, C++, C#</li><li class="text-zinc-500 dark:text-zinc-400">Ruby, Swift, PHP, Dart, Scala</li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Support</div><p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">Open an issue on <a href="https://github.com/UmairBaig8/okf-generator" class="text-brand-600 dark:text-brand-400 hover:underline">GitHub</a> for help.</p></div>
       </div>
-      <div class="footer-bottom">
-        <p>© 2026 Umair Baig · <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> · Not affiliated with Google.</p>
-        <p>Implements <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md" target="_blank" rel="noopener">OKF v0.1 spec</a></p>
+      <div class="border-t border-zinc-200 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs gap-4">
+        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-[10px]">okf</div><span class="text-zinc-500 dark:text-zinc-400">&copy; 2026 Umair Baig &middot; <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" class="text-brand-600 dark:text-brand-400 hover:underline">MIT License</a></span></div>
+        <div class="flex items-center gap-4"><a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition"><i class="fa-brands fa-github"></i> GitHub</a><a href="https://pypi.org/project/okf-generator/" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition"><i class="fa-solid fa-box"></i> PyPI</a></div>
       </div>
     </div>
   </footer>
-
   <script>
-    // Copy-to-clipboard helper
-    function copyMini(btn) {
-      const text = btn.getAttribute('data-text');
-      const orig = btn.innerHTML;
-      const check = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      navigator.clipboard.writeText(text).then(() => {
-        btn.innerHTML = check;
-        btn.classList.add('copied');
-        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
-      }).catch(() => {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        btn.innerHTML = check;
-        btn.classList.add('copied');
-        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
-      });
-    }
-    function copyInstall(btn, text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
-      }).catch(() => {
-        // Fallback
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      });
-    }
+    function toggleTheme(){const html=document.documentElement;if(html.classList.contains("dark")){html.classList.remove("dark");localStorage.setItem("theme","light")}else{html.classList.add("dark");localStorage.setItem("theme","dark")}}
+    (function(){const t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}else{document.documentElement.classList.add("dark")}})()
 
-    // GitHub Stars fetch
-    async function fetchStars() {
-      try {
-        const res = await fetch('https://api.github.com/repos/UmairBaig8/okf-generator', {
-          headers: { 'Accept': 'application/vnd.github.v3+json' }
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const stars = data.stargazers_count;
-        if (stars != null) {
-          const el = document.getElementById('gh-stars');
-          if (el) el.textContent = '★ ' + (stars >= 1000 ? (stars/1000).toFixed(1) + 'k' : stars) + ' Stars';
+    // Nav scroll effect
+    let lastScroll=0;
+    window.addEventListener('scroll',()=>{
+      const nav=document.querySelector('.nav');
+      const currentScroll=window.scrollY;
+      if(currentScroll>80){nav.classList.add('nav-scrolled')}else{nav.classList.remove('nav-scrolled')}
+      lastScroll=currentScroll;
+    });
+
+    // Live GitHub stars
+    async function fetchStars(){
+      try{
+        const res=await fetch('https://api.github.com/repos/UmairBaig8/okf-generator',{headers:{'Accept':'application/vnd.github.v3+json'}});
+        if(!res.ok)return;
+        const data=await res.json();
+        const stars=data.stargazers_count;
+        if(stars!=null){
+          const el=document.getElementById('gh-stars');
+          if(el)el.textContent='\u2605 '+(stars>=1000?(stars/1000).toFixed(1)+'k':stars)+' Stars';
         }
-      } catch (e) { /* silently fail */ }
+      }catch(e){}
     }
     fetchStars();
 
-    // Scroll reveal with IntersectionObserver
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    // Stagger children of grids
-    document.querySelectorAll('.features-grid, .steps, .agent-grid, .enrich-grid, .problem-grid').forEach(grid => {
-      Array.from(grid.querySelectorAll('.reveal')).forEach((card, i) => {
-        card.style.transitionDelay = (i * 80) + 'ms';
-      });
-    });
-
-    // Floating nav island on scroll
-    let lastScroll = 0;
-    window.addEventListener('scroll', () => {
-      const nav = document.querySelector('.nav');
-      const currentScroll = window.scrollY;
-      if (currentScroll > 80) {
-        nav.classList.add('nav-scrolled');
-      } else {
-        nav.classList.remove('nav-scrolled');
-      }
-      lastScroll = currentScroll;
-    });
-
-    // Auto-fetch latest version from PyPI
+    // Live version from PyPI
     fetch('https://pypi.org/pypi/okf-generator/json')
-      .then(r => r.json())
-      .then(d => {
-        const v = d.info.version;
-        document.getElementById('version-badge').textContent = 'v' + v;
-      })
-      .catch(() => {}); // silently fall back to hardcoded version
+      .then(r=>r.json())
+      .then(d=>{const v=d.info.version;const el=document.getElementById('version-badge');if(el)el.textContent='v'+v;})
+      .catch(()=>{});
+    function selectInteractiveNode(type){const nodes=["connector","pipeline","manifest"];nodes.forEach(n=>{const btn=document.getElementById("btn-node-"+n);btn.className="w-full flex items-center justify-between p-1.5 rounded text-zinc-600 dark:text-zinc-400 border border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"});const activeBtn=document.getElementById("btn-node-"+type);activeBtn.className="w-full flex items-center justify-between p-1.5 rounded bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition shadow-sm dark:shadow-none";const box=document.getElementById("interactive-content-box");const aAST=document.getElementById("active-ast");const aN=document.getElementById("active-nodes");const aR=document.getElementById("active-resolution");if(type==="connector"){aAST.textContent="tree-sitter-python";aN.textContent="17 classes, 48 methods";aR.textContent="Perfect Cross-Ref";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold text-base">CLASS: WorldBankConnector</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 51-140</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Fetches World Bank development indicators via wbdata API. Caches local payloads to speed up ML training loops.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class WorldBankConnector(BaseConnector)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">get_indicator(), search_index(), validate()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Parameters:</span> <span class="text-zinc-600 dark:text-zinc-400">api_key: str (Optional), cache_ttl: int</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> wbdata.get_indicator</div></div><div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> IngestPipeline.fetch_economic</div></div></div></div>`}else if(type==="pipeline"){aAST.textContent="tree-sitter-python";aN.textContent="4 classes, 26 methods";aR.textContent="Linked callers resolved";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-indigo-600 dark:text-indigo-400 font-bold text-base">CLASS: IngestPipeline</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 12-88</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Standard data loading pipeline executing parallel fetch loops across world financial indices.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class IngestPipeline(BasePipeline)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">fetch_economic(), process_raw(), dump()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Imports:</span> <span class="text-zinc-600 dark:text-zinc-400 font-semibold">WorldBankConnector, pandas</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> WorldBankConnector.get_indicator</div></div><div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> main.py (Entrypoint)</div></div></div></div>`}else if(type==="manifest"){aAST.textContent="json-manifest-scanner";aN.textContent="12 dependencies linked";aR.textContent="Package Registry Match";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-amber-600 dark:text-amber-400 font-bold text-base">MANIFEST: package.json</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Node.js config</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Configuration index referencing dev tools, web visualization assets, and CLI packaging guidelines.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Dependencies:</span> <span class="text-zinc-600 dark:text-zinc-300">d3-force (v3.0.0), tailwindcss (v3.4.0)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Dev Dependencies:</span> <span class="text-zinc-600 dark:text-zinc-300">typescript (v5.2.2), jest (v29.7.0)</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 col-span-2 transition duration-300"><div class="text-zinc-500 mb-1">Graph Links Created:</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> Resolved D3 packages dynamically inside visualizer.py mapping</div></div></div></div>`}}
+    function calculateSavings(){const d=parseInt(document.getElementById("calc-devs").value);const q=parseInt(document.getElementById("calc-queries").value);const m=document.getElementById("calc-model").value;document.getElementById("calc-devs-display").textContent=d+" devs";document.getElementById("calc-queries-display").textContent=q+" queries";let p=3.00;if(m==="opus")p=15.00;else if(m==="haiku")p=0.80;else if(m==="llama")p=0.27;else if(m==="local")p=0.00;const diff=45000-1200;const qpd=d*q;const yr=220;const saved=(qpd*diff*yr/1000000)*p;const fmt=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(saved);document.getElementById("annual-savings").textContent=fmt;if(m==="local"){document.getElementById("pct-saved").textContent="/ year (saved 100%)";document.getElementById("savings-note").textContent="Running fully offline with Llama 3 / Phi-3 local execution skips all public APIs, costing your organization zero dollars in query licensing."}else{const pct=Math.round((1-(1200/45000))*100);document.getElementById("pct-saved").textContent="/ year (saved "+pct+"%)";document.getElementById("savings-note").textContent="Calculated assuming an average raw codebase context load of 45K tokens (naive) versus 1,200 tokens using OKF structured AST lookups."}}
+    calculateSavings()
+    let currentActiveTab="generate";function switchTerminalTab(tab){const oldBtn=document.getElementById("tab-btn-"+currentActiveTab);oldBtn.className="w-full flex items-center justify-between p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400 transition text-left";const oldDot=oldBtn.querySelector("span.rounded-full");oldDot.className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700";const newBtn=document.getElementById("tab-btn-"+tab);newBtn.className="w-full flex items-center justify-between p-3.5 rounded-xl border bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 transition text-left";const newDot=newBtn.querySelector("span.rounded-full");newDot.className="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400";currentActiveTab=tab;const term=document.getElementById("terminal-content");document.getElementById("copy-text").textContent="Copy Command";
+    if(tab==="generate"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf generate ./my_project ./okf_bundle --enrich deep</span></div><div class="text-zinc-500 mt-2">[1/4] Scanned codebase: 74 python, 12 javascript, 3 manifest files.<br>[2/4] Parsing Tree-Sitter AST nodes for method definitions...<br>[3/4] Resolving cross-references & library import matches...<br>[4/4] Optional LLM enrichment: Enhancing method docstrings (Deep Mode)...</div><div class="text-emerald-400 font-bold mt-2">✓ Generated knowledge bundle at './okf_bundle/' (124 concepts resolved).<br>✓ Code context compressed by 88.4% (avg. concept size 320 tokens).</div></div>`;}else if(tab==="lookup"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf lookup WorldBankConnector</span></div><div class="text-zinc-300 mt-2"><span class="text-emerald-400 font-bold">CLASS:</span> WorldBankConnector<br><span class="text-zinc-500">Source:</span> my_project/connectors/economic_data.py (line 51)<br><span class="text-zinc-500">Description:</span> Fetches World Bank development indicators via wbdata API.<br><span class="text-zinc-500">Methods:</span> get_indicator, search_index, validate<br><span class="text-zinc-500">Signature:</span> class WorldBankConnector(BaseConnector)<br><span class="text-zinc-500">Calls Out:</span> [wbdata.get_indicator, pandas.DataFrame]<br><span class="text-zinc-500">Called-by:</span> [IngestPipeline.fetch_economic]</div><div class="text-zinc-500 text-[10px] mt-2">Lookup resolved in 3.4ms (Cached). Zero network connections used.</div></div>`;}else if(tab==="mcp"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf mcp ./okf_bundle --port 4567</span></div><div class="text-zinc-500 mt-2">Initializing Model Context Protocol server...<br>Loading 124 concepts from './okf_bundle/'...<br>Establishing SSE transport connection endpoints...</div><div class="text-emerald-400 font-bold mt-2">✓ okf-generator MCP server listening successfully at:<br>&nbsp;&nbsp;&nbsp;&nbsp;http://localhost:4567/sse<br>✓ Ready for Cline, Cursor, or Claude Desktop Client connections.</div></div>`;}else if(tab==="visualize"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf visualize ./okf_bundle docs/index.html</span></div><div class="text-zinc-500 mt-2">Constructing structural dependency matrices...<br>Injecting concept schema templates into D3 force-layout template...<br>Writing static assets...</div><div class="text-emerald-400 font-bold mt-2">✓ Visualization HTML rendered successfully at: 'docs/index.html'.<br>✓ Serve with: "okf serve ./okf_bundle --open"</div></div>`;}else if(tab==="pairs"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf pairs ./okf_bundle ./fine_tuning_pairs.jsonl</span></div><div class="text-zinc-500 mt-2">Reconstructing 124 structural AST branches...<br>Synthesizing code architecture instruction-completion pairs...<br>Formatting to JSONLines schema template...</div><div class="text-emerald-400 font-bold mt-2">✓ Successfully extracted 320 high-fidelity fine-tuning instruction lines.<br>✓ Saved JSONL data package to './fine_tuning_pairs.jsonl'.</div></div>`;}}
+    function copyTerminalCommand(){let cmd="okf generate ./my_project ./okf_bundle --enrich deep";if(currentActiveTab==="lookup")cmd="okf lookup WorldBankConnector";else if(currentActiveTab==="mcp")cmd="okf mcp ./okf_bundle --port 4567";else if(currentActiveTab==="visualize")cmd="okf visualize ./okf_bundle docs/index.html";else if(currentActiveTab==="pairs")cmd="okf pairs ./okf_bundle ./fine_tuning_pairs.jsonl";navigator.clipboard.writeText(cmd).then(()=>{document.getElementById("copy-text").textContent="Copied!"})}
+    function copyText(btn,text){navigator.clipboard.writeText(text).then(()=>{const orig=btn.innerHTML;btn.innerHTML='<i class="fa-solid fa-check"></i>';setTimeout(()=>{btn.innerHTML=orig},1500)}).catch(()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta)})}
+    function toggleFAQ(idx){const content=document.getElementById("faq-content-"+idx);const icon=document.getElementById("faq-icon-"+idx);const parent=content.parentElement;if(content.style.maxHeight&&content.style.maxHeight!=="0px"){content.style.maxHeight="0px";icon.innerHTML='<i class="fa-solid fa-plus"></i>';parent.className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300"}else{for(let i=1;i<=5;i++){const c=document.getElementById("faq-content-"+i);const ico=document.getElementById("faq-icon-"+i);const p=c.parentElement;if(c)c.style.maxHeight="0px";if(ico)ico.innerHTML='<i class="fa-solid fa-plus"></i>';if(p)p.className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300"}content.style.maxHeight=content.scrollHeight+"px";icon.innerHTML='<i class="fa-solid fa-minus"></i>';parent.className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm dark:shadow-xl transition duration-300"}}
   </script>
 </body>
 </html>

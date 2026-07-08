@@ -6,7 +6,6 @@ Usage:
 """
 
 import argparse
-import base64
 import json
 import re
 import sys
@@ -65,6 +64,7 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             "decorators": _parse_bullets(sections.get("decorators", "")),
             "inheritance": _parse_bullets(sections.get("inheritance", "")),
             "type_params": _parse_bullets(sections.get("type_parameters", "")),
+            "tags": c.get("tags", []),
         })
 
     # Source code reading: best-effort per unique resource path
@@ -219,42 +219,17 @@ def visualize(bundle_dir: Path) -> tuple[str, int, int]:
             jn["code"] = n["code"]
         json_nodes.append(jn)
 
-    json_data = json.dumps({"nodes": json_nodes, "links": links}, ensure_ascii=False)
+    template_path = Path(__file__).parent / "templates" / "viz-template.html"
+    html = template_path.read_text(encoding="utf-8")
 
-    from okf._viz_template import DEMO_HTML_B64
-    html = base64.b64decode(DEMO_HTML_B64).decode("utf-8")
+    bundle_data = json.dumps({
+        "nodes": json_nodes, "links": links,
+        "bundles": bundles,
+        "bundle_name": bundle_name,
+    }, ensure_ascii=False)
 
-    html = html.replace("<title>OKF Bundle — demo</title>", f"<title>OKF Bundle — {bundle_name}</title>")
-    html = html.replace('<span class="name">fresh_agentbox</span>', f'<span class="name">{bundle_name}</span>')
-
-    okf_link = '<a href="https://github.com/UmairBaig8/okf-generator" target="_blank" style="font-size:11px;color:var(--text-3);text-decoration:none;margin-right:8px;white-space:nowrap">okf</a>\n  '
-    html = html.replace('<button class="icon-btn" id="theme-toggle"', okf_link + '<button class="icon-btn" id="theme-toggle"')
-
-    html = html.replace(
-        "const TYPE_COLORS = {\n"
-        "  Class:'#a78bfa', Function:'#38bdf8', Module:'#fbbf24', Dependency:'#4ade80',\n"
-        "  Table:'#fb7185', View:'#fb923c', Index:'#f472b6', Method:'#c084fc',\n"
-        "  Interface:'#22d3ee', Type:'#818cf8', Trigger:'#f43f5e',\n"
-        "};",
-        "const TYPE_COLORS = {\n" + "\n".join(f'  {t}:"{c}",' for t, c in sorted(TYPE_COLORS.items())) + "\n};"
-    )
-
-    # Inject data, BUNDLE_NAME, BUNDLES, and bundle-select options
-    data_marker = "var data = {\n  nodes: ["
-    data_idx = html.find(data_marker)
-    if data_idx >= 0:
-        end_marker = "var BUNDLES = [];"
-        end_idx = html.find(end_marker, data_idx)
-        if end_idx >= 0:
-            new_data = f"var data = {json_data};\n\nvar BUNDLE_NAME = '{bundle_name}';\nvar BUNDLES = {json.dumps(bundles)};\n"
-            html = html[:data_idx] + new_data + html[end_idx + len(end_marker):]
-
-    # Populate bundle-select options statically
-    opt_marker = '<option value="">All Bundles</option>'
-    if bundles and opt_marker in html:
-        extra_opts = "\n".join(f'    <option value="{b}">{b}</option>' for b in bundles)
-        replacement = f'<option value="">All Bundles</option>\n{extra_opts}'
-        html = html.replace(opt_marker, replacement)
+    html = html.replace("{DYNAMIC_FLAG}", "false")
+    html = html.replace("{BUNDLE_DATA}", bundle_data)
 
     return html, len(nodes), len(links)
 

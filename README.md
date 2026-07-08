@@ -43,6 +43,14 @@
 
 ![okf-generator demo](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/demo.gif)
 
+<p align="center">
+  <a href="https://umairbaig8.github.io/okf-generator/viz.html" class="inline-flex items-center gap-1.5"><b>Live Viz Graph</b></a>
+  <span>&nbsp;&middot;&nbsp;</span>
+  <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator"><b>Dev Container</b></a>
+  <span>&nbsp;&middot;&nbsp;</span>
+  <a href="https://okf-generator.onrender.com"><b>Render App</b></a>
+</p>
+
 `okf generate` generates an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) conformant knowledge bundle — structured Markdown that AI agents can query instead of re-reading whole files. Zero-LLM extraction, fully offline, deterministic every run.
 
 

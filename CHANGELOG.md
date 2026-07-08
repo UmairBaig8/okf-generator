@@ -5,96 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.27] — 2026-07-02
+
+
+## [0.1.42] — 2026-07-09
 
 ### Added
-- **Generics/type params** — extraction for Java, TypeScript, Rust, Go (1.18+), C++ (templates), C#. Each concept's `type_params` field captures `[T]`, `[T, U extends Comparable]`, etc.
-- **Inheritance chain** — base class/interface extraction for Python, Java, TypeScript, C++, C#, Ruby. Each class concept shows `extends`/`implements`/inherits targets.
-- **Decorators/Attributes** — extraction for Python (`@decorator`), Java (`@Annotation`), C# (`[Attribute]`), Rust (`#[derive]`). Captured as structured `decorators` field.
-- **Method emission** — class methods now emitted as individual `Function` concepts for Python, JS/TS, C++ (Ruby already supported). ~2x more Function concepts from those languages.
-- 22 new tests covering Tier 1 extraction across all 10 languages with real-world code fixtures.
-- README language table updated with per-language extraction capabilities.
+- **Landing page redesign** — dark/light theme toggle, interactive AST mockup explorer (click workspace tree nodes), D3 graph section, comparison table (10 rows), ROI calculator, live GitHub stars + PyPI version badge, skip-to-content accessibility. Combined business_page design with index.html technical depth.
+- **Demo links** — "Try it live" bar in hero with Viz Graph, Dev Container, Render App. Added to README.md and docs/index.md.
+- **CHANGELOG.md** — releases sorted chronologically (newest first), cleaned inline links.
 
 ### Changed
-- `Concept` dataclass: 3 new fields (`type_params`, `inheritance`, `decorators`).
-- Java modifiers now use child iteration (no field name in grammar).
-- C++ function methods no longer skipped — emitted as individual concepts.
+- CHANGELOG.md restructured: versions in descending order with proper ## headers for mkdocs right-nav compatibility.
 
 ---
 
-## [0.1.28] — 2026-07-02
-
-### Added
-- **Tier 2 extraction:** Visibility modifiers (Java, C#, TS, Rust, C++), class fields/properties (Python, TS, Java, C#), TypeScript completeness (interfaces, type aliases, enums), SQL column/constraint extraction (PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT, REFERENCES).
-- **Realworld test fixtures:** 78 files, 3,545 lines, 20 projects (easy + complex per language) across 11 languages. Every extraction feature has fixture coverage.
-- **test.sh runner:** `bash tests/test.sh` — 17 phases covering pytest, CLI generate/lookup/pairs/summarize/init/--help/--version, visualize, MCP server, serve, diff (v1→v2), edge cases. Generates `TEST_REPORT.html`.
-- **C# parser:** `interface_declaration` and `struct_declaration` support (were silently skipped).
-- Python `easy_v2` fixture for realistic versioned diff testing.
-
-### Changed
-- All tests migrated from `sample_codebase` (2 Python files) to `realworld` (78 files, 11 languages).
-- Publish CI: smoke test now generates from realworld fixtures; test report attached to every GitHub Release.
-- Viz code pane: "View Source" button in detail header, code card moved to top of detail panel.
-
-### Removed
-- `tests/fixtures/sample_codebase/` — no longer used.
-
----
-
-## [0.1.26] — 2026-07-02
-
-### Added
-- `okf visualize` — bundle selector dropdown for multi-project monorepos.
-- `okf visualize` — source code pane in concept detail view.
-- `okf visualize` — resizable left sidebar via drag handle.
-- Multi-bundle detection via `SUMMARY.md` subdirectory markers.
-- 3 new docs: agent-integration, ci-cd, languages-and-manifests.
-
-### Changed
-- README rewritten with code-level knowledge graph pitch, local AI/SLM section,
-  CI/CD pipeline section, and architectural query examples.
-- Viz display name now dynamic — removed hardcoded `fresh_agentbox`.
-- Docs assets reorganized into `images/`, `banners/`, `Demo deck/` directories.
-
-### Fixed
-- `okf visualize` always showed `fresh_agentbox` as title (both JS var + HTML span).
-- Bundle detection used naive first-path-segment causing false bundles.
-
----
-
-## [0.1.30] — 2026-07-02
-
-### Changed
-- PyPI `Homepage` now points to GitHub Pages landing page (`https://umairbaig8.github.io/okf-generator/`).
-- README: added 🌐 Site badge linking to landing page.
-
----
-
-## [0.1.29] — 2026-07-02
-
-### Fixed
-- Publish CI: MCP/serve tests now use HTTP mode with unique ports (19876/19877), portable `sed -i` for Linux/macOS.
-
----
-
-## [0.1.31] — 2026-07-03
-
-### Added
-- **Structured doc tag parsing** — Javadoc `@param`/`@return`, JSDoc `@param {type}`/`@returns {type}`, YARD `@param [Type]` now populate structured `concept.params` and `concept.returns`. Applies to Java, JS/TS, Ruby.
-- **Go const/var declarations** — package-level `const` and `var` bindings extracted as `Constant`/`Variable` concept types with type annotations and values.
-- **Ruby singleton methods** — `def self.foo` extracted as `Function` concepts with `self.` prefix in signature and `singleton` visibility tag.
-- **C++ full template signatures** — `template<typename T>` prefix now appears in class/function signatures (e.g. `template<typename T> class Container`).
-
-### Changed
-- `Concept` dataclass: 2 new concept types (`Constant`, `Variable`) added to index renderer.
-- `GoParser` refactored: `_prev_comment` extracted once per node to avoid `UnboundLocalError` with new declaration types.
-
----
-
-## [Unreleased]
-
-### Planned
-- TypeScript generics parser — extract `Array<T>`, `Map<K,V>` type parameters from TS/TSX
 
 ---
 
@@ -121,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.40] — 2026-07-07
 
 ### Added
@@ -136,6 +63,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bundle Format documentation corrected to match actual code schema
 - `extra.css` removed (was breaking toggle position)
 - `edit_uri` removed (no edit button on docs)
+
+---
+
 
 ---
 
@@ -157,6 +87,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.38] — 2026-07-07
 
 ### Added
@@ -173,6 +106,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.37] — 2026-07-07
 
 ### Added
@@ -185,6 +121,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `okf/mcp_server.py` refactored: tool dispatch via `_dispatch()` with structured `ToolError` for validation.
 - `tests/test_diff.py`: 11 total tests (6 new for impact analysis).
 - `tests/test_mcp.py`: 11 total tests (6 new for MCP new tools + validation).
+
+---
+
 
 ---
 
@@ -216,6 +155,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.35] — 2026-07-05
 
 ### Added
@@ -232,6 +174,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `load()` uses `copy.deepcopy(DEFAULTS)` instead of mutable reference merge — prevents config file loads from mutating module-level defaults (fixes test isolation).
 - `enrich_concept()` now also accepts `inheritance` context in prompt, `max_tokens` bumped 300→400.
 - Version bumped to `0.1.35`.
+
+---
+
 
 ---
 
@@ -255,6 +200,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.33] — 2026-07-03
 
 ### Fixed
@@ -262,6 +210,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI workflows — added Rust toolchain setup for building `tree-sitter-kotlin` from source on Linux runners.
 - `visualize.py` — guarded `PermissionError` in source code file lookup (was crashing on CI when scanning `/tmp/` siblings).
 - GitHub Pages deployment — fixed by resolving CI failures; `docs/viz.html` now auto-deploys.
+
+---
+
 
 ---
 
@@ -280,6 +231,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `_viz_template.py` — from `const` to `var` declarations for data/BUNDLES/BUNDLE_NAME (fixes JS scope in IIFE).
 - `visualize.py` — source code resolution searches sibling directories and sub-bundle dirs; structured `visibility`/`decorators`/`inheritance`/`type_params` fields parsed from bundle sections.
+
+---
+
+
+---
+
+## [0.1.31] — 2026-07-03
+
+### Added
+- **Structured doc tag parsing** — Javadoc `@param`/`@return`, JSDoc `@param {type}`/`@returns {type}`, YARD `@param [Type]` now populate structured `concept.params` and `concept.returns`. Applies to Java, JS/TS, Ruby.
+- **Go const/var declarations** — package-level `const` and `var` bindings extracted as `Constant`/`Variable` concept types with type annotations and values.
+- **Ruby singleton methods** — `def self.foo` extracted as `Function` concepts with `self.` prefix in signature and `singleton` visibility tag.
+- **C++ full template signatures** — `template<typename T>` prefix now appears in class/function signatures (e.g. `template<typename T> class Container`).
+
+### Changed
+- `Concept` dataclass: 2 new concept types (`Constant`, `Variable`) added to index renderer.
+- `GoParser` refactored: `_prev_comment` extracted once per node to avoid `UnboundLocalError` with new declaration types.
+
+---
+
+
+---
+
+## [0.1.30] — 2026-07-02
+
+### Changed
+- PyPI `Homepage` now points to GitHub Pages landing page (`https://umairbaig8.github.io/okf-generator/`).
+- README: added 🌐 Site badge linking to landing page.
+
+---
+
+
+---
+
+## [0.1.29] — 2026-07-02
+
+### Fixed
+- Publish CI: MCP/serve tests now use HTTP mode with unique ports (19876/19877), portable `sed -i` for Linux/macOS.
+
+---
+
+
+---
+
+## [0.1.28] — 2026-07-02
+
+### Added
+- **Tier 2 extraction:** Visibility modifiers (Java, C#, TS, Rust, C++), class fields/properties (Python, TS, Java, C#), TypeScript completeness (interfaces, type aliases, enums), SQL column/constraint extraction (PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT, REFERENCES).
+- **Realworld test fixtures:** 78 files, 3,545 lines, 20 projects (easy + complex per language) across 11 languages. Every extraction feature has fixture coverage.
+- **test.sh runner:** `bash tests/test.sh` — 17 phases covering pytest, CLI generate/lookup/pairs/summarize/init/--help/--version, visualize, MCP server, serve, diff (v1→v2), edge cases. Generates `TEST_REPORT.html`.
+- **C# parser:** `interface_declaration` and `struct_declaration` support (were silently skipped).
+- Python `easy_v2` fixture for realistic versioned diff testing.
+
+### Changed
+- All tests migrated from `sample_codebase` (2 Python files) to `realworld` (78 files, 11 languages).
+- Publish CI: smoke test now generates from realworld fixtures; test report attached to every GitHub Release.
+- Viz code pane: "View Source" button in detail header, code card moved to top of detail panel.
+
+### Removed
+- `tests/fixtures/sample_codebase/` — no longer used.
+
+---
+
+
+---
+
+## [0.1.27] — 2026-07-02
+
+### Added
+- **Generics/type params** — extraction for Java, TypeScript, Rust, Go (1.18+), C++ (templates), C#. Each concept's `type_params` field captures `[T]`, `[T, U extends Comparable]`, etc.
+- **Inheritance chain** — base class/interface extraction for Python, Java, TypeScript, C++, C#, Ruby. Each class concept shows `extends`/`implements`/inherits targets.
+- **Decorators/Attributes** — extraction for Python (`@decorator`), Java (`@Annotation`), C# (`[Attribute]`), Rust (`#[derive]`). Captured as structured `decorators` field.
+- **Method emission** — class methods now emitted as individual `Function` concepts for Python, JS/TS, C++ (Ruby already supported). ~2x more Function concepts from those languages.
+- 22 new tests covering Tier 1 extraction across all 10 languages with real-world code fixtures.
+- README language table updated with per-language extraction capabilities.
+
+### Changed
+- `Concept` dataclass: 3 new fields (`type_params`, `inheritance`, `decorators`).
+- Java modifiers now use child iteration (no field name in grammar).
+- C++ function methods no longer skipped — emitted as individual concepts.
+
+---
+
+
+---
+
+## [0.1.26] — 2026-07-02
+
+### Added
+- `okf visualize` — bundle selector dropdown for multi-project monorepos.
+- `okf visualize` — source code pane in concept detail view.
+- `okf visualize` — resizable left sidebar via drag handle.
+- Multi-bundle detection via `SUMMARY.md` subdirectory markers.
+- 3 new docs: agent-integration, ci-cd, languages-and-manifests.
+
+### Changed
+- README rewritten with code-level knowledge graph pitch, local AI/SLM section,
+  CI/CD pipeline section, and architectural query examples.
+- Viz display name now dynamic — removed hardcoded `fresh_agentbox`.
+- Docs assets reorganized into `images/`, `banners/`, `Demo deck/` directories.
+
+### Fixed
+- `okf visualize` always showed `fresh_agentbox` as title (both JS var + HTML span).
+- Bundle detection used naive first-path-segment causing false bundles.
+
+---
+
 
 ---
 
@@ -306,6 +364,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.24] — 2026-07-02
 
 ### Added
@@ -314,6 +375,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `okf visualize` no longer fails with `demo.html not found` when installed from PyPI — template is now bundled inside the package.
+
+---
+
 
 ---
 
@@ -333,6 +397,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.22] — 2026-07-01
 
 ### Fixed
@@ -343,6 +410,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `okf visualize`: upgraded from D3.js to Cytoscape.js with 4 layouts (Graph, Circle, Grid, Tree), type filter, search, and detail panel.
+
+---
+
 
 ---
 
@@ -358,6 +428,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.20] — 2026-07-01
 
 ### Changed
@@ -366,6 +439,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mermaid flowchart: removed `<br/>` tags for GitHub compatibility, added plain-text fallback.
 - Added system prompt template and token efficiency table for AI agent integrators.
 - TEST.md now installs with `[dev,llm]` extras (ruff available for lint step).
+
+---
+
 
 ---
 
@@ -383,6 +459,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.18] — 2026-07-01
 
 ### Added
@@ -392,6 +471,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `go.sum` parser: skips `/go.mod` checksum lines and deduplicates module+version pairs.
+
+---
+
 
 ---
 
@@ -410,10 +492,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.16] — 2026-07-01
 
 ### Changed
 - SQL parser: replaced regex-based scanner with `tree-sitter-sql` grammar, following the same `TreeSitterParser` base class as the other 6 code languages. Reduces false positives on multi-statement or dialect-specific SQL, and adds source line numbers, proper SQL signatures, and preceding-comment extraction.
+
+---
+
 
 ---
 
@@ -426,11 +514,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.14] — 2026-07-01
 
 ### Fixed
 - README images now use absolute `raw.githubusercontent.com` URLs so they render on PyPI.
 - Banner switched to `banner_v2.svg`.
+
+---
+
 
 ---
 
@@ -444,6 +538,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.12] — 2026-06-30
 
 ### Fixed
@@ -452,6 +549,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - README: added manifest formats table (12 parsers), lookup cache feature, `_dependencies/` folder layout, Dependency type in lookup reference.
+
+---
+
 
 ---
 
@@ -478,6 +578,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.10] — 2026-06-30
 
 ### Added
@@ -486,6 +589,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `.gitignore` — ignores `.okf_lookup_cache.json`.
+
+---
+
 
 ---
 
@@ -511,6 +617,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.8] — 2026-06-29
 
 ### Fixed
@@ -531,6 +640,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.7] — 2026-06-29
 
 ### Added
@@ -546,10 +658,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.6] — 2026-06-29
 
 ### Added
 - `okf install-skill` command — copies SKILL.md to `~/.config/opencode/skills/okf-generator/`
+
+---
+
 
 ---
 
@@ -560,10 +678,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.4] — 2026-06-29
 
 ### Changed
 - OpenCode integration guide and skill docs updated for `okf` CLI
+
+---
+
 
 ---
 
@@ -575,6 +699,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.2] — 2026-06-29
 
 ### Fixed
@@ -582,10 +709,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+
+---
+
 ## [0.1.1] — 2026-06-29
 
 ### Changed
 - Initial PyPI release plumbing
+
+---
+
 
 ---
 
@@ -610,8 +743,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenCode integration guide
 - 32 passing tests
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.41...HEAD
-[0.1.41]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.41
+
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.42...HEAD
+[0.1.42]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.42
 [0.1.40]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.40
 [0.1.39]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.39
 [0.1.38]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.38
