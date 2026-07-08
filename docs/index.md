@@ -35,40 +35,76 @@
 
 ## Visual Showcase
 
-<div id="okf-term" style="background:#0d1117;border-radius:12px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#c9d1d9;max-width:640px;margin:0 auto 24px;box-shadow:0 8px 32px rgba(0,0,0,0.35);overflow:hidden;">
-  <div style="display:flex;gap:6px;margin-bottom:14px;">
-    <span style="width:11px;height:11px;border-radius:50%;background:#ff5f56;display:inline-block;"></span>
-    <span style="width:11px;height:11px;border-radius:50%;background:#ffbd2e;display:inline-block;"></span>
-    <span style="width:11px;height:11px;border-radius:50%;background:#27c93f;display:inline-block;"></span>
+<style>
+#okf-term { background:#0d1117; border-radius:12px; padding:20px 24px; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.6; color:#c9d1d9; max-width:480px; margin:0 auto 24px; box-shadow:0 8px 32px rgba(0,0,0,0.35); overflow:hidden; }
+#okf-term .dots { display:flex; gap:6px; margin-bottom:14px; }
+#okf-term .dot { width:11px; height:11px; border-radius:50%; display:inline-block; }
+#okf-term .dot-r { background:#ff5f56; }
+#okf-term .dot-y { background:#ffbd2e; }
+#okf-term .dot-g { background:#27c93f; }
+#okf-term pre { margin:0; white-space:pre-wrap; word-break:break-word; min-height:360px; }
+#okf-term .prompt { color:#7ee787; }
+#okf-term .cmd { color:#e6edf3; }
+#okf-term .out { color:#8b949e; }
+@media (max-width:600px){ #okf-term{ font-size:11px; padding:12px 14px; max-width:100%; } }
+</style>
+<div id="okf-term">
+  <div class="dots">
+    <span class="dot dot-r"></span>
+    <span class="dot dot-y"></span>
+    <span class="dot dot-g"></span>
   </div>
-  <pre id="okf-term-body" style="margin:0;white-space:pre-wrap;word-break:break-word;min-height:340px;"></pre>
+  <pre id="okf-term-body"></pre>
 </div>
 <script>
 (function(){
-  const lines = [
-    {type:"cmd", text:"okf generate . ./okf_bundle"},
-    {type:"out", text:"21:28:21 [INFO] Scanning 2 paths...\n21:28:21 [INFO] Linking: 2 call edges resolved\n21:28:21 [INFO] Found 6 concepts\n\n  Bundle: demo_project\n  Type            Concepts\n  ------------------------\n  Class                  2\n  Function               3\n  Module                 1\n  ------------------------\n  TOTAL                  6\n\n21:28:21 [INFO] OKF bundle written -> ./okf_bundle\n"},
-    {type:"cmd", text:"okf lookup WorldBankConnector"},
-    {type:"out", text:"CLASS: WorldBankConnector\n  Description : Fetches World Bank development indicators via wbdata API.\n  Source      : connectors/economic_data.py  line 6\n  Methods     : get_indicator, search\n  Related     : economic_data, get_indicator, search\n\nFUNCTION: get_indicator\n  Signature   : def get_indicator(self, indicator_code: str, country: str = 'US') -> pd.DataFrame\n  Returns     : pd.DataFrame\n  Related     : WorldBankConnector\n"}
+  var scenes = [
+    {cmd:"okf generate . ./okf_bundle", out:"21:28:21 [INFO] Scanning 2 paths...\n21:28:21 [INFO] Linking: 2 call edges resolved\n21:28:21 [INFO] Found 6 concepts\n\n  Bundle: demo_project\n  Type            Concepts\n  ------------------------\n  Class                  2\n  Function               3\n  Module                 1\n  ------------------------\n  TOTAL                  6\n\n21:28:21 [INFO] OKF bundle written -> ./okf_bundle"},
+    {cmd:"okf lookup WorldBankConnector", out:"CLASS: WorldBankConnector\n  Description : Fetches World Bank development indicators via wbdata API.\n  Source      : connectors/economic_data.py  line 6\n  Methods     : get_indicator, search\n  Related     : economic_data, get_indicator, search\n\nFUNCTION: get_indicator\n  Signature   : def get_indicator(self, indicator_code: str, country: str = 'US') -> pd.DataFrame\n  Returns     : pd.DataFrame\n  Related     : WorldBankConnector"},
+    {cmd:"okf diff ./bundle_v1 ./bundle_v2 --compact", out:"okf diff --compact\n\n  Added (3)\n    [Class]  PaymentGateway    payment.py\n    [Function] validate_iban  payment.py\n    [Dependency] stripe       requirements.txt\n\n  Removed (1)\n    [Function] old_pay  legacy.py\n\n  Changed (2)\n    [Class] Invoice   model.py  (added method: calculate_tax)\n    [Dependency] requests 2.28→2.31  requirements.txt"},
+    {cmd:"okf visualize ./okf_bundle viz.html", out:"Visualization written -> viz.html\n  655 concepts, 1132 edges\n  Open in browser: file:///tmp/viz.html"},
+    {cmd:"okf mcp ./okf_bundle --port 4567", out:"[MCP] Loading bundle from ./okf_bundle...\n[MCP] 124 concepts indexed\n[MCP] Server listening on http://localhost:4567/sse\n[MCP] Ready for Cursor, Cline, Claude Desktop"},
+    {cmd:"okf pairs ./okf_bundle ./train.jsonl", out:"Static pairs written -> ./train.jsonl\n  codegen:    124 pairs\n  crosslink:   87 pairs\n  summarize:   40 pairs\n  Total:      251 pairs"}
   ];
-  const body = document.getElementById('okf-term-body');
-  let li = 0, ci = 0;
-  function typeChar(){
-    if (li >= lines.length) return;
-    const line = lines[li];
-    const prefix = line.type === 'cmd' ? '$ ' : '';
-    if (ci === 0 && line.type === 'cmd') body.innerHTML += '\n' + '<span style="color:#7ee787">' + prefix + '</span>';
-    if (ci < line.text.length){
-      const span = line.type === 'cmd' ? '<span style="color:#e6edf3">' : '<span style="color:#8b949e">';
-      body.innerHTML += span + line.text[ci].replace(/\n/g,'<br>') + '</span>';
-      ci++;
-      setTimeout(typeChar, line.type === 'cmd' ? 28 : 4);
-    } else {
-      li++; ci = 0;
-      setTimeout(typeChar, 400);
+  var body = document.getElementById('okf-term-body');
+  var si = 0, ci = 0, state = 'prompt';
+  function next(){
+    if (si >= scenes.length){ si = 0; setTimeout(next, 3000); return; }
+    var s = scenes[si];
+    body.innerHTML = '<span class="prompt">$ </span>';
+    state = 'typing'; ci = 0;
+    setTimeout(tick, 28);
+  }
+  function tick(){
+    var s = scenes[si];
+    if (state === 'typing'){
+      if (ci < s.cmd.length){
+        body.innerHTML += '<span class="cmd">'+s.cmd[ci].replace(/[<>]/g,'')+'</span>';
+        ci++; setTimeout(tick, 22);
+      } else {
+        body.innerHTML += '\n';
+        state = 'output'; ci = 0;
+        setTimeout(tick, 200);
+      }
+    } else if (state === 'output'){
+      if (ci < s.out.length){
+        var ch = s.out[ci];
+        body.innerHTML += '<span class="out">'+(ch === '\n' ? '<br>' : ch)+'</span>';
+        ci++; setTimeout(tick, 3);
+      } else {
+        si++; state = 'prompt'; ci = 0;
+        setTimeout(next, 2000);
+      }
     }
   }
-  typeChar();
+  var cursorSpan = document.createElement('span');
+  cursorSpan.className = 'cmd';
+  cursorSpan.style.animation = 'blink 1s step-end infinite';
+  cursorSpan.textContent = '\u258C';
+  var style = document.createElement('style');
+  style.textContent = '@keyframes blink{50%{opacity:0}}';
+  document.head.appendChild(style);
+  next();
 })();
 </script>
 
