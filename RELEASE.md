@@ -149,19 +149,45 @@ The `publish.yml` workflow automatically:
 | Docker image | `docker-publish.yml` builds and pushes `ghcr.io/umairbaig8/okf-generator/okf-generator` tagged with semver + `latest` |
 | GitHub Release | Creates release from CHANGELOG section, includes test report artifacts |
 
-### 10. Verify
+### 10. Verify — smoke check all endpoints
+
+Run the verification script to confirm the release is fully live:
 
 ```bash
-# Wait for CI, then:
-pip install okf-generator==x.y.z
-okf --version
-
-# Verify Docker image (if Docker is available)
-docker pull ghcr.io/umairbaig8/okf-generator/okf-generator:latest
-docker run ghcr.io/umairbaig8/okf-generator/okf-generator --version
-
-# Download TEST_REPORT.html from the release and verify 0 failures
+# Wait for CI to finish, then:
+bash tests/verify-release.sh vx.y.z
 ```
+
+The script checks:
+
+| Check | What it tests |
+|-------|--------------|
+| **PyPI** | `pypi.org/pypi/okf-generator` returns version `x.y.z` |
+| **GitHub Release** | Release exists with matching tag |
+| **Landing page** | `github.io/okf-generator/` returns 200 |
+| **Viz demo** | `viz.html` returns 200 |
+| **Docs-site** | `docs-site/` returns 200 |
+| **Render app** | `okf-generator.onrender.com` returns 200 |
+| **Local CLI** | `pip install okf-generator==x.y.z && okf --version` matches |
+| **Docker image** | `docker pull ghcr.io/umairbaig8/okf-generator/okf-generator:latest` (if Docker available) |
+| **TEST_REPORT.html** | Downloaded from release, 0 failures |
+
+**Expected output:**
+```
+=== Release vx.y.z Verification Report ===
+PyPI           ✅ 0.1.42
+GitHub Release ✅ v0.1.42
+Landing page   ✅ 200
+Viz demo       ✅ 200
+Docs-site      ✅ 200
+Render app     ✅ 200
+Local CLI      ✅ 0.1.42
+Docker image   ✅ okf-generator:latest
+Test report    ✅ 0 failures
+========================================
+```
+
+If any check fails, investigate before marking the release as healthy.
 
 ## Rollback
 
