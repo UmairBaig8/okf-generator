@@ -684,8 +684,8 @@ function renderSubgraph(c) {
     nodes: { shape: 'dot', size: 18, font: { color: isDark ? '#E2E8F0' : '#334155', size: 11, face: 'Inter' }, borderWidth: 0, chosen: { node: function(v) { v.borderWidth = 2; v.borderColor = '#6366F1'; } } },
     groups: Object.fromEntries(Object.entries(colors).map(function(e) { return [e[0], { color: e[1] }]; })),
     interaction: { hover: true, tooltipDelay: 100 },
-    background: isDark ? '#0F172A' : '#F8FAFC'
   };
+  container.style.background = isDark ? '#0F172A' : '#F8FAFC';
   var mainColor = isDark ? '#A5B4FC' : '#6366F1';
   nodes.update({ id: c.concept_id, color: { background: mainColor, border: mainColor }, font: { color: isDark ? '#FFFFFF' : '#0F172A', size: 12, face: 'Inter' } });
   graphInstance = new vis.Network(container, { nodes: nodes, edges: edges }, options);
@@ -734,8 +734,8 @@ function renderGlobalGraph(data) {
     nodes: { shape: 'dot', size: 15, font: { color: isDark ? '#E2E8F0' : '#334155', size: 10, face: 'Inter' }, borderWidth: 0, chosen: true },
     interaction: { hover: true, tooltipDelay: 150, navigationButtons: true, keyboard: true },
     groups: Object.fromEntries(Object.entries(typeColors).map(function(e) { return [e[0], { color: { background: e[1], border: e[1] }, shape: 'dot' }]; })),
-    background: isDark ? '#0F172A' : '#F8FAFC'
   };
+  container.style.background = isDark ? '#0F172A' : '#F8FAFC';
   globalGraphInstance = new vis.Network(container, { nodes: nodes, edges: edges }, options);
   globalGraphInstance.on('click', function(params) {
     if (params.nodes && params.nodes.length) openConcept(params.nodes[0]);
