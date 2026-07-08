@@ -1,0 +1,17 @@
+{
+  "name": "okf-generator",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13",
+  "postCreateCommand": "pip install -e \".[dev]\" && okf generate tests/fixtures/realworld okf_bundle",
+  "forwardPorts": [8700],
+  "portsAttributes": {
+    "8700": {
+      "label": "OKF Dashboard",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  }
+}

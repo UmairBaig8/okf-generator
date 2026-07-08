@@ -333,12 +333,16 @@
         </a>
         <a href="viz.html" class="btn-hero-secondary" target="_blank" rel="noopener">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          Live Demo
+          Viz Demo
+        </a>
+        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" class="btn-hero-secondary" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Codespaces Demo
         </a>
       </div>
       <div class="hero-pills" role="list" aria-label="Key stats">
         <div class="stat-pill" role="listitem"><strong>17</strong> languages</div>
-        <div class="stat-pill" role="listitem"><strong>17</strong> manifest formats</div>
+        <div class="stat-pill" role="listitem"><strong>22</strong> manifest formats</div>
         <div class="stat-pill" role="listitem"><strong>~100×</strong> fewer tokens</div>
       </div>
       <img src="images/okf_banner.png" alt="okf-generator demo screenshot" style="max-width:100%;margin-top:48px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.1)" />
@@ -437,7 +441,7 @@
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🔗</div>
           <h3>Cross-Reference Linker</h3>
-          <p>Resolves imports → dependencies and function calls → caller/callee across all 17 languages. Multi-hop reasoning without grep.</p>
+          <p>Resolves imports → dependencies and function calls → caller/callee across all 17 languages (22 manifest formats). Multi-hop reasoning without grep.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🗺</div>
@@ -526,12 +530,18 @@
         </div>
         <div class="agent-card reveal">
           <h3>OpenCode</h3>
-          <p class="agent-note">Adds /lookup NAME=&lt;ConceptName&gt; command</p>
-          <div class="agent-cmd">okf install opencode</div>
+          <p class="agent-note">Adds /lookup command + MCP server</p>
+          <div class="agent-cmd"><span>okf install opencode</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install opencode" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        </div>
+        <div class="agent-card reveal">
+          <h3>MCP</h3>
+          <p class="agent-note">11 tools via Model Context Protocol for any client</p>
+          <div class="agent-cmd"><span>okf install mcp</span><button class="copy-mini" onclick="copyMini(this)" data-text="okf install mcp" aria-label="Copy command"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
         </div>
       </div>
       <p style="margin-top:24px; font-size:14px; color:var(--text-muted);">
-        Install for all detected agents at once: <code style="background:var(--code-bg);padding:2px 8px;border-radius:5px;font-family:var(--mono)">okf install all</code>
+        Install for all at once: <code style="background:var(--code-bg);padding:2px 8px;border-radius:5px;font-family:var(--mono)">okf install all</code>
+        · Register MCP server: <code style="background:var(--code-bg);padding:2px 8px;border-radius:5px;font-family:var(--mono)">okf mcp --install</code>
         · <a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/agent-integration.md" style="color:var(--accent)" target="_blank" rel="noopener">Full integration guide →</a>
       </p>
     </div>
