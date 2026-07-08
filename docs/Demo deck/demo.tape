@@ -6,7 +6,6 @@ Set Height 960
 Set Theme "Dracula"
 Set Padding 16
 Set TypingSpeed 20ms
-Set FrameRate 15
 
 # ── Setup ──
 Hide
