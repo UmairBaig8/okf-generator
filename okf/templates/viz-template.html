@@ -739,7 +739,7 @@ function _parseRel(text) {
   if (Array.isArray(text)) return text;
   var out = [];
   text.split('\n').forEach(function(line) {
-    var m = line.match(/\[([^\]]+)\]\([\/([^)]+)\.md\)/);
+    var m = line.match(/\[([^\]]+)\]\(([^)]+)\.md\)/);
     if (m) out.push({ title: m[1], concept_id: m[2] });
   });
   return out;
