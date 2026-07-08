@@ -22,10 +22,10 @@
 </p>
 
 <p align="center">
-  <b>Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</b>
+  <b>Scan any codebase into structured, agent-ready knowledge — 17 languages, ~100x fewer tokens than reading whole files, zero LLM required.</b>
 </p>
 
-okf-generator scans any codebase and generates an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) conformant knowledge bundle — structured Markdown that AI agents can query instead of re-reading whole files. Zero-LLM extraction, fully offline, deterministic every run.
+okf-generator generates an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) conformant knowledge bundle — structured Markdown that AI agents can query instead of re-reading whole files. Zero-LLM extraction, fully offline, deterministic every run.
 
 ---
 
@@ -59,7 +59,7 @@ Agents waste tokens re-reading entire files to find one function signature — 1
   [→ Agent integration](user-guide/agent-integration.md)
 
 - :material-file-tree:{ .lg } **MCP server built in**
-  7 tools — lookup, get_concept, find_callers, and more — exposed over Model Context Protocol.
+  11 tools — lookup, get_concept, find_callers, find_callees, search_by_tag, and more — exposed over Model Context Protocol.
   [→ MCP Server](user-guide/mcp-server.md)
 
 - :material-cog:{ .lg } **LLM enrichment, optional**

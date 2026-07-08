@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <b>Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across 17 languages — zero LLM required.</b>
+  <b>Scan any codebase into structured, agent-ready knowledge — 17 languages, ~100x fewer tokens than reading whole files, zero LLM required.</b>
 </p>
 
 <p align="center">
@@ -43,7 +43,8 @@
 
 ![okf-generator demo](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/demo.gif)
 
-`okf generate` scans any repo using tree-sitter AST parsers, resolves cross-references across 17 languages, and outputs a structured knowledge graph. Explore it interactively or consume it programmatically — no LLM required.
+`okf generate` generates an [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) conformant knowledge bundle — structured Markdown that AI agents can query instead of re-reading whole files. Zero-LLM extraction, fully offline, deterministic every run.
+
 
 ```bash
 # Auto-detect project root and generate bundle
@@ -101,14 +102,14 @@ pip install "okf-generator[llm]"                  # with LLM enrichment + traini
 
 ---
 
-## Why — Code-Level Knowledge Graphs
+## Why — Code-Level Knowledge Bundles
 
 AI coding agents waste enormous amounts of context re-reading entire files to find one function signature or dependency version. Cloud models with 200K token windows mask this cost; local SLMs (Gemma, Llama, Phi) on a MacBook run out of memory immediately.
 
-`okf-generator` solves this by converting source code into a **deterministic, cross-referenced knowledge graph**. Using tree-sitter AST parsers across 17 languages, every function, class, module, and dependency becomes a structured node with typed edges (calls, called-by, imports, depends-on).
+`okf-generator` solves this by converting source code into a **deterministic, cross-referenced knowledge bundles**. Using tree-sitter AST parsers across 17 languages, every function, class, module, and dependency becomes a structured node with typed edges (calls, called-by, imports, depends-on).
 
 ```bash
-# Before touching WorldBankConnector, get its full graph context
+# Before touching WorldBankConnector, get its full knowledge context
 okf lookup WorldBankConnector
 ```
 
@@ -140,7 +141,7 @@ No re-reading the file. No guessing. No LLM call required.
 
 **3. Write** — outputs an OKF v0.1 bundle: structured markdown files (one per concept) mirroring the source tree.
 
-**4. Consume** — 8 commands: `lookup`, `pairs`, `diff`, `visualize`, `mcp`, `serve`, `init`, `summarize`.
+**4. Consume** — 12 commands: `lookup`, `ask`, `pairs`, `diff`, `visualize`, `mcp`, `serve`, `init`, `summarize`, `install`, `plugin`, `dashboard`.
 
 **5. Enrich (optional)** — 4 modes to enhance description, docstring, security, and cross-links. Runs at generate time or standalone against an existing bundle.
 
@@ -240,7 +241,7 @@ The bundled viz is ideal for exploring relationships across projects; per-bundle
 
 ## Live Dashboard (FastAPI)
 
-`okf dashboard` launches an interactive web UI — live search, detail inspection, and concept graph in your browser:
+`okf dashboard` launches an interactive web UI — live search, detail inspection, and concept bundles in your browser:
 
 ```bash
 okf dashboard ./okf_bundle --open
@@ -267,7 +268,7 @@ Every concept in the bundle is deterministic, typed, and cross-referenced — ag
 
 | Capability | How |
 |---|---|
-| Manifest coverage | 19 formats incl. **Dockerfile**, **Containerfile**, **docker-compose.yml** |
+| Manifest coverage | 22 formats incl. **Dockerfile**, **Containerfile**, **docker-compose.yml** |
 | Smart config | `okf config` / `.okfconfig` — global + per-section settings, no env vars |
 | Quick setup wizard | `okf init` — interactive prompts for source, bundle, LLM enrichment |
 | Pre-commit hook | Auto-regenerates bundle on commit when source files change |
@@ -278,7 +279,7 @@ Every concept in the bundle is deterministic, typed, and cross-referenced — ag
 | Ecosystem queries | `okf lookup --tag ecosystem:pip` |
 | Source file queries | `okf lookup --file path/to/file.py` |
 | JSON output | `okf lookup --json <Name>` for programmatic agent use |
-| MCP protocol | `okf mcp ./okf_bundle` exposes 7 tools: `lookup`, `get_concept`, `find_callers`, `list_by_file`, `list_dependencies`, `bundle_info`, `list_by_type` |
+| MCP protocol | `okf mcp ./okf_bundle` exposes 11 tools: `lookup`, `get_concept`, `find_callers`, `find_callees`, `list_by_file`, `list_dependencies`, `bundle_info`, `list_by_type`, `search_by_tag`, `get_related`, `get_manifest_source` |
 | Summary map | `cat ./okf_bundle/SUMMARY.md` primes full context |
 
 ### Quick setup for any agent:
@@ -303,7 +304,7 @@ This project has an OKF knowledge bundle at ./okf_bundle/.
 
 > Full agent integration guide — OpenCode commands, Cursor rules, Copilot instructions, MCP setup: **[docs/agent-integration.md](docs/agent-integration.md)**
 
-> Automated agent setup — `okf install claude`, `okf install opencode`, `okf install cursor`, etc: see [Agent Installation](#agent-installation).
+> Automated agent setup — `okf install claude`, `okf install opencode`, `okf install cursor`, `okf install mcp`, etc: see [Agent Installation](#agent-installation).
 
 ---
 
@@ -412,7 +413,7 @@ Each language lives in its own file under `okf/parsers/`. Adding a new language 
 | SQL | `parsers/sql.py` | tree-sitter | Tables (columns, PK, FK, constraints), views, functions, indexes, triggers |
 | _new_ | `parsers/your_lang.py` | tree-sitter | You define it — see [development guide](docs/development.md) |
 
-### Manifest / Build Formats (17)
+### Manifest / Build Formats (22)
 
 `requirements.txt` · `pyproject.toml` · `package.json` · `Cargo.toml` · `Cargo.lock` · `yarn.lock` · `pnpm-lock.yaml` · `go.mod` · `go.sum` · `poetry.lock` · `composer.json` · `pom.xml` · `Gemfile` · `build.gradle` / `.kts` · `Package.swift` · `project.clj` · `mix.exs` · `Dockerfile` / `Containerfile` · `docker-compose.yml`
 
@@ -438,17 +439,19 @@ okf --version           Show version
 ```
 
 | Command | Usage |
-|---|---|
+|---|---|---|
 | `generate` | `okf generate <source_dir> [output_dir] [--enrich [mode]]` |
 | `enrich` | `okf enrich <bundle_dir> [--mode mode] [--src path]` |
 | `lookup` | `okf lookup <query>` |
+| `ask` | `okf ask <question>` |
 | `diff` | `okf diff <old_bundle> <new_bundle>` |
 | `pairs` | `okf pairs <bundle_dir> [output_file]` |
 | `summarize` | `okf summarize <bundle_dir>` |
-| `install` | `okf install [claude \| opencode \| copilot \| cursor \| windsurf \| cline]` |
+| `install` | `okf install [claude \| opencode \| copilot \| cursor \| windsurf \| cline \| mcp]` |
+| `mcp` | `okf mcp <bundle_dir> [--port] [--install]` |
+| `plugin` | `okf plugin [list \| install \| uninstall]` |
 | `init` | `okf init [dir]` |
 | `visualize` | `okf visualize <bundle_dir> [output.html]` |
-| `mcp` | `okf mcp <bundle_dir>` |
 | `serve` | `okf serve [dir] [--port] [--open]` |
 | `dashboard` | `okf dashboard <bundle_dir> [--port] [--open]` |
 
@@ -505,6 +508,7 @@ okf install copilot     # GitHub Copilot instructions
 okf install cursor      # Cursor rules
 okf install windsurf    # Windsurf rules
 okf install cline       # Cline rules
+okf install mcp         # Register MCP server (OpenCode + Claude Desktop)
 ```
 
 **What each install does:**
@@ -517,6 +521,7 @@ okf install cline       # Cline rules
 | Cursor | `.cursorrules` | Auto-loaded by Cursor |
 | Windsurf | `.windsurfrules` | Auto-loaded by Windsurf |
 | Cline | `.clinerules` | Auto-loaded by Cline |
+| MCP | `opencode.json` / `claude_desktop_config.json` | Registers MCP server for tool-based access |
 
 ---
 
@@ -526,7 +531,7 @@ okf install cline       # Cline rules
 |---|---|---|
 | Language coverage | 17 languages, modular parsers (`okf/parsers/*.py`) — add one in minutes | Usually 1 language or doc-only |
 | Cross-reference linking | Imports → dependencies, function calls → caller/callee across all languages | Not typically supported |
-| Dependency/manifest parsing | 17 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, +7) | Not typically supported |
+| Dependency/manifest parsing | 22 formats (pip, npm, cargo, go, maven, gradle, composer, rubygems, swiftpm, clojars, hex, docker, +10) | Not typically supported |
 | Extraction | Zero-LLM, deterministic, offline | Often LLM-required for every concept |
 | Enrichment modes | 4 tiers (`base`, `deep`, `security`, `full`) — per-model provider routing | Usually 1 mode, 1 provider |
 | Multi-provider routing | Route each enrich mode to a different provider (local LLM for descriptions, cloud for security) | Often locked to one vendor |
