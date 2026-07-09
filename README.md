@@ -7,7 +7,9 @@
   <a href="https://pypi.org/project/okf-generator/"><img src="https://img.shields.io/pypi/pyversions/okf-generator?style=flat-square" alt="Python"></a>
   <a href="https://github.com/UmairBaig8/okf-generator/stargazers"><img src="https://img.shields.io/github/stars/UmairBaig8/okf-generator?style=flat-square" alt="GitHub Stars"></a>
   <a href="https://github.com/UmairBaig8/okf-generator/actions"><img src="https://img.shields.io/github/actions/workflow/status/UmairBaig8/okf-generator/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/commits/main"><img src="https://img.shields.io/github/last-commit/UmairBaig8/okf-generator?style=flat-square" alt="Last commit"></a>
   <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
+  <a href="https://github.com/UmairBaig8/okf-generator/blob/main/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"></a>
   <a href="https://umairbaig8.github.io/okf-generator/docs-site/"><img src="https://img.shields.io/badge/📖-Docs-7c3aed?style=flat-square" alt="Docs"></a>
   <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-Server-5b21b6?style=flat-square" alt="MCP"></a>
   <a href="https://www.cursor.com"><img src="https://img.shields.io/badge/Cursor-Ready-7c3aed?style=flat-square" alt="Cursor"></a>
@@ -99,6 +101,37 @@ No re-reading the file. No guessing. No LLM call required.
 | **Training data export** | `okf pairs` converts any bundle into JSONL fine-tuning pairs (codegen, QA, doc, summarize, crosslink) |
 
 > Full language table with per-parser details: **[docs/languages-and-manifests.md](docs/languages-and-manifests.md)**
+
+### Supported languages (17)
+
+`Python` · `JavaScript` · `TypeScript` · `Go` · `Java` · `Rust` · `Swift` · `Kotlin` · `PHP` · `Dart` · `Scala` · `Julia` · `Ruby` · `C` · `C++` · `C#` · `SQL`
+
+Each language lives in its own file under `okf/parsers/`. Add a new one in minutes — one file + one registry entry.
+
+### Manifest formats (17)
+
+`requirements.txt` · `pyproject.toml` · `package.json` · `Cargo.toml` · `Cargo.lock` · `yarn.lock` · `pnpm-lock.yaml` · `go.mod` · `go.sum` · `poetry.lock` · `composer.json` · `pom.xml` · `Gemfile` · `build.gradle` / `.kts` · `Package.swift` · `Dockerfile` / `Containerfile` · `docker-compose.yml`
+
+![Before and after: 14,000 tokens vs 140 tokens](https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/before_after.svg)
+
+### What a bundle looks like
+
+```
+okf_bundle/
+├── SUMMARY.md                    ← agent's bird's-eye view
+├── index.md                      ← root navigation
+├── _dependencies/                ← deps by ecosystem (pip, npm, cargo…)
+└── my_project/
+    └── connectors/
+        ├── index.md              ← lists all concepts in folder
+        ├── economic_data.md      ← Module concept
+        └── economic_data/
+            ├── WorldBankConnector.md   ← Class (signature, methods, calls)
+            ├── get_indicator.md        ← Function (params, returns)
+            └── search.md               ← Function
+```
+
+Each file is OKF v0.1 conformant with structured YAML frontmatter — agents parse it deterministically, no guessing.
 
 ---
 
