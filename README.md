@@ -102,6 +102,8 @@ No re-reading the file. No guessing. No LLM call required.
 
 ### How it works
 
+![okf-generator pipeline](https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/workflow.png)
+
 ```
 1. Scan  → tree-sitter AST parsers extract functions, classes, modules (17 langs)
 2. Link  → cross-reference linker resolves imports→deps, calls→callees
