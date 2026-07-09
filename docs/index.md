@@ -2,7 +2,7 @@
 <p><strong>The knowledge layer for AI coding agents.</strong></p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/okf_banner.png?v=2" alt="okf-generator demo" width="700">
+  <img src="https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/okf_banner.png" alt="okf-generator demo" width="700">
 </p>
 
 <p align="center">

@@ -3,7 +3,7 @@
 </p> -->
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/okf_banner.png?v=2" alt="okf-generator demo" width="700">
+  <img src="https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/okf_banner.png" alt="okf-generator demo" width="700">
 </p>
 
 <p align="center">
@@ -210,13 +210,13 @@ Called-by   : [DataPipeline.fetch_economic]
 
 No re-reading the file. No guessing. No LLM call required.
 
-![Before and after comparison](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/before_after.svg)
+![Before and after comparison](https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/before_after.svg)
 
 ---
 
 ## How It Works
 
-![okf-generator pipeline](https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/docs/images/workflow.png)
+![okf-generator pipeline](https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/workflow.png)
 
 **1. Scan** — tree-sitter AST parsers extract every function, class, method, and module with signature, params, docstring, and return types across 17 languages.
 
