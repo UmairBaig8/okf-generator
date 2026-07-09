@@ -96,9 +96,21 @@ No re-reading the file. No guessing. No LLM call required.
 | **Interactive visualization** | Self-contained D3.js HTML dashboard — force-directed graph, search, filter, dark/light theme, no server required |
 | **Token efficiency** | ~140 tokens per concept lookup vs 14,000+ reading whole files. Local SLMs become viable for enterprise-scale codebases |
 | **4 enrichment tiers** | Optional LLM layer: `base` (descriptions), `deep` (examples + side effects), `security` (risk audit), `full` (all + semantic links). Runs at generate time or standalone |
-| **Multi-provider routing** | Route cheap description work to local llama.cpp, security audits to Claude — all from one config file |
+| **Multi-provider routing** | Route cheap work to local llama.cpp, security audits to Claude — one config file |
 | **Bundle diff & impact** | `okf diff --impact` shows exactly what changed between runs — which deps affect which modules |
 | **Training data export** | `okf pairs` converts any bundle into JSONL fine-tuning pairs (codegen, QA, doc, summarize, crosslink) |
+
+### How it works
+
+```
+1. Scan  → tree-sitter AST parsers extract functions, classes, modules (17 langs)
+2. Link  → cross-reference linker resolves imports→deps, calls→callees
+3. Write → OKF v0.1 bundle: structured markdown, mirrors your source tree
+4. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
+5. Enrich → optional LLM layer: 4 modes, multi-provider routing
+```
+
+Core extraction is fully deterministic and offline. Enrichment is optional, resumable, works with any AI provider.
 
 > Full language table with per-parser details: **[docs/languages-and-manifests.md](docs/languages-and-manifests.md)**
 
