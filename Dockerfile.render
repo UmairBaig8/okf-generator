@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir "okf-generator[dashboard]"
+RUN pip install --no-cache-dir ".[dashboard]"
 
 # Generate a bundle from the okf-generator source itself (serves as live demo)
 COPY . /app
