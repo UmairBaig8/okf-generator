@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [0.1.43] — 2026-07-09
+
+### Added
+- **Source lines embedded in bundles** — `## Source` sections in concept files now include the actual source code as a fenced code block (with language syntax hint), not just line number references. Fixes Render dashboard and viz showing "Lines N-M in `file.py`" as literal text. (`okf/generator.py`)
+
+### Changed
+- `_body()` accepts optional `source_dir` param to read and embed source lines during generation.
+- `render_concept()` and `write_bundle()` pass `source_dir` through for source embedding.
+
+---
+
 ## [0.1.42] — 2026-07-09
 
 ### Added
@@ -744,8 +755,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.42...HEAD
-[0.1.42]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.42
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.43...HEAD
+[0.1.43]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.43
 [0.1.40]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.40
 [0.1.39]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.39
 [0.1.38]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.38
