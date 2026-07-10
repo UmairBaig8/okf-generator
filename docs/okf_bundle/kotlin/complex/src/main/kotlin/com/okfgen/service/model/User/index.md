@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service/model/User
 resource: kotlin/complex/src/main/kotlin/com/okfgen/service/model/User
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: User
 type: Index
 ---

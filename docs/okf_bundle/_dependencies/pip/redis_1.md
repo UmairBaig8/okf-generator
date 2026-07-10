@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
 - ecosystem:pip
-- version:==5.0.1
 - manifest:requirements.txt
-timestamp: '2026-07-07T06:58:41Z'
+- version:==5.0.1
+timestamp: '2026-07-10T15:03:07Z'
 title: redis
 type: Dependency
 ---

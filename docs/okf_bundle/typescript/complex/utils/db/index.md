@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript/complex/utils/db
 resource: typescript/complex/utils/db
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: db
 type: Index
 ---

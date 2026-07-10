@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for cpp/easy/calc
 resource: cpp/easy/calc
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: calc
 type: Index
 ---

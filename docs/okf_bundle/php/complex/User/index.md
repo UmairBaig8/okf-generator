@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/complex/User
 resource: php/complex/User
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: User
 type: Index
 ---

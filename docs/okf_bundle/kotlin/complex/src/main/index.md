@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main
 resource: kotlin/complex/src/main
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: main
 type: Index
 ---

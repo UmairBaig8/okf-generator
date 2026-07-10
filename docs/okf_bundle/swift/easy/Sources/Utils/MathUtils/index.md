@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/easy/Sources/Utils/MathUtils
 resource: swift/easy/Sources/Utils/MathUtils
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: MathUtils
 type: Index
 ---

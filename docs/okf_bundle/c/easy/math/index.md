@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for c/easy/math
 resource: c/easy/math
-timestamp: '2026-07-10T15:02:19Z'
+timestamp: '2026-07-10T15:03:38Z'
 title: math
 type: Index
 ---

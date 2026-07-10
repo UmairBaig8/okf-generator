@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:manifests
 - domain:go.mod
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-- ecosystem:go
 - version:v0.0.0
+- ecosystem:go
 - manifest:go.mod
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-10T15:03:07Z'
 title: github.com/okfgen/go-service
 type: Dependency
 ---

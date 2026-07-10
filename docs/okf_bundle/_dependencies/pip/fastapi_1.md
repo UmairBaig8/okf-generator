@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
 - version:==0.104.1
+- ecosystem:pip
 - manifest:requirements.txt
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-10T15:03:07Z'
 title: fastapi
 type: Dependency
 ---
