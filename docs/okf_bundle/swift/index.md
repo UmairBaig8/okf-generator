@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift
 resource: swift
-timestamp: '2026-07-10T18:36:11Z'
+timestamp: '2026-07-10T18:38:27Z'
 title: swift
 type: Index
 ---

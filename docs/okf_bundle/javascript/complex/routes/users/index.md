@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for javascript/complex/routes/users
 resource: javascript/complex/routes/users
-timestamp: '2026-07-10T18:36:10Z'
+timestamp: '2026-07-10T18:38:27Z'
 title: users
 type: Index
 ---
