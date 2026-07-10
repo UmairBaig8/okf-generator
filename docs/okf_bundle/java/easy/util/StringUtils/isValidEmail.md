@@ -1,0 +1,62 @@
+---
+concept_id: java/easy/util/StringUtils/isValidEmail
+description: Checks whether the given string is a valid email address.
+language: java
+okf_version: '0.2'
+resource: java/easy/util/StringUtils.java
+tags:
+- lang:java
+- type:Function
+- module:java
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: isValidEmail
+type: Function
+---
+
+# isValidEmail
+
+Checks whether the given string is a valid email address.
+
+## Signature
+
+```java
+boolean isValidEmail(String email)
+```
+
+## Visibility
+
+- `public`
+- `static`
+
+## Docstring
+
+Checks whether the given string is a valid email address.
+@param email the string to validate
+@return true if the string matches basic email format
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `email` | `—` | `—` |
+
+## Returns
+`true if the string matches basic email format`
+
+## Source
+Lines 25–27 in `java/easy/util/StringUtils.java`
+
+```java
+    public static boolean isValidEmail(String email) {
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
+    }
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [StringUtils](/java/easy/util/StringUtils.md) |

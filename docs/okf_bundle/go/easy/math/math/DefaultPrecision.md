@@ -1,0 +1,44 @@
+---
+concept_id: go/easy/math/math/DefaultPrecision
+description: DefaultPrecision controls rounding precision across math functions.
+language: go
+okf_version: '0.2'
+resource: go/easy/math/math.go
+tags:
+- lang:go
+- type:Variable
+- module:go
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: DefaultPrecision
+type: Variable
+---
+
+# DefaultPrecision
+
+DefaultPrecision controls rounding precision across math functions.
+
+## Signature
+
+```go
+var DefaultPrecision = 6
+```
+
+## Docstring
+
+DefaultPrecision controls rounding precision across math functions.
+
+## Source
+Lines 11–11 in `go/easy/math/math.go`
+
+```go
+var DefaultPrecision = 6
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [math](/go/easy/math/math.md) |

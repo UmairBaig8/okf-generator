@@ -1,0 +1,46 @@
+---
+concept_id: csharp/complex/Repositories/IOrderRepo/FindByCustomer
+language: csharp
+okf_version: '0.2'
+resource: csharp/complex/Repositories/IOrderRepo.cs
+tags:
+- lang:csharp
+- type:Function
+- module:csharp
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: FindByCustomer
+type: Function
+---
+
+# FindByCustomer
+
+## Signature
+
+```csharp
+FindByCustomer()
+```
+
+## Visibility
+
+- `public`
+
+## Source
+Lines 52–57 in `csharp/complex/Repositories/IOrderRepo.cs`
+
+```cs
+    public IEnumerable<Order> FindByCustomer(string customerId)
+    {
+        return _store.Values
+            .Where(o => o.CustomerId == customerId)
+            .OrderBy(o => o.CreatedAt);
+    }
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [IOrderRepo](/csharp/complex/Repositories/IOrderRepo.md) |

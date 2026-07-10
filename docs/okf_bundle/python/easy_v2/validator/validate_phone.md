@@ -1,0 +1,69 @@
+---
+concept_id: python/easy_v2/validator/validate_phone
+description: Check if a string looks like a US phone number.
+language: python
+okf_version: '0.2'
+resource: python/easy_v2/validator.py
+tags:
+- lang:python
+- type:Function
+- module:python
+- domain:easy_v2
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: validate_phone
+type: Function
+---
+
+# validate_phone
+
+Check if a string looks like a US phone number.
+
+## Signature
+
+```python
+def validate_phone(phone: str) -> bool
+```
+
+## Docstring
+
+Check if a string looks like a US phone number.
+
+Args:
+    phone: The phone string to validate.
+
+Returns:
+    True if the phone matches a basic pattern, False otherwise.
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `phone` | `str` | `—` |
+
+## Returns
+`bool`
+
+## Source
+Lines 19–29 in `python/easy_v2/validator.py`
+
+```py
+def validate_phone(phone: str) -> bool:
+    """Check if a string looks like a US phone number.
+
+    Args:
+        phone: The phone string to validate.
+
+    Returns:
+        True if the phone matches a basic pattern, False otherwise.
+    """
+    cleaned = re.sub(r"[^\d]", "", phone)
+    return len(cleaned) == 10 or (len(cleaned) == 11 and cleaned.startswith("1"))
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [validator](/python/easy_v2/validator.md) |

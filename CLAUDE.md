@@ -2,7 +2,7 @@
 
 ## What is this?
 
-Generates OKF v0.1 knowledge bundles from codebases. Scans source code (7 languages via AST/tree-sitter + SQL via regex) and manifest files (12 formats) into structured markdown that AI agents can read.
+Generates OKF v0.2 knowledge bundles (extended dialect of Google's OKF v0.1) from codebases. Scans source code (7 languages via AST/tree-sitter + SQL via regex) and manifest files (12 formats) into structured markdown that AI agents can read.
 
 ## Quick Commands
 
@@ -44,6 +44,10 @@ okf/
 - `RELEASE.md` — release checklist
 - `CONTRIBUTING.md` — contributor guide
 - `.github/workflows/publish.yml` — CI/CD pipeline
+
+## Future Plans
+
+See `FUTURE.md` — 5 prioritized features ordered by effort (CI/CD auto-publish → v0.2 schema → agent REPL → WASM viz → IDE plugins).
 
 ## Release Workflow
 

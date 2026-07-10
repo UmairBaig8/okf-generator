@@ -1,0 +1,52 @@
+---
+concept_id: go/complex/store/user/CreateUserInput
+description: CreateUserInput holds the fields required to create a new user.
+language: go
+okf_version: '0.2'
+resource: go/complex/store/user.go
+tags:
+- lang:go
+- type:Class
+- module:go
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: CreateUserInput
+type: Class
+---
+
+# CreateUserInput
+
+CreateUserInput holds the fields required to create a new user.
+
+## Signature
+
+```go
+type CreateUserInput struct
+```
+
+## Docstring
+
+CreateUserInput holds the fields required to create a new user.
+
+## Methods
+
+- `Name`
+- `Email`
+
+## Source
+Lines 19–22 in `go/complex/store/user.go`
+
+```go
+type CreateUserInput struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [user](/go/complex/store/user.md) |

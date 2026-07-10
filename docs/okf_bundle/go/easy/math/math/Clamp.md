@@ -1,0 +1,52 @@
+---
+concept_id: go/easy/math/math/Clamp
+description: Clamp restricts a value to the range [low, high].
+language: go
+okf_version: '0.2'
+resource: go/easy/math/math.go
+tags:
+- lang:go
+- type:Function
+- module:go
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: Clamp
+type: Function
+---
+
+# Clamp
+
+Clamp restricts a value to the range [low, high].
+
+## Signature
+
+```go
+func Clamp(val, low, high int) int
+```
+
+## Docstring
+
+Clamp restricts a value to the range [low, high].
+
+## Source
+Lines 30–38 in `go/easy/math/math.go`
+
+```go
+func Clamp(val, low, high int) int {
+	if val < low {
+		return low
+	}
+	if val > high {
+		return high
+	}
+	return val
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [math](/go/easy/math/math.md) |

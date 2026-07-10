@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [Unreleased] — v0.1.44
+
+### Added
+
+- **OKF v0.2 schema** — schema version bumped from `0.1` to `0.2`. Every concept file now has `okf_version`, `concept_id`, `language`, and optional `status` in frontmatter.
+- **`## Relationships` table** — replaces separate `## Related`, `## Calls`, `## Called By`, and `## Related (AI-suggested)` sections. Each edge is typed (`related`, `calls`, `called_by`, `related (AI)`) in a unified table. Backward-compatible: consumer tools (`lookup`, `pairs`) fall back to old section names when `relationships` is absent.
+- **`okf migrate v0.1-to-v0.2`** command — converts existing v0.1 bundles to v0.2 in-place. Adds frontmatter fields, merges relationship sections. Supports `--dry-run` for preview.
+- **User-facing auto-bundle template** — `docs/examples/okf-auto-bundle.yml` is a copy-paste GitHub Actions workflow any repo can use to auto-generate + commit an OKF bundle on push. Documented in `docs/user-guide/ci-cd.md`.
+- **CI/CD auto-publish** — `demo-viz.yml` now generates `docs/okf_bundle/` from realworld fixtures on push to `main`. Landing page "Try it live" bar has a "Live Bundle" link.
+
+### Changed
+
+- `Concept` dataclass: new `status` field (`active`, `deprecated`, `experimental`).
+- `generator.py`: all 4 version emission points changed from `"0.1"` to `"0.2"`.
+- `_frontmatter()`: now writes `okf_version`, `concept_id`, `language`, `status`.
+- `lookup.py` + `pairs.py`: parse `relationships` section with v0.1 fallback.
+
+### Migration from v0.1
+
+```bash
+okf migrate v0.1-to-v0.2 ./path/to/bundle
+```
+
+Run `--dry-run` first to preview changes. The migration is idempotent — running it again on a v0.2 bundle is a no-op.
+
+---
+
 ## [0.1.43] — 2026-07-09
 
 ### Added

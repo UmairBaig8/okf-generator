@@ -1,0 +1,50 @@
+---
+concept_id: rust/easy/lib/origin_1
+description: Return the origin point (0.0, 0.0).
+language: rust
+okf_version: '0.2'
+resource: rust/easy/lib.rs
+tags:
+- lang:rust
+- type:Function
+- module:rust
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: origin
+type: Function
+---
+
+# origin
+
+Return the origin point (0.0, 0.0).
+
+## Signature
+
+```rust
+pub fn origin() -> Self
+```
+
+## Visibility
+
+- `pub`
+
+## Docstring
+
+Return the origin point (0.0, 0.0).
+
+## Source
+Lines 57–59 in `rust/easy/lib.rs`
+
+```rs
+    pub fn origin() -> Self {
+        Point { x: 0.0, y: 0.0 }
+    }
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [lib](/rust/easy/lib.md) |

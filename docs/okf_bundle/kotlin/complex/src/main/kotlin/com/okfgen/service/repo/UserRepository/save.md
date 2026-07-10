@@ -1,0 +1,37 @@
+---
+concept_id: kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository/save
+language: kotlin
+okf_version: '0.2'
+resource: kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository.kt
+tags:
+- lang:kotlin
+- type:Function
+- module:kotlin
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: save
+type: Function
+---
+
+# save
+
+## Signature
+
+```kotlin
+fun save(entity: T): T
+```
+
+## Source
+Lines 10–10 in `kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository.kt`
+
+```kt
+    fun save(entity: T): T
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | Repository *(unresolved)* |

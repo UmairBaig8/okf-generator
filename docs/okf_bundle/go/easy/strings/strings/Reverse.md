@@ -1,0 +1,50 @@
+---
+concept_id: go/easy/strings/strings/Reverse
+description: Reverse returns a reversed copy of the input string.
+language: go
+okf_version: '0.2'
+resource: go/easy/strings/strings.go
+tags:
+- lang:go
+- type:Function
+- module:go
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: Reverse
+type: Function
+---
+
+# Reverse
+
+Reverse returns a reversed copy of the input string.
+
+## Signature
+
+```go
+func Reverse(s string) string
+```
+
+## Docstring
+
+Reverse returns a reversed copy of the input string.
+
+## Source
+Lines 34–40 in `go/easy/strings/strings.go`
+
+```go
+func Reverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [strings](/go/easy/strings/strings.md) |

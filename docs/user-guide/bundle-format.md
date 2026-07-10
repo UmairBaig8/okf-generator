@@ -79,6 +79,7 @@ Every concept file starts with YAML frontmatter. Only these fields appear in the
 
 ```yaml
 ---
+okf_version: "0.2"
 type: Function
 title: slugify
 description: Convert arbitrary text into a URL-safe slug.
@@ -88,19 +89,26 @@ tags:
   - type:Function
   - module:utils
 timestamp: 2026-07-01T10:22:03Z
+language: python
+concept_id: python/easy/utils/slugify
+status: active
 ---
 ```
 
 | Field | Required | Description |
 |-------|----------|-------------|
+| `okf_version` | yes | Schema version (`"0.2"`) |
 | `type` | yes | Concept kind — see [Concept Types](#concept-types) |
 | `title` | yes | Concept name (`slugify`, `User`, `click`) |
 | `description` | no | Short description (first line of docstring or enriched) |
 | `resource` | yes | Source file path relative to repo root |
 | `tags` | yes | Structured tags — see [Tag Reference](#tag-reference) |
 | `timestamp` | yes | ISO 8601 generation timestamp |
+| `language` | yes | Source language (extracted from tags) |
+| `concept_id` | yes | Unique concept path (relative to bundle root, no extension) |
+| `status` | no | `active`, `deprecated`, or `experimental` |
 
-Everything else (signature, docstring, params, calls, related, methods, source) goes in the **Markdown body** under `##` headings.
+Everything else (signature, docstring, params, relationships, methods, source) goes in the **Markdown body** under `##` headings.
 
 ## Concept Types
 
@@ -150,10 +158,7 @@ After the frontmatter, the markdown body can include any of these `##` sections,
 | `## Returns` | Functions | Return type annotation |
 | `## Methods` | Classes | List of method names |
 | `## Source` | Any | Line range in source file |
-| `## Related` | Any | Links to related concepts (parent module, child functions) |
-| `## Related (AI-suggested)` | Any | Semantic cross-links from LLM enrichment |
-| `## Calls` | Functions | Concepts called by this function |
-| `## Called By` | Functions | Concepts that call this function |
+| `## Relationships` | Any | Typed table of related/called/called-by edges — see [Relationships](#relationships) |
 | `## Usage Example` | Any | From deep enrichment pass |
 | `## Design Pattern` | Any | From LLM enrichment |
 | `## Deprecation` | Any | Detected deprecation notices |
@@ -175,23 +180,24 @@ Dependency concepts have their own body format — a table instead of sections:
 
 Followed by a `## Used By` section listing dependent modules.
 
-## Call Graph
+## Relationships
 
-Links in `## Related`, `## Calls`, `## Called By`, and `## Used By` use relative markdown links:
+All typed edges (related, calls, called_by, inherits) appear in a single `## Relationships` table:
 
 ```markdown
-## Related
-- [slugify](/utils/slugify.md)
-- [chunk_list](/utils/chunk_list.md)
+## Relationships
 
-## Calls
-- [requests.get](/_dependencies/pip/requests.md)
-
-## Called By
-- [main.run_pipeline](/_dependencies/_modules/main.md)
+| Type | Target |
+|------|--------|
+| related | [slugify](/utils/slugify.md) |
+| calls | [requests.get](/_dependencies/pip/requests.md) |
+| called_by | [main.run_pipeline](/_dependencies/_modules/main.md) |
+| related (AI) | [chunk_list](/utils/chunk_list.md) |
 ```
 
-All paths are relative to the bundle root.
+Relationship types: `related`, `related (AI)`, `calls`, `called_by`, `inherits`, `implements`. All target paths are relative to the bundle root.
+
+> **Migration:** v0.1 bundles used separate `## Related`, `## Calls`, `## Called By` sections. Run `okf migrate v0.1-to-v0.2 <bundle_dir>` to convert.
 
 ## Minimal Valid Example
 
@@ -229,4 +235,29 @@ def add_numbers(a: int, b: int) -> int
 
 ## Versioning
 
-This schema targets [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md). Breaking changes will be called out in the [Changelog](../changelog.md).
+This schema targets **OKF v0.2**. Every concept file contains `okf_version: "0.2"` in frontmatter.
+
+### Why v0.2?
+
+The bump from v0.1 to v0.2 formalizes the schema for downstream tooling:
+
+| What | v0.1 | v0.2 | Why |
+|------|------|------|-----|
+| Schema version | Only in index.md | Every concept file | Tools can validate format without reading root |
+| Concept identity | Implicit (file path) | Explicit `concept_id` field | Graph DB import, dedup across bundles |
+| Language | In tags only (`lang:python`) | Dedicated `language` field | One less parse step for consumers |
+| Status | Not tracked | `status: active\|deprecated\|experimental` | Enables deprecation-aware tools |
+| Relationship edges | 4 separate `##` sections (Related, Calls, Called By, Related AI) | Single `## Relationships` table with typed rows | Queryable by edge type, easier to parse, extensible to new types |
+
+### Migrating from v0.1
+
+```bash
+okf migrate v0.1-to-v0.2 ./path/to/bundle
+```
+
+Run `--dry-run` first to preview changes. The migration:
+- Adds `okf_version`, `concept_id`, `language` to every concept frontmatter
+- Merges `## Related`, `## Calls`, `## Called By`, `## Related (AI-suggested)` into a single `## Relationships` table
+- Is idempotent: running it again on a v0.2 bundle is a no-op
+
+Breaking changes between versions are called out in the [Changelog](../changelog.md).

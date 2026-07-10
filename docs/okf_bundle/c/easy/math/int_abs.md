@@ -1,0 +1,39 @@
+---
+concept_id: c/easy/math/int_abs
+language: c
+okf_version: '0.2'
+resource: c/easy/math.c
+tags:
+- lang:c
+- type:Function
+- module:c
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: int_abs
+type: Function
+---
+
+# int_abs
+
+## Signature
+
+```c
+int int_abs(int n)
+```
+
+## Source
+Lines 14–16 in `c/easy/math.c`
+
+```c
+int int_abs(int n) {
+    return n < 0 ? -n : n;
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [math](/c/easy/math.md) |

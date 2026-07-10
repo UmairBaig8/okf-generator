@@ -1,0 +1,64 @@
+---
+concept_id: javascript/easy/strings/truncate
+description: Truncate a string to a maximum length, appending an ellipsis if truncated.
+language: javascript
+okf_version: '0.2'
+resource: javascript/easy/strings.js
+tags:
+- lang:javascript
+- type:Function
+- module:javascript
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: truncate
+type: Function
+---
+
+# truncate
+
+Truncate a string to a maximum length, appending an ellipsis if truncated.
+
+## Signature
+
+```javascript
+function truncate(str, maxLength = 80, ellipsis = '...')
+```
+
+## Docstring
+
+Truncate a string to a maximum length, appending an ellipsis if truncated.
+@param {string} str - Input text.
+@param {number} [maxLength=80] - Maximum allowed length.
+@param {string} [ellipsis='...'] - Suffix appended when truncated.
+@returns {string} Truncated string.
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `str` | `string` | `—` |
+
+| `[maxLength=80]` | `number` | `—` |
+
+| `[ellipsis='...']` | `string` | `—` |
+
+## Returns
+`string`
+
+## Source
+Lines 25–28 in `javascript/easy/strings.js`
+
+```js
+function truncate(str, maxLength = 80, ellipsis = '...') {
+  if (!str || str.length <= maxLength) return str || '';
+  return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [strings](/javascript/easy/strings.md) |

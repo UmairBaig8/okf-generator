@@ -1,0 +1,46 @@
+---
+concept_id: cpp/complex/containers/vector/Vector_T___pop_back
+language: cpp
+okf_version: '0.2'
+resource: cpp/complex/containers/vector.cpp
+tags:
+- lang:cpp
+- type:Function
+- module:cpp
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: Vector<T>::pop_back
+type: Function
+---
+
+# Vector<T>::pop_back
+
+## Signature
+
+```cpp
+template<<typename T>> void Vector<T>::pop_back()
+```
+
+## Type Parameters
+
+- `typename T`
+
+## Source
+Lines 51–56 in `cpp/complex/containers/vector.cpp`
+
+```cpp
+void Vector<T>::pop_back() {
+    if (empty()) {
+        throw std::out_of_range("pop_back on empty Vector");
+    }
+    --size_;
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [vector](/cpp/complex/containers/vector.md) |

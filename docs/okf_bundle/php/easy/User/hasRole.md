@@ -1,0 +1,50 @@
+---
+concept_id: php/easy/User/hasRole
+description: User account status enum.
+language: php
+okf_version: '0.2'
+resource: php/easy/User.php
+tags:
+- lang:php
+- type:Function
+- module:php
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: hasRole
+type: Function
+---
+
+# hasRole
+
+User account status enum.
+
+## Signature
+
+```php
+function hasRole(string $role): bool
+```
+
+## Visibility
+
+- `public`
+
+## Docstring
+
+User account status enum.
+
+## Source
+Lines 34–36 in `php/easy/User.php`
+
+```php
+    public function hasRole(string $role): bool {
+        return in_array($role, $this->roles);
+    }
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [User](/php/easy/User.md) |

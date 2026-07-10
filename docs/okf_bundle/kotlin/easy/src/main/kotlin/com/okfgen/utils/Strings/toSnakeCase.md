@@ -1,0 +1,56 @@
+---
+concept_id: kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings/toSnakeCase
+description: Converts a CamelCase string to snake_case.
+language: kotlin
+okf_version: '0.2'
+resource: kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.kt
+tags:
+- lang:kotlin
+- type:Function
+- module:kotlin
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: toSnakeCase
+type: Function
+---
+
+# toSnakeCase
+
+Converts a CamelCase string to snake_case.
+
+## Signature
+
+```kotlin
+fun toSnakeCase(camel: String): String
+```
+
+## Docstring
+
+Converts a CamelCase string to snake_case.
+
+## Source
+Lines 22–33 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.kt`
+
+```kt
+fun toSnakeCase(camel: String): String {
+    val sb = StringBuilder()
+    for ((i, char) in camel.withIndex()) {
+        if (char.isUpperCase()) {
+            if (i > 0) sb.append('_')
+            sb.append(char.lowercaseChar())
+        } else {
+            sb.append(char)
+        }
+    }
+    return sb.toString()
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [Strings](/kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.md) |
+| calls | [toString](/java/easy/model/User/toString.md) |

@@ -1,6 +1,6 @@
 """OKF — Open Knowledge Format toolkit for codebases.
 
-Generate OKF v0.1 knowledge bundles from source code, look up concepts
+Generate OKF v0.2 knowledge bundles from source code, look up concepts
 for AI agent context injection, and convert bundles into LLM training pairs.
 
 Quick start:

@@ -19,5 +19,9 @@ tests/fixtures/**/.gradle/
 tests/fixtures/**/build/
 site/
 okf_bundle/
+!docs/okf_bundle/
 .okfconfig
 opencode.json
+articals/
+.opencode/
+articals/show-hn-draft.md
