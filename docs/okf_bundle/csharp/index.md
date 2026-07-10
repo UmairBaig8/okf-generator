@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp
 resource: csharp
-timestamp: '2026-07-10T17:15:04Z'
+timestamp: '2026-07-10T17:16:02Z'
 title: csharp
 type: Index
 ---
@@ -10,6 +10,5 @@ type: Index
 
 ## Subdirectories
 
-- [Models](Models/index.md)
 - [complex](complex/index.md)
 - [easy](easy/index.md)

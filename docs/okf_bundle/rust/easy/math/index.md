@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust/easy/math
 resource: rust/easy/math
-timestamp: '2026-07-10T17:15:04Z'
+timestamp: '2026-07-10T17:16:02Z'
 title: math
 type: Index
 ---

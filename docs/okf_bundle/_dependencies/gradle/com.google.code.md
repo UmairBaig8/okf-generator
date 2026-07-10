@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:kotlin
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-- version:2.10.1
 - ecosystem:gradle
+- version:2.10.1
 - manifest:build.gradle.kts
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-10T17:15:25Z'
 title: com.google.code.gson:gson
 type: Dependency
 ---

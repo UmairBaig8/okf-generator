@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-timestamp: '2026-07-07T06:58:42Z'
+timestamp: '2026-07-10T17:15:25Z'
 title: test_is_prime
 type: Function
 ---
