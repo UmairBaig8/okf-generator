@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:npm
-- manifest:package.json
 - version:^5.3.2
-timestamp: '2026-07-10T18:32:37Z'
+- manifest:package.json
+- ecosystem:npm
+timestamp: '2026-07-10T18:35:36Z'
 title: typescript
 type: Dependency
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/easy_v2
 resource: python/easy_v2
-timestamp: '2026-07-10T18:33:08Z'
+timestamp: '2026-07-10T18:36:11Z'
 title: easy_v2
 type: Index
 ---

@@ -14,7 +14,7 @@ tags:
 - manifest:pyproject.toml
 - version:>=7.4.0
 - ecosystem:pip
-timestamp: '2026-07-10T18:32:37Z'
+timestamp: '2026-07-10T18:35:36Z'
 title: pytest
 type: Dependency
 ---

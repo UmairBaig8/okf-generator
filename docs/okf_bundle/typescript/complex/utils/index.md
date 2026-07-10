@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript/complex/utils
 resource: typescript/complex/utils
-timestamp: '2026-07-10T18:33:08Z'
+timestamp: '2026-07-10T18:36:11Z'
 title: utils
 type: Index
 ---
