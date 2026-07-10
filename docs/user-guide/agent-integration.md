@@ -10,7 +10,7 @@
 - [Cursor / Windsurf / Cline](#cursor--windsurf--cline)
 - [GitHub Copilot](#github-copilot)
 - [Any Agent with RUN Capability](#any-agent-with-run-capability)
-- [MCP Integration](#mcp-integration)
+- [MCP Integration](#mcp-integration-preferred)
 - [Agent Installation Command](#agent-installation-command)
 
 ## Token Efficiency
