@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for ruby/easy/math_helper
 resource: ruby/easy/math_helper
-timestamp: '2026-07-10T20:09:18Z'
+timestamp: '2026-07-10T20:13:36Z'
 title: math_helper
 type: Index
 ---
