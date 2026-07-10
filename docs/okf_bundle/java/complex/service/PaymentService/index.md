@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for java/complex/service/PaymentService
 resource: java/complex/service/PaymentService
-timestamp: '2026-07-10T18:53:33Z'
+timestamp: '2026-07-10T19:00:15Z'
 title: PaymentService
 type: Index
 ---

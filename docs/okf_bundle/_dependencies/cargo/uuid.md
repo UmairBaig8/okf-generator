@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:cargo
 - version:1.6
+- ecosystem:cargo
 - manifest:Cargo.toml
-timestamp: '2026-07-10T18:52:59Z'
+timestamp: '2026-07-10T18:59:38Z'
 title: uuid
 type: Dependency
 ---

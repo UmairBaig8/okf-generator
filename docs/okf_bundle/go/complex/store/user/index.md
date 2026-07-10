@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for go/complex/store/user
 resource: go/complex/store/user
-timestamp: '2026-07-10T18:53:33Z'
+timestamp: '2026-07-10T19:00:15Z'
 title: user
 type: Index
 ---

@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:npm
-- version:^9.0.2
 - manifest:package.json
-timestamp: '2026-07-10T18:52:59Z'
+- version:^9.0.2
+- ecosystem:npm
+timestamp: '2026-07-10T18:59:38Z'
 title: jsonwebtoken
 type: Dependency
 ---
