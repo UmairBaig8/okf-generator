@@ -1074,14 +1074,14 @@ async function renderParseTree(id) {
   var ext = (c.resource || '').split('.').pop();
   var langName = _tsLangMap[ext];
   if (!langName || !_tsWasmUrls[langName]) {
-    container.innerHTML = '<div class="empty-note">Parse tree not available for .' + esc(ext) + ' (no WASM parser on CDN). Source view is still available.</div>';
+    container.innerHTML = '<div class="empty-note">Parse tree is not available for <strong>.' + esc(ext) + '</strong> files. Use the <strong>Source</strong> tab for code view.</div>';
     return;
   }
 
-  container.innerHTML = '<div class="loading">Parsing with tree-sitter…</div>';
+  container.innerHTML = '<div class="loading">Parsing…</div>';
   var parser = await getTsParser(langName);
   if (!parser) {
-    container.innerHTML = '<div class="empty-note">Could not load tree-sitter parser for ' + esc(langName) + '. Check network connection.</div>';
+    container.innerHTML = '<div class="empty-note">Parse tree could not be loaded for <strong>' + esc(langName) + '</strong>. Switch to <strong>Source</strong> tab for code view.</div>';
     return;
   }
 
@@ -1145,6 +1145,17 @@ showCodePanel = function(id) {
   _currentCodeId = id;
   switchCodeTab('source');
   _origShowCodePanel(id);
+
+  // Hide parse tree tab for unsupported languages
+  var c = conceptCache[id] || __nodeById[id];
+  var ext = (c && c.resource || '').split('.').pop();
+  var langName = _tsLangMap[ext];
+  var supported = langName && _tsWasmUrls[langName];
+  var parseTab = document.querySelector('.code-tab[data-tab="parse"]');
+  if (parseTab) {
+    parseTab.style.display = supported ? '' : 'none';
+    if (!supported) switchCodeTab('source');
+  }
 };
 
 // ---- Ego Graph (Cytoscape) ----
