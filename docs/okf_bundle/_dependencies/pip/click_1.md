@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:pip
-- manifest:requirements.txt
 - version:==8.1.7
-timestamp: '2026-07-10T17:51:27Z'
+- manifest:requirements.txt
+timestamp: '2026-07-10T17:59:43Z'
 title: click
 type: Dependency
 ---
