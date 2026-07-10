@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for julia/complex
 resource: julia/complex
-timestamp: '2026-07-10T18:27:26Z'
+timestamp: '2026-07-10T18:30:02Z'
 title: complex
 type: Index
 ---

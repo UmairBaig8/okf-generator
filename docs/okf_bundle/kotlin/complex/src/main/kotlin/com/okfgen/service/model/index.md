@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service/model
 resource: kotlin/complex/src/main/kotlin/com/okfgen/service/model
-timestamp: '2026-07-10T18:27:26Z'
+timestamp: '2026-07-10T18:30:02Z'
 title: model
 type: Index
 ---

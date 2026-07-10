@@ -14,7 +14,7 @@ tags:
 - manifest:Gemfile
 - version:~> 3.3
 - ecosystem:rubygems
-timestamp: '2026-07-10T18:26:54Z'
+timestamp: '2026-07-10T18:29:30Z'
 title: date
 type: Dependency
 ---
