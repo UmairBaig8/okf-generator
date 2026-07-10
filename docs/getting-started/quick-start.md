@@ -165,9 +165,9 @@ After installation, when you ask your agent about any concept in your codebase, 
 
 | If you want to... | Go here |
 |-------------------|---------|
-| Explore all commands | [CLI Reference](../cli-reference.md) |
+| Explore all commands | [CLI Reference](../user-guide/cli-reference.md) |
 | Enrich with LLM descriptions | `okf generate --enrich` |
 | Convert bundle to training data | `okf pairs ./okf_bundle ./train.jsonl` |
-| Set up CI/CD pipeline | [CI/CD Guide](../ci-cd.md) |
+| Set up CI/CD pipeline | [CI/CD Guide](../user-guide/ci-cd.md) |
 | Add a new language parser | [Development Guide](../development.md) |
 | Use with MCP-compatible tools | `okf mcp ./okf_bundle` |
