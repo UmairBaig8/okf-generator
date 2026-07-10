@@ -14,7 +14,7 @@ tags:
 - version:~> 3.2
 - manifest:Gemfile
 - ecosystem:rubygems
-timestamp: '2026-07-10T19:48:51Z'
+timestamp: '2026-07-10T19:52:39Z'
 title: csv
 type: Dependency
 ---

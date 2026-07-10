@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/complex
 resource: python/complex
-timestamp: '2026-07-10T19:49:22Z'
+timestamp: '2026-07-10T19:53:10Z'
 title: complex
 type: Index
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for java/easy/util
 resource: java/easy/util
-timestamp: '2026-07-10T19:49:22Z'
+timestamp: '2026-07-10T19:53:10Z'
 title: util
 type: Index
 ---

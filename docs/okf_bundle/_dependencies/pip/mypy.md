@@ -14,7 +14,7 @@ tags:
 - manifest:requirements.txt
 - ecosystem:pip
 - version:>=1.7.0
-timestamp: '2026-07-10T19:48:51Z'
+timestamp: '2026-07-10T19:52:39Z'
 title: mypy
 type: Dependency
 ---

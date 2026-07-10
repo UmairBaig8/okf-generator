@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings
 resource: kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings
-timestamp: '2026-07-10T19:49:22Z'
+timestamp: '2026-07-10T19:53:10Z'
 title: Strings
 type: Index
 ---

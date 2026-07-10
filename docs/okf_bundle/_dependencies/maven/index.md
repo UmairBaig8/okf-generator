@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/maven
 resource: _dependencies/maven
-timestamp: '2026-07-10T19:49:22Z'
+timestamp: '2026-07-10T19:53:10Z'
 title: maven
 type: Index
 ---
