@@ -14,7 +14,7 @@ tags:
 - version:>=2.5.0
 - ecosystem:pip
 - manifest:pyproject.toml
-timestamp: '2026-07-10T19:52:39Z'
+timestamp: '2026-07-10T19:56:16Z'
 title: pydantic
 type: Dependency
 ---
