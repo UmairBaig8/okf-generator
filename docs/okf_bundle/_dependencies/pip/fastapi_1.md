@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:==0.104.1
-- manifest:requirements.txt
 - ecosystem:pip
-timestamp: '2026-07-10T19:37:35Z'
+- manifest:requirements.txt
+timestamp: '2026-07-10T19:43:53Z'
 title: fastapi
 type: Dependency
 ---

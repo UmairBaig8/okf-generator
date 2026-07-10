@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/easy/Utils
 resource: csharp/easy/Utils
-timestamp: '2026-07-10T19:38:10Z'
+timestamp: '2026-07-10T19:44:32Z'
 title: Utils
 type: Index
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/gradle
 resource: _dependencies/gradle
-timestamp: '2026-07-10T19:38:10Z'
+timestamp: '2026-07-10T19:44:32Z'
 title: gradle
 type: Index
 ---

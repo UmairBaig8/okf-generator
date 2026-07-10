@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript/easy
 resource: typescript/easy
-timestamp: '2026-07-10T19:38:10Z'
+timestamp: '2026-07-10T19:44:33Z'
 title: easy
 type: Index
 ---

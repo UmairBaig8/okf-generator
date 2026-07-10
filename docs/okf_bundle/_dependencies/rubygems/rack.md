@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:rubygems
-- version:~> 3.0
 - manifest:Gemfile
-timestamp: '2026-07-10T19:37:35Z'
+- version:~> 3.0
+timestamp: '2026-07-10T19:43:53Z'
 title: rack
 type: Dependency
 ---
