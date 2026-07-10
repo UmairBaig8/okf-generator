@@ -116,8 +116,14 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
 #main.wide { padding:0; }
 #browse-layout { display:flex; flex:1; min-height:0; padding:var(--sp-4); gap:0; }
 #browse-content { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; padding-left:var(--sp-4); }
-#sidebar-resize { width:4px; cursor:col-resize; background:var(--border); flex:none; transition:background .12s var(--ease); position:relative; z-index:10; }
-#sidebar-resize:hover, #sidebar-resize.active { background:var(--accent); }
+#sidebar-resize {
+  width:4px; cursor:col-resize; background:var(--border); flex:none;
+  transition:background .12s var(--ease); position:relative; z-index:10;
+  margin:100px 0;
+  border-radius:4px; background-clip:content-box;
+  background:linear-gradient(to bottom, transparent 0, var(--border) 20%, var(--border) 80%, transparent 100%);
+}
+#sidebar-resize:hover, #sidebar-resize.active { background:var(--accent); background-clip:content-box; }
 .field-wrap { padding:var(--sp-3) var(--sp-3) 0; }
 .search-box { position:relative; }
 .search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
@@ -376,6 +382,7 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
         <span class="name">OKF Generator</span>
       </div>
     </div>
+    <div id="topbar-spacer"></div>
     <div class="nav-seg">
       <button class="nav-seg-item active" onclick="switchTab('browse',this)">Browse</button>
       <button class="nav-seg-item" onclick="switchTab('graph',this)">Explore</button>
