@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/complex/Sources/Service/Repositories
 resource: swift/complex/Sources/Service/Repositories
-timestamp: '2026-07-10T19:04:55Z'
+timestamp: '2026-07-10T19:08:36Z'
 title: Repositories
 type: Index
 ---

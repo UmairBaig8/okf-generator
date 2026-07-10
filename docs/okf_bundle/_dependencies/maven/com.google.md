@@ -14,7 +14,7 @@ tags:
 - manifest:pom.xml
 - ecosystem:maven
 - version:32.1.3-jre
-timestamp: '2026-07-10T19:04:24Z'
+timestamp: '2026-07-10T19:08:02Z'
 title: com.google.guava:guava
 type: Dependency
 ---

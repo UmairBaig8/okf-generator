@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- version:4.89.0
-- manifest:Package.swift
 - ecosystem:swiftpm
-timestamp: '2026-07-10T19:04:24Z'
+- manifest:Package.swift
+- version:4.89.0
+timestamp: '2026-07-10T19:08:02Z'
 title: vapor
 type: Dependency
 ---
