@@ -14,7 +14,7 @@ tags:
 - version:^20.10.0
 - ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-10T14:55:12Z'
+timestamp: '2026-07-10T14:57:28Z'
 title: '@types/node'
 type: Dependency
 ---

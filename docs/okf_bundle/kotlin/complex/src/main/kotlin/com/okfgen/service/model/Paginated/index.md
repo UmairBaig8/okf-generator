@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service/model/Paginated
 resource: kotlin/complex/src/main/kotlin/com/okfgen/service/model/Paginated
-timestamp: '2026-07-10T14:55:48Z'
+timestamp: '2026-07-10T14:58:02Z'
 title: Paginated
 type: Index
 ---

@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:npm
 - version:^4.18.2
+- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-10T14:55:11Z'
+timestamp: '2026-07-10T14:57:28Z'
 title: express
 type: Dependency
 ---
