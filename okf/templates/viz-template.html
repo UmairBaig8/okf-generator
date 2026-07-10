@@ -112,9 +112,12 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
   margin:var(--sp-3) 0 var(--sp-3) var(--sp-3);
   box-shadow:0 2px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.04);
 }
-#sidebar.hidden { display:none; }
-#main { flex:1; padding:var(--sp-4); display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+#main { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
 #main.wide { padding:0; }
+#browse-layout { display:flex; flex:1; min-height:0; padding:var(--sp-4); gap:0; }
+#browse-content { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; padding-left:var(--sp-4); }
+#sidebar-resize { width:4px; cursor:col-resize; background:var(--border); flex:none; transition:background .12s var(--ease); position:relative; z-index:10; }
+#sidebar-resize:hover, #sidebar-resize.active { background:var(--accent); }
 .field-wrap { padding:var(--sp-3) var(--sp-3) 0; }
 .search-box { position:relative; }
 .search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
@@ -161,20 +164,13 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
 .hidden { display:none !important; }
 .visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 
-#sidebar-resize { width:4px; cursor:col-resize; background:var(--border); flex:none; transition:background .12s var(--ease); position:relative; z-index:10; }
-#sidebar-resize:hover, #sidebar-resize.active { background:var(--accent); }
-
 #main.wide { padding:0; }
 .tab-content { display:none; min-height:0; }
-#tab-browse.active { display:block; flex:1; overflow-y:auto; }
+#tab-browse.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
 #tab-graph.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
 .fade-in { animation:fadeIn .18s var(--ease); }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
 
-#tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:var(--sp-5); }
-.tab { padding:10px 20px; cursor:pointer; font-size:13px; font-weight:500; color:var(--text-2); border-bottom:2px solid transparent; transition:all .15s var(--ease); background:none; border-top:none; border-left:none; border-right:none; font-family:var(--font); }
-.tab:hover { color:var(--accent-strong); background:var(--accent-soft); border-radius:var(--r-sm) var(--r-sm) 0 0; }
-.tab.active { color:var(--accent-strong); border-bottom-color:var(--accent); background:var(--accent-soft); }
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
@@ -394,31 +390,35 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
   </div>
 </div>
 <div id="layout">
-  <div id="sidebar">
-    <div class="field-wrap">
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <label for="search" class="visually-hidden">Search concepts</label>
-        <input id="search" type="text" placeholder="Search concepts..." aria-label="Search concepts">
-      </div>
-      <div class="filter-row">
-        <select id="bundle-select" aria-label="Filter by bundle"><option value="">All Bundles</option></select>
-        <select id="type-filter" aria-label="Filter by type"><option value="">All types</option></select>
-        <select id="lang-filter" aria-label="Filter by language"><option value="">All langs</option></select>
-      </div>
-    </div>
-    <div id="tree"></div>
-  </div>
-  <div id="sidebar-resize"></div>
   <div id="main">
     <div id="tab-browse" class="tab-content active">
-      <div id="breadcrumb"><span class="crumb current" onclick="showLanding()">Home</span></div>
-      <div id="landing"></div>
-      <div id="detail" class="hidden">
-        <div id="detail-header"></div>
-        <div id="detail-grid">
-          <div id="detail-left"></div>
-          <div id="detail-right"></div>
+      <div id="browse-layout">
+        <div id="sidebar">
+          <div class="field-wrap">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <label for="search" class="visually-hidden">Search concepts</label>
+              <input id="search" type="text" placeholder="Search concepts..." aria-label="Search concepts">
+            </div>
+            <div class="filter-row">
+              <select id="bundle-select" aria-label="Filter by bundle"><option value="">All Bundles</option></select>
+              <select id="type-filter" aria-label="Filter by type"><option value="">All types</option></select>
+              <select id="lang-filter" aria-label="Filter by language"><option value="">All langs</option></select>
+            </div>
+          </div>
+          <div id="tree"></div>
+        </div>
+        <div id="sidebar-resize"></div>
+        <div id="browse-content">
+          <div id="breadcrumb"><span class="crumb current" onclick="showLanding()">Home</span></div>
+          <div id="landing"></div>
+          <div id="detail" class="hidden">
+            <div id="detail-header"></div>
+            <div id="detail-grid">
+              <div id="detail-left"></div>
+              <div id="detail-right"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1321,16 +1321,12 @@ function switchTab(name, btn) {
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
   qs('tab-' + name).classList.add('active');
-  var sidebar = qs('sidebar');
-  var main = qs('main');
   if (name === 'graph') {
-    sidebar.classList.add('hidden');
-    main.classList.add('wide');
+    qs('main').classList.add('wide');
     loadGlobalGraph();
     if (globalGraphInstance) setTimeout(function() { globalGraphInstance.fit(); }, 300);
   } else {
-    sidebar.classList.remove('hidden');
-    main.classList.remove('wide');
+    qs('main').classList.remove('wide');
   }
 }
 
