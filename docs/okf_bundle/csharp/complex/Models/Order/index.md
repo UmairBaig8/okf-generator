@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/complex/Models/Order
 resource: csharp/complex/Models/Order
-timestamp: '2026-07-10T19:00:15Z'
+timestamp: '2026-07-10T19:04:55Z'
 title: Order
 type: Index
 ---

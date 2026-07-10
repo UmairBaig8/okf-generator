@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:pip
-- manifest:requirements.txt
 - version:==5.0.1
-timestamp: '2026-07-10T18:59:38Z'
+- manifest:requirements.txt
+timestamp: '2026-07-10T19:04:24Z'
 title: redis
 type: Dependency
 ---

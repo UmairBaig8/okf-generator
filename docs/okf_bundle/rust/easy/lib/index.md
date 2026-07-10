@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust/easy/lib
 resource: rust/easy/lib
-timestamp: '2026-07-10T19:00:15Z'
+timestamp: '2026-07-10T19:04:55Z'
 title: lib
 type: Index
 ---

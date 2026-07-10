@@ -14,7 +14,7 @@ tags:
 - ecosystem:pip
 - manifest:requirements.txt
 - version:>=7.4.0
-timestamp: '2026-07-10T18:59:38Z'
+timestamp: '2026-07-10T19:04:24Z'
 title: pytest
 type: Dependency
 ---

@@ -14,7 +14,7 @@ tags:
 - ecosystem:pip
 - manifest:requirements.txt
 - version:==0.25.2
-timestamp: '2026-07-10T18:59:38Z'
+timestamp: '2026-07-10T19:04:24Z'
 title: httpx
 type: Dependency
 ---

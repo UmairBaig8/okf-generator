@@ -14,7 +14,7 @@ tags:
 - version:1.6
 - ecosystem:cargo
 - manifest:Cargo.toml
-timestamp: '2026-07-10T18:59:38Z'
+timestamp: '2026-07-10T19:04:24Z'
 title: uuid
 type: Dependency
 ---

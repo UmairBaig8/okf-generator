@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:^4.18.2
-- manifest:package.json
 - ecosystem:npm
-timestamp: '2026-07-10T18:59:38Z'
+- manifest:package.json
+timestamp: '2026-07-10T19:04:24Z'
 title: express
 type: Dependency
 ---
