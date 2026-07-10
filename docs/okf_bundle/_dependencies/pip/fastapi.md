@@ -14,7 +14,7 @@ tags:
 - ecosystem:pip
 - version:>=0.104.0
 - manifest:pyproject.toml
-timestamp: '2026-07-10T18:37:52Z'
+timestamp: '2026-07-10T18:42:48Z'
 title: fastapi
 type: Dependency
 ---

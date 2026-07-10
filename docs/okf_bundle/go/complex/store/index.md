@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for go/complex/store
 resource: go/complex/store
-timestamp: '2026-07-10T18:38:27Z'
+timestamp: '2026-07-10T18:43:18Z'
 title: store
 type: Index
 ---

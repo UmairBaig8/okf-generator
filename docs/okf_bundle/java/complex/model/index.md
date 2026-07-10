@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for java/complex/model
 resource: java/complex/model
-timestamp: '2026-07-10T18:38:27Z'
+timestamp: '2026-07-10T18:43:18Z'
 title: model
 type: Index
 ---
