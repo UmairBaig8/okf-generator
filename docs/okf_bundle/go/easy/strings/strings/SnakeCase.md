@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: SnakeCase
 type: Function
 ---
@@ -32,23 +32,6 @@ SnakeCase converts a CamelCase string to snake_case.
 
 ## Source
 Lines 10–23 in `go/easy/strings/strings.go`
-
-```go
-func SnakeCase(s string) string {
-	var result strings.Builder
-	for i, r := range s {
-		if unicode.IsUpper(r) {
-			if i > 0 {
-				result.WriteRune('_')
-			}
-			result.WriteRune(unicode.ToLower(r))
-		} else {
-			result.WriteRune(r)
-		}
-	}
-	return result.String()
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: test_insert_and_get_user
 type: Function
 ---
@@ -36,17 +36,6 @@ fn test_insert_and_get_user()
 
 ## Source
 Lines 75–82 in `rust/complex/services/db.rs`
-
-```rs
-    fn test_insert_and_get_user() {
-        let mut repo = UserRepository::new();
-        let user = User::new("alice@test.com", Some("Alice"));
-        let id = repo.insert(user);
-        let fetched = repo.get(&id);
-        assert!(fetched.is_some());
-        assert_eq!(fetched.unwrap().email, "alice@test.com");
-    }
-```
 
 ## Relationships
 

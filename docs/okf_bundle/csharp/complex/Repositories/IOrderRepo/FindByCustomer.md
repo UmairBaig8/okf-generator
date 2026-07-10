@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: FindByCustomer
 type: Function
 ---
@@ -29,15 +29,6 @@ FindByCustomer()
 
 ## Source
 Lines 52–57 in `csharp/complex/Repositories/IOrderRepo.cs`
-
-```cs
-    public IEnumerable<Order> FindByCustomer(string customerId)
-    {
-        return _store.Values
-            .Where(o => o.CustomerId == customerId)
-            .OrderBy(o => o.CreatedAt);
-    }
-```
 
 ## Relationships
 

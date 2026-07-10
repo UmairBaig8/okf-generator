@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:scala
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Calculator
 type: Class
 ---
@@ -37,19 +37,6 @@ A simple calculator.
 
 ## Source
 Lines 2–11 in `scala/easy/Calculator.scala`
-
-```scala
-class Calculator {
-  private var result: Int = 0
-
-  def add(value: Int): Int = {
-    result += value
-    result
-  }
-
-  def getResult: Int = result
-}
-```
 
 ## Relationships
 

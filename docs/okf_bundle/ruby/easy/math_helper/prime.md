@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: prime?
 type: Function
 ---
@@ -41,13 +41,6 @@ Check if a number is prime.
 
 ## Source
 Lines 14–17 in `ruby/easy/math_helper.rb`
-
-```rb
-  def self.prime?(n)
-    return false if n < 2
-    (2..Integer.sqrt(n)).none? { |i| n % i == 0 }
-  end
-```
 
 ## Relationships
 

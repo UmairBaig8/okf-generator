@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- manifest:Cargo.toml
 - ecosystem:cargo
 - version:1.0
-- manifest:Cargo.toml
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: serde_json
 type: Dependency
 ---

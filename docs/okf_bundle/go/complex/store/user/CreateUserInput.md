@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: CreateUserInput
 type: Class
 ---
@@ -37,13 +37,6 @@ CreateUserInput holds the fields required to create a new user.
 
 ## Source
 Lines 19–22 in `go/complex/store/user.go`
-
-```go
-type CreateUserInput struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: _registerRoutes
 type: Function
 ---
@@ -32,12 +32,6 @@ Register the default API routes.
 
 ## Source
 Lines 32–34 in `javascript/complex/server.js`
-
-```js
-  _registerRoutes() {
-    this.routes.set('GET /api/users', handleUsersRoute);
-  }
-```
 
 ## Relationships
 

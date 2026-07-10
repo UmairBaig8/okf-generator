@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: fibonacci_sequence
 type: Function
 ---
@@ -41,17 +41,6 @@ Generate a sequence of n Fibonacci numbers.
 
 ## Source
 Lines 22–29 in `ruby/easy/math_helper.rb`
-
-```rb
-  def self.fibonacci_sequence(count)
-    return [] if count <= 0
-    seq = [0, 1]
-    while seq.length < count
-      seq << seq[-1] + seq[-2]
-    end
-    seq.first(count)
-  end
-```
 
 ## Relationships
 

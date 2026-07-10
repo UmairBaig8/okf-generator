@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Listen
 type: Function
 ---
@@ -32,18 +32,6 @@ Listen starts the HTTP server on the given address.
 
 ## Source
 Lines 49–57 in `go/complex/server/server.go`
-
-```go
-func (s *Server) Listen(addr string) error {
-	s.httpServer = &http.Server{
-		Addr:         addr,
-		Handler:      s.mux,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-	return s.httpServer.ListenAndServe()
-}
-```
 
 ## Relationships
 

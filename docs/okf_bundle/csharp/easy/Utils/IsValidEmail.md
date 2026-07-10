@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: IsValidEmail
 type: Function
 ---
@@ -30,19 +30,6 @@ IsValidEmail()
 
 ## Source
 Lines 25–34 in `csharp/easy/Utils.cs`
-
-```cs
-    public static bool IsValidEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-            return false;
-        var atIndex = email.IndexOf('@');
-        if (atIndex <= 0 || atIndex == email.Length - 1)
-            return false;
-        var dotIndex = email.LastIndexOf('.');
-        return dotIndex > atIndex + 1 && dotIndex < email.Length - 1;
-    }
-```
 
 ## Relationships
 

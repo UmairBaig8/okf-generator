@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Sum
 type: Function
 ---
@@ -32,16 +32,6 @@ Sum returns the sum of a slice of integers.
 
 ## Source
 Lines 49–55 in `go/easy/math/math.go`
-
-```go
-func Sum(nums []int) int {
-	total := 0
-	for _, n := range nums {
-		total += n
-	}
-	return total
-}
-```
 
 ## Relationships
 

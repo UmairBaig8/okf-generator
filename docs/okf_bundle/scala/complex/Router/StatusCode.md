@@ -9,9 +9,9 @@ tags:
 - type:Enum
 - module:scala
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: StatusCode
 type: Enum
 ---
@@ -32,12 +32,6 @@ Response status codes.
 
 ## Source
 Lines 22–24 in `scala/complex/Router.scala`
-
-```scala
-enum StatusCode {
-  case Ok, NotFound, InternalServerError
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:dart
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: LoggerMixin
 type: Class
 ---
@@ -25,12 +25,6 @@ mixin LoggerMixin
 
 ## Source
 Lines 34–36 in `dart/complex/router.dart`
-
-```dart
-mixin LoggerMixin {
-  void log(String message) => print('[LOG] $message');
-}
-```
 
 ## Relationships
 

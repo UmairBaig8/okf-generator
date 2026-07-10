@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: addUser
 type: Function
 ---
@@ -52,20 +52,6 @@ Add a new user to the in-memory store.
 
 ## Source
 Lines 49–59 in `javascript/complex/routes/users.js`
-
-```js
-function addUser(userData) {
-  const { name, email, role = 'user' } = userData;
-  const newUser = {
-    id: users.length + 1,
-    name,
-    email,
-    role,
-  };
-  users.push(newUser);
-  return newUser;
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Constant
 - module:julia
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: TAU
 type: Constant
 ---
@@ -25,10 +25,6 @@ const TAU = 6.28318
 
 ## Source
 Lines 35–35 in `julia/complex/geometry.jl`
-
-```jl
-const TAU = 6.28318
-```
 
 ## Relationships
 

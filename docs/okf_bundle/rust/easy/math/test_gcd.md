@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: test_gcd
 type: Function
 ---
@@ -36,13 +36,6 @@ fn test_gcd()
 
 ## Source
 Lines 55–58 in `rust/easy/math.rs`
-
-```rs
-    fn test_gcd() {
-        assert_eq!(gcd(12, 8), 4);
-        assert_eq!(gcd(17, 5), 1);
-    }
-```
 
 ## Relationships
 

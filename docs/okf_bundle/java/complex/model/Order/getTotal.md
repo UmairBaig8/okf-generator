@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: getTotal
 type: Function
 ---
@@ -40,14 +40,6 @@ Calculates the total value of all items in this order.
 
 ## Source
 Lines 56–60 in `java/complex/model/Order.java`
-
-```java
-    public BigDecimal getTotal() {
-        return items.stream()
-                .map(OrderItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-```
 
 ## Relationships
 

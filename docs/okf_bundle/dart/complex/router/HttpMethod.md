@@ -8,9 +8,9 @@ tags:
 - type:Enum
 - module:dart
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: HttpMethod
 type: Enum
 ---
@@ -38,10 +38,6 @@ enum HttpMethod
 
 ## Source
 Lines 38–38 in `dart/complex/router.dart`
-
-```dart
-enum HttpMethod { get, post, put, delete, patch }
-```
 
 ## Relationships
 

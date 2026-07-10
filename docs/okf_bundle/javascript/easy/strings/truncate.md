@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: truncate
 type: Function
 ---
@@ -49,13 +49,6 @@ Truncate a string to a maximum length, appending an ellipsis if truncated.
 
 ## Source
 Lines 25–28 in `javascript/easy/strings.js`
-
-```js
-function truncate(str, maxLength = 80, ellipsis = '...') {
-  if (!str || str.length <= maxLength) return str || '';
-  return str.slice(0, maxLength - ellipsis.length) + ellipsis;
-}
-```
 
 ## Relationships
 

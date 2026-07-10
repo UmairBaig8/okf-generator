@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Min
 type: Function
 ---
@@ -32,15 +32,6 @@ Min returns the smaller of two integers.
 
 ## Source
 Lines 14–19 in `go/easy/math/math.go`
-
-```go
-func Min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-```
 
 ## Relationships
 

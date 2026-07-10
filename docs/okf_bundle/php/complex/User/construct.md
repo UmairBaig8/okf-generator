@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: __construct
 type: Function
 ---
@@ -29,13 +29,6 @@ function __construct(int $id, string $username)
 
 ## Source
 Lines 12–15 in `php/complex/User.php`
-
-```php
-    public function __construct(int $id, string $username) {
-        $this->id = $id;
-        $this->username = $username;
-    }
-```
 
 ## Relationships
 

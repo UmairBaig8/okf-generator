@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: VerifyPassword
 type: Function
 ---
@@ -30,13 +30,6 @@ VerifyPassword()
 
 ## Source
 Lines 61–64 in `csharp/complex/Services/UserService.cs`
-
-```cs
-    private static bool VerifyPassword(string password, string hash)
-    {
-        return HashPassword(password) == hash;
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: approxEqual
 type: Function
 ---
@@ -49,12 +49,6 @@ Check if a number is approximately equal to another within a tolerance.
 
 ## Source
 Lines 70–72 in `javascript/easy/math.js`
-
-```js
-function approxEqual(a, b, epsilon = 1e-10) {
-  return Math.abs(a - b) < epsilon;
-}
-```
 
 ## Relationships
 

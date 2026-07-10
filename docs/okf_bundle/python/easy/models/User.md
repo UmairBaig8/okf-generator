@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -51,25 +51,6 @@ Attributes:
 
 ## Source
 Lines 27–42 in `python/easy/models.py`
-
-```py
-class User(TimestampMixin):
-    """Represents a user in the system.
-
-    Attributes:
-        user_id: Unique identifier for the user.
-        email: User's email address.
-        display_name: Optional human-readable name.
-        is_active: Whether the user account is active.
-        priority: User's notification priority level.
-    """
-
-    user_id: str
-    email: str
-    display_name: str | None = None
-    is_active: bool = True
-    priority: Priority = Priority.MEDIUM
-```
 
 ## Relationships
 

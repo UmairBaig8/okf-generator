@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: List
 type: Function
 ---
@@ -32,18 +32,6 @@ List returns all users in the store.
 
 ## Source
 Lines 40–48 in `go/complex/store/user.go`
-
-```go
-func (s *UserStore) List() ([]User, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	result := make([]User, 0, len(s.users))
-	for _, u := range s.users {
-		result = append(result, u)
-	}
-	return result, nil
-}
-```
 
 ## Relationships
 

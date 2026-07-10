@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:julia
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Point
 type: Class
 ---
@@ -25,13 +25,6 @@ struct Point
 
 ## Source
 Lines 20–23 in `julia/easy/math.jl`
-
-```jl
-struct Point
-    x::Float64
-    y::Float64
-end
-```
 
 ## Relationships
 

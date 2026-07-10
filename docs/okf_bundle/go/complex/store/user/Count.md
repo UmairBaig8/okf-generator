@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Count
 type: Function
 ---
@@ -37,12 +37,6 @@ Count is a generic helper that returns the number of items in a map.
 
 ## Source
 Lines 78–80 in `go/complex/store/user.go`
-
-```go
-func Count[K comparable, V any](m map[K]V) int {
-	return len(m)
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Server
 type: Class
 ---
@@ -38,14 +38,6 @@ Server wraps an http.Server with route handlers and middleware.
 
 ## Source
 Lines 15–19 in `go/complex/server/server.go`
-
-```go
-type Server struct {
-	httpServer *http.Server
-	userStore  *store.UserStore
-	mux        *http.ServeMux
-}
-```
 
 ## Relationships
 

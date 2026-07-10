@@ -9,9 +9,9 @@ tags:
 - type:View
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: available_inventory
 type: View
 ---
@@ -36,14 +36,6 @@ Products available in stock with pricing info.
 
 ## Source
 Lines 40–44 in `sql/easy/schema.sql`
-
-```sql
-CREATE VIEW available_inventory AS
-SELECT p.id, p.sku, p.name, p.price, p.stock, c.name AS category
-FROM products p
-JOIN categories c ON c.id = p.category_id
-WHERE p.active = 1 AND p.stock > 0;
-```
 
 ## Relationships
 

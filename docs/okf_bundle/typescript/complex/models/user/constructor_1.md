@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: constructor
 type: Function
 ---
@@ -30,18 +30,6 @@ constructor(
 
 ## Source
 Lines 78–86 in `typescript/complex/models/user.ts`
-
-```ts
-  constructor(
-    id: string,
-    email: Email,
-    name: string,
-    permissions: string[] = ['read', 'write', 'delete', 'manage'],
-  ) {
-    super(id, email, name, UserRole.ADMIN);
-    this.permissions = permissions;
-  }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: stop
 type: Function
 ---
@@ -36,22 +36,6 @@ Gracefully stop the server.
 
 ## Source
 Lines 101–113 in `javascript/complex/server.js`
-
-```js
-  async stop() {
-    return new Promise((resolve, reject) => {
-      if (!this.server) {
-        resolve();
-        return;
-      }
-      this.server.close((err) => {
-        if (err) return reject(err);
-        this.server = null;
-        resolve();
-      });
-    });
-  }
-```
 
 ## Relationships
 

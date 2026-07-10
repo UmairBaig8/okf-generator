@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: truncate
 type: Function
 ---
@@ -51,15 +51,6 @@ Truncates a string to the specified maximum length.
 
 ## Source
 Lines 36–41 in `java/easy/util/StringUtils.java`
-
-```java
-    public static String truncate(String text, int maxLen) {
-        if (text == null || text.length() <= maxLen) {
-            return text;
-        }
-        return text.substring(0, Math.max(0, maxLen - 3)) + "...";
-    }
-```
 
 ## Relationships
 

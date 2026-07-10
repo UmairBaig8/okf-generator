@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: ListUsers
 type: Function
 ---
@@ -32,20 +32,6 @@ ListUsers returns an HTTP handler that lists all users from the store.
 
 ## Source
 Lines 12–22 in `go/complex/handlers/user.go`
-
-```go
-func ListUsers(s *store.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		users, err := s.List()
-		if err != nil {
-			http.Error(w, `{"error":"failed to list users"}`, http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{"users": users, "count": len(users)})
-	}
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: truncate
 type: Function
 ---
@@ -42,14 +42,6 @@ Truncate text to a maximum length, appending an ellipsis.
 
 ## Source
 Lines 23–27 in `ruby/easy/formatter.rb`
-
-```rb
-  def self.truncate(text, max_len = 60)
-    return "" if text.nil?
-    return text if text.length <= max_len
-    text[0..max_len - 4] + "..."
-  end
-```
 
 ## Relationships
 

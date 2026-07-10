@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Order
 type: Function
 ---
@@ -46,17 +46,6 @@ Constructs a new Order.
 
 ## Source
 Lines 32–39 in `java/complex/model/Order.java`
-
-```java
-    public Order(String id, String customerId) {
-        this.id = id;
-        this.customerId = customerId;
-        this.items = new ArrayList<>();
-        this.status = Status.PENDING;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = this.createdAt;
-    }
-```
 
 ## Relationships
 

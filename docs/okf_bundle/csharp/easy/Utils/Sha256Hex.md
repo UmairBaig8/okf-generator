@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Sha256Hex
 type: Function
 ---
@@ -30,15 +30,6 @@ Sha256Hex()
 
 ## Source
 Lines 13–18 in `csharp/easy/Utils.cs`
-
-```cs
-    public static string Sha256Hex(string input)
-    {
-        var bytes = System.Security.Cryptography.SHA256.HashData(
-            System.Text.Encoding.UTF8.GetBytes(input));
-        return Convert.ToHexStringLower(bytes);
-    }
-```
 
 ## Relationships
 

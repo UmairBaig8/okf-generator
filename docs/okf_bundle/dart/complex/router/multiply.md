@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:dart
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: multiply
 type: Function
 ---
@@ -25,10 +25,6 @@ intmultiply(int a, int b)
 
 ## Source
 Lines 40–40 in `dart/complex/router.dart`
-
-```dart
-int multiply(int a, int b) => a * b;
-```
 
 ## Relationships
 

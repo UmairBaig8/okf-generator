@@ -9,9 +9,9 @@ tags:
 - type:Constant
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: E
 type: Constant
 ---
@@ -32,10 +32,6 @@ E is the base of natural logarithms.
 
 ## Source
 Lines 8–8 in `go/easy/math/math.go`
-
-```go
-const E float64 = 2.71828
-```
 
 ## Relationships
 

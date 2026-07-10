@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: TimestampMixin
 type: Class
 ---
@@ -37,14 +37,6 @@ Mixin dataclass providing created and updated timestamps.
 
 ## Source
 Lines 19–23 in `python/easy/models.py`
-
-```py
-class TimestampMixin:
-    """Mixin dataclass providing created and updated timestamps."""
-
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime | None = None
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: from_settings
 type: Function
 ---
@@ -47,12 +47,6 @@ Factory: create a service instance pre-configured from settings.
 
 ## Source
 Lines 134–136 in `python/complex/services/payment.py`
-
-```py
-    def from_settings(cls, api_key: str) -> "PaymentService":
-        """Factory: create a service instance pre-configured from settings."""
-        return cls(api_key=api_key)
-```
 
 ## Relationships
 

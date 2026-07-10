@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: node_create(int value)
 type: Function
 ---
@@ -25,16 +25,6 @@ Node node_create(int value)()
 
 ## Source
 Lines 12–18 in `c/complex/linked_list.c`
-
-```c
-static Node* node_create(int value) {
-    Node* node = (Node*)malloc(sizeof(Node));
-    if (!node) return NULL;
-    node->data = value;
-    node->next = NULL;
-    return node;
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: clamp
 type: Function
 ---
@@ -32,14 +32,6 @@ Clamps a value between a minimum and maximum.
 
 ## Source
 Lines 14–18 in `swift/easy/Sources/Utils/MathUtils.swift`
-
-```swift
-public func clamp<T: Comparable>(_ value: T, low: T, high: T) -> T {
-    if value < low { return low }
-    if value > high { return high }
-    return value
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: AccountStatus
 type: Class
 ---
@@ -37,14 +37,6 @@ Possible states of a user account lifecycle.
 
 ## Source
 Lines 14–18 in `swift/complex/Sources/Service/Repositories/UserRepository.swift`
-
-```swift
-public enum AccountStatus: String, Codable {
-    case active
-    case suspended
-    case archived
-}
-```
 
 ## Relationships
 

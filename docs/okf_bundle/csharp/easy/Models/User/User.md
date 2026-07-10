@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:csharp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -44,36 +44,6 @@ class User
 
 ## Source
 Lines 6–32 in `csharp/easy/Models/User.cs`
-
-```cs
-public class User
-{
-    /// <summary>Unique identifier.</summary>
-    public string Id { get; init; }
-
-    /// <summary>Email address.</summary>
-    public string Email { get; set; }
-
-    /// <summary>Display name.</summary>
-    public string? DisplayName { get; set; }
-
-    /// <summary>Whether the account is active.</summary>
-    public bool IsActive { get; set; } = true;
-
-    /// <summary>Timestamp of account creation.</summary>
-    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-
-    /// <summary>
-    /// Returns a display-friendly representation of the user.
-    /// </summary>
-    public string GetDisplayText() => DisplayName ?? Email;
-
-    /// <summary>
-    /// Deactivates the user account.
-    /// </summary>
-    public void Deactivate() => IsActive = false;
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Constant
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Pi
 type: Constant
 ---
@@ -32,10 +32,6 @@ Pi is an approximation of pi.
 
 ## Source
 Lines 5–5 in `go/easy/math/math.go`
-
-```go
-const Pi = 3.14159
-```
 
 ## Relationships
 

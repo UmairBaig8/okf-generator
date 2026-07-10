@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: OrderItem
 type: Class
 ---
@@ -53,28 +53,6 @@ Immutable value object representing a single line item.
 
 ## Source
 Lines 110–128 in `java/complex/model/Order.java`
-
-```java
-    public static class OrderItem {
-        private final String productId;
-        private final int quantity;
-        private final BigDecimal unitPrice;
-
-        public OrderItem(String productId, int quantity, BigDecimal unitPrice) {
-            this.productId = productId;
-            this.quantity = quantity;
-            this.unitPrice = unitPrice;
-        }
-
-        public BigDecimal getSubtotal() {
-            return unitPrice.multiply(BigDecimal.valueOf(quantity));
-        }
-
-        public String getProductId() { return productId; }
-        public int getQuantity() { return quantity; }
-        public BigDecimal getUnitPrice() { return unitPrice; }
-    }
-```
 
 ## Relationships
 

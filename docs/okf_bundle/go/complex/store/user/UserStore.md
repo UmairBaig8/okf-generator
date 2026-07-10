@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: UserStore
 type: Class
 ---
@@ -38,14 +38,6 @@ UserStore provides thread-safe CRUD operations for User entities.
 
 ## Source
 Lines 25–29 in `go/complex/store/user.go`
-
-```go
-type UserStore struct {
-	mu    sync.RWMutex
-	users map[string]User
-	next  int
-}
-```
 
 ## Relationships
 

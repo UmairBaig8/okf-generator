@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Calculator::value
 type: Function
 ---
@@ -25,12 +25,6 @@ double Calculator::value()
 
 ## Source
 Lines 32–34 in `cpp/easy/calc.cpp`
-
-```cpp
-double Calculator::value() const {
-    return accumulator_;
-}
-```
 
 ## Relationships
 

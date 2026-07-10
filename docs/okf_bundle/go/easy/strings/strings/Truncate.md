@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Truncate
 type: Function
 ---
@@ -32,15 +32,6 @@ Truncate shortens a string to maxLen characters, appending "..." if truncated.
 
 ## Source
 Lines 26–31 in `go/easy/strings/strings.go`
-
-```go
-func Truncate(s string, maxLen int) string {
-	if len(s) <= maxLen {
-		return s
-	}
-	return s[:maxLen] + "..."
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: PaymentError
 type: Class
 ---
@@ -34,15 +34,6 @@ Raised when a payment operation fails at the gateway level.
 
 ## Source
 Lines 21–26 in `python/complex/services/payment.py`
-
-```py
-class PaymentError(Exception):
-    """Raised when a payment operation fails at the gateway level."""
-
-    def __init__(self, message: str, code: str = "payment_error") -> None:
-        self.code = code
-        super().__init__(message)
-```
 
 ## Relationships
 

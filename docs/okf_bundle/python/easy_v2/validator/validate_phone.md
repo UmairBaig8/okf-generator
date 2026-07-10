@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy_v2
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: validate_phone
 type: Function
 ---
@@ -47,20 +47,6 @@ Returns:
 
 ## Source
 Lines 19–29 in `python/easy_v2/validator.py`
-
-```py
-def validate_phone(phone: str) -> bool:
-    """Check if a string looks like a US phone number.
-
-    Args:
-        phone: The phone string to validate.
-
-    Returns:
-        True if the phone matches a basic pattern, False otherwise.
-    """
-    cleaned = re.sub(r"[^\d]", "", phone)
-    return len(cleaned) == 10 or (len(cleaned) == 11 and cleaned.startswith("1"))
-```
 
 ## Relationships
 

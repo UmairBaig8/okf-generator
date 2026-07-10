@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: clamp
 type: Function
 ---
@@ -49,14 +49,6 @@ Clamp a number between a minimum and maximum value.
 
 ## Source
 Lines 13–17 in `javascript/easy/math.js`
-
-```js
-function clamp(value, min, max) {
-  if (value < min) return min;
-  if (value > max) return max;
-  return value;
-}
-```
 
 ## Relationships
 

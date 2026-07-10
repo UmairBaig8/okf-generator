@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: ScheduledReport
 type: Class
 ---
@@ -42,34 +42,6 @@ A scheduled report that runs at a specific interval.
 
 ## Source
 Lines 41–65 in `ruby/complex/models/report.rb`
-
-```rb
-  class ScheduledReport < Report
-    include Exportable
-
-    attr_reader :schedule, :last_run
-
-    def initialize(id, title, schedule, data = {})
-      super(id, title, data)
-      @schedule = schedule
-      @last_run = nil
-    end
-
-    def mark_as_run!
-      @last_run = Time.now.utc
-    end
-
-    def due?
-      return true if @last_run.nil?
-      interval_seconds = case @schedule
-                         when "daily" then 86_400
-                         when "hourly" then 3_600
-                         else 0
-                         end
-      (Time.now.utc - @last_run) >= interval_seconds
-    end
-  end
-```
 
 ## Relationships
 

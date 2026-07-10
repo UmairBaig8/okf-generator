@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: int_abs
 type: Function
 ---
@@ -25,12 +25,6 @@ int int_abs(int n)
 
 ## Source
 Lines 14–16 in `c/easy/math.c`
-
-```c
-int int_abs(int n) {
-    return n < 0 ? -n : n;
-}
-```
 
 ## Relationships
 

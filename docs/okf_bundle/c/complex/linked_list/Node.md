@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Node
 type: Class
 ---
@@ -25,13 +25,6 @@ struct Node
 
 ## Source
 Lines 5–8 in `c/complex/linked_list.h`
-
-```h
-typedef struct Node {
-    int data;
-    struct Node* next;
-} Node;
-```
 
 ## Relationships
 

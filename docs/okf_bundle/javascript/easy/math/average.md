@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: average
 type: Function
 ---
@@ -43,13 +43,6 @@ Compute the arithmetic mean of an array of numbers.
 
 ## Source
 Lines 35–38 in `javascript/easy/math.js`
-
-```js
-function average(numbers) {
-  if (numbers.length === 0) return 0;
-  return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;
-}
-```
 
 ## Relationships
 

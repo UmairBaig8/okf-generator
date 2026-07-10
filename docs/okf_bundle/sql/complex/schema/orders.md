@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: orders
 type: Table
 ---
@@ -42,17 +42,6 @@ CREATE TABLE orders (
 
 ## Source
 Lines 27–34 in `sql/complex/schema.sql`
-
-```sql
-CREATE TABLE orders (
-    id          INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id     INTEGER     NOT NULL REFERENCES users(id),
-    status      order_status NOT NULL DEFAULT 'pending',
-    total       NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (total >= 0),
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
 
 ## Relationships
 

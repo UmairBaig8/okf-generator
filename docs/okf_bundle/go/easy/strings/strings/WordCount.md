@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: WordCount
 type: Function
 ---
@@ -32,19 +32,6 @@ WordCount returns a map of word frequencies in the input string.
 
 ## Source
 Lines 43–52 in `go/easy/strings/strings.go`
-
-```go
-func WordCount(s string) map[string]int {
-	counts := make(map[string]int)
-	for _, word := range strings.Fields(s) {
-		cleaned := strings.Trim(strings.ToLower(word), ".,!?;:\"'")
-		if cleaned != "" {
-			counts[cleaned]++
-		}
-	}
-	return counts
-}
-```
 
 ## Relationships
 

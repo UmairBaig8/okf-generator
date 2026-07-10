@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:scala
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Router
 type: Class
 ---
@@ -37,20 +37,6 @@ HTTP Router with middleware support.
 
 ## Source
 Lines 2–12 in `scala/complex/Router.scala`
-
-```scala
-class Router {
-  private var routes: List[Route] = List.empty
-
-  def add(method: String, path: String, handler: () => Any): Unit = {
-    routes = routes :+ Route(method, path, handler)
-  }
-
-  def dispatch(method: String, path: String): Option[Any] = {
-    routes.find(r => r.method == method && r.path == path).map(_.handler())
-  }
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_paginated
 type: Function
 ---
@@ -36,19 +36,6 @@ List all users with pagination.
 
 ## Source
 Lines 32–41 in `rust/complex/services/db.rs`
-
-```rs
-    pub fn list_paginated(&self, page: u64, page_size: u64) -> Paginated<&User>
-    where
-        User: Serialize,
-    {
-        let all: Vec<&User> = self.users.values().collect();
-        let total = all.len() as u64;
-        let start = ((page.saturating_sub(1)) * page_size) as usize;
-        let items: Vec<&User> = all.into_iter().skip(start).take(page_size as usize).collect();
-        Paginated::new(items, total, page, page_size)
-    }
-```
 
 ## Relationships
 

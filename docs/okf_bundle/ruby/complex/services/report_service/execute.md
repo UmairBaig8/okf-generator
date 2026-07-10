@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: execute
 type: Function
 ---
@@ -25,12 +25,6 @@ def execute()
 
 ## Source
 Lines 69–71 in `ruby/complex/services/report_service.rb`
-
-```rb
-    def execute
-      @report.data = { generated: Time.now.utc.iso8601, status: "completed" }
-    end
-```
 
 ## Relationships
 

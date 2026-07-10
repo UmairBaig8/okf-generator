@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_destroy
 type: Function
 ---
@@ -25,18 +25,6 @@ void list_destroy(LinkedList* list)
 
 ## Source
 Lines 81–89 in `c/complex/linked_list.c`
-
-```c
-void list_destroy(LinkedList* list) {
-    Node* cur = list->head;
-    while (cur) {
-        Node* next = cur->next;
-        free(cur);
-        cur = next;
-    }
-    free(list);
-}
-```
 
 ## Relationships
 

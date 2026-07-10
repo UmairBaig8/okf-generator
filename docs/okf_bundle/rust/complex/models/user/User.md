@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -48,15 +48,6 @@ Represents a user in the system.
 
 ## Source
 Lines 6–11 in `rust/complex/models/user.rs`
-
-```rs
-pub struct User {
-    pub id: String,
-    pub email: String,
-    pub display_name: Option<String>,
-    pub active: bool,
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:dart
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Router
 type: Class
 ---
@@ -39,32 +39,6 @@ HTTP Router with middleware support.
 
 ## Source
 Lines 2–24 in `dart/complex/router.dart`
-
-```dart
-class Router {
-  final List<Route> _routes = [];
-  final List<Middleware> _middleware = [];
-
-  void get(String path, Function handler) {
-    _routes.add(Route('GET', path, handler));
-  }
-
-  void post(String path, Function handler) {
-    _routes.add(Route('POST', path, handler));
-  }
-
-  dynamic dispatch(String method, String path) {
-    for (final route in _routes) {
-      if (route.method == method && route.path == path) {
-        return route.handler();
-      }
-    }
-    throw Exception('404');
-  }
-
-  void use(Middleware mw) => _middleware.add(mw);
-}
-```
 
 ## Relationships
 

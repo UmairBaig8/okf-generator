@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:julia
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: perimeter
 type: Function
 ---
@@ -25,12 +25,6 @@ perimeter(width::Float64, height::Float64)::Float64
 
 ## Source
 Lines 15–17 in `julia/complex/geometry.jl`
-
-```jl
-function perimeter(width::Float64, height::Float64)::Float64
-    return 2 * (width + height)
-end
-```
 
 ## Relationships
 

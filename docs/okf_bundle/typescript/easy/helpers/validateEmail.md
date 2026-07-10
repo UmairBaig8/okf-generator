@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: validateEmail
 type: Function
 ---
@@ -25,14 +25,6 @@ function validateEmail(value: string): Email | null
 
 ## Source
 Lines 33–37 in `typescript/easy/helpers.ts`
-
-```ts
-export function validateEmail(value: string): Email | null {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!re.test(value)) return null;
-  return value as Email;
-}
-```
 
 ## Relationships
 

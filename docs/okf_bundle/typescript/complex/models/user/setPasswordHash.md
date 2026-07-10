@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: setPasswordHash
 type: Function
 ---
@@ -43,13 +43,6 @@ Set the user's password by storing a bcrypt-style hash.
 
 ## Source
 Lines 42–45 in `typescript/complex/models/user.ts`
-
-```ts
-  public setPasswordHash(hash: string): void {
-    this._passwordHash = hash;
-    this.updatedAt = new Date();
-  }
-```
 
 ## Relationships
 

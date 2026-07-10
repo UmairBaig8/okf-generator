@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:julia
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: greet
 type: Function
 ---
@@ -25,12 +25,6 @@ greet(name::String)::String
 
 ## Source
 Lines 15–17 in `julia/easy/math.jl`
-
-```jl
-function greet(name::String)::String
-    return "Hello, $name"
-end
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: add
 type: Function
 ---
@@ -36,13 +36,6 @@ Add a number to the current result.
 
 ## Source
 Lines 18–21 in `php/easy/Calculator.php`
-
-```php
-    public function add(float $value): float {
-        $this->result += $value;
-        return $this->result;
-    }
-```
 
 ## Relationships
 

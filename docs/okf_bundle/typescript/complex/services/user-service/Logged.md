@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Logged
 type: Function
 ---
@@ -32,16 +32,6 @@ Decorator that logs method invocations to the console.
 
 ## Source
 Lines 14–20 in `typescript/complex/services/user-service.ts`
-
-```ts
-function Logged(target: unknown, propertyKey: string, descriptor: PropertyDescriptor): void {
-  const original = descriptor.value;
-  descriptor.value = function (...args: unknown[]) {
-    console.log(`[UserService] ${propertyKey} called with`, args);
-    return original.apply(this, args);
-  };
-}
-```
 
 ## Relationships
 

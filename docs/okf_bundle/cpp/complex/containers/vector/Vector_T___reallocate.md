@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Vector<T>::reallocate
 type: Function
 ---
@@ -29,18 +29,6 @@ template<<typename T>> void Vector<T>::reallocate(std::size_t new_cap)
 
 ## Source
 Lines 99–107 in `cpp/complex/containers/vector.cpp`
-
-```cpp
-void Vector<T>::reallocate(std::size_t new_cap) {
-    T* new_data = new T[new_cap];
-    for (std::size_t i = 0; i < size_; ++i) {
-        new_data[i] = data_[i];
-    }
-    delete[] data_;
-    data_ = new_data;
-    capacity_ = new_cap;
-}
-```
 
 ## Relationships
 

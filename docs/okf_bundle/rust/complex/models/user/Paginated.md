@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Paginated
 type: Class
 ---
@@ -52,15 +52,6 @@ Generic paginated wrapper for list responses.
 
 ## Source
 Lines 32–37 in `rust/complex/models/user.rs`
-
-```rs
-pub struct Paginated<T> {
-    pub items: Vec<T>,
-    pub total: u64,
-    pub page: u64,
-    pub page_size: u64,
-}
-```
 
 ## Relationships
 

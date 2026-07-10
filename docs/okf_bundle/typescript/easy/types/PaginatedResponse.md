@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: PaginatedResponse
 type: Interface
 ---
@@ -33,16 +33,6 @@ interface PaginatedResponse
 
 ## Source
 Lines 19–25 in `typescript/easy/types.ts`
-
-```ts
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  hasMore: boolean;
-}
-```
 
 ## Relationships
 

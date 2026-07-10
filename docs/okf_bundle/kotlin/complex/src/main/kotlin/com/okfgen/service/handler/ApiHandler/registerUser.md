@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: registerUser
 type: Function
 ---
@@ -33,18 +33,6 @@ Registers a new user.
 
 ## Source
 Lines 15–23 in `kotlin/complex/src/main/kotlin/com/okfgen/service/handler/ApiHandler.kt`
-
-```kt
-    fun registerUser(email: String, displayName: String?): User {
-        require(email.isNotBlank()) { "Email is required" }
-        val existing = repo.findAll().firstOrNull { it.email == email }
-        if (existing != null) {
-            throw IllegalArgumentException("Email already registered")
-        }
-        val user = User(email = email, displayName = displayName)
-        return repo.save(user)
-    }
-```
 
 ## Relationships
 

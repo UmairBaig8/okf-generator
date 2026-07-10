@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: compute_checksum
 type: Function
 ---
@@ -53,28 +53,6 @@ Raises:
 
 ## Source
 Lines 40–58 in `python/easy/utils.py`
-
-```py
-def compute_checksum(data: str, algorithm: str = "sha256") -> str:
-    """Compute hex digest of a string using the specified hash algorithm.
-
-    Args:
-        data: Input string to hash.
-        algorithm: Hash algorithm name (``sha256``, ``sha1``, ``md5``).
-
-    Returns:
-        Hex digest string.
-
-    Raises:
-        ValueError: If the algorithm is not supported by ``hashlib``.
-    """
-    try:
-        hasher = hashlib.new(algorithm)
-    except ValueError:
-        raise ValueError(f"Unsupported hash algorithm: {algorithm}")
-    hasher.update(data.encode("utf-8"))
-    return hasher.hexdigest()
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Enum
 - module:scala
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Status
 type: Enum
 ---
@@ -32,12 +32,6 @@ Application status.
 
 ## Source
 Lines 22–24 in `scala/easy/Calculator.scala`
-
-```scala
-enum Status {
-  case Active, Inactive, Banned
-}
-```
 
 ## Relationships
 

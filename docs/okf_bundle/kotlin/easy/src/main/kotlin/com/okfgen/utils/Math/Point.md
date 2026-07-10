@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Point
 type: Class
 ---
@@ -47,19 +47,6 @@ Represents a 2D coordinate.
 
 ## Source
 Lines 27–36 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.kt`
-
-```kt
-data class Point(val x: Double, val y: Double) {
-    /**
-     * Computes Euclidean distance to another point.
-     */
-    fun distanceTo(other: Point): Double {
-        val dx = x - other.x
-        val dy = y - other.y
-        return kotlin.math.sqrt(dx * dx + dy * dy)
-    }
-}
-```
 
 ## Relationships
 

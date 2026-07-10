@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: inventory
 type: Table
 ---
@@ -44,18 +44,6 @@ CREATE TABLE inventory (
 
 ## Source
 Lines 15–23 in `sql/complex/schema.sql`
-
-```sql
-CREATE TABLE inventory (
-    product_id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    sku         TEXT        NOT NULL UNIQUE,
-    name        TEXT        NOT NULL,
-    unit_price  NUMERIC(10,2) NOT NULL CHECK (unit_price > 0),
-    quantity    INTEGER     NOT NULL DEFAULT 0 CHECK (quantity >= 0),
-    reorder_at  INTEGER     NOT NULL DEFAULT 10,
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Index
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: idx_products_category
 type: Index
 ---
@@ -28,10 +28,6 @@ CREATE INDEX idx_products_category ON products(category_id)
 
 ## Source
 Lines 21–21 in `sql/easy/schema.sql`
-
-```sql
-CREATE INDEX idx_products_category ON products(category_id);
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: mockGatewayCall
 type: Function
 ---
@@ -36,12 +36,6 @@ Simulates a call to the external payment gateway.
 
 ## Source
 Lines 71–73 in `java/complex/service/PaymentService.java`
-
-```java
-    private boolean mockGatewayCall(BigDecimal amount, String customerId) {
-        return amount.compareTo(BigDecimal.valueOf(10000)) < 0;
-    }
-```
 
 ## Relationships
 

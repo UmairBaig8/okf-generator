@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -38,16 +38,6 @@ class User
 
 ## Source
 Lines 68–74 in `csharp/complex/Services/UserService.cs`
-
-```cs
-internal class User
-{
-    public string Id { get; init; }
-    public string Email { get; init; }
-    public string PasswordHash { get; set; }
-    public DateTime CreatedAt { get; init; }
-}
-```
 
 ## Relationships
 

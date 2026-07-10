@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: getUser
 type: Function
 ---
@@ -33,10 +33,6 @@ Retrieves a user by ID.
 
 ## Source
 Lines 29–29 in `kotlin/complex/src/main/kotlin/com/okfgen/service/handler/ApiHandler.kt`
-
-```kt
-    fun getUser(id: String): User? = repo.findById(id)
-```
 
 ## Relationships
 

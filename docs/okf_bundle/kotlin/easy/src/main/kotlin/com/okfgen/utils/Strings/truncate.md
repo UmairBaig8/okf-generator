@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: truncate
 type: Function
 ---
@@ -32,13 +32,6 @@ Truncates a string to the specified maximum length.
 
 ## Source
 Lines 14–17 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.kt`
-
-```kt
-fun truncate(text: String, maxLen: Int): String {
-    if (text.length <= maxLen) return text
-    return text.take(maxOf(0, maxLen - 3)) + "..."
-}
-```
 
 ## Relationships
 

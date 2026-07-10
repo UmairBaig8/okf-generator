@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:scala
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: User
 type: Class
 ---
@@ -32,10 +32,6 @@ User account model.
 
 ## Source
 Lines 14–14 in `scala/easy/Calculator.scala`
-
-```scala
-case class User(id: Int, name: String)
-```
 
 ## Relationships
 

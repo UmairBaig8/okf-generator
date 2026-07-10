@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Save
 type: Function
 ---
@@ -25,10 +25,6 @@ Save()
 
 ## Source
 Lines 11–11 in `csharp/complex/Repositories/IOrderRepo.cs`
-
-```cs
-    T Save(T entity);
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: process
 type: Function
 ---
@@ -36,10 +36,6 @@ Middleware interface for the HTTP pipeline.
 
 ## Source
 Lines 11–11 in `php/complex/MiddlewareInterface.php`
-
-```php
-    public function process(RequestInterface $request, callable $next): mixed;
-```
 
 ## Relationships
 

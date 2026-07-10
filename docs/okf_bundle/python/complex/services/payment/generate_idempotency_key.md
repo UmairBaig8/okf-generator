@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: _generate_idempotency_key
 type: Function
 ---
@@ -38,12 +38,6 @@ def _generate_idempotency_key(self, customer_id: str, amount_cents: int) -> str
 
 ## Source
 Lines 124–126 in `python/complex/services/payment.py`
-
-```py
-    def _generate_idempotency_key(self, customer_id: str, amount_cents: int) -> str:
-        raw = f"{customer_id}:{amount_cents}:{uuid.uuid4().hex}"
-        return hashlib.sha256(raw.encode()).hexdigest()
-```
 
 ## Relationships
 

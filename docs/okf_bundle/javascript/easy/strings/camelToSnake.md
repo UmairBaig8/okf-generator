@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: camelToSnake
 type: Function
 ---
@@ -43,12 +43,6 @@ Convert a camelCase string to snake_case.
 
 ## Source
 Lines 35–37 in `javascript/easy/strings.js`
-
-```js
-function camelToSnake(str) {
-  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-}
-```
 
 ## Relationships
 

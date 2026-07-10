@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: ApiResponse
 type: Interface
 ---
@@ -32,15 +32,6 @@ interface ApiResponse
 
 ## Source
 Lines 34–39 in `typescript/easy/types.ts`
-
-```ts
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T | null;
-  error: string | null;
-  timestamp: ISODateString;
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: lerp
 type: Function
 ---
@@ -49,12 +49,6 @@ Linear interpolation between two values.
 
 ## Source
 Lines 59–61 in `javascript/easy/math.js`
-
-```js
-function lerp(a, b, t) {
-  return a + (b - a) * clamp(t, 0, 1);
-}
-```
 
 ## Relationships
 

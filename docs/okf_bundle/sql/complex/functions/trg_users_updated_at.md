@@ -9,9 +9,9 @@ tags:
 - type:Trigger
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: trg_users_updated_at
 type: Trigger
 ---
@@ -30,12 +30,6 @@ CREATE TRIGGER trg_users_updated_at
 
 ## Source
 Lines 62–64 in `sql/complex/functions.sql`
-
-```sql
-CREATE TRIGGER trg_users_updated_at
-    BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-```
 
 ## Relationships
 

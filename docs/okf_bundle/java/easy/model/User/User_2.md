@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Function
 ---
@@ -46,12 +46,6 @@ Constructs a minimal User with just an ID and email.
 
 ## Source
 Lines 38–40 in `java/easy/model/User.java`
-
-```java
-    public User(String id, String email) {
-        this(id, email, null);
-    }
-```
 
 ## Relationships
 

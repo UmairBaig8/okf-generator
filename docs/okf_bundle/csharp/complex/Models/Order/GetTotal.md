@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: GetTotal
 type: Function
 ---
@@ -29,10 +29,6 @@ GetTotal()
 
 ## Source
 Lines 36–36 in `csharp/complex/Models/Order.cs`
-
-```cs
-    public decimal GetTotal() => Items.Sum(i => i.UnitPrice * i.Quantity);
-```
 
 ## Relationships
 

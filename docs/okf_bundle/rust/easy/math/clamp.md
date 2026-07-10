@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: clamp
 type: Function
 ---
@@ -40,18 +40,6 @@ Clamp a value between a minimum and maximum.
 
 ## Source
 Lines 40–48 in `rust/easy/math.rs`
-
-```rs
-pub fn clamp<T: PartialOrd>(value: T, min: T, max: T) -> T {
-    if value < min {
-        min
-    } else if value > max {
-        max
-    } else {
-        value
-    }
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: addRole
 type: Function
 ---
@@ -29,14 +29,6 @@ function addRole(string $role): void
 
 ## Source
 Lines 19–23 in `php/complex/User.php`
-
-```php
-    public function addRole(string $role): void {
-        if (!in_array($role, $this->roles)) {
-            $this->roles[] = $role;
-        }
-    }
-```
 
 ## Relationships
 

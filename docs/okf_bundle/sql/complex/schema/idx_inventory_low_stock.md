@@ -9,9 +9,9 @@ tags:
 - type:Index
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: idx_inventory_low_stock
 type: Index
 ---
@@ -28,10 +28,6 @@ CREATE INDEX idx_inventory_low_stock ON inventory(quantity) WHERE quantity <= re
 
 ## Source
 Lines 25–25 in `sql/complex/schema.sql`
-
-```sql
-CREATE INDEX idx_inventory_low_stock ON inventory(quantity) WHERE quantity <= reorder_at;
-```
 
 ## Relationships
 

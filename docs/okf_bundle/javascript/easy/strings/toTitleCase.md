@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: toTitleCase
 type: Function
 ---
@@ -43,15 +43,6 @@ Capitalize the first letter of each word in a string.
 
 ## Source
 Lines 11–16 in `javascript/easy/strings.js`
-
-```js
-function toTitleCase(str) {
-  if (!str) return '';
-  return str.replace(/\w\S*/g, (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
-}
-```
 
 ## Relationships
 

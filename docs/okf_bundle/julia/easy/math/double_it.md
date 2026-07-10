@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:julia
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: double_it
 type: Function
 ---
@@ -25,12 +25,6 @@ double_it(x::Int)::Int
 
 ## Source
 Lines 6–8 in `julia/easy/math.jl`
-
-```jl
-function double_it(x::Int)::Int
-    return x * 2
-end
-```
 
 ## Relationships
 

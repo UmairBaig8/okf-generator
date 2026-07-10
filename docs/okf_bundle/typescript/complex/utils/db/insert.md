@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: insert
 type: Function
 ---
@@ -25,13 +25,6 @@ insert(entity: T): T
 
 ## Source
 Lines 33–36 in `typescript/complex/utils/db.ts`
-
-```ts
-  insert(entity: T): T {
-    this.items.set(entity.id, entity);
-    return entity;
-  }
-```
 
 ## Relationships
 

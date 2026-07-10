@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: find
 type: Function
 ---
@@ -37,12 +37,6 @@ Find a report by its ID.
 
 ## Source
 Lines 34–36 in `ruby/complex/services/report_service.rb`
-
-```rb
-    def find(id)
-      @reports.find { |r| r.id == id }
-    end
-```
 
 ## Relationships
 

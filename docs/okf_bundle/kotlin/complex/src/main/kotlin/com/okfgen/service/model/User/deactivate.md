@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: deactivate
 type: Function
 ---
@@ -32,10 +32,6 @@ Deactivates the user account.
 
 ## Source
 Lines 19–19 in `kotlin/complex/src/main/kotlin/com/okfgen/service/model/User.kt`
-
-```kt
-    fun deactivate(): User = copy(isActive = false)
-```
 
 ## Relationships
 

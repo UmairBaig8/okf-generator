@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: findBy
 type: Function
 ---
@@ -32,11 +32,6 @@ Finds users by a predicate.
 
 ## Source
 Lines 50–51 in `kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository.kt`
-
-```kt
-    inline fun findBy(predicate: (User) -> Boolean): List<User> =
-        store.values.filter(predicate)
-```
 
 ## Relationships
 

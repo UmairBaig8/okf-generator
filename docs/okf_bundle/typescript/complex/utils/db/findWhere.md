@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: findWhere
 type: Function
 ---
@@ -40,12 +40,6 @@ Find entities matching a predicate.
 
 ## Source
 Lines 63–65 in `typescript/complex/utils/db.ts`
-
-```ts
-  findWhere(predicate: (item: T) => boolean): T[] {
-    return Array.from(this.items.values()).filter(predicate);
-  }
-```
 
 ## Relationships
 

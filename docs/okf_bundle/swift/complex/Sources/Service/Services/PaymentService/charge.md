@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: charge
 type: Function
 ---
@@ -35,19 +35,6 @@ Processes a payment for the given amount.
 
 ## Source
 Lines 22–31 in `swift/complex/Sources/Service/Services/PaymentService.swift`
-
-```swift
-    public func charge(amount: Decimal) throws -> String {
-        guard amount > 0 else {
-            throw PaymentError.invalidAmount
-        }
-        let transactionId = "txn_\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
-        if !mockGatewayCall(amount: amount) {
-            throw PaymentError.declined(reason: "Gateway rejected the transaction")
-        }
-        return transactionId
-    }
-```
 
 ## Relationships
 

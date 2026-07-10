@@ -9,9 +9,9 @@ tags:
 - type:Enum
 - module:dart
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Status
 type: Enum
 ---
@@ -41,10 +41,6 @@ Application status.
 
 ## Source
 Lines 26–26 in `dart/easy/calculator.dart`
-
-```dart
-enum Status { active, inactive, banned }
-```
 
 ## Relationships
 

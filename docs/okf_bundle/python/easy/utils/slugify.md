@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: slugify
 type: Function
 ---
@@ -50,23 +50,6 @@ Returns:
 
 ## Source
 Lines 11–24 in `python/easy/utils.py`
-
-```py
-def slugify(text: str, max_length: int = 80) -> str:
-    """Convert arbitrary text into a URL-safe slug.
-
-    Args:
-        text: Input string to slugify.
-        max_length: Maximum length of the resulting slug (default 80).
-
-    Returns:
-        Lowercase slug with non-alphanumeric characters replaced by hyphens.
-    """
-    slug = "".join(c if c.isalnum() else "-" for c in text.lower()).strip("-")
-    while "--" in slug:
-        slug = slug.replace("--", "-")
-    return slug[:max_length].rstrip("-")
-```
 
 ## Relationships
 

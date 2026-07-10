@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: grantPermission
 type: Function
 ---
@@ -43,14 +43,6 @@ Grant an additional permission to this admin user.
 
 ## Source
 Lines 92–96 in `typescript/complex/models/user.ts`
-
-```ts
-  public grantPermission(permission: string): void {
-    if (!this.permissions.includes(permission)) {
-      this.permissions.push(permission);
-    }
-  }
-```
 
 ## Relationships
 

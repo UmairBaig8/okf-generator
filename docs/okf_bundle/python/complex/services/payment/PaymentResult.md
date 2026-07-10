@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: PaymentResult
 type: Class
 ---
@@ -45,28 +45,6 @@ Immutable result returned after processing a payment.
 
 ## Source
 Lines 30–48 in `python/complex/services/payment.py`
-
-```py
-class PaymentResult:
-    """Immutable result returned after processing a payment."""
-
-    charge_id: str
-    status: PaymentStatus
-    amount_cents: int
-    currency: str
-    processed_at: datetime = field(default_factory=datetime.utcnow)
-    gateway_response: str = ""
-
-    def to_dict(self) -> dict:
-        """Serialize the result to a plain dictionary."""
-        return {
-            "charge_id": self.charge_id,
-            "status": self.status.value,
-            "amount_cents": self.amount_cents,
-            "currency": self.currency,
-            "processed_at": self.processed_at.isoformat(),
-        }
-```
 
 ## Relationships
 

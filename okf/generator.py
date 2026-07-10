@@ -297,12 +297,7 @@ def _body(concept: Concept, all_concepts: dict[str, Concept], source_dir: Path |
 
     if concept.source_lines and concept.source_lines[0]:
         start, end = concept.source_lines
-        body = _read_body(concept, source_dir) if source_dir else ""
-        if body:
-            lang_hint = concept.resource.rsplit(".", 1)[-1] if "." in concept.resource else ""
-            lines.append(f"## Source\nLines {start}–{end} in `{concept.resource}`\n\n```{lang_hint}\n{body}\n```\n")
-        else:
-            lines.append(f"## Source\nLines {start}–{end} in `{concept.resource}`\n")
+        lines.append(f"## Source\nLines {start}–{end} in `{concept.resource}`\n")
 
     # build relationships table
     rel_rows: list[tuple[str, str, str]] = []  # (type, target_label, target_cid)

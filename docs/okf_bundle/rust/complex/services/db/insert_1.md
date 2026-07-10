@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: insert
 type: Function
 ---
@@ -25,14 +25,6 @@ fn insert(&mut self, user: User) -> String
 
 ## Source
 Lines 45–49 in `rust/complex/services/db.rs`
-
-```rs
-    fn insert(&mut self, user: User) -> String {
-        let id = user.id.clone();
-        self.users.insert(id.clone(), user);
-        id
-    }
-```
 
 ## Relationships
 

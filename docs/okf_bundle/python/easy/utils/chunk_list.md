@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: chunk_list
 type: Function
 ---
@@ -50,20 +50,6 @@ Returns:
 
 ## Source
 Lines 27–37 in `python/easy/utils.py`
-
-```py
-def chunk_list(items: Sequence[T], chunk_size: int = 100) -> list[list[T]]:
-    """Split a sequence into fixed-size chunks.
-
-    Args:
-        items: Sequence of items to chunk.
-        chunk_size: Maximum number of items per chunk (default 100).
-
-    Returns:
-        List of chunks, each a list of up to ``chunk_size`` items.
-    """
-    return [list(items[i : i + chunk_size]) for i in range(0, len(items), chunk_size)]
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_push_back
 type: Function
 ---
@@ -25,22 +25,6 @@ int list_push_back(LinkedList* list, int value)
 
 ## Source
 Lines 29–41 in `c/complex/linked_list.c`
-
-```c
-int list_push_back(LinkedList* list, int value) {
-    Node* node = node_create(value);
-    if (!node) return -1;
-    if (!list->head) {
-        list->head = node;
-    } else {
-        Node* cur = list->head;
-        while (cur->next) cur = cur->next;
-        cur->next = node;
-    }
-    list->size++;
-    return 0;
-}
-```
 
 ## Relationships
 

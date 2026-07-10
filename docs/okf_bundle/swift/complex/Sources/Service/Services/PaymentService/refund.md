@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: refund
 type: Function
 ---
@@ -34,13 +34,6 @@ Issues a refund for a transaction.
 
 ## Source
 Lines 36–39 in `swift/complex/Sources/Service/Services/PaymentService.swift`
-
-```swift
-    @available(*, deprecated, message: "Use refund(transactionId:amount:) for partial refunds.")
-    public func refund(transactionId: String) -> Bool {
-        refund(transactionId: transactionId, amount: nil)
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: isValidEmail
 type: Function
 ---
@@ -32,13 +32,6 @@ Checks whether the given string is a valid email address.
 
 ## Source
 Lines 6–9 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.kt`
-
-```kt
-fun isValidEmail(email: String): Boolean {
-    val pattern = Regex("""^[^\s@]+@[^\s@]+\.[^\s@]+$""")
-    return pattern.matches(email)
-}
-```
 
 ## Relationships
 

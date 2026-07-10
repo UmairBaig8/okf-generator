@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: distance_to
 type: Function
 ---
@@ -36,14 +36,6 @@ Compute the Euclidean distance to another point.
 
 ## Source
 Lines 50–54 in `rust/easy/lib.rs`
-
-```rs
-    pub fn distance_to(&self, other: &Point) -> f64 {
-        let dx = self.x - other.x;
-        let dy = self.y - other.y;
-        (dx * dx + dy * dy).sqrt()
-    }
-```
 
 ## Relationships
 

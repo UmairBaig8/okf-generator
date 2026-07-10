@@ -9,9 +9,9 @@ tags:
 - type:View
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: active_products
 type: View
 ---
@@ -32,14 +32,6 @@ WHERE p.active = 1
 
 ## Source
 Lines 33–37 in `sql/easy/schema.sql`
-
-```sql
-CREATE VIEW active_products AS
-SELECT p.id, p.name, p.price, c.name AS category
-FROM products p
-JOIN categories c ON c.id = p.category_id
-WHERE p.active = 1;
-```
 
 ## Relationships
 

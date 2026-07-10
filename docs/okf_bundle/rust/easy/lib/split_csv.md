@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: split_csv
 type: Function
 ---
@@ -36,15 +36,6 @@ Parses a comma-separated string into a vector of trimmed, non-empty strings.
 
 ## Source
 Lines 29–34 in `rust/easy/lib.rs`
-
-```rs
-pub fn split_csv(line: &str) -> Vec<&str> {
-    line.split(',')
-        .map(|s| s.trim())
-        .filter(|s| !s.is_empty())
-        .collect()
-}
-```
 
 ## Relationships
 

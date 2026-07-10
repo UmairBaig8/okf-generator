@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: getId
 type: Function
 ---
@@ -36,12 +36,6 @@ User account status enum.
 
 ## Source
 Lines 20–22 in `php/easy/User.php`
-
-```php
-    public function getId(): int {
-        return $this->id;
-    }
-```
 
 ## Relationships
 

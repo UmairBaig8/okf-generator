@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: UserRole
 type: Class
 ---
@@ -25,14 +25,6 @@ enum UserRole
 
 ## Source
 Lines 42–46 in `typescript/easy/types.ts`
-
-```ts
-export enum UserRole {
-  ADMIN = 'admin',
-  MODERATOR = 'moderator',
-  USER = 'user',
-}
-```
 
 ## Relationships
 

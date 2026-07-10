@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: NewUserStore
 type: Function
 ---
@@ -32,15 +32,6 @@ NewUserStore creates and returns a new empty UserStore.
 
 ## Source
 Lines 32–37 in `go/complex/store/user.go`
-
-```go
-func NewUserStore() *UserStore {
-	return &UserStore{
-		users: make(map[string]User),
-		next:  1,
-	}
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: padZero
 type: Function
 ---
@@ -46,12 +46,6 @@ Pad a number with leading zeros to a given width.
 
 ## Source
 Lines 73–75 in `javascript/easy/strings.js`
-
-```js
-function padZero(num, width = 3) {
-  return String(num).padStart(width, '0');
-}
-```
 
 ## Relationships
 

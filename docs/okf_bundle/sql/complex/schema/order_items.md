@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: order_items
 type: Table
 ---
@@ -40,16 +40,6 @@ CREATE TABLE order_items (
 
 ## Source
 Lines 36–42 in `sql/complex/schema.sql`
-
-```sql
-CREATE TABLE order_items (
-    order_id    INTEGER     NOT NULL REFERENCES orders(id),
-    product_id  INTEGER     NOT NULL REFERENCES inventory(product_id),
-    quantity    INTEGER     NOT NULL CHECK (quantity > 0),
-    unit_price  NUMERIC(10,2) NOT NULL,
-    PRIMARY KEY (order_id, product_id)
-);
-```
 
 ## Relationships
 

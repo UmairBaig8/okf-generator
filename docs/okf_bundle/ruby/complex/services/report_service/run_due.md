@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: run_due
 type: Function
 ---
@@ -37,18 +37,6 @@ Execute all due scheduled reports.
 
 ## Source
 Lines 41–49 in `ruby/complex/services/report_service.rb`
-
-```rb
-    def run_due
-      due = @reports.select { |r| r.is_a?(Models::ScheduledReport) && r.due? }
-      due.each do |report|
-        ReportRunner.new(report).execute
-        report.mark_as_run!
-        yield report if block_given?
-      end
-      due
-    end
-```
 
 ## Relationships
 

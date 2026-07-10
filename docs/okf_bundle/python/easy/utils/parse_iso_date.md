@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: parse_iso_date
 type: Function
 ---
@@ -47,24 +47,6 @@ Returns:
 
 ## Source
 Lines 61–75 in `python/easy/utils.py`
-
-```py
-def parse_iso_date(value: str | None) -> datetime | None:
-    """Safely parse an ISO 8601 date string, returning None on failure.
-
-    Args:
-        value: ISO 8601 date string or None.
-
-    Returns:
-        Parsed datetime, or None if the input is None or unparseable.
-    """
-    if value is None:
-        return None
-    try:
-        return datetime.fromisoformat(value)
-    except (ValueError, TypeError):
-        return None
-```
 
 ## Relationships
 

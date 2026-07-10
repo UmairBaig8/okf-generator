@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Calculator
 type: Class
 ---
@@ -39,32 +39,6 @@ A simple calculator class.
 
 ## Source
 Lines 8–30 in `php/easy/Calculator.php`
-
-```php
-class Calculator {
-    private float $result = 0.0;
-
-    public function __construct() {
-        $this->result = 0.0;
-    }
-
-    /**
-     * Add a number to the current result.
-     */
-    public function add(float $value): float {
-        $this->result += $value;
-        return $this->result;
-    }
-
-    public function reset(): void {
-        $this->result = 0.0;
-    }
-
-    public static function version(): string {
-        return '1.0.0';
-    }
-}
-```
 
 ## Relationships
 

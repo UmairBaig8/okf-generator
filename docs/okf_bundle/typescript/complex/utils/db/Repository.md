@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Repository
 type: Interface
 ---
@@ -33,16 +33,6 @@ interface Repository
 
 ## Source
 Lines 10–16 in `typescript/complex/utils/db.ts`
-
-```ts
-export interface Repository<T extends { id: string }> {
-  findById(id: string): T | undefined;
-  findAll(): T[];
-  insert(entity: T): T;
-  update(id: string, partial: Partial<T>): T | undefined;
-  delete(id: string): boolean;
-}
-```
 
 ## Relationships
 

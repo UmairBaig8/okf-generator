@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: lookup_charge
 type: Function
 ---
@@ -52,25 +52,6 @@ Returns:
 
 ## Source
 Lines 107–122 in `python/complex/services/payment.py`
-
-```py
-    def lookup_charge(
-        self, charge_id: str, idempotency_key: str | None
-    ) -> PaymentResult | None:
-        """Look up a previously processed charge by its identifier.
-
-        Args:
-            charge_id: The charge UUID returned by ``process_payment``.
-            idempotency_key: Optional key to narrow the search.
-
-        Returns:
-            The ``PaymentResult`` if found, or None.
-        """
-        for result in self._idempotency_cache.values():
-            if result.charge_id == charge_id:
-                return result
-        return None
-```
 
 ## Relationships
 

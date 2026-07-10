@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Clamp
 type: Function
 ---
@@ -32,18 +32,6 @@ Clamp restricts a value to the range [low, high].
 
 ## Source
 Lines 30–38 in `go/easy/math/math.go`
-
-```go
-func Clamp(val, low, high int) int {
-	if val < low {
-		return low
-	}
-	if val > high {
-		return high
-	}
-	return val
-}
-```
 
 ## Relationships
 

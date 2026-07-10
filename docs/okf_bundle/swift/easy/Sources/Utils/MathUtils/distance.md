@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: distance
 type: Function
 ---
@@ -32,14 +32,6 @@ Computes Euclidean distance to another point.
 
 ## Source
 Lines 31–35 in `swift/easy/Sources/Utils/MathUtils.swift`
-
-```swift
-    public func distance(to other: Point) -> Double {
-        let dx = x - other.x
-        let dy = y - other.y
-        return sqrt(dx * dx + dy * dy)
-    }
-```
 
 ## Relationships
 

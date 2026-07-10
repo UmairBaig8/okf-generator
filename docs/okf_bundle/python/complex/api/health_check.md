@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: health_check
 type: Function
 ---
@@ -48,20 +48,6 @@ Returns:
 
 ## Source
 Lines 93–103 in `python/complex/api.py`
-
-```py
-    def health_check(cls) -> dict:
-        """Return the current health status of the API and its dependencies.
-
-        Returns:
-            Dict with ``status``, ``timestamp``, and ``version`` keys.
-        """
-        return {
-            "status": "ok",
-            "timestamp": datetime.utcnow().isoformat(),
-            "version": settings.version,
-        }
-```
 
 ## Relationships
 

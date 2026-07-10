@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:julia
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: area
 type: Function
 ---
@@ -25,12 +25,6 @@ area(width::Float64, height::Float64)::Float64
 
 ## Source
 Lines 6–8 in `julia/complex/geometry.jl`
-
-```jl
-function area(width::Float64, height::Float64)::Float64
-    return width * height
-end
-```
 
 ## Relationships
 

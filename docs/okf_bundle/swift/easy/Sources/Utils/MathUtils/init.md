@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: init
 type: Function
 ---
@@ -25,13 +25,6 @@ init(x: Double)
 
 ## Source
 Lines 25–28 in `swift/easy/Sources/Utils/MathUtils.swift`
-
-```swift
-    public init(x: Double, y: Double) {
-        self.x = x
-        self.y = y
-    }
-```
 
 ## Relationships
 

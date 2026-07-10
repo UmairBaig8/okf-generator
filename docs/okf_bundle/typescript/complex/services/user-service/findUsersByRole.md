@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: findUsersByRole
 type: Function
 ---
@@ -40,12 +40,6 @@ Find users matching a role.
 
 ## Source
 Lines 135–137 in `typescript/complex/services/user-service.ts`
-
-```ts
-  findUsersByRole(role: UserRole): User[] {
-    return this.repo.findWhere((u) => u.role === role);
-  }
-```
 
 ## Relationships
 

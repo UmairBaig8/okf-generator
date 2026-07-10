@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Vector<T>::empty
 type: Function
 ---
@@ -29,12 +29,6 @@ template<<typename T>> bool Vector<T>::empty()
 
 ## Source
 Lines 77–79 in `cpp/complex/containers/vector.cpp`
-
-```cpp
-bool Vector<T>::empty() const noexcept {
-    return size_ == 0;
-}
-```
 
 ## Relationships
 

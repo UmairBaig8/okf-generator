@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: _sign_payload
 type: Function
 ---
@@ -36,13 +36,6 @@ def _sign_payload(self, payload: str) -> str
 
 ## Source
 Lines 128–131 in `python/complex/services/payment.py`
-
-```py
-    def _sign_payload(self, payload: str) -> str:
-        return hmac.new(
-            self._api_key.encode(), payload.encode(), hashlib.sha256
-        ).hexdigest()
-```
 
 ## Relationships
 

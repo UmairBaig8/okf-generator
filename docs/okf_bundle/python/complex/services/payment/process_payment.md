@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: process_payment
 type: Function
 ---
@@ -64,49 +64,6 @@ Raises:
 
 ## Source
 Lines 66–105 in `python/complex/services/payment.py`
-
-```py
-    def process_payment(
-        self,
-        customer_id: str,
-        amount_cents: int,
-        currency: str,
-        metadata: dict | None = None,
-        idempotency_key: str | None = None,
-    ) -> PaymentResult:
-        """Submit a payment to the external gateway.
-
-        Args:
-            customer_id: The customer to charge.
-            amount_cents: Amount in the smallest currency unit.
-            currency: ISO 4217 currency code.
-            metadata: Optional additional data for the gateway.
-            idempotency_key: Unique key to prevent duplicate charges.
-
-        Returns:
-            A ``PaymentResult`` describing the outcome.
-
-        Raises:
-            PaymentError: If the gateway rejects the payment.
-        """
-        idem_key = idempotency_key or self._generate_idempotency_key(customer_id, amount_cents)
-        cached = self._idempotency_cache.get(idem_key)
-        if cached:
-            return cached
-
-        charge_id = f"ch_{uuid.uuid4().hex}"
-        signature = self._sign_payload(f"{customer_id}:{amount_cents}:{currency}")
-
-        result = PaymentResult(
-            charge_id=charge_id,
-            status=PaymentStatus.SUCCEEDED,
-            amount_cents=amount_cents,
-            currency=currency,
-            gateway_response=signature,
-        )
-        self._idempotency_cache[idem_key] = result
-        return result
-```
 
 ## Relationships
 

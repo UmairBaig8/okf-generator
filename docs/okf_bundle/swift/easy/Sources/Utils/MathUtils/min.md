@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: min
 type: Function
 ---
@@ -32,12 +32,6 @@ Returns the smaller of two integers.
 
 ## Source
 Lines 4–6 in `swift/easy/Sources/Utils/MathUtils.swift`
-
-```swift
-public func min(_ a: Int, _ b: Int) -> Int {
-    a < b ? a : b
-}
-```
 
 ## Relationships
 

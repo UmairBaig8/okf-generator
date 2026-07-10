@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: toSnakeCase
 type: Function
 ---
@@ -48,27 +48,6 @@ Converts a CamelCase string to snake_case.
 
 ## Source
 Lines 49–66 in `java/easy/util/StringUtils.java`
-
-```java
-    public static String toSnakeCase(String camel) {
-        if (camel == null || camel.isEmpty()) {
-            return camel;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < camel.length(); i++) {
-            char c = camel.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0) {
-                    sb.append('_');
-                }
-                sb.append(Character.toLowerCase(c));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-```
 
 ## Relationships
 

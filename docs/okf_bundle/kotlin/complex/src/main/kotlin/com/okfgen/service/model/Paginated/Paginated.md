@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Paginated
 type: Class
 ---
@@ -49,15 +49,6 @@ Generic paginated wrapper for list responses.
 
 ## Source
 Lines 6–11 in `kotlin/complex/src/main/kotlin/com/okfgen/service/model/Paginated.kt`
-
-```kt
-data class Paginated<T>(
-    val items: List<T>,
-    val total: Int,
-    val page: Int,
-    val pageSize: Int
-)
-```
 
 ## Relationships
 

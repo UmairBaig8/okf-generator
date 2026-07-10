@@ -67,62 +67,16 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             "tags": c.get("tags", []),
         })
 
-    # Source code reading: best-effort per unique resource path
-    # The resource field is relative to the scanned root (e.g. "src/file.py").
-    # We don't store the scanned root, so try multiple base directories.
-    code_cache: dict[str, str] = {}
-    # Collect all possible base dirs (parents of bundle + CWD + ancestors up to git root)
-    search_bases: list[Path] = [bundle_dir.parent]
-    # Read source_root from bundle index.md if available
-    try:
-        index_md = bundle_dir / "index.md"
-        if index_md.exists():
-            raw = index_md.read_text(encoding="utf-8")
-            parts = raw.split("---", 2)
-            if len(parts) >= 2:
-                import yaml
-                fm = yaml.safe_load(parts[1]) or {}
-                src = fm.get("source_root")
-                if src:
-                    search_bases.insert(0, Path(str(src)).resolve())
-    except Exception:
-        pass
-    try:
-        cwd = Path.cwd().resolve()
-        search_bases.append(cwd)
-        # Walk up from CWD to find git root and all intermediate dirs
-        for parent in cwd.parents:
-            search_bases.append(parent)
-            if (parent / ".git").exists():
-                break
-    except Exception:
-        pass
+    # Extract code snippet from concept's ## Source section (already has relevant lines)
     for n in nodes:
-        resource = n.get("resource", "")
-        if not resource:
-            continue
-        if resource in code_cache:
-            n["code"] = code_cache[resource]
-            continue
-        src_candidates = []
-        for base in search_bases:
-            src_candidates.append(base / resource)
-            src_candidates.append(base / resource.lstrip("/"))
-            if "/" in resource:
-                src_candidates.append(base / resource.split("/")[-1])
-        found = ""
-        for sp in src_candidates:
-            if sp:
-                try:
-                    if sp.exists() and sp.is_file():
-                        found = sp.read_text(encoding="utf-8")
-                        break
-                except (PermissionError, OSError):
-                    continue
-                except Exception:
-                    continue
-        code_cache[resource] = found
-        n["code"] = found
+        src_section = n.get("sections", {}).get("source", "")
+        snippet = ""
+        if src_section:
+            # Extract fenced code block from source section
+            m = re.search(r"```(\w*)\n(.*?)```", src_section, re.DOTALL)
+            if m:
+                snippet = m.group(2).strip()
+        n["code"] = snippet
 
     def _extract_ids(text: str) -> list[str]:
         if not text:
@@ -227,8 +181,7 @@ def visualize(bundle_dir: Path) -> tuple[str, int, int]:
 
     json_nodes = []
     for n in nodes:
-        jn = {k: v for k, v in n.items() if k != "code"}
-        jn["code"] = n.get("code", "")
+        jn = {k: v for k, v in n.items()}
         json_nodes.append(jn)
 
     template_path = Path(__file__).parent / "templates" / "viz-template.html"

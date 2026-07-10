@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: requireRole
 type: Function
 ---
@@ -46,12 +46,6 @@ Verify that the authenticated user has a specific role.
 
 ## Source
 Lines 41–43 in `javascript/complex/middleware/auth.js`
-
-```js
-function requireRole(user, requiredRole) {
-  return user && user.role === requiredRole;
-}
-```
 
 ## Relationships
 

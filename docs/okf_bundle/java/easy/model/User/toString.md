@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: toString
 type: Function
 ---
@@ -33,13 +33,6 @@ String toString()
 
 ## Source
 Lines 86–89 in `java/easy/model/User.java`
-
-```java
-    @Override
-    public String toString() {
-        return "User{" + "id='" + id + '\'' + ", email='" + email + '\'' + '}';
-    }
-```
 
 ## Relationships
 

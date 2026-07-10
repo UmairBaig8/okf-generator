@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: greet
 type: Function
 ---
@@ -32,12 +32,6 @@ Greet a user by name.
 
 ## Source
 Lines 6–8 in `php/easy/helpers.php`
-
-```php
-function greet(string $name): string {
-    return "Hello, " . $name;
-}
-```
 
 ## Relationships
 

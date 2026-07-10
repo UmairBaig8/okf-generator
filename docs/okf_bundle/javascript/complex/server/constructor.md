@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: constructor
 type: Function
 ---
@@ -45,16 +45,6 @@ Create a new ApiServer instance.
 
 ## Source
 Lines 23–29 in `javascript/complex/server.js`
-
-```js
-  constructor(options = {}) {
-    this.port = options.port || PORT;
-    this.host = options.host || '0.0.0.0';
-    this.routes = new Map();
-    this.server = null;
-    this._registerRoutes();
-  }
-```
 
 ## Relationships
 

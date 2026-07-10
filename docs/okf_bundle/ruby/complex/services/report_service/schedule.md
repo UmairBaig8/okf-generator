@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: schedule
 type: Function
 ---
@@ -38,14 +38,6 @@ Schedule a report to run on a recurring basis.
 
 ## Source
 Lines 25–29 in `ruby/complex/services/report_service.rb`
-
-```rb
-    def schedule(title, schedule = "daily")
-      report = Models::ScheduledReport.new(next_id, title, schedule)
-      @reports << report
-      report
-    end
-```
 
 ## Relationships
 

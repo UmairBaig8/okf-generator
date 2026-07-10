@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_traverse
 type: Function
 ---
@@ -25,16 +25,6 @@ void list_traverse(const LinkedList* list, void (*visit)(int)
 
 ## Source
 Lines 69–75 in `c/complex/linked_list.c`
-
-```c
-void list_traverse(const LinkedList* list, void (*visit)(int)) {
-    Node* cur = list->head;
-    while (cur) {
-        visit(cur->data);
-        cur = cur->next;
-    }
-}
-```
 
 ## Relationships
 

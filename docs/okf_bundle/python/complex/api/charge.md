@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: charge
 type: Function
 ---
@@ -62,36 +62,6 @@ Returns:
 
 ## Source
 Lines 52–78 in `python/complex/api.py`
-
-```py
-    def charge(
-        self,
-        customer_id: str,
-        amount_cents: int,
-        currency: str = "USD",
-        metadata: dict | None = None,
-    ) -> dict:
-        """Charge a customer a given amount.
-
-        Args:
-            customer_id: Unique identifier for the customer.
-            amount_cents: Amount in the smallest currency unit.
-            currency: Three-letter ISO 4217 currency code.
-            metadata: Optional key-value pairs to attach to the charge.
-
-        Returns:
-            A dict containing the payment result fields.
-        """
-        if amount_cents <= 0:
-            raise PaymentError("Amount must be a positive integer.")
-        result = self._service.process_payment(
-            customer_id=customer_id,
-            amount_cents=amount_cents,
-            currency=currency.upper(),
-            metadata=metadata or {},
-        )
-        return result.to_dict()
-```
 
 ## Relationships
 

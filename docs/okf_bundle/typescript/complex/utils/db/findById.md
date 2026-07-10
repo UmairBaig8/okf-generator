@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: findById
 type: Function
 ---
@@ -25,12 +25,6 @@ findById(id: string): T | undefined
 
 ## Source
 Lines 25–27 in `typescript/complex/utils/db.ts`
-
-```ts
-  findById(id: string): T | undefined {
-    return this.items.get(id);
-  }
-```
 
 ## Relationships
 

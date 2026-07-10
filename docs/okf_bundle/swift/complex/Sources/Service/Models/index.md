@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/complex/Sources/Service/Models
 resource: swift/complex/Sources/Service/Models
-timestamp: '2026-07-10T17:16:02Z'
+timestamp: '2026-07-10T17:26:18Z'
 title: Models
 type: Index
 ---

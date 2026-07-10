@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -55,24 +55,6 @@ Represents a user in the system.
 
 ## Source
 Lines 9–23 in `kotlin/complex/src/main/kotlin/com/okfgen/service/model/User.kt`
-
-```kt
-data class User(
-    val id: String = UUID.randomUUID().toString(),
-    val email: String,
-    val displayName: String? = null,
-    val isActive: Boolean = true,
-    val createdAt: Instant = Instant.now()
-) : Comparable<User> {
-    /**
-     * Deactivates the user account.
-     */
-    fun deactivate(): User = copy(isActive = false)
-
-    override fun compareTo(other: User): Int =
-        this.createdAt.compareTo(other.createdAt)
-}
-```
 
 ## Relationships
 

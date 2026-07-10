@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: __init__
 type: Function
 ---
@@ -36,11 +36,6 @@ def __init__(self, service: PaymentService | None = None) -> None
 
 ## Source
 Lines 43–44 in `python/complex/api.py`
-
-```py
-    def __init__(self, service: PaymentService | None = None) -> None:
-        self._service = service or PaymentService(api_key=settings.payment_gateway_key)
-```
 
 ## Relationships
 

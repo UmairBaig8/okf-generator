@@ -9,9 +9,9 @@ tags:
 - type:Enum
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: AccountStatus
 type: Enum
 ---
@@ -39,15 +39,6 @@ User account status enum.
 
 ## Source
 Lines 61–66 in `php/easy/User.php`
-
-```php
-enum AccountStatus: string {
-    case ACTIVE = 'active';
-    case INACTIVE = 'inactive';
-    case BANNED = 'banned';
-    case PENDING = 'pending';
-}
-```
 
 ## Relationships
 

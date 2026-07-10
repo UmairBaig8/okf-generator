@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: deleteById
 type: Function
 ---
@@ -25,10 +25,6 @@ fun deleteById(id: String): Boolean
 
 ## Source
 Lines 32–32 in `kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository.kt`
-
-```kt
-    override fun deleteById(id: String): Boolean = store.remove(id) != null
-```
 
 ## Relationships
 

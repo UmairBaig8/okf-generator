@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: isValidEmail
 type: Function
 ---
@@ -32,13 +32,6 @@ Validates email addresses using a basic pattern.
 
 ## Source
 Lines 4–7 in `swift/easy/Sources/Utils/StringUtils.swift`
-
-```swift
-public func isValidEmail(_ email: String) -> Bool {
-    let pattern = #"^[^\s@]+@[^\s@]+\.[^\s@]+$"#
-    return email.range(of: pattern, options: .regularExpression) != nil
-}
-```
 
 ## Relationships
 

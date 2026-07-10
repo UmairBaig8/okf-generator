@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: save
 type: Function
 ---
@@ -25,13 +25,6 @@ func save(_ user: User)
 
 ## Source
 Lines 27–30 in `swift/complex/Sources/Service/Repositories/UserRepository.swift`
-
-```swift
-    public func save(_ user: User) -> User {
-        store[user.id] = user
-        return user
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: isValidEmail
 type: Function
 ---
@@ -43,14 +43,6 @@ Test whether a string is a valid email address (simple check).
 
 ## Source
 Lines 44–48 in `javascript/easy/strings.js`
-
-```js
-function isValidEmail(str) {
-  if (!str) return false;
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(str);
-}
-```
 
 ## Relationships
 

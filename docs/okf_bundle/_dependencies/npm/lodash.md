@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- manifest:package.json
 - version:^4.17.21
 - ecosystem:npm
-- manifest:package.json
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: lodash
 type: Dependency
 ---

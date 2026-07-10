@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: handleUsersRoute
 type: Function
 ---
@@ -53,25 +53,6 @@ Supports optional ?role= query parameter filtering.
 
 ## Source
 Lines 24–39 in `javascript/complex/routes/users.js`
-
-```js
-async function handleUsersRoute(req) {
-  const { role } = req.query || {};
-  let result = users;
-  if (role) {
-    result = users.filter((u) => u.role === role);
-  }
-  return {
-    statusCode: 200,
-    data: {
-      count: result.length,
-      users: result.map(({ id, name, email, role }) => ({
-        id, name, email, role,
-      })),
-    },
-  };
-}
-```
 
 ## Relationships
 

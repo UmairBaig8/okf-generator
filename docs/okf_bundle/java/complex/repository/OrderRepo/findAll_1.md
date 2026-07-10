@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: findAll
 type: Function
 ---
@@ -33,13 +33,6 @@ List<Order> findAll()
 
 ## Source
 Lines 40–43 in `java/complex/repository/OrderRepo.java`
-
-```java
-    @Override
-    public List<Order> findAll() {
-        return new ArrayList<>(store.values());
-    }
-```
 
 ## Relationships
 

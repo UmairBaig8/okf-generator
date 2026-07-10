@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Environment
 type: Class
 ---
@@ -30,15 +30,6 @@ Deployment environment for the service.
 
 ## Source
 Lines 9–14 in `python/complex/config.py`
-
-```py
-class Environment(Enum):
-    """Deployment environment for the service."""
-
-    DEVELOPMENT = "development"
-    STAGING = "staging"
-    PRODUCTION = "production"
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: format_currency
 type: Function
 ---
@@ -32,12 +32,6 @@ Format a number as currency.
 
 ## Source
 Lines 13–15 in `php/easy/helpers.php`
-
-```php
-function format_currency(float $amount, string $currency = 'USD'): string {
-    return $currency . ' ' . number_format($amount, 2);
-}
-```
 
 ## Relationships
 

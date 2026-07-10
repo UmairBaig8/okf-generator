@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: lcm
 type: Function
 ---
@@ -36,16 +36,6 @@ Compute the least common multiple of two positive integers.
 
 ## Source
 Lines 13–19 in `rust/easy/math.rs`
-
-```rs
-pub fn lcm(a: u64, b: u64) -> u64 {
-    if a == 0 || b == 0 {
-        0
-    } else {
-        a / gcd(a, b) * b
-    }
-}
-```
 
 ## Relationships
 

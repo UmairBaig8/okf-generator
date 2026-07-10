@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: audit_log
 type: Table
 ---
@@ -45,19 +45,6 @@ CREATE TABLE audit_log (
 
 ## Source
 Lines 44–53 in `sql/complex/schema.sql`
-
-```sql
-CREATE TABLE audit_log (
-    id          INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    table_name  TEXT        NOT NULL,
-    record_id   INTEGER     NOT NULL,
-    action      TEXT        NOT NULL CHECK (action IN ('INSERT', 'UPDATE', 'DELETE')),
-    old_values  JSONB,
-    new_values  JSONB,
-    changed_by  INTEGER     REFERENCES users(id),
-    changed_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
 
 ## Relationships
 

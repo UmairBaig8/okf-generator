@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: validate_amount
 type: Function
 ---
@@ -51,19 +51,6 @@ Returns:
 
 ## Source
 Lines 106–115 in `python/complex/api.py`
-
-```py
-    def validate_amount(amount_cents: int) -> bool:
-        """Check that an amount is within acceptable bounds.
-
-        Args:
-            amount_cents: Amount in cents to validate.
-
-        Returns:
-            True if the amount is valid, False otherwise.
-        """
-        return 1 <= amount_cents <= 9_999_999
-```
 
 ## Relationships
 

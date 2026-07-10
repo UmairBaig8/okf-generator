@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: standardDeviation
 type: Function
 ---
@@ -43,15 +43,6 @@ Compute the standard deviation of a numeric array.
 
 ## Source
 Lines 45–50 in `javascript/easy/math.js`
-
-```js
-function standardDeviation(numbers) {
-  if (numbers.length < 2) return 0;
-  const avg = average(numbers);
-  const variance = numbers.reduce((sum, n) => sum + Math.pow(n - avg, 2), 0) / numbers.length;
-  return Math.sqrt(variance);
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: GetAllUsers
 type: Function
 ---
@@ -29,10 +29,6 @@ GetAllUsers()
 
 ## Source
 Lines 52–52 in `csharp/complex/Services/UserService.cs`
-
-```cs
-    public IReadOnlyList<User> GetAllUsers() => _users.AsReadOnly();
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: is_currency_allowed
 type: Function
 ---
@@ -49,19 +49,6 @@ Returns:
 
 ## Source
 Lines 44–53 in `python/complex/config.py`
-
-```py
-    def is_currency_allowed(self, currency: str) -> bool:
-        """Check whether a currency code is in the allowed set.
-
-        Args:
-            currency: Three-letter ISO 4217 currency code.
-
-        Returns:
-            True if the currency is accepted by this service.
-        """
-        return currency.upper() in self.allowed_currencies
-```
 
 ## Relationships
 

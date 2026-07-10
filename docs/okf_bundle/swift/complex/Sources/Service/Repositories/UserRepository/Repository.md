@@ -9,9 +9,9 @@ tags:
 - type:Interface
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Repository
 type: Interface
 ---
@@ -36,17 +36,6 @@ Protocol defining CRUD operations for a generic entity type.
 
 ## Source
 Lines 4–11 in `swift/complex/Sources/Service/Repositories/UserRepository.swift`
-
-```swift
-public protocol Repository<T> {
-    associatedtype T: Codable & Comparable
-    func save(_ entity: T) -> T
-    func findById(_ id: String) -> T?
-    func findAll() -> [T]
-    func deleteById(_ id: String) -> Bool
-    func count() -> Int
-}
-```
 
 ## Relationships
 

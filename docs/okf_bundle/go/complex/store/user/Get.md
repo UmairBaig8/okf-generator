@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Get
 type: Function
 ---
@@ -32,18 +32,6 @@ Get retrieves a single user by ID.
 
 ## Source
 Lines 51–59 in `go/complex/store/user.go`
-
-```go
-func (s *UserStore) Get(id string) (User, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	user, ok := s.users[id]
-	if !ok {
-		return User{}, fmt.Errorf("user %q not found", id)
-	}
-	return user, nil
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: __init__
 type: Function
 ---
@@ -38,15 +38,6 @@ def __init__(self, api_key: str, idempotency_ttl_seconds: int = 3600) -> None
 
 ## Source
 Lines 59–64 in `python/complex/services/payment.py`
-
-```py
-    def __init__(self, api_key: str, idempotency_ttl_seconds: int = 3600) -> None:
-        if not api_key:
-            raise ValueError("API key is required")
-        self._api_key = api_key
-        self._idempotency_ttl = idempotency_ttl_seconds
-        self._idempotency_cache: dict[str, PaymentResult] = {}
-```
 
 ## Relationships
 

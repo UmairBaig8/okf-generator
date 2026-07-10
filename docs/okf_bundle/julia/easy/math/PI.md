@@ -8,9 +8,9 @@ tags:
 - type:Constant
 - module:julia
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: PI
 type: Constant
 ---
@@ -25,10 +25,6 @@ const PI = 3.14159
 
 ## Source
 Lines 35–35 in `julia/easy/math.jl`
-
-```jl
-const PI = 3.14159
-```
 
 ## Relationships
 

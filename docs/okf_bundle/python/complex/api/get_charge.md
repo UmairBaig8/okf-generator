@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: get_charge
 type: Function
 ---
@@ -49,20 +49,6 @@ Returns:
 
 ## Source
 Lines 80–90 in `python/complex/api.py`
-
-```py
-    def get_charge(self, charge_id: str) -> dict | None:
-        """Retrieve details for a previously created charge.
-
-        Args:
-            charge_id: The unique identifier returned by the gateway.
-
-        Returns:
-            Charge details dict, or None if not found.
-        """
-        result = self._service.lookup_charge(charge_id, idempotency_key=None)
-        return result.to_dict() if result else None
-```
 
 ## Relationships
 

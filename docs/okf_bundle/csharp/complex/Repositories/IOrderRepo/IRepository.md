@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: IRepository
 type: Interface
 ---
@@ -33,17 +33,6 @@ interface IRepository
 
 ## Source
 Lines 9–16 in `csharp/complex/Repositories/IOrderRepo.cs`
-
-```cs
-public interface IRepository<T>
-{
-    T Save(T entity);
-    T? FindById(string id);
-    IReadOnlyList<T> FindAll();
-    bool Delete(string id);
-    long Count();
-}
-```
 
 ## Relationships
 

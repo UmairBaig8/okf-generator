@@ -9,9 +9,9 @@ tags:
 - type:Interface
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: LoggerInterface
 type: Interface
 ---
@@ -37,13 +37,6 @@ Logger interface for dependency resolution.
 
 ## Source
 Lines 42–45 in `php/easy/User.php`
-
-```php
-interface LoggerInterface {
-    public function log(string $message): void;
-    public function error(string $message): void;
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: origin
 type: Function
 ---
@@ -36,12 +36,6 @@ Return the origin point (0.0, 0.0).
 
 ## Source
 Lines 57–59 in `rust/easy/lib.rs`
-
-```rs
-    pub fn origin() -> Self {
-        Point { x: 0.0, y: 0.0 }
-    }
-```
 
 ## Relationships
 

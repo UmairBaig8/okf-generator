@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Paginated
 type: Class
 ---
@@ -44,22 +44,6 @@ Generic paginated wrapper for list responses.
 
 ## Source
 Lines 4–16 in `swift/complex/Sources/Service/Models/Paginated.swift`
-
-```swift
-public struct Paginated<T: Codable>: Codable {
-    public let items: [T]
-    public let total: Int
-    public let page: Int
-    public let pageSize: Int
-
-    public init(items: [T], total: Int, page: Int, pageSize: Int) {
-        self.items = items
-        self.total = total
-        self.page = page
-        self.pageSize = pageSize
-    }
-}
-```
 
 ## Relationships
 

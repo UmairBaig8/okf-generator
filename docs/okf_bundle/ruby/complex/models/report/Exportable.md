@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Exportable
 type: Class
 ---
@@ -37,19 +37,6 @@ A report that can be exported to CSV format.
 
 ## Source
 Lines 29–38 in `ruby/complex/models/report.rb`
-
-```rb
-  module Exportable
-    def to_csv
-      @data.map { |row| row.values.join(",") }.join("\n")
-    end
-
-    def to_json
-      require "json"
-      to_h.to_json
-    end
-  end
-```
 
 ## Relationships
 

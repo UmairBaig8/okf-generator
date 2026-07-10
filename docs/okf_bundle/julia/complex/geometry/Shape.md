@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:julia
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Shape
 type: Interface
 ---
@@ -25,10 +25,6 @@ abstract type Shape
 
 ## Source
 Lines 32–32 in `julia/complex/geometry.jl`
-
-```jl
-abstract type Shape end
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: PaginationParams
 type: Interface
 ---
@@ -30,13 +30,6 @@ interface PaginationParams
 
 ## Source
 Lines 13–16 in `typescript/easy/types.ts`
-
-```ts
-export interface PaginationParams {
-  page: number;
-  pageSize: number;
-}
-```
 
 ## Relationships
 

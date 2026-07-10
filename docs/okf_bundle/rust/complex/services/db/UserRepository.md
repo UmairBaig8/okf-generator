@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: UserRepository
 type: Class
 ---
@@ -40,12 +40,6 @@ In-memory implementation of `Repository` for `User` entities.
 
 ## Source
 Lines 19–21 in `rust/complex/services/db.rs`
-
-```rs
-pub struct UserRepository {
-    users: HashMap<String, User>,
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:dart
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Calculator
 type: Function
 ---
@@ -25,10 +25,6 @@ Calculator(this.result)
 
 ## Source
 Lines 5–5 in `dart/easy/calculator.dart`
-
-```dart
-  Calculator(this.result);
-```
 
 ## Relationships
 

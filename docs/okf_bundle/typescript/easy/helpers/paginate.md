@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: paginate
 type: Function
 ---
@@ -29,22 +29,6 @@ function paginate(items: T[], params: PaginationParams): PaginatedResponse<T>
 
 ## Source
 Lines 14–26 in `typescript/easy/helpers.ts`
-
-```ts
-export function paginate<T>(items: T[], params: PaginationParams): PaginatedResponse<T> {
-  const { page, pageSize } = params;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-  const sliced = items.slice(start, end);
-  return {
-    items: sliced,
-    total: items.length,
-    page,
-    pageSize,
-    hasMore: end < items.length,
-  };
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Repository
 type: Class
 ---
@@ -40,19 +40,6 @@ Generic repository trait for entities that can be serialized.
 
 ## Source
 Lines 7–16 in `rust/complex/services/db.rs`
-
-```rs
-pub trait Repository<T: Serialize> {
-    /// Insert a new entity into the repository.
-    fn insert(&mut self, entity: T) -> String;
-    /// Retrieve an entity by its ID.
-    fn get(&self, id: &str) -> Option<&T>;
-    /// Delete an entity by its ID.
-    fn delete(&mut self, id: &str) -> bool;
-    /// Return the number of entities stored.
-    fn count(&self) -> usize;
-}
-```
 
 ## Relationships
 

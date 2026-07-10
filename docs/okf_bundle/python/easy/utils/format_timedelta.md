@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: format_timedelta
 type: Function
 ---
@@ -50,33 +50,6 @@ Returns:
 
 ## Source
 Lines 78–101 in `python/easy/utils.py`
-
-```py
-def format_timedelta(delta: timedelta, precision: int = 2) -> str:
-    """Format a timedelta into a human-readable string.
-
-    Args:
-        delta: The timedelta to format.
-        precision: Number of most significant units to show (default 2).
-
-    Returns:
-        String like ``"3 days, 4 hours"`` or ``"5 minutes, 10 seconds"``.
-    """
-    total_seconds = int(delta.total_seconds())
-    units = [
-        ("day", 86400),
-        ("hour", 3600),
-        ("minute", 60),
-        ("second", 1),
-    ]
-    parts = []
-    for name, divisor in units:
-        if total_seconds >= divisor or parts:
-            count, total_seconds = divmod(total_seconds, divisor)
-            if count:
-                parts.append(f"{count} {name}{'s' if count != 1 else ''}")
-    return ", ".join(parts[:precision]) if parts else "0 seconds"
-```
 
 ## Relationships
 

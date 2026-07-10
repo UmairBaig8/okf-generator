@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: as_currency
 type: Function
 ---
@@ -42,13 +42,6 @@ Format a number as currency with the given symbol.
 
 ## Source
 Lines 7–10 in `ruby/easy/formatter.rb`
-
-```rb
-  def self.as_currency(amount, symbol = "$")
-    formatted = format("%.2f", amount)
-    "#{symbol}#{formatted}"
-  end
-```
 
 ## Relationships
 

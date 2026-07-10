@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: refund
 type: Function
 ---
@@ -54,16 +54,6 @@ Issues a refund (full or partial) for the given transaction.
 
 ## Source
 Lines 60–66 in `java/complex/service/PaymentService.java`
-
-```java
-    @SuppressWarnings("unused")
-    public boolean refund(String transactionId, BigDecimal amount) {
-        if (transactionId == null || transactionId.isBlank()) {
-            throw new IllegalArgumentException("Transaction ID is required");
-        }
-        return true;
-    }
-```
 
 ## Relationships
 

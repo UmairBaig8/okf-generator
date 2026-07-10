@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: toSnakeCase
 type: Function
 ---
@@ -32,23 +32,6 @@ Converts a CamelCase string to snake_case.
 
 ## Source
 Lines 18–31 in `swift/easy/Sources/Utils/StringUtils.swift`
-
-```swift
-public func toSnakeCase(_ camel: String) -> String {
-    var result = ""
-    for (i, char) in camel.enumerated() {
-        if char.isUppercase {
-            if i > 0 {
-                result.append("_")
-            }
-            result.append(char.lowercased())
-        } else {
-            result.append(char)
-        }
-    }
-    return result
-}
-```
 
 ## Relationships
 

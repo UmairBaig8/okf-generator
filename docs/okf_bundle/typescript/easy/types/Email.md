@@ -8,9 +8,9 @@ tags:
 - type:Type
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Email
 type: Type
 ---
@@ -25,10 +25,6 @@ type Email = …
 
 ## Source
 Lines 10–10 in `typescript/easy/types.ts`
-
-```ts
-export type Email = string & { __brand: 'Email' };
-```
 
 ## Relationships
 

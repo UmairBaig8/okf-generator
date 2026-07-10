@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: categories
 type: Table
 ---
@@ -46,15 +46,6 @@ E-commerce schema with categories, products, and customer tables.
 
 ## Source
 Lines 3–8 in `sql/easy/schema.sql`
-
-```sql
-CREATE TABLE categories (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        TEXT    NOT NULL UNIQUE,
-    description TEXT,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-```
 
 ## Relationships
 

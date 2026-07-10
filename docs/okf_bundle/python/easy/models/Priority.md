@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Priority
 type: Class
 ---
@@ -30,16 +30,6 @@ Priority level for a task or notification.
 
 ## Source
 Lines 9–15 in `python/easy/models.py`
-
-```py
-class Priority(Enum):
-    """Priority level for a task or notification."""
-
-    LOW = auto()
-    MEDIUM = auto()
-    HIGH = auto()
-    CRITICAL = auto()
-```
 
 ## Relationships
 

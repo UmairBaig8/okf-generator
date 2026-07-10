@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: clamp
 type: Function
 ---
@@ -32,16 +32,6 @@ Clamps a value between a minimum and maximum.
 
 ## Source
 Lines 16–22 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.kt`
-
-```kt
-fun <T : Comparable<T>> clamp(value: T, low: T, high: T): T {
-    return when {
-        value < low -> low
-        value > high -> high
-        else -> value
-    }
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: users
 type: Table
 ---
@@ -45,18 +45,6 @@ CREATE TABLE users (
 
 ## Source
 Lines 5–13 in `sql/complex/schema.sql`
-
-```sql
-CREATE TABLE users (
-    id          INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    email       TEXT        NOT NULL UNIQUE,
-    password_hash TEXT      NOT NULL,
-    display_name TEXT,
-    is_active   BOOLEAN     NOT NULL DEFAULT TRUE,
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
 
 ## Relationships
 

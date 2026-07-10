@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: authenticate
 type: Function
 ---
@@ -46,26 +46,6 @@ Authenticate an incoming HTTP request using the Authorization header.
 
 ## Source
 Lines 17–33 in `javascript/complex/middleware/auth.js`
-
-```js
-function authenticate(req) {
-  const authHeader = req.headers && req.headers.authorization;
-  if (!authHeader) {
-    return { ok: false, error: 'Missing Authorization header' };
-  }
-  if (!VALID_TOKENS.has(authHeader)) {
-    return { ok: false, error: 'Invalid or expired token' };
-  }
-  const role = authHeader.includes('admin') ? 'admin' : 'user';
-  return {
-    ok: true,
-    user: {
-      id: authHeader === 'Bearer token-admin-001' ? 1 : 2,
-      role,
-    },
-  };
-}
-```
 
 ## Relationships
 

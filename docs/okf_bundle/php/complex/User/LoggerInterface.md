@@ -8,9 +8,9 @@ tags:
 - type:Interface
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: LoggerInterface
 type: Interface
 ---
@@ -30,13 +30,6 @@ interface LoggerInterface
 
 ## Source
 Lines 27–30 in `php/complex/User.php`
-
-```php
-interface LoggerInterface {
-    public function log(string $message): void;
-    public function error(string $message): void;
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Vector<T>::push_back
 type: Function
 ---
@@ -29,15 +29,6 @@ template<<typename T>> void Vector<T>::push_back(const T& value)
 
 ## Source
 Lines 43–48 in `cpp/complex/containers/vector.cpp`
-
-```cpp
-void Vector<T>::push_back(const T& value) {
-    if (size_ == capacity_) {
-        reallocate(capacity_ == 0 ? kInitialCapacity : capacity_ * 2);
-    }
-    data_[size_++] = value;
-}
-```
 
 ## Relationships
 

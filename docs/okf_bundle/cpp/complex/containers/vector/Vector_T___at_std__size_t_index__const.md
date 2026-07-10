@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: '& Vector<T>::at(std::size_t index) const'
 type: Function
 ---
@@ -29,15 +29,6 @@ template<<typename T>> T & Vector<T>::at(std::size_t index) const()
 
 ## Source
 Lines 59–64 in `cpp/complex/containers/vector.cpp`
-
-```cpp
-const T& Vector<T>::at(std::size_t index) const {
-    if (index >= size_) {
-        throw std::out_of_range("Vector index out of range");
-    }
-    return data_[index];
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: set_updated_at
 type: Function
 ---
@@ -32,16 +32,6 @@ Trigger: automatically update updated_at before any row change.
 
 ## Source
 Lines 54–60 in `sql/complex/functions.sql`
-
-```sql
-CREATE OR REPLACE FUNCTION set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = now();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-```
 
 ## Relationships
 

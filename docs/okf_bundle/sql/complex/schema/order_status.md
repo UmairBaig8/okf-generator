@@ -9,9 +9,9 @@ tags:
 - type:Type
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: order_status
 type: Type
 ---
@@ -32,10 +32,6 @@ Enterprise order management schema with audit trail.
 
 ## Source
 Lines 3–3 in `sql/complex/schema.sql`
-
-```sql
-CREATE TYPE order_status AS ENUM ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled');
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: charge
 type: Function
 ---
@@ -49,23 +49,6 @@ Processes payment for the given order.
 
 ## Source
 Lines 26–39 in `java/complex/service/PaymentService.java`
-
-```java
-    public String charge(Order order) throws PaymentDeclinedException {
-        if (order.getStatus() != Order.Status.CONFIRMED) {
-            throw new IllegalArgumentException("Cannot charge an unconfirmed order");
-        }
-        BigDecimal amount = order.getTotal();
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Order total must be positive");
-        }
-        String transactionId = "txn_" + UUID.randomUUID().toString().replace("-", "");
-        if (!mockGatewayCall(amount, order.getCustomerId())) {
-            throw new PaymentDeclinedException("Gateway rejected the transaction");
-        }
-        return transactionId;
-    }
-```
 
 ## Relationships
 

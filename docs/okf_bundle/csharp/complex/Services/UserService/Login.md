@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Login
 type: Function
 ---
@@ -29,16 +29,6 @@ Login()
 
 ## Source
 Lines 41–47 in `csharp/complex/Services/UserService.cs`
-
-```cs
-    public User? Login(string email, string password)
-    {
-        var user = _users.FirstOrDefault(u => u.Email == email);
-        if (user == null || !VerifyPassword(password, user.PasswordHash))
-            return null;
-        return user;
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Reverse
 type: Function
 ---
@@ -32,16 +32,6 @@ Reverse returns a reversed copy of the input string.
 
 ## Source
 Lines 34–40 in `go/easy/strings/strings.go`
-
-```go
-func Reverse(s string) string {
-	runes := []rune(s)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
-	}
-	return string(runes)
-}
-```
 
 ## Relationships
 

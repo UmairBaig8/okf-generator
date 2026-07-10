@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:dart
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: subtract
 type: Function
 ---
@@ -32,10 +32,6 @@ Top-level helper function.
 
 ## Source
 Lines 10–10 in `dart/easy/calculator.dart`
-
-```dart
-  int subtract(int value) => result -= value;
-```
 
 ## Relationships
 

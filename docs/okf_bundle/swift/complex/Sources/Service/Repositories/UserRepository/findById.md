@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: findById
 type: Function
 ---
@@ -25,12 +25,6 @@ func findById(_ id: String)
 
 ## Source
 Lines 32–34 in `swift/complex/Sources/Service/Repositories/UserRepository.swift`
-
-```swift
-    public func findById(_ id: String) -> User? {
-        store[id]
-    }
-```
 
 ## Relationships
 

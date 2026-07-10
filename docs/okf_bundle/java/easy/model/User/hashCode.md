@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: hashCode
 type: Function
 ---
@@ -33,13 +33,6 @@ int hashCode()
 
 ## Source
 Lines 81–84 in `java/easy/model/User.java`
-
-```java
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -40,37 +40,6 @@ Represents a system user with roles and permissions.
 
 ## Source
 Lines 10–37 in `php/easy/User.php`
-
-```php
-class User {
-    private int $id;
-    private string $username;
-    private array $roles = [];
-
-    public function __construct(int $id, string $username) {
-        $this->id = $id;
-        $this->username = $username;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getUsername(): string {
-        return $this->username;
-    }
-
-    public function addRole(string $role): void {
-        if (!in_array($role, $this->roles)) {
-            $this->roles[] = $role;
-        }
-    }
-
-    public function hasRole(string $role): bool {
-        return in_array($role, $this->roles);
-    }
-}
-```
 
 ## Relationships
 

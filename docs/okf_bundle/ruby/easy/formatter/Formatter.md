@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Formatter
 type: Class
 ---
@@ -39,46 +39,6 @@ String and number formatting utilities.
 
 ## Source
 Lines 2–38 in `ruby/easy/formatter.rb`
-
-```rb
-module Formatter
-  # Format a number as currency with the given symbol.
-  # @param amount [Numeric] the amount to format
-  # @param symbol [String] currency symbol (default $)
-  # @return [String] formatted currency string
-  def self.as_currency(amount, symbol = "$")
-    formatted = format("%.2f", amount)
-    "#{symbol}#{formatted}"
-  end
-
-  # Convert a string to Title Case.
-  # @param text [String] input text
-  # @return [String] title-cased text
-  def self.title_case(text)
-    text.to_s.split.map(&:capitalize).join(" ")
-  end
-
-  # Truncate text to a maximum length, appending an ellipsis.
-  # @param text [String] input text
-  # @param max_len [Integer] maximum length
-  # @return [String] truncated text
-  def self.truncate(text, max_len = 60)
-    return "" if text.nil?
-    return text if text.length <= max_len
-    text[0..max_len - 4] + "..."
-  end
-
-  # Extract all URLs from a block of text.
-  # @param text [String] input text
-  # @yield [String] each found URL
-  # @return [Array<String>] list of found URLs
-  def self.extract_urls(text, &block)
-    urls = text.to_s.scan(%r{https?://[^\s]+})
-    urls.each(&block) if block
-    urls
-  end
-end
-```
 
 ## Relationships
 

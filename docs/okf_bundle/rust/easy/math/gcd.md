@@ -10,9 +10,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: gcd
 type: Function
 ---
@@ -37,16 +37,6 @@ Compute the greatest common divisor of two positive integers using Euclid's algo
 
 ## Source
 Lines 4–10 in `rust/easy/math.rs`
-
-```rs
-pub fn gcd(a: u64, b: u64) -> u64 {
-    if b == 0 {
-        a
-    } else {
-        gcd(b, a % b)
-    }
-}
-```
 
 ## Relationships
 

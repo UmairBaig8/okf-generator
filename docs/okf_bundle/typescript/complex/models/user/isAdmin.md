@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: isAdmin
 type: Function
 ---
@@ -37,12 +37,6 @@ Check whether the user has administrative privileges.
 
 ## Source
 Lines 51–53 in `typescript/complex/models/user.ts`
-
-```ts
-  public isAdmin(): boolean {
-    return this.role === UserRole.ADMIN;
-  }
-```
 
 ## Relationships
 

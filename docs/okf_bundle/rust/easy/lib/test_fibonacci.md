@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: test_fibonacci
 type: Function
 ---
@@ -36,14 +36,6 @@ fn test_fibonacci()
 
 ## Source
 Lines 67–71 in `rust/easy/lib.rs`
-
-```rs
-    fn test_fibonacci() {
-        assert_eq!(fibonacci(0), Some(0));
-        assert_eq!(fibonacci(1), Some(1));
-        assert_eq!(fibonacci(10), Some(55));
-    }
-```
 
 ## Relationships
 

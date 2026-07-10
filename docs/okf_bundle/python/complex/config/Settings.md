@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Settings
 type: Class
 ---
@@ -53,45 +53,6 @@ Attributes:
 
 ## Source
 Lines 18–53 in `python/complex/config.py`
-
-```py
-class Settings:
-    """Central configuration object loaded from environment variables.
-
-    Attributes:
-        version: Application version string.
-        debug: Enable debug-level logging and error detail.
-        payment_gateway_key: Secret API key for the payment gateway.
-        max_retries: Number of times to retry failed gateway calls.
-        allowed_currencies: Set of ISO currency codes the service accepts.
-    """
-
-    version: str = field(default_factory=lambda: environ.get("APP_VERSION", "0.1.0"))
-    debug: bool = field(default_factory=lambda: environ.get("DEBUG", "0") == "1")
-    payment_gateway_key: str = field(
-        default_factory=lambda: environ.get("PAYMENT_GATEWAY_KEY", "sk_test_default")
-    )
-    max_retries: int = 3
-    allowed_currencies: frozenset[str] = field(
-        default_factory=lambda: frozenset({"USD", "EUR", "GBP", "CAD", "AUD"})
-    )
-    environment: Environment = Environment.DEVELOPMENT
-
-    def is_production(self) -> bool:
-        """Check whether the service is running in production mode."""
-        return self.environment == Environment.PRODUCTION
-
-    def is_currency_allowed(self, currency: str) -> bool:
-        """Check whether a currency code is in the allowed set.
-
-        Args:
-            currency: Three-letter ISO 4217 currency code.
-
-        Returns:
-            True if the currency is accepted by this service.
-        """
-        return currency.upper() in self.allowed_currencies
-```
 
 ## Relationships
 

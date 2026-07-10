@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: getQuantity
 type: Function
 ---
@@ -29,10 +29,6 @@ int getQuantity()
 
 ## Source
 Lines 126–126 in `java/complex/model/Order.java`
-
-```java
-        public int getQuantity() { return quantity; }
-```
 
 ## Relationships
 

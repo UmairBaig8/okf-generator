@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: dispatch
 type: Function
 ---
@@ -36,18 +36,6 @@ HTTP Router with middleware support.
 
 ## Source
 Lines 24–32 in `php/complex/Router.php`
-
-```php
-    public function dispatch(RequestInterface $request): mixed {
-        foreach ($this->routes as $route) {
-            if ($route['method'] === $request->getMethod() && $route['path'] === $request->getUri()) {
-                $chain = $this->buildMiddlewareChain($route);
-                return $chain($request);
-            }
-        }
-        throw new \RuntimeException('No matching route', 404);
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Trigger
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: trg_orders_audit
 type: Trigger
 ---
@@ -30,12 +30,6 @@ CREATE TRIGGER trg_orders_audit
 
 ## Source
 Lines 88–90 in `sql/complex/functions.sql`
-
-```sql
-CREATE TRIGGER trg_orders_audit
-    AFTER INSERT OR UPDATE OR DELETE ON orders
-    FOR EACH ROW EXECUTE FUNCTION audit_order_changes();
-```
 
 ## Relationships
 

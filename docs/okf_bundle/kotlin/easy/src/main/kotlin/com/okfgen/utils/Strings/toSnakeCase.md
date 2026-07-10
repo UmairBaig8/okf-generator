@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: toSnakeCase
 type: Function
 ---
@@ -32,21 +32,6 @@ Converts a CamelCase string to snake_case.
 
 ## Source
 Lines 22–33 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Strings.kt`
-
-```kt
-fun toSnakeCase(camel: String): String {
-    val sb = StringBuilder()
-    for ((i, char) in camel.withIndex()) {
-        if (char.isUpperCase()) {
-            if (i > 0) sb.append('_')
-            sb.append(char.lowercaseChar())
-        } else {
-            sb.append(char)
-        }
-    }
-    return sb.toString()
-}
-```
 
 ## Relationships
 

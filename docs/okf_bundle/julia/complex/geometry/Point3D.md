@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:julia
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Point3D
 type: Class
 ---
@@ -25,14 +25,6 @@ struct Point3D
 
 ## Source
 Lines 20–24 in `julia/complex/geometry.jl`
-
-```jl
-struct Point3D
-    x::Float64
-    y::Float64
-    z::Float64
-end
-```
 
 ## Relationships
 

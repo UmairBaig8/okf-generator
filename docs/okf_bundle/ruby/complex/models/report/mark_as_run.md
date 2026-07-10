@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: mark_as_run!
 type: Function
 ---
@@ -25,12 +25,6 @@ def mark_as_run!()
 
 ## Source
 Lines 52–54 in `ruby/complex/models/report.rb`
-
-```rb
-    def mark_as_run!
-      @last_run = Time.now.utc
-    end
-```
 
 ## Relationships
 

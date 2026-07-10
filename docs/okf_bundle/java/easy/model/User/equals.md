@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: equals
 type: Function
 ---
@@ -33,15 +33,6 @@ boolean equals(Object o)
 
 ## Source
 Lines 74–79 in `java/easy/model/User.java`
-
-```java
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id);
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: findByCustomerId
 type: Function
 ---
@@ -47,15 +47,6 @@ Finds all orders belonging to a specific customer.
 
 ## Source
 Lines 61–66 in `java/complex/repository/OrderRepo.java`
-
-```java
-    public List<Order> findByCustomerId(String customerId) {
-        return store.values().stream()
-                .filter(o -> o.getCustomerId().equals(customerId))
-                .sorted()
-                .collect(Collectors.toList());
-    }
-```
 
 ## Relationships
 

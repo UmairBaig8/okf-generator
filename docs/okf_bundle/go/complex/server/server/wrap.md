@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: wrap
 type: Function
 ---
@@ -32,17 +32,6 @@ wrap applies common middleware (logging, JSON content-type) to a handler.
 
 ## Source
 Lines 39–46 in `go/complex/server/server.go`
-
-```go
-func (s *Server) wrap(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		w.Header().Set("Content-Type", "application/json")
-		next(w, r)
-		fmt.Printf("[%s] %s %s (%v)\n", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
-	}
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Interface
 - module:kotlin
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Repository
 type: Interface
 ---
@@ -44,16 +44,6 @@ Generic repository interface for CRUD operations.
 
 ## Source
 Lines 9–15 in `kotlin/complex/src/main/kotlin/com/okfgen/service/repo/UserRepository.kt`
-
-```kt
-interface Repository<T : Comparable<T>> {
-    fun save(entity: T): T
-    fun findById(id: String): T?
-    fun findAll(): List<T>
-    fun deleteById(id: String): Boolean
-    fun count(): Int
-}
-```
 
 ## Relationships
 

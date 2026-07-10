@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: isValidEmail
 type: Function
 ---
@@ -48,12 +48,6 @@ Checks whether the given string is a valid email address.
 
 ## Source
 Lines 25–27 in `java/easy/util/StringUtils.java`
-
-```java
-    public static boolean isValidEmail(String email) {
-        return email != null && EMAIL_PATTERN.matcher(email).matches();
-    }
-```
 
 ## Relationships
 

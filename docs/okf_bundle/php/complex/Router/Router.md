@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Router
 type: Class
 ---
@@ -39,44 +39,6 @@ HTTP Router with middleware support.
 
 ## Source
 Lines 11–45 in `php/complex/Router.php`
-
-```php
-class Router {
-    private array $routes = [];
-    private array $middleware = [];
-
-    public function addRoute(string $method, string $path, callable $handler, array $middleware = []): void {
-        $this->routes[] = [
-            'method' => $method,
-            'path' => $path,
-            'handler' => $handler,
-            'middleware' => $middleware,
-        ];
-    }
-
-    public function dispatch(RequestInterface $request): mixed {
-        foreach ($this->routes as $route) {
-            if ($route['method'] === $request->getMethod() && $route['path'] === $request->getUri()) {
-                $chain = $this->buildMiddlewareChain($route);
-                return $chain($request);
-            }
-        }
-        throw new \RuntimeException('No matching route', 404);
-    }
-
-    private function buildMiddlewareChain(array $route): callable {
-        $handler = $route['handler'];
-        foreach (array_reverse(array_merge($this->middleware, $route['middleware'])) as $mw) {
-            $handler = fn($req) => $mw->process($req, $handler);
-        }
-        return $handler;
-    }
-
-    public function addMiddleware(MiddlewareInterface $mw): void {
-        $this->middleware[] = $mw;
-    }
-}
-```
 
 ## Relationships
 

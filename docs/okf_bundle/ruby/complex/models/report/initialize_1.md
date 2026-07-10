@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: initialize
 type: Function
 ---
@@ -25,14 +25,6 @@ def initialize(id, title, schedule, data = {})
 
 ## Source
 Lines 46–50 in `ruby/complex/models/report.rb`
-
-```rb
-    def initialize(id, title, schedule, data = {})
-      super(id, title, data)
-      @schedule = schedule
-      @last_run = nil
-    end
-```
 
 ## Relationships
 

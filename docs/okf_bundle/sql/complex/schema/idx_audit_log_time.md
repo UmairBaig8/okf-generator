@@ -9,9 +9,9 @@ tags:
 - type:Index
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: idx_audit_log_time
 type: Index
 ---
@@ -28,10 +28,6 @@ CREATE INDEX idx_audit_log_time ON audit_log(changed_at)
 
 ## Source
 Lines 56–56 in `sql/complex/schema.sql`
-
-```sql
-CREATE INDEX idx_audit_log_time ON audit_log(changed_at);
-```
 
 ## Relationships
 

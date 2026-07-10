@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:scala
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: getResult
 type: Function
 ---
@@ -32,10 +32,6 @@ Top-level helper.
 
 ## Source
 Lines 10–10 in `scala/easy/Calculator.scala`
-
-```scala
-  def getResult: Int = result
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: vector2i_dot
 type: Function
 ---
@@ -25,12 +25,6 @@ int vector2i_dot(Vector2i a, Vector2i b)
 
 ## Source
 Lines 24–26 in `c/easy/math.c`
-
-```c
-int vector2i_dot(Vector2i a, Vector2i b) {
-    return a.x * b.x + a.y * b.y;
-}
-```
 
 ## Relationships
 

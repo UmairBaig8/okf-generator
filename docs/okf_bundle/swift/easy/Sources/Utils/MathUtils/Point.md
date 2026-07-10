@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:swift
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Point
 type: Class
 ---
@@ -37,25 +37,6 @@ Represents a 2D coordinate.
 
 ## Source
 Lines 21–36 in `swift/easy/Sources/Utils/MathUtils.swift`
-
-```swift
-public struct Point {
-    public var x: Double
-    public var y: Double
-
-    public init(x: Double, y: Double) {
-        self.x = x
-        self.y = y
-    }
-
-    /// Computes Euclidean distance to another point.
-    public func distance(to other: Point) -> Double {
-        let dx = x - other.x
-        let dy = y - other.y
-        return sqrt(dx * dx + dy * dy)
-    }
-}
-```
 
 ## Relationships
 

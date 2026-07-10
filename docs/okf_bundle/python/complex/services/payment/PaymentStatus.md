@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: PaymentStatus
 type: Class
 ---
@@ -30,16 +30,6 @@ Possible states of a payment transaction.
 
 ## Source
 Lines 12–18 in `python/complex/services/payment.py`
-
-```py
-class PaymentStatus(Enum):
-    """Possible states of a payment transaction."""
-
-    PENDING = "pending"
-    SUCCEEDED = "succeeded"
-    FAILED = "failed"
-    REFUNDED = "refunded"
-```
 
 ## Relationships
 

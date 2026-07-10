@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:easy_v2
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: AdminUser
 type: Class
 ---
@@ -42,15 +42,6 @@ An administrative user with elevated system access.
 
 ## Source
 Lines 46–51 in `python/easy_v2/models.py`
-
-```py
-class AdminUser(User):
-    """An administrative user with elevated system access."""
-
-    role: str = "admin"
-    permissions: list[str] = field(default_factory=lambda: ["read", "write", "delete"])
-    access_level: int = 10
-```
 
 ## Relationships
 

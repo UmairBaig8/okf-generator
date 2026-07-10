@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: calculate_order_total
 type: Function
 ---
@@ -32,25 +32,6 @@ Calculate the total for an order based on its items.
 
 ## Source
 Lines 4–19 in `sql/complex/functions.sql`
-
-```sql
-CREATE OR REPLACE FUNCTION calculate_order_total(p_order_id INTEGER)
-RETURNS NUMERIC(12,2) AS $$
-DECLARE
-    v_total NUMERIC(12,2);
-BEGIN
-    SELECT COALESCE(SUM(oi.quantity * oi.unit_price), 0)
-    INTO v_total
-    FROM order_items oi
-    WHERE oi.order_id = p_order_id;
-
-    UPDATE orders SET total = v_total, updated_at = now()
-    WHERE id = p_order_id;
-
-    RETURN v_total;
-END;
-$$ LANGUAGE plpgsql;
-```
 
 ## Relationships
 

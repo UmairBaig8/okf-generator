@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: deepMerge
 type: Function
 ---
@@ -32,32 +32,6 @@ function deepMerge(
 
 ## Source
 Lines 46–68 in `typescript/easy/helpers.ts`
-
-```ts
-export function deepMerge<T extends Record<string, unknown>>(
-  target: T,
-  source: Partial<T>,
-): T {
-  const result = { ...target };
-  for (const key of Object.keys(source) as (keyof T)[]) {
-    const srcVal = source[key];
-    const tgtVal = target[key];
-    if (
-      srcVal !== null &&
-      typeof srcVal === 'object' &&
-      !Array.isArray(srcVal) &&
-      tgtVal !== null &&
-      typeof tgtVal === 'object' &&
-      !Array.isArray(tgtVal)
-    ) {
-      result[key] = deepMerge(tgtVal as Record<string, unknown>, srcVal as Record<string, unknown>) as T[keyof T];
-    } else if (srcVal !== undefined) {
-      result[key] = srcVal as T[keyof T];
-    }
-  }
-  return result;
-}
-```
 
 ## Relationships
 

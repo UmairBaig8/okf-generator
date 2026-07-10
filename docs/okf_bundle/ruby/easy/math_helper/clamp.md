@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: clamp
 type: Function
 ---
@@ -25,12 +25,6 @@ def clamp(value, min, max)
 
 ## Source
 Lines 41–43 in `ruby/easy/math_helper.rb`
-
-```rb
-  def clamp(value, min, max)
-    [[value, min].max, max].min
-  end
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_create(void)
 type: Function
 ---
@@ -33,16 +33,6 @@ include <stdlib.h>
 
 ## Source
 Lines 4–10 in `c/complex/linked_list.c`
-
-```c
-LinkedList* list_create(void) {
-    LinkedList* list = (LinkedList*)malloc(sizeof(LinkedList));
-    if (!list) return NULL;
-    list->head = NULL;
-    list->size = 0;
-    return list;
-}
-```
 
 ## Relationships
 

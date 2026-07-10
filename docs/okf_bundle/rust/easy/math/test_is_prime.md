@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: test_is_prime
 type: Function
 ---
@@ -36,13 +36,6 @@ fn test_is_prime()
 
 ## Source
 Lines 61–64 in `rust/easy/math.rs`
-
-```rs
-    fn test_is_prime() {
-        assert!(is_prime(7));
-        assert!(!is_prime(1));
-    }
-```
 
 ## Relationships
 

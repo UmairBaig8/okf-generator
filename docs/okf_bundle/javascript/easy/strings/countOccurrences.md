@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: countOccurrences
 type: Function
 ---
@@ -46,19 +46,6 @@ Count the number of occurrences of a substring within a string.
 
 ## Source
 Lines 56–65 in `javascript/easy/strings.js`
-
-```js
-function countOccurrences(str, substr) {
-  if (!str || !substr) return 0;
-  let count = 0;
-  let pos = 0;
-  while ((pos = str.indexOf(substr, pos)) !== -1) {
-    count++;
-    pos += substr.length;
-  }
-  return count;
-}
-```
 
 ## Relationships
 

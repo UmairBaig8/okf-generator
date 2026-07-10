@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -62,91 +62,6 @@ Represents a user entity in the system.
 
 ## Source
 Lines 9–90 in `java/easy/model/User.java`
-
-```java
-public class User {
-
-    private final String id;
-    private String email;
-    private String displayName;
-    private boolean active;
-    private final LocalDateTime createdAt;
-
-    /**
-     * Constructs a new User with the given fields.
-     *
-     * @param id          unique identifier
-     * @param email       email address
-     * @param displayName optional display name
-     */
-    public User(String id, String email, String displayName) {
-        this.id = id;
-        this.email = email;
-        this.displayName = displayName;
-        this.active = true;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    /**
-     * Constructs a minimal User with just an ID and email.
-     *
-     * @param id    unique identifier
-     * @param email email address
-     */
-    public User(String id, String email) {
-        this(id, email, null);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" + "id='" + id + '\'' + ", email='" + email + '\'' + '}';
-    }
-}
-```
 
 ## Relationships
 

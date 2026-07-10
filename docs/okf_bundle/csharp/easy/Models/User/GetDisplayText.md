@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: GetDisplayText
 type: Function
 ---
@@ -29,10 +29,6 @@ GetDisplayText()
 
 ## Source
 Lines 26–26 in `csharp/easy/Models/User.cs`
-
-```cs
-    public string GetDisplayText() => DisplayName ?? Email;
-```
 
 ## Relationships
 

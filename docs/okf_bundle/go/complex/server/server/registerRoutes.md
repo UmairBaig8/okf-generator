@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: registerRoutes
 type: Function
 ---
@@ -32,14 +32,6 @@ registerRoutes attaches all API endpoints to the mux.
 
 ## Source
 Lines 32–36 in `go/complex/server/server.go`
-
-```go
-func (s *Server) registerRoutes() {
-	s.mux.HandleFunc("GET /api/users", s.wrap(handlers.ListUsers(s.userStore)))
-	s.mux.HandleFunc("GET /api/users/{id}", s.wrap(handlers.GetUser(s.userStore)))
-	s.mux.HandleFunc("POST /api/users", s.wrap(handlers.CreateUser(s.userStore)))
-}
-```
 
 ## Relationships
 

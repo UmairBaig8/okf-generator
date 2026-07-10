@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: title_case
 type: Function
 ---
@@ -41,12 +41,6 @@ Convert a string to Title Case.
 
 ## Source
 Lines 15–17 in `ruby/easy/formatter.rb`
-
-```rb
-  def self.title_case(text)
-    text.to_s.split.map(&:capitalize).join(" ")
-  end
-```
 
 ## Relationships
 

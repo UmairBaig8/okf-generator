@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: new
 type: Function
 ---
@@ -36,12 +36,6 @@ Create a new `Point` at the given coordinates.
 
 ## Source
 Lines 45–47 in `rust/easy/lib.rs`
-
-```rs
-    pub fn new(x: f64, y: f64) -> Self {
-        Point { x, y }
-    }
-```
 
 ## Relationships
 

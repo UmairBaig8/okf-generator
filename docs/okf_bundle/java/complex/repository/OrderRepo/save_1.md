@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: save
 type: Function
 ---
@@ -33,15 +33,6 @@ Order save(Order order)
 
 ## Source
 Lines 28–33 in `java/complex/repository/OrderRepo.java`
-
-```java
-    @Override
-    public Order save(Order order) {
-        Objects.requireNonNull(order, "Order must not be null");
-        store.put(order.getId(), order);
-        return order;
-    }
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: withRetry
 type: Function
 ---
@@ -32,26 +32,6 @@ function withRetry(
 
 ## Source
 Lines 90–106 in `typescript/easy/helpers.ts`
-
-```ts
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 3,
-): Promise<T> {
-  let lastError: unknown;
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (err) {
-      lastError = err;
-      if (attempt < maxRetries - 1) {
-        await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 100));
-      }
-    }
-  }
-  throw lastError;
-}
-```
 
 ## Relationships
 

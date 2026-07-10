@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: chunk
 type: Function
 ---
@@ -51,19 +51,6 @@ Splits a string into chunks of the given size.
 
 ## Source
 Lines 75–84 in `java/easy/util/StringUtils.java`
-
-```java
-    public static List<String> chunk(String text, int size) {
-        List<String> chunks = new ArrayList<>();
-        if (text == null || size <= 0) {
-            return chunks;
-        }
-        for (int i = 0; i < text.length(); i += size) {
-            chunks.add(text.substring(i, Math.min(i + size, text.length())));
-        }
-        return chunks;
-    }
-```
 
 ## Relationships
 

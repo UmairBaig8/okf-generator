@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: InMemoryRepository
 type: Class
 ---
@@ -45,54 +45,6 @@ class InMemoryRepository
 
 ## Source
 Lines 22–66 in `typescript/complex/utils/db.ts`
-
-```ts
-export class InMemoryRepository<T extends { id: string }> implements Repository<T> {
-  private items: Map<string, T> = new Map();
-
-  findById(id: string): T | undefined {
-    return this.items.get(id);
-  }
-
-  findAll(): T[] {
-    return Array.from(this.items.values());
-  }
-
-  insert(entity: T): T {
-    this.items.set(entity.id, entity);
-    return entity;
-  }
-
-  update(id: string, partial: Partial<T>): T | undefined {
-    const existing = this.items.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...partial, id } as T;
-    this.items.set(id, updated);
-    return updated;
-  }
-
-  delete(id: string): boolean {
-    return this.items.delete(id);
-  }
-
-  /**
-   * Count the number of entities in the collection.
-   * @returns Entity count.
-   */
-  count(): number {
-    return this.items.size;
-  }
-
-  /**
-   * Find entities matching a predicate.
-   * @param predicate - Filter function.
-   * @returns Matching entities.
-   */
-  findWhere(predicate: (item: T) => boolean): T[] {
-    return Array.from(this.items.values()).filter(predicate);
-  }
-}
-```
 
 ## Relationships
 

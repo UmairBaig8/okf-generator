@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:python
 - domain:easy_v2
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: AuditEntry
 type: Class
 ---
@@ -44,17 +44,6 @@ Immutable audit log entry recording a system action.
 
 ## Source
 Lines 55–62 in `python/easy_v2/models.py`
-
-```py
-class AuditEntry(TimestampMixin):
-    """Immutable audit log entry recording a system action."""
-
-    entry_id: str
-    actor: str
-    action: str
-    resource: str
-    details: dict = field(default_factory=dict)
-```
 
 ## Relationships
 

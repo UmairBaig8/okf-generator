@@ -8,9 +8,9 @@ tags:
 - type:Class
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: AdminUser
 type: Class
 ---
@@ -40,32 +40,6 @@ class AdminUser
 
 ## Source
 Lines 75–97 in `typescript/complex/models/user.ts`
-
-```ts
-export class AdminUser extends User {
-  public readonly permissions: string[];
-
-  constructor(
-    id: string,
-    email: Email,
-    name: string,
-    permissions: string[] = ['read', 'write', 'delete', 'manage'],
-  ) {
-    super(id, email, name, UserRole.ADMIN);
-    this.permissions = permissions;
-  }
-
-  /**
-   * Grant an additional permission to this admin user.
-   * @param permission - Permission string to add.
-   */
-  public grantPermission(permission: string): void {
-    if (!this.permissions.includes(permission)) {
-      this.permissions.push(permission);
-    }
-  }
-}
-```
 
 ## Relationships
 

@@ -951,15 +951,8 @@ function showCodePanel(id) {
   var html = '';
   if (code) {
     html += '<div class="sec"><h3>Source Code</h3><pre><code class="language-' + lang + '">' + esc(code) + '</code></pre></div>';
-  }
-  if (body && (!code || code !== body)) {
-    var bodyPreview = body.replace(/^---[\s\S]*?---\n?/, '').trim();
-    if (bodyPreview.length > 2000) bodyPreview = bodyPreview.slice(0, 2000) + '\n…';
-    if (code) {
-      html += '<details style="margin-top:var(--sp-3)" open><summary style="cursor:pointer;font-weight:600;font-size:12px;color:var(--text-3)">Concept Info</summary><pre style="font-size:11px;color:var(--text-2);margin-top:var(--sp-2);padding:var(--sp-3);background:var(--surface-2);border-radius:var(--r-sm);border:1px solid var(--border)">' + esc(bodyPreview) + '</pre></details>';
-    } else {
-      html = '<pre><code class="language-' + lang + '">' + esc(body) + '</code></pre>';
-    }
+  } else if (body) {
+    html = '<pre><code>' + esc(body.slice(0, 3000)) + '</code></pre>';
   }
   if (!html) return;
   qs('code-panel-source').innerHTML = html;

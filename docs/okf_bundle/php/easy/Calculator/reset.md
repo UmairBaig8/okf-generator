@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: reset
 type: Function
 ---
@@ -36,12 +36,6 @@ A simple calculator class.
 
 ## Source
 Lines 23–25 in `php/easy/Calculator.php`
-
-```php
-    public function reset(): void {
-        $this->result = 0.0;
-    }
-```
 
 ## Relationships
 

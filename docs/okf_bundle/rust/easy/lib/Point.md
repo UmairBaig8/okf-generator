@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:rust
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Point
 type: Class
 ---
@@ -46,13 +46,6 @@ A simple struct representing a 2D coordinate.
 
 ## Source
 Lines 38–41 in `rust/easy/lib.rs`
-
-```rs
-pub struct Point {
-    pub x: f64,
-    pub y: f64,
-}
-```
 
 ## Relationships
 

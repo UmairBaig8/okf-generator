@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:dart
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: User
 type: Class
 ---
@@ -37,17 +37,6 @@ User account model.
 
 ## Source
 Lines 16–23 in `dart/easy/calculator.dart`
-
-```dart
-class User {
-  final int id;
-  final String name;
-
-  User(this.id, this.name);
-
-  String greet() => 'Hi $name';
-}
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: roundTo
 type: Function
 ---
@@ -46,13 +46,6 @@ Round a number to a specified number of decimal places.
 
 ## Source
 Lines 25–28 in `javascript/easy/math.js`
-
-```js
-function roundTo(value, decimals = 2) {
-  const factor = Math.pow(10, decimals);
-  return Math.round(value * factor) / factor;
-}
-```
 
 ## Relationships
 

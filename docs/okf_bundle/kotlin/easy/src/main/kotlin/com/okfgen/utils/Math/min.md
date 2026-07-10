@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:kotlin
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: min
 type: Function
 ---
@@ -32,10 +32,6 @@ Returns the smaller of two integers.
 
 ## Source
 Lines 6–6 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.kt`
-
-```kt
-fun min(a: Int, b: Int): Int = if (a < b) a else b
-```
 
 ## Relationships
 

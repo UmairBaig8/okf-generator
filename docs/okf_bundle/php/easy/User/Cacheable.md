@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:php
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Cacheable
 type: Class
 ---
@@ -36,16 +36,6 @@ Caches user data in memory.
 
 ## Source
 Lines 50–56 in `php/easy/User.php`
-
-```php
-trait Cacheable {
-    private array $cache = [];
-    
-    public function getFromCache(string $key): mixed {
-        return $this->cache[$key] ?? null;
-    }
-}
-```
 
 ## Relationships
 

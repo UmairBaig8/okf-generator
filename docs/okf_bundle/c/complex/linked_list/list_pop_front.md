@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_pop_front
 type: Function
 ---
@@ -25,18 +25,6 @@ int list_pop_front(LinkedList* list)
 
 ## Source
 Lines 43–51 in `c/complex/linked_list.c`
-
-```c
-int list_pop_front(LinkedList* list) {
-    if (!list->head) return 0;
-    Node* old = list->head;
-    int value = old->data;
-    list->head = old->next;
-    free(old);
-    list->size--;
-    return value;
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: compareTo
 type: Function
 ---
@@ -33,13 +33,6 @@ int compareTo(Order other)
 
 ## Source
 Lines 90–93 in `java/complex/model/Order.java`
-
-```java
-    @Override
-    public int compareTo(Order other) {
-        return this.createdAt.compareTo(other.createdAt);
-    }
-```
 
 ## Relationships
 

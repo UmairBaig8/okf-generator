@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: service
 type: Function
 ---
@@ -45,12 +45,6 @@ Return the underlying payment service instance.
 
 ## Source
 Lines 47–49 in `python/complex/api.py`
-
-```py
-    def service(self) -> PaymentService:
-        """Return the underlying payment service instance."""
-        return self._service
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:java
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: getCreatedAt
 type: Function
 ---
@@ -29,12 +29,6 @@ LocalDateTime getCreatedAt()
 
 ## Source
 Lines 70–72 in `java/easy/model/User.java`
-
-```java
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-```
 
 ## Relationships
 

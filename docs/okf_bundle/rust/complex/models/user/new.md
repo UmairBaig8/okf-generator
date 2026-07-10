@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: new
 type: Function
 ---
@@ -36,17 +36,6 @@ Create a new User with an auto-generated UUID.
 
 ## Source
 Lines 15–22 in `rust/complex/models/user.rs`
-
-```rs
-    pub fn new(email: &str, display_name: Option<&str>) -> Self {
-        User {
-            id: Uuid::new_v4().to_string(),
-            email: email.to_string(),
-            display_name: display_name.map(|s| s.to_string()),
-            active: true,
-        }
-    }
-```
 
 ## Relationships
 

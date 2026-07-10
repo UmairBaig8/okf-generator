@@ -10,9 +10,9 @@ tags:
 - type:Function
 - module:python
 - domain:easy_v2
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: batched
 type: Function
 ---
@@ -44,12 +44,6 @@ Split items into batches (v2 — renamed from chunk_list with different default)
 
 ## Source
 Lines 124–126 in `python/easy_v2/utils.py`
-
-```py
-def batched(items: Sequence[T], chunk_size: int = 50) -> list[list[T]]:
-    """Split items into batches (v2 — renamed from chunk_list with different default)."""
-    return [list(items[i : i + chunk_size]) for i in range(0, len(items), chunk_size)]
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:php
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: addRoute
 type: Function
 ---
@@ -36,17 +36,6 @@ HTTP Router with middleware support.
 
 ## Source
 Lines 15–22 in `php/complex/Router.php`
-
-```php
-    public function addRoute(string $method, string $path, callable $handler, array $middleware = []): void {
-        $this->routes[] = [
-            'method' => $method,
-            'path' => $path,
-            'handler' => $handler,
-            'middleware' => $middleware,
-        ];
-    }
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:go
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Create
 type: Function
 ---
@@ -32,23 +32,6 @@ Create inserts a new user and returns it with an auto-generated ID.
 
 ## Source
 Lines 62–75 in `go/complex/store/user.go`
-
-```go
-func (s *UserStore) Create(input CreateUserInput) (User, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	id := fmt.Sprintf("u_%d", s.next)
-	s.next++
-	user := User{
-		ID:        id,
-		Name:      input.Name,
-		Email:     input.Email,
-		CreatedAt: time.Now().UTC(),
-	}
-	s.users[id] = user
-	return user, nil
-}
-```
 
 ## Relationships
 

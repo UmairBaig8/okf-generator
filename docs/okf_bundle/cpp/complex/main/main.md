@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: main
 type: Function
 ---
@@ -34,33 +34,6 @@ include <cassert>
 
 ## Source
 Lines 5–28 in `cpp/complex/main.cpp`
-
-```cpp
-int main() {
-    okfgen::Vector<int> vec;
-    assert(vec.empty());
-    assert(vec.size() == 0);
-
-    vec.push_back(10);
-    vec.push_back(20);
-    vec.push_back(30);
-    assert(vec.size() == 3);
-    assert(vec.at(1) == 20);
-
-    vec.pop_back();
-    assert(vec.size() == 2);
-
-    okfgen::Vector<int> copy(vec);
-    assert(copy.size() == 2);
-    assert(copy[0] == 10);
-
-    vec.clear();
-    assert(vec.empty());
-
-    std::cout << "All Vector tests passed." << std::endl;
-    return 0;
-}
-```
 
 ## Relationships
 

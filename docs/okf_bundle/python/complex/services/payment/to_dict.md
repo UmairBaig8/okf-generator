@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: to_dict
 type: Function
 ---
@@ -41,18 +41,6 @@ Serialize the result to a plain dictionary.
 
 ## Source
 Lines 40–48 in `python/complex/services/payment.py`
-
-```py
-    def to_dict(self) -> dict:
-        """Serialize the result to a plain dictionary."""
-        return {
-            "charge_id": self.charge_id,
-            "status": self.status.value,
-            "amount_cents": self.amount_cents,
-            "currency": self.currency,
-            "processed_at": self.processed_at.isoformat(),
-        }
-```
 
 ## Relationships
 

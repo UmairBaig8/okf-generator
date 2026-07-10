@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: customers
 type: Table
 ---
@@ -44,17 +44,6 @@ CREATE TABLE customers (
 
 ## Source
 Lines 24–31 in `sql/easy/schema.sql`
-
-```sql
-CREATE TABLE customers (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    email       TEXT    NOT NULL UNIQUE,
-    first_name  TEXT    NOT NULL,
-    last_name   TEXT    NOT NULL,
-    phone       TEXT,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-```
 
 ## Relationships
 

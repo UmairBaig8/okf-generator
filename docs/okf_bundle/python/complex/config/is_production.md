@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: is_production
 type: Function
 ---
@@ -41,12 +41,6 @@ Check whether the service is running in production mode.
 
 ## Source
 Lines 40–42 in `python/complex/config.py`
-
-```py
-    def is_production(self) -> bool:
-        """Check whether the service is running in production mode."""
-        return self.environment == Environment.PRODUCTION
-```
 
 ## Relationships
 

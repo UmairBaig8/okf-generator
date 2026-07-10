@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: extract_urls
 type: Function
 ---
@@ -42,14 +42,6 @@ Extract all URLs from a block of text.
 
 ## Source
 Lines 33–37 in `ruby/easy/formatter.rb`
-
-```rb
-  def self.extract_urls(text, &block)
-    urls = text.to_s.scan(%r{https?://[^\s]+})
-    urls.each(&block) if block
-    urls
-  end
-```
 
 ## Relationships
 

@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:scala
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: add
 type: Function
 ---
@@ -32,12 +32,6 @@ Top-level helper.
 
 ## Source
 Lines 5–7 in `scala/complex/Router.scala`
-
-```scala
-  def add(method: String, path: String, handler: () => Any): Unit = {
-    routes = routes :+ Route(method, path, handler)
-  }
-```
 
 ## Relationships
 

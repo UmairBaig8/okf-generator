@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: '& Calculator::divide(double value)'
 type: Function
 ---
@@ -25,16 +25,6 @@ Calculator & Calculator::divide(double value)()
 
 ## Source
 Lines 24–30 in `cpp/easy/calc.cpp`
-
-```cpp
-Calculator& Calculator::divide(double value) {
-    if (value == 0.0) {
-        throw std::invalid_argument("Division by zero");
-    }
-    accumulator_ /= value;
-    return *this;
-}
-```
 
 ## Relationships
 

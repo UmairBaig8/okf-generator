@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: init
 type: Function
 ---
@@ -25,15 +25,6 @@ init(items: [T])
 
 ## Source
 Lines 10–15 in `swift/complex/Sources/Service/Models/Paginated.swift`
-
-```swift
-    public init(items: [T], total: Int, page: Int, pageSize: Int) {
-        self.items = items
-        self.total = total
-        self.page = page
-        self.pageSize = pageSize
-    }
-```
 
 ## Relationships
 

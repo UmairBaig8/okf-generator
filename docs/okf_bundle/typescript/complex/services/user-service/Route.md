@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Route
 type: Function
 ---
@@ -32,14 +32,6 @@ Route decorator stub for controller methods.
 
 ## Source
 Lines 34–38 in `typescript/complex/services/user-service.ts`
-
-```ts
-function Route(method: string, path: string): (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => void {
-  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor): void => {
-    Reflect.defineMetadata('route', { method, path }, descriptor.value);
-  };
-}
-```
 
 ## Relationships
 

@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: list_size
 type: Function
 ---
@@ -25,12 +25,6 @@ int list_size(const LinkedList* list)
 
 ## Source
 Lines 77–79 in `c/complex/linked_list.c`
-
-```c
-int list_size(const LinkedList* list) {
-    return list->size;
-}
-```
 
 ## Relationships
 

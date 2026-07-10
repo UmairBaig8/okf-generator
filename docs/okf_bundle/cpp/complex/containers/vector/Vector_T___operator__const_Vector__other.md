@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:cpp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: '& Vector<T>::operator=(const Vector& other)'
 type: Function
 ---
@@ -29,18 +29,6 @@ template<<typename T>> Vector<T> & Vector<T>::operator=(const Vector& other)()
 
 ## Source
 Lines 27–35 in `cpp/complex/containers/vector.cpp`
-
-```cpp
-Vector<T>& Vector<T>::operator=(const Vector& other) {
-    if (this != &other) {
-        Vector tmp(other);
-        std::swap(data_, tmp.data_);
-        std::swap(size_, tmp.size_);
-        std::swap(capacity_, tmp.capacity_);
-    }
-    return *this;
-}
-```
 
 ## Relationships
 

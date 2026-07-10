@@ -9,9 +9,9 @@ tags:
 - type:Index
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: idx_products_active
 type: Index
 ---
@@ -28,10 +28,6 @@ CREATE INDEX idx_products_active ON products(active) WHERE active = 1
 
 ## Source
 Lines 22–22 in `sql/easy/schema.sql`
-
-```sql
-CREATE INDEX idx_products_active ON products(active) WHERE active = 1;
-```
 
 ## Relationships
 

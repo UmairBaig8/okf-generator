@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: json_response
 type: Function
 ---
@@ -41,31 +41,6 @@ with a ``to_dict()`` method.
 
 ## Source
 Lines 16–37 in `python/complex/api.py`
-
-```py
-def json_response(func):
-    """Decorator that wraps the return value as a JSON-serializable dict.
-
-    Expects the wrapped function to return a dict or a Pydantic-like model
-    with a ``to_dict()`` method.
-    """
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            if hasattr(result, "to_dict"):
-                result = result.to_dict()
-            return {"success": True, "data": result, "error": None}
-        except PaymentError as exc:
-            logger.error("PaymentError in %s: %s", func.__name__, exc)
-            return {"success": False, "data": None, "error": str(exc)}
-        except Exception as exc:
-            logger.exception("Unhandled exception in %s", func.__name__)
-            return {"success": False, "data": None, "error": "Internal server error"}
-
-    return wrapper
-```
 
 ## Relationships
 

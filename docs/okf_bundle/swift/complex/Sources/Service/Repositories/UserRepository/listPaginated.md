@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: listPaginated
 type: Function
 ---
@@ -32,16 +32,6 @@ Returns users sorted by creation date with pagination.
 
 ## Source
 Lines 49–55 in `swift/complex/Sources/Service/Repositories/UserRepository.swift`
-
-```swift
-    public func listPaginated(page: Int, pageSize: Int) -> Paginated<User> {
-        let all = store.values.sorted()
-        let total = all.count
-        let start = max(0, (page - 1) * pageSize)
-        let items = Array(all.dropFirst(start).prefix(pageSize))
-        return Paginated(items: items, total: total, page: page, pageSize: pageSize)
-    }
-```
 
 ## Relationships
 

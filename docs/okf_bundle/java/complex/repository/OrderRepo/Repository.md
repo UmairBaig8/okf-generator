@@ -9,9 +9,9 @@ tags:
 - type:Class
 - module:java
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Repository
 type: Class
 ---
@@ -49,16 +49,6 @@ Generic repository interface for entities with string IDs.
 
 ## Source
 Lines 13–19 in `java/complex/repository/OrderRepo.java`
-
-```java
-public interface Repository<T extends Comparable<T>> {
-    T save(T entity);
-    Optional<T> findById(String id);
-    List<T> findAll();
-    void deleteById(String id);
-    long count();
-}
-```
 
 ## Relationships
 

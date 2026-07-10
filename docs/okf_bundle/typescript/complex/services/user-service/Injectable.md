@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: Injectable
 type: Function
 ---
@@ -32,14 +32,6 @@ Dependency injection decorator stub.
 
 ## Source
 Lines 25–29 in `typescript/complex/services/user-service.ts`
-
-```ts
-function Injectable(): (target: new (...args: unknown[]) => unknown) => void {
-  return (target: new (...args: unknown[]) => unknown) => {
-    Reflect.defineMetadata('injectable', true, target);
-  };
-}
-```
 
 ## Relationships
 

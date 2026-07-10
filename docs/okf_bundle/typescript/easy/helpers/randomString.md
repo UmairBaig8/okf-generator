@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:typescript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: randomString
 type: Function
 ---
@@ -25,17 +25,6 @@ function randomString(length: number): string
 
 ## Source
 Lines 75–82 in `typescript/easy/helpers.ts`
-
-```ts
-export function randomString(length: number): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-```
 
 ## Relationships
 

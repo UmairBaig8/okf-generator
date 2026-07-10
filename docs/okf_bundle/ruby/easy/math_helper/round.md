@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:ruby
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: round
 type: Function
 ---
@@ -25,12 +25,6 @@ def round(value)
 
 ## Source
 Lines 37–39 in `ruby/easy/math_helper.rb`
-
-```rb
-  def round(value)
-    value.round(@precision)
-  end
-```
 
 ## Relationships
 

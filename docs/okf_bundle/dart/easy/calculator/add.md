@@ -9,9 +9,9 @@ tags:
 - type:Function
 - module:dart
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: add
 type: Function
 ---
@@ -32,10 +32,6 @@ Add a value to the result.
 
 ## Source
 Lines 8–8 in `dart/easy/calculator.dart`
-
-```dart
-  int add(int value) => result += value;
-```
 
 ## Relationships
 

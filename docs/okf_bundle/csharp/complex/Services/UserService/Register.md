@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:csharp
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: Register
 type: Function
 ---
@@ -29,26 +29,6 @@ Register()
 
 ## Source
 Lines 17–33 in `csharp/complex/Services/UserService.cs`
-
-```cs
-    public User Register(string email, string password)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email is required.");
-        if (_users.Any(u => u.Email == email))
-            throw new InvalidOperationException("Email already registered.");
-
-        var user = new User
-        {
-            Id = $"u_{_nextId++}",
-            Email = email,
-            PasswordHash = HashPassword(password),
-            CreatedAt = DateTime.UtcNow
-        };
-        _users.Add(user);
-        return user;
-    }
-```
 
 ## Relationships
 

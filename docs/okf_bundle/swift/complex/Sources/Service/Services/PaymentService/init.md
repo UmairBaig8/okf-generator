@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:swift
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T17:15:25Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: init
 type: Function
 ---
@@ -25,12 +25,6 @@ init(gatewayApiKey: String)
 
 ## Source
 Lines 14–16 in `swift/complex/Sources/Service/Services/PaymentService.swift`
-
-```swift
-    public init(gatewayApiKey: String) {
-        self.gatewayApiKey = gatewayApiKey
-    }
-```
 
 ## Relationships
 
