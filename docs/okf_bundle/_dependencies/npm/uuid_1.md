@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:^9.0.0
-- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-10T18:42:48Z'
+- ecosystem:npm
+timestamp: '2026-07-10T18:45:41Z'
 title: uuid
 type: Dependency
 ---

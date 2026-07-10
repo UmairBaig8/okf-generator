@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
-- manifest:pyproject.toml
 - version:>=0.25.0
-timestamp: '2026-07-10T18:42:48Z'
+- manifest:pyproject.toml
+- ecosystem:pip
+timestamp: '2026-07-10T18:45:41Z'
 title: httpx
 type: Dependency
 ---

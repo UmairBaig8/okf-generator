@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust
 resource: rust
-timestamp: '2026-07-10T18:43:18Z'
+timestamp: '2026-07-10T18:46:12Z'
 title: rust
 type: Index
 ---
