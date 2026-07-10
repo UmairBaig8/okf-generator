@@ -1,0 +1,58 @@
+---
+concept_id: python/easy_v2/utils/batched
+description: Split items into batches (v2 — renamed from chunk_list with different
+  default).
+language: python
+okf_version: '0.2'
+resource: python/easy_v2/utils.py
+tags:
+- lang:python
+- type:Function
+- module:python
+- domain:easy_v2
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: batched
+type: Function
+---
+
+# batched
+
+Split items into batches (v2 — renamed from chunk_list with different default).
+
+## Signature
+
+```python
+def batched(items: Sequence[T], chunk_size: int = 50) -> list[list[T]]
+```
+
+## Docstring
+
+Split items into batches (v2 — renamed from chunk_list with different default).
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `items` | `Sequence[T]` | `—` |
+
+| `chunk_size` | `int` | `50` |
+
+## Returns
+`list[list[T]]`
+
+## Source
+Lines 124–126 in `python/easy_v2/utils.py`
+
+```py
+def batched(items: Sequence[T], chunk_size: int = 50) -> list[list[T]]:
+    """Split items into batches (v2 — renamed from chunk_list with different default)."""
+    return [list(items[i : i + chunk_size]) for i in range(0, len(items), chunk_size)]
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [utils](/python/easy_v2/utils.md) |

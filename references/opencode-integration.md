@@ -10,7 +10,7 @@ Add to your repo root `AGENTS.md`:
 ```markdown
 ## OKF Knowledge Bundle
 
-This codebase has an OKF v0.1 knowledge bundle at `./okf_bundle/`.
+This codebase has an OKF v0.2 knowledge bundle at `./okf_bundle/`.
 
 Before working on ANY class, function, or module:
 1. Look it up: `okf lookup <ConceptName>`

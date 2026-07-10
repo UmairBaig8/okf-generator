@@ -48,6 +48,7 @@ class Concept:
     calls: list[str] = field(default_factory=list)
     called_by: list[str] = field(default_factory=list)
     concept_id: str = ""
+    status: str = ""  # active | deprecated | experimental
 
 
 # ---------------------------------------------------------------------------

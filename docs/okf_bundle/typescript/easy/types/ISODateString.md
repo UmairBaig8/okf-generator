@@ -1,0 +1,37 @@
+---
+concept_id: typescript/easy/types/ISODateString
+language: typescript
+okf_version: '0.2'
+resource: typescript/easy/types.ts
+tags:
+- lang:typescript
+- type:Type
+- module:typescript
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:42Z'
+title: ISODateString
+type: Type
+---
+
+# ISODateString
+
+## Signature
+
+```typescript
+type ISODateString = …
+```
+
+## Source
+Lines 7–7 in `typescript/easy/types.ts`
+
+```ts
+export type ISODateString = string;
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [types](/typescript/easy/types.md) |

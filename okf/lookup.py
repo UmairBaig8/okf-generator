@@ -346,8 +346,8 @@ def fmt_detail(concept: dict) -> str:
         if mnames:
             lines.append(f"\n  Methods: {', '.join(mnames)}")
 
-    # Related
-    related = concept["sections"].get("related", "")
+    # Related / Relationships
+    related = concept["sections"].get("relationships", "") or concept["sections"].get("related", "")
     if related:
         rnames = re.findall(r"\[([^\]]+)\]", related)
         if rnames:

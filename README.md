@@ -107,7 +107,7 @@ No re-reading the file. No guessing. No LLM call required.
 ```
 1. Scan  → tree-sitter AST parsers extract functions, classes, modules (17 langs)
 2. Link  → cross-reference linker resolves imports→deps, calls→callees
-3. Write → OKF v0.1 bundle: structured markdown, mirrors your source tree
+3. Write → OKF v0.2 bundle: structured markdown, mirrors your source tree
 4. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
 5. Enrich → optional LLM layer: 4 modes, multi-provider routing
 ```
@@ -145,7 +145,7 @@ okf_bundle/
             └── search.md               ← Function
 ```
 
-Each file is OKF v0.1 conformant with structured YAML frontmatter — agents parse it deterministically, no guessing.
+Each file follows the OKF v0.2 dialect (extended from Google's OKF v0.1) with structured YAML frontmatter — agents parse it deterministically, no guessing.
 
 ---
 
@@ -324,7 +324,7 @@ repos:
         pass_filenames: false
 ```
 
-> Full CI/CD guide: **[docs/ci-cd.md](docs/ci-cd.md)**
+> CI/CD guide + copy-paste workflow template: **[docs/user-guide/ci-cd.md](docs/user-guide/ci-cd.md)**
 
 ---
 
@@ -396,4 +396,4 @@ pytest tests/ -q
 
 [MIT](LICENSE) — Copyright © 2026 Umair Baig
 
-`okf-generator` is an independent, third-party implementation of the [Open Knowledge Format (OKF) v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md). Not affiliated with Google.
+`okf-generator` produces OKF v0.2 bundles — an extended dialect of the [Open Knowledge Format (OKF) v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) by Google. Our v0.2 adds schema version, concept identity, language, status, and typed relationships to every concept file. Not affiliated with Google.

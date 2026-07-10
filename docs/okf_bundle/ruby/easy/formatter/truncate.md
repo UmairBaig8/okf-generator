@@ -1,0 +1,58 @@
+---
+concept_id: ruby/easy/formatter/truncate
+description: Truncate text to a maximum length, appending an ellipsis.
+language: ruby
+okf_version: '0.2'
+resource: ruby/easy/formatter.rb
+tags:
+- lang:ruby
+- type:Function
+- module:ruby
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: truncate
+type: Function
+---
+
+# truncate
+
+Truncate text to a maximum length, appending an ellipsis.
+
+## Signature
+
+```ruby
+def self.truncate(text, max_len = 60)
+```
+
+## Visibility
+
+- `singleton`
+
+## Docstring
+
+Truncate text to a maximum length, appending an ellipsis.
+@param text [String] input text
+@param max_len [Integer] maximum length
+@return [String] truncated text
+
+## Returns
+`String`
+
+## Source
+Lines 23–27 in `ruby/easy/formatter.rb`
+
+```rb
+  def self.truncate(text, max_len = 60)
+    return "" if text.nil?
+    return text if text.length <= max_len
+    text[0..max_len - 4] + "..."
+  end
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [formatter](/ruby/easy/formatter.md) |

@@ -1,6 +1,6 @@
 """Generate an OKF (Open Knowledge Format) bundle from a codebase.
 
-Walks a source directory and produces a conformant OKF v0.1 bundle whose
+Walks a source directory and produces a conformant OKF v0.2 bundle whose
 layout mirrors the source tree exactly (domain/resource-based), e.g.:
 
   <output>/
@@ -24,7 +24,7 @@ Every directory gets an index.md listing its subdirectories and concepts
 grouped by type (Module / Class / Function). This makes the bundle
 navigable by domain, just like the original codebase.
 
-Concept frontmatter (OKF v0.1 conformant):
+Concept frontmatter (OKF v0.2 conformant):
   type         REQUIRED — Module | Function | Class | Method
   title        display name
   description  one-line summary (from docstring or LLM enrichment)
@@ -156,7 +156,7 @@ def _dedup_concept_ids(concepts: list[Concept]) -> list[Concept]:
 # ---------------------------------------------------------------------------
 
 def _frontmatter(concept: Concept) -> str:
-    fm: dict = {"type": concept.type}
+    fm: dict = {"okf_version": "0.2", "type": concept.type}
     if concept.title:
         fm["title"] = concept.title
     if concept.description:
@@ -167,6 +167,15 @@ def _frontmatter(concept: Concept) -> str:
         fm["tags"] = concept.tags
     if concept.timestamp:
         fm["timestamp"] = concept.timestamp
+    if concept.concept_id:
+        fm["concept_id"] = concept.concept_id
+    # extract language from tags
+    for t in concept.tags:
+        if t.startswith("lang:"):
+            fm["language"] = t.removeprefix("lang:")
+            break
+    if concept.status:
+        fm["status"] = concept.status
     return "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n"
 
 
@@ -295,42 +304,35 @@ def _body(concept: Concept, all_concepts: dict[str, Concept], source_dir: Path |
         else:
             lines.append(f"## Source\nLines {start}–{end} in `{concept.resource}`\n")
 
-    if concept.related:
-        lines.append("## Related\n")
-        for cid in concept.related:
-            rel_concept = all_concepts.get(cid)
-            if rel_concept:
-                label = rel_concept.title
-                # relative link: concept lives at concept_id + ".md" from bundle root
-                lines.append(f"- [{label}](/{cid}.md)")
+    # build relationships table
+    rel_rows: list[tuple[str, str, str]] = []  # (type, target_label, target_cid)
+    for cid in concept.related:
+        rel_concept = all_concepts.get(cid)
+        label = rel_concept.title if rel_concept else cid.split("/")[-1]
+        rel_rows.append(("related", label, cid))
+    for cid in concept.related_semantic:
+        rel_concept = all_concepts.get(cid)
+        label = rel_concept.title if rel_concept else cid.split("/")[-1]
+        rel_rows.append(("related (AI)", label, cid))
+    for cid in concept.calls:
+        rel_concept = all_concepts.get(cid)
+        label = rel_concept.title if rel_concept else cid.split("/")[-1]
+        rel_rows.append(("calls", label, cid))
+    for cid in concept.called_by:
+        rel_concept = all_concepts.get(cid)
+        label = rel_concept.title if rel_concept else cid.split("/")[-1]
+        rel_rows.append(("called_by", label, cid))
+
+    if rel_rows:
+        lines.append("## Relationships\n")
+        lines.append("| Type | Target |")
+        lines.append("|------|--------|")
+        for rtype, label, cid in rel_rows:
+            resolved = all_concepts.get(cid)
+            if resolved:
+                lines.append(f"| {rtype} | [{label}](/{cid}.md) |")
             else:
-                # cid not found — may be stale; show as plain text
-                label = cid.split("/")[-1]
-                lines.append(f"- {label} *(unresolved)*")
-        lines.append("")
-
-    if concept.related_semantic:
-        lines.append("## Related (AI-suggested)\n")
-        for cid in concept.related_semantic:
-            rel_concept = all_concepts.get(cid)
-            label = rel_concept.title if rel_concept else cid.split("/")[-1]
-            lines.append(f"- [{label}](/{cid}.md)")
-        lines.append("")
-
-    if concept.calls:
-        lines.append("## Calls\n")
-        for cid in concept.calls:
-            rel_concept = all_concepts.get(cid)
-            label = rel_concept.title if rel_concept else cid.split("/")[-1]
-            lines.append(f"- [{label}](/{cid}.md)")
-        lines.append("")
-
-    if concept.called_by:
-        lines.append("## Called By\n")
-        for cid in concept.called_by:
-            rel_concept = all_concepts.get(cid)
-            label = rel_concept.title if rel_concept else cid.split("/")[-1]
-            lines.append(f"- [{label}](/{cid}.md)")
+                lines.append(f"| {rtype} | {label} *(unresolved)* |")
         lines.append("")
 
     return "\n".join(lines)
@@ -355,7 +357,7 @@ def render_dir_index(
         "title": title,
         "description": f"Knowledge index for {dir_path or bundle_name}",
         "resource": dir_path,
-        "okf_version": "0.1" if not dir_path else None,
+        "okf_version": "0.2" if not dir_path else None,
         "timestamp": ts,
     }
     # remove None values
@@ -400,8 +402,8 @@ def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str
     fm = {
         "type": "Index",
         "title": bundle_name,
-        "description": f"OKF v0.1 bundle generated from the {bundle_name} codebase",
-        "okf_version": "0.1",
+        "description": f"OKF v0.2 bundle generated from the {bundle_name} codebase",
+        "okf_version": "0.2",
         "timestamp": ts,
     }
     if source_root:
@@ -409,7 +411,7 @@ def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str
     lines = [
         "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",
         f"# {bundle_name}\n",
-        f"OKF v0.1 knowledge bundle — {total} concepts across {len(top_dirs)} top-level directories.\n",
+        f"OKF v0.2 knowledge bundle — {total} concepts across {len(top_dirs)} top-level directories.\n",
         "## Top-level Directories\n",
     ]
     for d in sorted(top_dirs):
@@ -490,7 +492,7 @@ def render_summary(
         "type":        "Index",
         "title":       f"{bundle_name} — Knowledge Summary",
         "description": f"Top-level OKF summary: {total} concepts across {n_domains} domains and {n_modules} modules",
-        "okf_version": "0.1",
+        "okf_version": "0.2",
         "timestamp":   ts,
     }
     if git.get("repo"):
@@ -501,7 +503,7 @@ def render_summary(
     lines = [
         "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",
         f"# {bundle_name} — Knowledge Summary\n",
-        f"> OKF v0.1 bundle | {total:,} concepts | {n_domains} domains | {n_modules} modules\n",
+        f"> OKF v0.2 bundle | {total:,} concepts | {n_domains} domains | {n_modules} modules\n",
     ]
 
     # ── Quick stats table ─────────────────────────────────────────────────

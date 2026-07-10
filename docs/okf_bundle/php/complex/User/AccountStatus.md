@@ -1,0 +1,47 @@
+---
+concept_id: php/complex/User/AccountStatus
+language: php
+okf_version: '0.2'
+resource: php/complex/User.php
+tags:
+- lang:php
+- type:Enum
+- module:php
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: AccountStatus
+type: Enum
+---
+
+# AccountStatus
+
+## Signature
+
+```php
+enum AccountStatus
+```
+
+## Methods
+
+- `ACTIVE`
+- `INACTIVE`
+- `BANNED`
+
+## Source
+Lines 39–43 in `php/complex/User.php`
+
+```php
+enum AccountStatus: string {
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
+    case BANNED = 'banned';
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [User](/php/complex/User.md) |

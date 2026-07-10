@@ -16,7 +16,7 @@ okf --version           Show version and exit
 okf generate <source_dir> [output_dir] [--exclude <dir> ...]
 ```
 
-Scans a source directory and produces an OKF v0.1 knowledge bundle.
+Scans a source directory and produces an OKF v0.2 knowledge bundle.
 
 | Option | Description |
 |--------|-------------|

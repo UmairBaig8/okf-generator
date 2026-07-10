@@ -1,0 +1,56 @@
+---
+concept_id: dart/easy/calculator/User
+description: User account model.
+language: dart
+okf_version: '0.2'
+resource: dart/easy/calculator.dart
+tags:
+- lang:dart
+- type:Class
+- module:dart
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: User
+type: Class
+---
+
+# User
+
+User account model.
+
+## Signature
+
+```dart
+class User
+```
+
+## Docstring
+
+User account model.
+
+## Methods
+
+- `greet`
+- `User`
+
+## Source
+Lines 16–23 in `dart/easy/calculator.dart`
+
+```dart
+class User {
+  final int id;
+  final String name;
+
+  User(this.id, this.name);
+
+  String greet() => 'Hi $name';
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [calculator](/dart/easy/calculator.md) |

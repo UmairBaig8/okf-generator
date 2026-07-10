@@ -1,0 +1,44 @@
+---
+concept_id: kotlin/easy/src/main/kotlin/com/okfgen/utils/Math/max
+description: Returns the larger of two integers.
+language: kotlin
+okf_version: '0.2'
+resource: kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.kt
+tags:
+- lang:kotlin
+- type:Function
+- module:kotlin
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: max
+type: Function
+---
+
+# max
+
+Returns the larger of two integers.
+
+## Signature
+
+```kotlin
+fun max(a: Int, b: Int): Int
+```
+
+## Docstring
+
+Returns the larger of two integers.
+
+## Source
+Lines 11–11 in `kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.kt`
+
+```kt
+fun max(a: Int, b: Int): Int = if (a > b) a else b
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [Math](/kotlin/easy/src/main/kotlin/com/okfgen/utils/Math.md) |

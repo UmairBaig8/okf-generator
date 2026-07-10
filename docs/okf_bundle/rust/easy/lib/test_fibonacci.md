@@ -1,0 +1,52 @@
+---
+concept_id: rust/easy/lib/test_fibonacci
+description: '[test]'
+language: rust
+okf_version: '0.2'
+resource: rust/easy/lib.rs
+tags:
+- lang:rust
+- type:Function
+- module:rust
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: test_fibonacci
+type: Function
+---
+
+# test_fibonacci
+
+[test]
+
+## Signature
+
+```rust
+fn test_fibonacci()
+```
+
+## Decorators
+
+- `test`
+
+## Docstring
+
+[test]
+
+## Source
+Lines 67–71 in `rust/easy/lib.rs`
+
+```rs
+    fn test_fibonacci() {
+        assert_eq!(fibonacci(0), Some(0));
+        assert_eq!(fibonacci(1), Some(1));
+        assert_eq!(fibonacci(10), Some(55));
+    }
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [lib](/rust/easy/lib.md) |

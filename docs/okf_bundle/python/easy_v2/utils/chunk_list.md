@@ -1,0 +1,72 @@
+---
+concept_id: python/easy_v2/utils/chunk_list
+description: Split a sequence into fixed-size chunks.
+language: python
+okf_version: '0.2'
+resource: python/easy_v2/utils.py
+tags:
+- lang:python
+- type:Function
+- module:python
+- domain:easy_v2
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: chunk_list
+type: Function
+---
+
+# chunk_list
+
+Split a sequence into fixed-size chunks.
+
+## Signature
+
+```python
+def chunk_list(items: Sequence[T], chunk_size: int = 100) -> list[list[T]]
+```
+
+## Docstring
+
+Split a sequence into fixed-size chunks.
+
+Args:
+    items: Sequence of items to chunk.
+    chunk_size: Maximum number of items per chunk (default 100).
+
+Returns:
+    List of chunks, each a list of up to ``chunk_size`` items.
+
+## Parameters
+
+| Name | Type | Default |
+|------|------|---------|
+| `items` | `Sequence[T]` | `—` |
+
+| `chunk_size` | `int` | `100` |
+
+## Returns
+`list[list[T]]`
+
+## Source
+Lines 27–37 in `python/easy_v2/utils.py`
+
+```py
+def chunk_list(items: Sequence[T], chunk_size: int = 100) -> list[list[T]]:
+    """Split a sequence into fixed-size chunks.
+
+    Args:
+        items: Sequence of items to chunk.
+        chunk_size: Maximum number of items per chunk (default 100).
+
+    Returns:
+        List of chunks, each a list of up to ``chunk_size`` items.
+    """
+    return [list(items[i : i + chunk_size]) for i in range(0, len(items), chunk_size)]
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [utils](/python/easy_v2/utils.md) |

@@ -1,0 +1,49 @@
+---
+concept_id: go/easy/strings/strings/Truncate
+description: Truncate shortens a string to maxLen characters, appending "..." if truncated.
+language: go
+okf_version: '0.2'
+resource: go/easy/strings/strings.go
+tags:
+- lang:go
+- type:Function
+- module:go
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: Truncate
+type: Function
+---
+
+# Truncate
+
+Truncate shortens a string to maxLen characters, appending "..." if truncated.
+
+## Signature
+
+```go
+func Truncate(s string, maxLen int) string
+```
+
+## Docstring
+
+Truncate shortens a string to maxLen characters, appending "..." if truncated.
+
+## Source
+Lines 26–31 in `go/easy/strings/strings.go`
+
+```go
+func Truncate(s string, maxLen int) string {
+	if len(s) <= maxLen {
+		return s
+	}
+	return s[:maxLen] + "..."
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [strings](/go/easy/strings/strings.md) |

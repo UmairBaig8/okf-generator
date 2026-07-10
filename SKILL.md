@@ -14,7 +14,7 @@ description: >
 
 # OKF Generator & Lookup Skill
 
-Generates structured OKF v0.1 knowledge bundles from codebases (Python, JS/TS,
+Generates structured OKF v0.2 knowledge bundles from codebases (Python, JS/TS,
 Go, Java, Rust, Ruby via tree-sitter AST), and provides fast concept lookup for
 AI agents like OpenCode.
 

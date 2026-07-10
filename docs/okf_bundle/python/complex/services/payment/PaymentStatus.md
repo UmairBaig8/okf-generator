@@ -1,0 +1,48 @@
+---
+concept_id: python/complex/services/payment/PaymentStatus
+description: Possible states of a payment transaction.
+language: python
+okf_version: '0.2'
+resource: python/complex/services/payment.py
+tags:
+- lang:python
+- type:Class
+- module:python
+- domain:complex
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: PaymentStatus
+type: Class
+---
+
+# PaymentStatus
+
+Possible states of a payment transaction.
+
+## Inheritance
+
+- `Enum`
+
+## Docstring
+
+Possible states of a payment transaction.
+
+## Source
+Lines 12–18 in `python/complex/services/payment.py`
+
+```py
+class PaymentStatus(Enum):
+    """Possible states of a payment transaction."""
+
+    PENDING = "pending"
+    SUCCEEDED = "succeeded"
+    FAILED = "failed"
+    REFUNDED = "refunded"
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [payment](/python/complex/services/payment.md) |

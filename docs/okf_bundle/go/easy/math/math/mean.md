@@ -1,0 +1,50 @@
+---
+concept_id: go/easy/math/math/mean
+description: mean is an unexported helper that computes the arithmetic mean.
+language: go
+okf_version: '0.2'
+resource: go/easy/math/math.go
+tags:
+- lang:go
+- type:Function
+- module:go
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:41Z'
+title: mean
+type: Function
+---
+
+# mean
+
+mean is an unexported helper that computes the arithmetic mean.
+
+## Signature
+
+```go
+func mean(nums []int) float64
+```
+
+## Docstring
+
+mean is an unexported helper that computes the arithmetic mean.
+
+## Source
+Lines 58–63 in `go/easy/math/math.go`
+
+```go
+func mean(nums []int) float64 {
+	if len(nums) == 0 {
+		return 0
+	}
+	return float64(Sum(nums)) / float64(len(nums))
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [math](/go/easy/math/math.md) |
+| calls | [Sum](/go/easy/math/math/Sum.md) |

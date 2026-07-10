@@ -273,7 +273,7 @@ def _returns(concept: dict) -> str:
 
 
 def _related(concept: dict) -> str:
-    r = concept["sections"].get("related", "")
+    r = concept["sections"].get("relationships", "") or concept["sections"].get("related", "")
     names = re.findall(r"\[([^\]]+)\]", r)
     return ", ".join(names) if names else "none"
 
@@ -342,7 +342,7 @@ def make_static_summarize(concept: dict) -> dict | None:
 
 def make_static_crosslink(concept: dict, link_map: dict) -> dict | None:
     """Static cross-link pair — what does X relate to and why."""
-    related_text = concept["sections"].get("related", "")
+    related_text = concept["sections"].get("relationships", "") or concept["sections"].get("related", "")
     names = re.findall(r"\[([^\]]+)\]", related_text)
     if not names:
         return None

@@ -129,7 +129,7 @@ def _install_mcp():
 def _copilot_default() -> str:
     return """# OKF Knowledge Bundle — Copilot Instructions
 
-This project uses okf-generator to produce an OKF v0.1 knowledge bundle at ./okf_bundle/.
+This project uses okf-generator to produce an OKF v0.2 knowledge bundle at ./okf_bundle/.
 Every function, class, module, and dependency has a structured markdown card.
 
 ## MCP Tools (preferred)
@@ -160,7 +160,7 @@ and callees in milliseconds — faster and more accurate than reading source.
 def _agent_rules(name: str) -> str:
     return f"""# {name} Rules — OKF Knowledge Bundle
 
-This project is indexed as an OKF v0.1 bundle at ./okf_bundle/.
+This project is indexed as an OKF v0.2 bundle at ./okf_bundle/.
 Every function, class, module, and dependency has a structured markdown card.
 
 ## MCP Tools (preferred)
@@ -266,6 +266,7 @@ def main():
         print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline, mcp)")
         print("  mcp             Start MCP server (stdio or HTTP). Use --install to register in client configs")
         print("  plugin          Manage parser plugins (list, install, uninstall)")
+        print("  migrate         Convert OKF bundle between schema versions (v0.1→v0.2)")
         sys.exit(0)
 
     cmd, rest = sys.argv[1], sys.argv[2:]
@@ -398,6 +399,10 @@ Examples:
 
     elif cmd == "mcp":
         from okf.mcp_server import main as _main
+        _main()
+
+    elif cmd == "migrate":
+        from okf.migrate import main as _main
         _main()
 
     elif cmd == "plugin":

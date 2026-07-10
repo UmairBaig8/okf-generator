@@ -1,0 +1,50 @@
+---
+concept_id: swift/easy/Sources/Utils/StringUtils/truncate
+description: Truncates a string to the specified maximum length, appending "..." if
+  shortened.
+language: swift
+okf_version: '0.2'
+resource: swift/easy/Sources/Utils/StringUtils.swift
+tags:
+- lang:swift
+- type:Function
+- module:swift
+- domain:easy
+- git:branch:main
+- git:repo:okf-generator
+timestamp: '2026-07-07T06:58:42Z'
+title: truncate
+type: Function
+---
+
+# truncate
+
+Truncates a string to the specified maximum length, appending "..." if shortened.
+
+## Signature
+
+```swift
+func truncate(_ text: String)
+```
+
+## Docstring
+
+Truncates a string to the specified maximum length, appending "..." if shortened.
+
+## Source
+Lines 10–15 in `swift/easy/Sources/Utils/StringUtils.swift`
+
+```swift
+public func truncate(_ text: String, maxLen: Int) -> String {
+    if text.count <= maxLen {
+        return text
+    }
+    return String(text.prefix(max(0, maxLen - 3))) + "..."
+}
+```
+
+## Relationships
+
+| Type | Target |
+|------|--------|
+| related | [StringUtils](/swift/easy/Sources/Utils/StringUtils.md) |
