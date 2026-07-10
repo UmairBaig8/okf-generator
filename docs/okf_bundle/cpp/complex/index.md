@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for cpp/complex
 resource: cpp/complex
-timestamp: '2026-07-10T19:28:01Z'
+timestamp: '2026-07-10T19:32:55Z'
 title: complex
 type: Index
 ---

@@ -11,7 +11,7 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
-timestamp: '2026-07-10T19:27:26Z'
+timestamp: '2026-07-10T19:32:24Z'
 title: standardDeviation
 type: Function
 ---
