@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for javascript/complex/routes
 resource: javascript/complex/routes
-timestamp: '2026-07-10T18:22:50Z'
+timestamp: '2026-07-10T18:25:16Z'
 title: routes
 type: Index
 ---
