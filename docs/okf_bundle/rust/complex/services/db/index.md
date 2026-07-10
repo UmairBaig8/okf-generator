@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust/complex/services/db
 resource: rust/complex/services/db
-timestamp: '2026-07-10T20:03:22Z'
+timestamp: '2026-07-10T20:09:18Z'
 title: db
 type: Index
 ---

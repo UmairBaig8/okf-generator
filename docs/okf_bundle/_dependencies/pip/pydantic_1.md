@@ -14,7 +14,7 @@ tags:
 - version:==2.5.0
 - ecosystem:pip
 - manifest:requirements.txt
-timestamp: '2026-07-10T20:02:44Z'
+timestamp: '2026-07-10T20:08:44Z'
 title: pydantic
 type: Dependency
 ---

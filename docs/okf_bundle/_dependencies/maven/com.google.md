@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- manifest:pom.xml
 - version:32.1.3-jre
+- manifest:pom.xml
 - ecosystem:maven
-timestamp: '2026-07-10T20:02:44Z'
+timestamp: '2026-07-10T20:08:44Z'
 title: com.google.guava:guava
 type: Dependency
 ---
