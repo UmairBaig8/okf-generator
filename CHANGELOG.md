@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [0.1.45] — 2026-07-11
+
+### Added
+
+- **`okf agent` REPL** — interactive multi-turn chat over a bundle with persistent sessions (`~/.okf/sessions/`), slash commands (`/lookup`, `/source`, `/calls`, `/called-by`, `/related`, `/save`, `/export`, `/history`, `/sessions`, `/resume`), and session export to JSON/Markdown.
+- **Tree-sitter WASM parse tree in viz** — the code panel now has a "Parse Tree" tab that renders the full tree-sitter AST with collapsible scopes, syntax-colored tokens, and position ranges. Supports 10 languages (Python, JS, TS, Ruby, Rust, Go, Java, C++, C, PHP); remaining languages fall back gracefully.
+- **Glass UI redesign** — frosted glass cards with `backdrop-filter:blur(24px)`, translucent backgrounds, `soft-light` bg image overlay, breathing gradient animation. Sidebar, detail panel, stat cards, and chips all use the new glass aesthetic.
+- **Design tokens** — `docs/design-tokens.md` documents the full color palette, gradients, shadows, spacing, and type colors.
+- **Theme-specific backgrounds** — `bg-dark.png` and `bg-light.png` for dark/light mode.
+- **`okf migrate` command** — converts v0.1 bundles to v0.2 format (`okf migrate v0.1-to-v0.2 <bundle_dir>`).
+
+### Changed
+
+- Viz sidebar and detail panel now live inside frosted glass cards with rounded corners (`border-radius:var(--r-xl)`).
+- Breadcrumb styling: transparent background, translucent borders, sticky position.
+- Detail header: spans full card width, glass blur background, no more solid black box.
+
+---
+
 ## [0.1.44] — 2026-07-10
 
 ### Added
@@ -782,7 +801,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.44...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.45...HEAD
+[0.1.45]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.45
 [0.1.44]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.44
 [0.1.43]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.43
 [0.1.40]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.40
