@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript/easy/helpers
 resource: typescript/easy/helpers
-timestamp: '2026-07-10T17:34:20Z'
+timestamp: '2026-07-10T17:43:09Z'
 title: helpers
 type: Index
 ---

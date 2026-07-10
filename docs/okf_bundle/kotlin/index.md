@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin
 resource: kotlin
-timestamp: '2026-07-10T17:34:20Z'
+timestamp: '2026-07-10T17:43:09Z'
 title: kotlin
 type: Index
 ---
