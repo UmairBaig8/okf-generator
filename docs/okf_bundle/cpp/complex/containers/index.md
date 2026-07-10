@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for cpp/complex/containers
 resource: cpp/complex/containers
-timestamp: '2026-07-10T18:25:16Z'
+timestamp: '2026-07-10T18:27:26Z'
 title: containers
 type: Index
 ---
