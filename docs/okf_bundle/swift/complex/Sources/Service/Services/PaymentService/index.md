@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/complex/Sources/Service/Services/PaymentService
 resource: swift/complex/Sources/Service/Services/PaymentService
-timestamp: '2026-07-10T17:46:43Z'
+timestamp: '2026-07-10T17:52:03Z'
 title: PaymentService
 type: Index
 ---

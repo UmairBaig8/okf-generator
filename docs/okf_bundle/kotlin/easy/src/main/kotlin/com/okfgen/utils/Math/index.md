@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/easy/src/main/kotlin/com/okfgen/utils/Math
 resource: kotlin/easy/src/main/kotlin/com/okfgen/utils/Math
-timestamp: '2026-07-10T17:46:42Z'
+timestamp: '2026-07-10T17:52:03Z'
 title: Math
 type: Index
 ---

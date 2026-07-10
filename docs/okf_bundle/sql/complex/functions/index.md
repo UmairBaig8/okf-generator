@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for sql/complex/functions
 resource: sql/complex/functions
-timestamp: '2026-07-10T17:46:43Z'
+timestamp: '2026-07-10T17:52:03Z'
 title: functions
 type: Index
 ---

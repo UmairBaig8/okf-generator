@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/easy_v2/validator
 resource: python/easy_v2/validator
-timestamp: '2026-07-10T17:46:42Z'
+timestamp: '2026-07-10T17:52:03Z'
 title: validator
 type: Index
 ---

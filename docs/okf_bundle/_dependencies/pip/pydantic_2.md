@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
-- version:==2.5.0
 - ecosystem:pip
 - manifest:requirements.txt
-timestamp: '2026-07-10T17:46:17Z'
+- version:==2.5.0
+timestamp: '2026-07-10T17:51:27Z'
 title: pydantic
 type: Dependency
 ---
