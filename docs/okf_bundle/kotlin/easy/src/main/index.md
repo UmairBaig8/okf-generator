@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/easy/src/main
 resource: kotlin/easy/src/main
-timestamp: '2026-07-10T19:11:36Z'
+timestamp: '2026-07-10T19:14:19Z'
 title: main
 type: Index
 ---

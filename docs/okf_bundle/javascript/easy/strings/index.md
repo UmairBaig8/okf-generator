@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for javascript/easy/strings
 resource: javascript/easy/strings
-timestamp: '2026-07-10T19:11:36Z'
+timestamp: '2026-07-10T19:14:19Z'
 title: strings
 type: Index
 ---

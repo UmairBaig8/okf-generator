@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for ruby/complex/models
 resource: ruby/complex/models
-timestamp: '2026-07-10T19:11:36Z'
+timestamp: '2026-07-10T19:14:19Z'
 title: models
 type: Index
 ---

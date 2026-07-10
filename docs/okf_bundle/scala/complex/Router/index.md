@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for scala/complex/Router
 resource: scala/complex/Router
-timestamp: '2026-07-10T19:11:36Z'
+timestamp: '2026-07-10T19:14:19Z'
 title: Router
 type: Index
 ---
