@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for go/easy
 resource: go/easy
-timestamp: '2026-07-10T18:20:30Z'
+timestamp: '2026-07-10T18:22:50Z'
 title: easy
 type: Index
 ---
