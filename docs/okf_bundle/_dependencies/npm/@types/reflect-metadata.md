@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- manifest:package.json
 - ecosystem:npm
 - version:^0.1.0
-- manifest:package.json
-timestamp: '2026-07-10T14:57:28Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: '@types/reflect-metadata'
 type: Dependency
 ---

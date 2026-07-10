@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:rust
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- ecosystem:cargo
 - manifest:Cargo.toml
 - version:1.6
-- ecosystem:cargo
-timestamp: '2026-07-10T14:57:28Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: uuid
 type: Dependency
 ---

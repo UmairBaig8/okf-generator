@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:typescript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-- version:^20.10.0
-- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-10T14:57:28Z'
+- ecosystem:npm
+- version:^20.10.0
+timestamp: '2026-07-07T06:58:42Z'
 title: '@types/node'
 type: Dependency
 ---

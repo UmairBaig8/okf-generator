@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:javascript
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-- version:^4.18.2
-- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-10T14:57:28Z'
+- ecosystem:npm
+- version:^4.18.2
+timestamp: '2026-07-07T06:58:41Z'
 title: express
 type: Dependency
 ---

@@ -406,7 +406,7 @@ button, select, input { font:inherit; }
     <button class="close-btn" onclick="closeCodePanel()" aria-label="Close code panel">&times;</button>
   </div>
   <div id="code-panel-body">
-    <pre id="code-panel-content" class="code-tab-pane active"></pre>
+    <pre id="code-panel-source" class="code-tab-pane active"></pre>
     <div id="code-panel-parse" class="code-tab-pane"></div>
   </div>
 </div>
@@ -948,11 +948,11 @@ function showCodePanel(id) {
   if (!src) return;
   var ext = (c.resource || '').split('.').pop();
   var lang = {js:'javascript',ts:'typescript',py:'python',rb:'ruby',rs:'rust',go:'go',java:'java',kt:'kotlin',cs:'csharp',cpp:'cpp',c:'c',sql:'sql',sh:'bash',yaml:'yaml',json:'json',html:'html',css:'css',toml:'ini',swift:'swift',php:'php',scala:'scala',dart:'dart'}[ext] || ext || '';
-  qs('code-panel-content').innerHTML = '<pre><code class="language-' + lang + '">' + esc(src) + '</code></pre>';
+  qs('code-panel-source').innerHTML = '<pre><code class="language-' + lang + '">' + esc(src) + '</code></pre>';
   qs('code-panel-path').textContent = c.resource || '';
   qs('code-panel').classList.add('open');
   qs('code-panel-backdrop').style.display = 'block';
-  var codeEl = qs('code-panel-content').querySelector('code');
+  var codeEl = qs('code-panel-source').querySelector('code');
   if (codeEl && window.Prism) Prism.highlightElement(codeEl);
 }
 function closeCodePanel() {

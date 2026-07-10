@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- ecosystem:pip
 - version:==8.1.7
 - manifest:requirements.txt
-- ecosystem:pip
-timestamp: '2026-07-10T14:57:28Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: click
 type: Dependency
 ---

@@ -9,9 +9,9 @@ tags:
 - type:Index
 - module:sql
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-10T14:57:28Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: idx_audit_log_time
 type: Index
 ---

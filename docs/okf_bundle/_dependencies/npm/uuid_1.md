@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:javascript
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-- ecosystem:npm
 - version:^9.0.0
 - manifest:package.json
-timestamp: '2026-07-10T14:57:28Z'
+- ecosystem:npm
+timestamp: '2026-07-07T06:58:41Z'
 title: uuid
 type: Dependency
 ---
