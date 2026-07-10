@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/complex/Router
 resource: php/complex/Router
-timestamp: '2026-07-10T17:43:09Z'
+timestamp: '2026-07-10T17:46:42Z'
 title: Router
 type: Index
 ---

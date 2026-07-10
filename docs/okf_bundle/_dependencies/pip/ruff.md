@@ -11,10 +11,10 @@ tags:
 - domain:requirements.txt
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
 - version:>=0.1.0
+- ecosystem:pip
 - manifest:requirements.txt
-timestamp: '2026-07-10T17:42:36Z'
+timestamp: '2026-07-10T17:46:17Z'
 title: ruff
 type: Dependency
 ---

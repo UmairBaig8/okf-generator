@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/easy/utils
 resource: python/easy/utils
-timestamp: '2026-07-10T17:43:09Z'
+timestamp: '2026-07-10T17:46:42Z'
 title: utils
 type: Index
 ---

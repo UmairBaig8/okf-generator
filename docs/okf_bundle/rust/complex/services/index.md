@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust/complex/services
 resource: rust/complex/services
-timestamp: '2026-07-10T17:43:09Z'
+timestamp: '2026-07-10T17:46:43Z'
 title: services
 type: Index
 ---

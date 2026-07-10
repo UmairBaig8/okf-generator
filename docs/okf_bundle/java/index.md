@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for java
 resource: java
-timestamp: '2026-07-10T17:43:09Z'
+timestamp: '2026-07-10T17:46:42Z'
 title: java
 type: Index
 ---
