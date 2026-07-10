@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/npm
 resource: _dependencies/npm
-timestamp: '2026-07-10T19:14:19Z'
+timestamp: '2026-07-10T19:28:02Z'
 title: npm
 type: Index
 ---

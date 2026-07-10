@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/complex/Models
 resource: csharp/complex/Models
-timestamp: '2026-07-10T19:14:19Z'
+timestamp: '2026-07-10T19:28:01Z'
 title: Models
 type: Index
 ---
