@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript/complex/services/user-service
 resource: typescript/complex/services/user-service
-timestamp: '2026-07-10T18:07:11Z'
+timestamp: '2026-07-10T18:11:32Z'
 title: user-service
 type: Index
 ---

@@ -14,7 +14,7 @@ tags:
 - ecosystem:gradle
 - manifest:build.gradle.kts
 - version:2.10.1
-timestamp: '2026-07-10T18:06:31Z'
+timestamp: '2026-07-10T18:11:01Z'
 title: com.google.code.gson:gson
 type: Dependency
 ---

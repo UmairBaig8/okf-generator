@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for ruby/easy/formatter
 resource: ruby/easy/formatter
-timestamp: '2026-07-10T18:07:11Z'
+timestamp: '2026-07-10T18:11:32Z'
 title: formatter
 type: Index
 ---

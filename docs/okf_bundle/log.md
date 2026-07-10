@@ -1,13 +1,13 @@
 ---
 description: Chronological history of bundle generation
-timestamp: '2026-07-10T18:07:11Z'
+timestamp: '2026-07-10T18:11:32Z'
 title: Change Log
 type: Log
 ---
 
 # Change Log
 
-- 2026-07-10T18:07:11Z — Bundle generated from `/home/runner/work/okf-generator/okf-generator/tests/fixtures/realworld`
+- 2026-07-10T18:11:31Z — Bundle generated from `/home/runner/work/okf-generator/okf-generator/tests/fixtures/realworld`
 -   Source files scanned: 96
 -   Total concepts: 664
 -   LLM enrichment: disabled

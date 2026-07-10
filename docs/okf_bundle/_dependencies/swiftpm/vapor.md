@@ -14,7 +14,7 @@ tags:
 - version:4.89.0
 - manifest:Package.swift
 - ecosystem:swiftpm
-timestamp: '2026-07-10T18:06:31Z'
+timestamp: '2026-07-10T18:11:01Z'
 title: vapor
 type: Dependency
 ---

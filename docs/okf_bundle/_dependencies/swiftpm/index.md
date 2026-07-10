@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/swiftpm
 resource: _dependencies/swiftpm
-timestamp: '2026-07-10T18:07:11Z'
+timestamp: '2026-07-10T18:11:32Z'
 title: swiftpm
 type: Index
 ---
