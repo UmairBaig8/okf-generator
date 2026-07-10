@@ -10,11 +10,7 @@ Ordered by development effort (easiest first).
 
 ---
 
-## 2. User-Facing Auto-Bundle Template
-
-**Effort:** Very Low (~30 min)
-
-Create a copy-paste GitHub Actions workflow that any user can drop into their repo to auto-generate + commit an OKF bundle on push. Document it in the CI/CD guide with an inline template and a link to `docs/examples/okf-auto-bundle.yml`.
+## ~~2. User-Facing Auto-Bundle Template~~ ✅ Done (v0.1.44)
 
 **What was done:** Created `docs/examples/okf-auto-bundle.yml` — a ready-to-copy workflow. Updated `docs/user-guide/ci-cd.md` with the full template and explanation. Updated README link to point to new CI/CD doc.
 
@@ -33,15 +29,15 @@ Create a copy-paste GitHub Actions workflow that any user can drop into their re
 
 ---
 
-## 3. `okf agent` REPL
+## ~~4. `okf agent` REPL~~ ✅ Done (v0.1.44)
 
-**Effort:** Medium (2–3 days)
-
-Interactive multi-turn query session over a bundle. Builds on existing `okf ask` (single-shot LLM Q&A) but adds:
-- Persistent session state (conversation history, recently browsed concepts)
-- Context-aware follow-ups ("what calls this?", "show me the source", "summarize this module")
-- Inline concept lookup results as rich cards
-- Session export to markdown/JSON
+**What was done:**
+- Created `okf/agent.py` — interactive REPL with rich card output, slash commands (`/lookup`, `/source`, `/calls`, `/called-by`, `/related`, `/save`, `/export`, `/history`, `/clear`, `/resume`, `/sessions`)
+- Persistent sessions saved to `~/.okf/sessions/ses_*.json`
+- LLM-powered Q&A with context-aware follow-ups (reuses `_search_context` + `_ask_llm` from `okf/ask.py`)
+- Session export to JSON or Markdown
+- Auto-save every 4 exchanges
+- Wired into CLI as `okf agent`
 
 **What it unlocks:** Replaces the "grep files → read sources" loop entirely. Agent (human or AI) stays inside `okf` for the whole exploration flow.
 

@@ -267,6 +267,7 @@ def main():
         print("  mcp             Start MCP server (stdio or HTTP). Use --install to register in client configs")
         print("  plugin          Manage parser plugins (list, install, uninstall)")
         print("  migrate         Convert OKF bundle between schema versions (v0.1→v0.2)")
+        print("  agent           Interactive REPL with persistent sessions, slash commands")
         sys.exit(0)
 
     cmd, rest = sys.argv[1], sys.argv[2:]
@@ -369,6 +370,10 @@ Examples:
                 if "api_key" in k and v:
                     v = v[:8] + "..." if len(v) > 8 else "***"
                 print(f"  {k:20s} {v}")
+    elif cmd == "agent":
+        from okf.agent import main as _main
+        _main()
+
     elif cmd in ("ask", "query"):
         from okf.ask import main as _main
         _main()
