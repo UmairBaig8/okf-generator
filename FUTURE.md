@@ -46,7 +46,7 @@ Ordered by development effort (easiest first).
 ## ~~4. Tree-sitter WASM in Viz~~ ✅ Done (v0.1.44)
 
 **What was done:**
-- Added `web-tree-sitter` + per-language WASM parsers loaded from jsDelivr CDN (17 languages)
+- Added `web-tree-sitter` + per-language WASM parsers loaded from jsDelivr CDN (10 languages: python, js, ts, ruby, rust, go, java, cpp, c, php; remaining 7 fall back to source view)
 - Code panel now has a "Source" / "Parse Tree" tab switcher
 - Parse Tree renders a collapsible named AST tree with syntax-colored tokens
 - Deeply nested nodes auto-collapse for readability

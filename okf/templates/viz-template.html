@@ -413,7 +413,7 @@ button, select, input { font:inherit; }
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/web-tree-sitter@0.21.3/dist/tree-sitter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web-tree-sitter@0.20.8/tree-sitter.js"></script>
 <script>
 var DYNAMIC = {DYNAMIC_FLAG};
 var BUNDLE_DATA = {BUNDLE_DATA};
@@ -972,30 +972,23 @@ function switchCodeTab(tab) {
 var _tsInitialized = false;
 var _tsParsers = {};
 
+// Only languages that publish WASM files on npm + CDN
 var _tsLangMap = {
   py:'python', js:'javascript', ts:'typescript', rb:'ruby', rs:'rust',
-  go:'go', java:'java', kt:'kotlin', cs:'c_sharp', cpp:'cpp', c:'c',
-  swift:'swift', php:'php', scala:'scala', dart:'dart', jl:'julia',
-  sql:'sql',
+  go:'go', java:'java', cpp:'cpp', c:'c', php:'php',
+  // kt: kotlin, cs: csharp, scala, dart, jl: julia, sql — no WASM builds on npm
 };
 var _tsWasmUrls = {
-  python:'https://cdn.jsdelivr.net/npm/tree-sitter-python@0.21.1/tree-sitter-python.wasm',
-  javascript:'https://cdn.jsdelivr.net/npm/tree-sitter-javascript@0.21.1/tree-sitter-javascript.wasm',
-  typescript:'https://cdn.jsdelivr.net/npm/tree-sitter-typescript@0.21.1/tree-sitter-typescript.wasm',
-  ruby:'https://cdn.jsdelivr.net/npm/tree-sitter-ruby@0.21.1/tree-sitter-ruby.wasm',
-  rust:'https://cdn.jsdelivr.net/npm/tree-sitter-rust@0.21.1/tree-sitter-rust.wasm',
-  go:'https://cdn.jsdelivr.net/npm/tree-sitter-go@0.21.1/tree-sitter-go.wasm',
-  java:'https://cdn.jsdelivr.net/npm/tree-sitter-java@0.21.1/tree-sitter-java.wasm',
-  kotlin:'https://cdn.jsdelivr.net/npm/tree-sitter-kotlin@0.21.1/tree-sitter-kotlin.wasm',
-  c_sharp:'https://cdn.jsdelivr.net/npm/tree-sitter-c-sharp@0.21.1/tree-sitter-c-sharp.wasm',
-  cpp:'https://cdn.jsdelivr.net/npm/tree-sitter-cpp@0.21.1/tree-sitter-cpp.wasm',
-  c:'https://cdn.jsdelivr.net/npm/tree-sitter-c@0.21.1/tree-sitter-c.wasm',
-  swift:'https://cdn.jsdelivr.net/npm/tree-sitter-swift@0.21.1/tree-sitter-swift.wasm',
-  php:'https://cdn.jsdelivr.net/npm/tree-sitter-php@0.21.1/tree-sitter-php.wasm',
-  scala:'https://cdn.jsdelivr.net/npm/tree-sitter-scala@0.21.1/tree-sitter-scala.wasm',
-  dart:'https://cdn.jsdelivr.net/npm/tree-sitter-dart@0.21.1/tree-sitter-dart.wasm',
-  julia:'https://cdn.jsdelivr.net/npm/tree-sitter-julia@0.21.1/tree-sitter-julia.wasm',
-  sql:'https://cdn.jsdelivr.net/npm/tree-sitter-sql@0.21.1/tree-sitter-sql.wasm',
+  python:'https://cdn.jsdelivr.net/npm/tree-sitter-python@0.23.6/tree-sitter-python.wasm',
+  javascript:'https://cdn.jsdelivr.net/npm/tree-sitter-javascript@0.25.0/tree-sitter-javascript.wasm',
+  typescript:'https://cdn.jsdelivr.net/npm/tree-sitter-typescript@0.23.2/tree-sitter-typescript.wasm',
+  ruby:'https://cdn.jsdelivr.net/npm/tree-sitter-ruby@0.23.1/tree-sitter-ruby.wasm',
+  rust:'https://cdn.jsdelivr.net/npm/tree-sitter-rust@0.24.0/tree-sitter-rust.wasm',
+  go:'https://cdn.jsdelivr.net/npm/tree-sitter-go@0.25.0/tree-sitter-go.wasm',
+  java:'https://cdn.jsdelivr.net/npm/tree-sitter-java@0.23.5/tree-sitter-java.wasm',
+  cpp:'https://cdn.jsdelivr.net/npm/tree-sitter-cpp@0.23.4/tree-sitter-cpp.wasm',
+  c:'https://cdn.jsdelivr.net/npm/tree-sitter-c@0.23.6/tree-sitter-c.wasm',
+  php:'https://cdn.jsdelivr.net/npm/tree-sitter-php@0.23.6/tree-sitter-php.wasm',
 };
 
 async function getTsParser(langName) {
@@ -1080,7 +1073,7 @@ async function renderParseTree(id) {
 
   var ext = (c.resource || '').split('.').pop();
   var langName = _tsLangMap[ext] || ext || '';
-  if (!langName) { container.innerHTML = '<div class="empty-note">Unsupported language: ' + esc(ext) + '</div>'; return; }
+  if (!langName) { container.innerHTML = '<div class="empty-note">Parse tree not available for .' + esc(ext) + ' (no WASM parser on CDN). Source view is still available.</div>'; return; }
 
   container.innerHTML = '<div class="loading">Parsing with tree-sitter…</div>';
   var parser = await getTsParser(langName);
