@@ -68,7 +68,8 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
         })
 
     # Read source files to extract relevant line snippets using ## Source line ranges
-    source_root = None
+    # Try multiple base paths: bundle source_root, CWD, bundle parent
+    source_roots: list[Path] = []
     try:
         index_md = bundle_dir / "index.md"
         if index_md.exists():
@@ -79,32 +80,41 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
                 fm = yaml.safe_load(parts[1]) or {}
                 src = fm.get("source_root")
                 if src:
-                    source_root = Path(str(src)).resolve()
+                    source_roots.append(Path(str(src)).resolve())
     except Exception:
         pass
+    cwd = Path.cwd().resolve()
+    source_roots.append(cwd)
+    source_roots.append(bundle_dir.parent.resolve())
+    # Try common source dirs relative to CWD (in case resource path is relative to project root)
+    for sub in ("", "src", "app", "lib", "tests/fixtures/realworld"):
+        p = cwd / sub if sub else cwd
+        if p not in source_roots:
+            source_roots.append(p)
 
     line_range_re = re.compile(r"Lines (\d+)\s*[–-]\s*(\d+)")
     code_cache: dict[str, list[str]] = {}
     for n in nodes:
         src_section = n.get("sections", {}).get("source", "")
         snippet = ""
-        if src_section and source_root:
+        if src_section:
             m = line_range_re.search(src_section)
             if m:
                 start, end = int(m.group(1)), int(m.group(2))
                 resource = n.get("resource", "")
-                if resource:
-                    if resource not in code_cache:
-                        src_path = source_root / resource
+                if resource and resource not in code_cache:
+                    for root in source_roots:
+                        src_path = root / resource
                         try:
                             if src_path.exists():
                                 code_cache[resource] = src_path.read_text(encoding="utf-8", errors="replace").splitlines()
+                                break
                         except Exception:
-                            pass
-                    lines = code_cache.get(resource, [])
-                    if lines and start <= len(lines):
-                        snippet_lines = lines[max(0, start - 1):end]
-                        snippet = "\n".join(snippet_lines)
+                            continue
+                lines = code_cache.get(resource, [])
+                if lines and start <= len(lines):
+                    snippet_lines = lines[max(0, start - 1):end]
+                    snippet = "\n".join(snippet_lines)
         n["code"] = snippet
 
     def _extract_ids(text: str) -> list[str]:
