@@ -11,10 +11,10 @@ tags:
 - domain:requirements.txt
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
-- manifest:requirements.txt
 - version:>=1.7.0
-timestamp: '2026-07-10T19:08:02Z'
+- manifest:requirements.txt
+- ecosystem:pip
+timestamp: '2026-07-10T19:11:07Z'
 title: mypy
 type: Dependency
 ---

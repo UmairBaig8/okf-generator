@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for scala
 resource: scala
-timestamp: '2026-07-10T19:08:36Z'
+timestamp: '2026-07-10T19:11:36Z'
 title: scala
 type: Index
 ---

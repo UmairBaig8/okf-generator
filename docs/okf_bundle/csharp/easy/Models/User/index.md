@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/easy/Models/User
 resource: csharp/easy/Models/User
-timestamp: '2026-07-10T19:08:36Z'
+timestamp: '2026-07-10T19:11:36Z'
 title: User
 type: Index
 ---
