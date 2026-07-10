@@ -1072,8 +1072,11 @@ async function renderParseTree(id) {
   if (!src) { container.innerHTML = '<div class="empty-note">No source code available.</div>'; return; }
 
   var ext = (c.resource || '').split('.').pop();
-  var langName = _tsLangMap[ext] || ext || '';
-  if (!langName) { container.innerHTML = '<div class="empty-note">Parse tree not available for .' + esc(ext) + ' (no WASM parser on CDN). Source view is still available.</div>'; return; }
+  var langName = _tsLangMap[ext];
+  if (!langName || !_tsWasmUrls[langName]) {
+    container.innerHTML = '<div class="empty-note">Parse tree not available for .' + esc(ext) + ' (no WASM parser on CDN). Source view is still available.</div>';
+    return;
+  }
 
   container.innerHTML = '<div class="loading">Parsing with tree-sitter…</div>';
   var parser = await getTsParser(langName);
