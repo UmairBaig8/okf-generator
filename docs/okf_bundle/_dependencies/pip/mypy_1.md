@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - manifest:pyproject.toml
-- version:>=1.7.0
 - ecosystem:pip
-timestamp: '2026-07-07T06:58:41Z'
+- version:>=1.7.0
+timestamp: '2026-07-10T14:55:11Z'
 title: mypy
 type: Dependency
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php
 resource: php
-timestamp: '2026-07-10T12:39:49Z'
+timestamp: '2026-07-10T14:55:48Z'
 title: php
 type: Index
 ---

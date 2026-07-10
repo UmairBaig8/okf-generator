@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for rust/complex/models/user
 resource: rust/complex/models/user
-timestamp: '2026-07-10T12:39:49Z'
+timestamp: '2026-07-10T14:55:48Z'
 title: user
 type: Index
 ---

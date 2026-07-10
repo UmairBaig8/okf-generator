@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:swiftpm
-- version:4.89.0
 - manifest:Package.swift
-timestamp: '2026-07-07T06:58:42Z'
+- version:4.89.0
+timestamp: '2026-07-10T14:55:12Z'
 title: vapor
 type: Dependency
 ---

@@ -14,7 +14,7 @@ tags:
 - manifest:pyproject.toml
 - ecosystem:pip
 - version:>=5.0.0
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-10T14:55:11Z'
 title: redis
 type: Dependency
 ---

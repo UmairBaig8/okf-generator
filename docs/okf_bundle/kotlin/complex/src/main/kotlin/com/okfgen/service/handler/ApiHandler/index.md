@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service/handler/ApiHandler
 resource: kotlin/complex/src/main/kotlin/com/okfgen/service/handler/ApiHandler
-timestamp: '2026-07-10T12:39:49Z'
+timestamp: '2026-07-10T14:55:48Z'
 title: ApiHandler
 type: Index
 ---
