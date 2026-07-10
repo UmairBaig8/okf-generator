@@ -264,7 +264,7 @@ button, select, input { font:inherit; }
 
 .sec {
   background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
-  overflow:hidden;
+  margin-bottom:var(--sp-4); margin-top:var(--sp-4); overflow:hidden;
 }
 .sec h3 {
   font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; font-weight:700;
@@ -277,7 +277,8 @@ button, select, input { font:inherit; }
 }
 .sec-inline { padding:var(--sp-3); font-size:13px; color:var(--text-2); }
 .sec .empty-note { color:var(--text-3); font-size:12px; padding:var(--sp-3); }
-#detail-mid-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3); }
+#detail-left { display:flex; flex-direction:column; gap:0; }
+#detail-mid-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3); margin-bottom:var(--sp-4); }
 @media (max-width:900px) { #detail-mid-grid { grid-template-columns:1fr; } }
 .param-row { display:flex; font-size:12.5px; padding:4px 0; border-bottom:1px solid var(--border); }
 .param-row:last-child { border-bottom:none; }
