@@ -67,15 +67,44 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
             "tags": c.get("tags", []),
         })
 
-    # Extract code snippet from concept's ## Source section (already has relevant lines)
+    # Read source files to extract relevant line snippets using ## Source line ranges
+    source_root = None
+    try:
+        index_md = bundle_dir / "index.md"
+        if index_md.exists():
+            raw = index_md.read_text(encoding="utf-8")
+            parts = raw.split("---", 2)
+            if len(parts) >= 2:
+                import yaml
+                fm = yaml.safe_load(parts[1]) or {}
+                src = fm.get("source_root")
+                if src:
+                    source_root = Path(str(src)).resolve()
+    except Exception:
+        pass
+
+    line_range_re = re.compile(r"Lines (\d+)\s*[–-]\s*(\d+)")
+    code_cache: dict[str, list[str]] = {}
     for n in nodes:
         src_section = n.get("sections", {}).get("source", "")
         snippet = ""
-        if src_section:
-            # Extract fenced code block from source section
-            m = re.search(r"```(\w*)\n(.*?)```", src_section, re.DOTALL)
+        if src_section and source_root:
+            m = line_range_re.search(src_section)
             if m:
-                snippet = m.group(2).strip()
+                start, end = int(m.group(1)), int(m.group(2))
+                resource = n.get("resource", "")
+                if resource:
+                    if resource not in code_cache:
+                        src_path = source_root / resource
+                        try:
+                            if src_path.exists():
+                                code_cache[resource] = src_path.read_text(encoding="utf-8", errors="replace").splitlines()
+                        except Exception:
+                            pass
+                    lines = code_cache.get(resource, [])
+                    if lines and start <= len(lines):
+                        snippet_lines = lines[max(0, start - 1):end]
+                        snippet = "\n".join(snippet_lines)
         n["code"] = snippet
 
     def _extract_ids(text: str) -> list[str]:
