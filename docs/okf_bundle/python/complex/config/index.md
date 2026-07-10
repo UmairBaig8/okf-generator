@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/complex/config
 resource: python/complex/config
-timestamp: '2026-07-10T17:26:18Z'
+timestamp: '2026-07-10T17:27:24Z'
 title: config
 type: Index
 ---

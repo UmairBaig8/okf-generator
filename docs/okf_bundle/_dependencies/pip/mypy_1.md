@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
-- version:>=1.7.0
 - manifest:pyproject.toml
-timestamp: '2026-07-07T06:58:41Z'
+- version:>=1.7.0
+- ecosystem:pip
+timestamp: '2026-07-10T17:26:52Z'
 title: mypy
 type: Dependency
 ---

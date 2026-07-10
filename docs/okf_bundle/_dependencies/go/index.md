@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/go
 resource: _dependencies/go
-timestamp: '2026-07-10T17:26:17Z'
+timestamp: '2026-07-10T17:27:24Z'
 title: go
 type: Index
 ---

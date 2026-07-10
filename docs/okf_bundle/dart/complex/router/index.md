@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for dart/complex/router
 resource: dart/complex/router
-timestamp: '2026-07-10T17:26:16Z'
+timestamp: '2026-07-10T17:27:24Z'
 title: router
 type: Index
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python
 resource: python
-timestamp: '2026-07-10T17:26:18Z'
+timestamp: '2026-07-10T17:27:24Z'
 title: python
 type: Index
 ---

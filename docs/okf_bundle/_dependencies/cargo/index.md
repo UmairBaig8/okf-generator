@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/cargo
 resource: _dependencies/cargo
-timestamp: '2026-07-10T17:26:18Z'
+timestamp: '2026-07-10T17:27:24Z'
 title: cargo
 type: Index
 ---
