@@ -33,9 +33,7 @@
   --ease:cubic-bezier(.2,.8,.2,1);
 
   /* Ambient glow for dark theme */
-  --bg-image:
-    radial-gradient(ellipse at 20% 20%, rgba(124,108,255,.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(168,85,247,.10) 0%, transparent 50%);
+  --bg-image: url("{BG_PATH}");
 }
 
 html[data-theme="light"] {
@@ -51,9 +49,7 @@ html[data-theme="light"] {
   --shadow-lg:0 8px 32px rgba(20,20,40,.08);
   --shadow-glow:0 0 0 1px var(--border), 0 8px 24px rgba(20,20,40,.08);
 
-  --bg-image:
-    radial-gradient(ellipse at 20% 20%, rgba(109,94,252,.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(168,85,247,.06) 0%, transparent 50%);
+  --bg-image: url("{BG_PATH_LIGHT}");
 }
 html[data-theme="light"] .stat-card {
   background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06);
@@ -74,9 +70,8 @@ body {
   font-size:14px; line-height:1.5;
 
   background-color:var(--bg);
-  background-image:var(--bg-image), url("{BG_PATH}");
+  background-image:var(--bg-image);
   background-size:cover;
-  background-blend-mode:normal, soft-light;
 
   transition:background-color .18s var(--ease), color .18s var(--ease);
 }
@@ -257,7 +252,7 @@ html[data-theme="light"] #browse-content {
   gap:var(--sp-4); margin-bottom:var(--sp-8);
 }
 .stat-card {
-  background:rgba(19,19,25,.6); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  background:rgba(19,19,25,.6); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
   border:1px solid rgba(255,255,255,.06); border-radius:var(--r-xl);
   padding:var(--sp-5); position:relative;
   transition:all .3s cubic-bezier(.2,.8,.2,1);
@@ -289,14 +284,10 @@ html[data-theme="light"] #browse-content {
 #detail { max-width:1360px; }
 #detail-header {
   position:sticky; top:0; z-index:9;
-  background:rgba(19,19,25,.35); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
   padding:var(--sp-5) var(--sp-5) var(--sp-4);
   margin:calc(-1 * var(--sp-4)) calc(-1 * var(--sp-4)) var(--sp-3);
   border-bottom:1px solid rgba(255,255,255,.06);
   position:relative;
-}
-html[data-theme="light"] #detail-header {
-  background:rgba(255,255,255,.45);
 }
 html[data-theme="light"] #detail-header {
   border-bottom-color:rgba(0,0,0,.06);
