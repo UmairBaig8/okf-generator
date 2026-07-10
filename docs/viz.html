@@ -75,17 +75,13 @@ body {
 
   background-color:var(--bg);
   background-image:var(--bg-image), url("bg.png");
-  background-size:150% 150%, cover;
+  background-size:cover;
   background-blend-mode:normal, soft-light;
-  animation:breathe 18s var(--ease) infinite alternate;
 
   transition:background-color .18s var(--ease), color .18s var(--ease);
 }
 
-@keyframes breathe {
-  0% { background-position:0% 0%; }
-  100% { background-position:100% 100%; }
-}
+
 code, pre, .mono { font-family:'JetBrains Mono',ui-monospace,Menlo,monospace; }
 ::selection { background:var(--accent); color:#fff; }
 :focus-visible { outline:2px solid var(--accent-strong); outline-offset:2px; border-radius:4px; }
