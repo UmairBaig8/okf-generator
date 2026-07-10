@@ -60,29 +60,36 @@ button, select, input { font:inherit; }
   position:sticky; top:0; z-index:50; padding:0;
 }
 #topbar-inner {
-  width:92%; max-width:1200px; height:44px;
-  display:flex; align-items:center; gap:var(--sp-4); padding:0 18px;
-  border-radius:14px;
-  background:rgba(10,10,15,0.58); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.07);
-  box-shadow:0 4px 24px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
+  width:92%; max-width:1200px; height:46px;
+  display:flex; align-items:center; gap:var(--sp-4); padding:0 16px;
+  border-radius:16px;
+  background:rgba(255,255,255,.08); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 4px 32px rgba(0,0,0,.3), 0 1px 4px rgba(0,0,0,.15);
 }
 html[data-theme="light"] #topbar-inner {
-  background:rgba(247,247,251,0.7);
-  border-color:rgba(0,0,0,.06);
-  box-shadow:0 4px 24px rgba(20,20,40,.08), 0 1px 4px rgba(20,20,40,.06);
+  background:rgba(0,0,0,.05);
+  border-color:rgba(0,0,0,.08);
+  box-shadow:0 4px 32px rgba(20,20,40,.06), 0 1px 4px rgba(20,20,40,.04);
+}
+.nav-seg {
+  display:flex; border-radius:10px; background:rgba(255,255,255,.06); padding:3px; gap:2px;
+}
+html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
+.nav-seg-item {
+  font-size:13px; font-weight:500; color:var(--text-3); padding:4px 18px;
+  border-radius:8px; cursor:pointer; transition:all .2s var(--ease); user-select:none;
+  background:transparent; border:none; font-family:inherit;
+}
+.nav-seg-item:hover { color:var(--text-2); }
+.nav-seg-item.active {
+  color:var(--text); background:var(--surface);
+  box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 #brand { display:flex; align-items:center; gap:10px; flex-shrink:0; }
 .nav-logo-icon { display:flex; align-items:center; justify-content:center; width:30px; height:30px; flex-shrink:0; }
 #brand-text .name { font-weight:700; font-size:15px; color:var(--text); white-space:nowrap; }
 #topbar-spacer { flex:1; }
-.nav-item {
-  font-size:13px; font-weight:500; color:var(--text-2); padding:6px 18px;
-  border-radius:99px; cursor:pointer; transition:all .15s var(--ease);
-  background:transparent; border:1px solid transparent; user-select:none;
-}
-.nav-item:hover { color:var(--text); background:var(--surface-2); border-color:var(--border); }
-.nav-item.active { color:var(--accent-strong); background:var(--accent-soft); border-color:var(--accent); }
 
 #breadcrumb { font-size:12.5px; color:var(--text-3); margin-bottom:var(--sp-4); }
 #breadcrumb .crumb { cursor:pointer; }
@@ -366,8 +373,10 @@ html[data-theme="light"] #topbar-inner {
         <span class="name">OKF Generator</span>
       </div>
     </div>
-    <div class="nav-item active" onclick="switchTab('browse',this)">Browse</div>
-    <div class="nav-item" onclick="switchTab('graph',this)">Explore</div>
+    <div class="nav-seg">
+      <button class="nav-seg-item active" onclick="switchTab('browse',this)">Browse</button>
+      <button class="nav-seg-item" onclick="switchTab('graph',this)">Explore</button>
+    </div>
     <div id="topbar-spacer"></div>
     <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="icon-btn" style="text-decoration:none" title="GitHub">
       <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
@@ -1301,7 +1310,7 @@ function renderGlobalGraph(data) {
 
 // ---- Tab Switching ----
 function switchTab(name, btn) {
-  document.querySelectorAll('.nav-item').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.nav-seg-item').forEach(function(t) { t.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
   qs('tab-' + name).classList.add('active');
