@@ -91,11 +91,19 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
 #brand-text .name { font-weight:700; font-size:15px; color:var(--text); white-space:nowrap; }
 #topbar-spacer { flex:1; }
 
-#breadcrumb { font-size:12.5px; color:var(--text-3); margin-bottom:var(--sp-4); }
-#breadcrumb .crumb { cursor:pointer; }
-#breadcrumb .crumb:hover { color:var(--accent-strong); text-decoration:underline; }
-#breadcrumb .sep { margin:0 6px; color:var(--border-strong); }
-#breadcrumb .current { color:var(--accent-strong); font-weight:600; }
+#breadcrumb {
+  display:flex; align-items:center; gap:6px; padding:var(--sp-2) var(--sp-3);
+  margin-bottom:var(--sp-4); margin-top:var(--sp-2);
+  background:var(--surface-2); border-radius:var(--r-md);
+  border:1px solid var(--border); font-size:12px;
+}
+#breadcrumb .crumb {
+  cursor:pointer; color:var(--text-3); padding:2px 8px; border-radius:var(--r-sm);
+  transition:all .15s var(--ease); font-weight:500;
+}
+#breadcrumb .crumb:hover { color:var(--accent-strong); background:var(--accent-soft); }
+#breadcrumb .sep { color:var(--border-strong); font-size:10px; user-select:none; }
+#breadcrumb .current { color:var(--text); background:var(--surface); font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .icon-btn {
   width:34px; height:34px; border-radius:var(--r-sm); background:transparent; border:1px solid transparent;
   color:var(--text-2); display:flex; align-items:center; justify-content:center; cursor:pointer;
@@ -799,7 +807,7 @@ async function selectConcept(id) {
   qs('landing').classList.add('hidden');
   qs('detail').classList.remove('hidden');
   qs('detail').classList.remove('fade-in'); void qs('detail').offsetWidth; qs('detail').classList.add('fade-in');
-  qs('breadcrumb').innerHTML = '<span class="crumb" onclick="showLanding()">Home</span><span class="sep">/</span><span class="current">' + esc(id) + '</span>';
+  qs('breadcrumb').innerHTML = '<span class="crumb" onclick="showLanding()">Home</span><span class="sep">›</span><span class="crumb current">' + esc(id) + '</span>';
 
   document.querySelectorAll('.tree-leaf.active').forEach(function(el) { el.classList.remove('active'); });
   var leaf = document.querySelector('.tree-leaf[data-id="' + id.replace(/"/g,'\\"') + '"]');
