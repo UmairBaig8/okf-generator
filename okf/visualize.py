@@ -73,6 +73,20 @@ def build_graph(bundle_dir: Path) -> tuple[list[dict], list[dict], list[str], di
     code_cache: dict[str, str] = {}
     # Collect all possible base dirs (parents of bundle + CWD + ancestors up to git root)
     search_bases: list[Path] = [bundle_dir.parent]
+    # Read source_root from bundle index.md if available
+    try:
+        index_md = bundle_dir / "index.md"
+        if index_md.exists():
+            raw = index_md.read_text(encoding="utf-8")
+            parts = raw.split("---", 2)
+            if len(parts) >= 2:
+                import yaml
+                fm = yaml.safe_load(parts[1]) or {}
+                src = fm.get("source_root")
+                if src:
+                    search_bases.insert(0, Path(str(src)).resolve())
+    except Exception:
+        pass
     try:
         cwd = Path.cwd().resolve()
         search_bases.append(cwd)

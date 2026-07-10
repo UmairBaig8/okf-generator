@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:complex
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
+- version:>=2.5.0
 - ecosystem:pip
 - manifest:pyproject.toml
-- version:>=2.5.0
-timestamp: '2026-07-10T16:56:55Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: pydantic
 type: Dependency
 ---
