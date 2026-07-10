@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:rubygems
-- manifest:Gemfile
 - version:~> 3.0
-timestamp: '2026-07-10T18:11:01Z'
+- manifest:Gemfile
+- ecosystem:rubygems
+timestamp: '2026-07-10T18:16:39Z'
 title: rack
 type: Dependency
 ---
