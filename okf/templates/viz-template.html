@@ -216,9 +216,10 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
 #detail-header {
   position:sticky; top:0; z-index:9;
   background:var(--bg); padding:var(--sp-4) 0 var(--sp-3);
-  margin-bottom:var(--sp-4);
+  margin:0 0 var(--sp-4);
   border-bottom:1px solid var(--border);
 }
+#detail-header.hidden { display:none; }
 #detail-topbar { display:flex; align-items:center; justify-content:space-between; gap:var(--sp-3); flex-wrap:wrap; }
 #detail-topbar-left { display:flex; flex-direction:column; align-items:flex-start; }
 #detail-topbar-right { display:flex; align-items:center; gap:var(--sp-2); flex-shrink:0; }
@@ -432,9 +433,9 @@ html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
         <div id="sidebar-resize"></div>
         <div id="browse-content">
           <div id="breadcrumb"><span class="crumb current" onclick="showLanding()">Home</span></div>
+          <div id="detail-header"></div>
           <div id="landing"></div>
           <div id="detail" class="hidden">
-            <div id="detail-header"></div>
             <div id="detail-grid">
               <div id="detail-left"></div>
               <div id="detail-right"></div>
@@ -790,6 +791,7 @@ function renderLandingStats(nodes) {
 
 function showLanding() {
   qs('detail').classList.add('hidden');
+  qs('detail-header').classList.add('hidden');
   var landing = qs('landing');
   landing.classList.remove('hidden');
   landing.classList.add('fade-in');
@@ -812,6 +814,7 @@ var globalCy = null;
 async function selectConcept(id) {
   closeCodePanel();
   qs('landing').classList.add('hidden');
+  qs('detail-header').classList.remove('hidden');
   qs('detail').classList.remove('hidden');
   qs('detail').classList.remove('fade-in'); void qs('detail').offsetWidth; qs('detail').classList.add('fade-in');
   qs('breadcrumb').innerHTML = '<span class="crumb" onclick="showLanding()">Home</span><span class="sep">›</span><span class="crumb current">' + esc(id) + '</span>';
