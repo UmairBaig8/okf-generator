@@ -833,9 +833,11 @@ async function selectConcept(id) {
   var parts = id.split('/');
   var crumbHtml = '<span class="crumb" onclick="showLanding()">Home</span>';
   if (parts.length > 1) {
+    var path = '';
     for (var i = 0; i < parts.length - 1; i++) {
-      var seg = esc(parts[i]);
-      crumbHtml += '<span class="sep">›</span><span class="crumb" onclick="filterToDomain(\'' + seg.replace(/'/g,"\\'") + '\')">' + seg + '</span>';
+      var seg = parts[i];
+      path = path ? path + '/' + seg : seg;
+      crumbHtml += '<span class="sep">›</span><span class="crumb" onclick="selectConcept(\'' + esc(path) + '\')">' + esc(seg) + '</span>';
     }
   }
   crumbHtml += '<span class="sep">›</span><span class="crumb current">' + esc(c.title || parts[parts.length - 1]) + '</span>';
