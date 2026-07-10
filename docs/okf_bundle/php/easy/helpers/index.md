@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/easy/helpers
 resource: php/easy/helpers
-timestamp: '2026-07-10T19:44:33Z'
+timestamp: '2026-07-10T19:49:22Z'
 title: helpers
 type: Index
 ---

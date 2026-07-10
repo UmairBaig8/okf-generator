@@ -11,10 +11,10 @@ tags:
 - domain:requirements.txt
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:pip
-- manifest:requirements.txt
 - version:>=7.4.0
-timestamp: '2026-07-10T19:43:53Z'
+- manifest:requirements.txt
+- ecosystem:pip
+timestamp: '2026-07-10T19:48:51Z'
 title: pytest
 type: Dependency
 ---

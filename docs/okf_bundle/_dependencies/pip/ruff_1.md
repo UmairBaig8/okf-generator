@@ -14,7 +14,7 @@ tags:
 - manifest:pyproject.toml
 - ecosystem:pip
 - version:>=0.1.0
-timestamp: '2026-07-10T19:43:53Z'
+timestamp: '2026-07-10T19:48:51Z'
 title: ruff
 type: Dependency
 ---
