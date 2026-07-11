@@ -1690,12 +1690,12 @@ async function loadCosmosExplore() {
     // Container
     var container = qs('cosmos-container');
     var config = {
-      spaceSize: SPACE, backgroundColor: '#0a0a0f',
+      spaceSize: SPACE, backgroundColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#f7f7fb' : '#0a0a0f',
       rescalePositions: false, enableDrag: true, scalePointsOnZoom: true,
       curvedLinks: false, linkDefaultArrows: false,
       fitViewOnInit: true, fitViewDelay: 700, fitViewDuration: 1000, fitViewPadding: 0.18,
       simulationRepulsion: 0.5, simulationGravity: 0.06, simulationLinkSpring: 0.3,
-      simulationLinkDistance: 45, simulationFriction: 0.25, simulationDecay: 1000000,
+      simulationLinkDistance: 45, simulationFriction: 0.25, simulationDecay: 50000,
       simulationCluster: 0.15, simulationCollision: 0.4, simulationCollisionPadding: 2,
       renderHoveredPointRing: true, hoveredPointRingColor: '#ffffff',
       focusedPointRingColor: '#ffffff', outlinedPointRingColor: '#9385ff',
@@ -1915,6 +1915,10 @@ function toggleTheme() {
   html.setAttribute('data-theme', next);
   localStorage.setItem('okf-theme', next);
   if (egoCy) { var c = conceptCache[currentId]; if (c) renderEgoGraph(currentId, c); }
+  // Update cosmos canvas bg
+  if (_cosmosGraph) {
+    try { _cosmosGraph.setConfigPartial({ backgroundColor: next === 'light' ? '#f7f7fb' : '#0a0a0f' }); } catch(e) {}
+  }
 }
 
 // ---- Sidebar resize ----
