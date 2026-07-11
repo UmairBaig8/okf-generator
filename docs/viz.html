@@ -353,14 +353,16 @@ html[data-theme="light"] #detail-header {
   color:var(--text); font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
 }
 
-#detail-tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); margin:0 0 var(--sp-4); }
+#detail-tab-bar { display:flex; gap:0; margin:0 0 var(--sp-4); padding:var(--sp-1); background:rgba(255,255,255,.04); border-radius:var(--r-md); border:1px solid rgba(255,255,255,.06); width:fit-content; }
+html[data-theme="light"] #detail-tab-bar { background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.06); }
 .detail-tab {
-  background:transparent; border:none; color:var(--text-3); padding:8px 20px;
-  font-size:13px; font-weight:500; cursor:pointer; transition:all .15s var(--ease);
-  border-bottom:2px solid transparent; margin-bottom:-1px; font-family:inherit;
+  background:transparent; border:none; color:var(--text-3); padding:6px 18px;
+  font-size:12px; font-weight:500; cursor:pointer; transition:all .15s var(--ease);
+  border-radius:6px; font-family:inherit;
 }
-.detail-tab:hover { color:var(--text); background:var(--surface-2); }
-.detail-tab.active { color:var(--accent-strong); border-bottom-color:var(--accent); }
+.detail-tab:hover { color:var(--text); background:rgba(255,255,255,.06); }
+html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
+.detail-tab.active { color:var(--text); background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.12); }
 .detail-tab-content { display:none; }
 .detail-tab-content.active { display:block; }
 #detail-grid { display:grid; grid-template-columns:1fr minmax(260px,340px); gap:var(--sp-5); align-items:start; }
@@ -368,7 +370,7 @@ html[data-theme="light"] #detail-header {
 @media (max-width:720px) { #detail { padding:0; } }
 #detail-right { position:sticky; top:var(--sp-4); display:flex; flex-direction:column; gap:var(--sp-4); }
 @media (max-width:1080px) { #detail-right { position:static; } }
-#code-split { display:flex; height:calc(100vh - 320px); min-height:400px; gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
+#code-split { display:flex; min-height:400px; flex:1; gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
 #code-split-source { flex:1; overflow:auto; padding:var(--sp-4); background:rgba(0,0,0,.15); }
 #code-split-source pre { margin:0; font-size:13px; white-space:pre-wrap; word-break:break-word; }
 #code-split-divider { width:4px; cursor:col-resize; background:var(--border); flex:none; }
@@ -517,7 +519,7 @@ html[data-theme="light"] #detail-header {
             </div>
             <div id="detail-tab-code" class="detail-tab-content">
               <div id="code-split">
-                <div id="code-split-source"><div class="code-placeholder">Select a concept to view source</div></div>
+                <div id="code-split-source"></div>
                 <div id="code-split-divider"></div>
                 <div id="code-split-parse"><div class="code-placeholder">Parse tree appears here</div></div>
               </div>
@@ -904,6 +906,17 @@ async function selectConcept(id) {
   currentId = id;
   renderDetail(c);
 
+  // Pre-populate code tab in background
+  var code = c.code || '';
+  var ext2 = (c.resource || '').split('.').pop();
+  var lang2 = {js:'javascript',ts:'typescript',py:'python',rb:'ruby',rs:'rust',go:'go',java:'java',kt:'kotlin',cs:'csharp',cpp:'cpp',c:'c',sql:'sql',sh:'bash',yaml:'yaml',json:'json',html:'html',css:'css',toml:'ini',swift:'swift',php:'php',scala:'scala',dart:'dart'}[ext2] || ext2 || '';
+  if (code) {
+    qs('code-split-source').innerHTML = '<pre><code class="language-' + lang2 + '">' + esc(code) + '</code></pre>';
+    var ce = qs('code-split-source').querySelector('code');
+    if (ce && window.Prism) Prism.highlightElement(ce);
+  }
+  showParseTreePrompt(id);
+
   // Build breadcrumb from concept path segments
   var parts = id.split('/');
   var crumbHtml = '<span class="crumb" onclick="showLanding()">Home</span>';
@@ -987,7 +1000,7 @@ function renderDetail(c) {
   top += '<h2>' + esc(d.title) + '</h2></div>';
   top += '<div id="detail-topbar-right">';
   if (d.resource) top += '<span class="resource">' + esc(d.resource) + '</span>';
-  if (d.source) top += '<span class="vs-btn" onclick="showCodePanel(\'' + d.id.replace(/'/g,"\\'") + '\')">View Source</span>';
+  top += '<span class="vs-btn" onclick="showCodePanel(\'' + d.id.replace(/'/g,"\\'") + '\')">View Code</span>';
   top += '</div></div>';
   if (d.description) top += '<p class="desc">' + esc(d.description) + '</p>';
 
