@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:dart
 - domain:easy
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-11T09:38:55Z'
 title: User
 type: Function
 ---

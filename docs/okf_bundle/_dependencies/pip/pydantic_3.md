@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:easy_v2
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
 - manifest:requirements.txt
-- version:==2.5.0
 - ecosystem:pip
-timestamp: '2026-07-07T06:58:41Z'
+- version:==2.5.0
+timestamp: '2026-07-11T09:38:55Z'
 title: pydantic
 type: Dependency
 ---

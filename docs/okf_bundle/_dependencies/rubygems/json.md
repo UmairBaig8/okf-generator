@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:ruby
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
+- version:~> 2.7
 - ecosystem:rubygems
 - manifest:Gemfile
-- version:~> 2.7
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-11T09:38:55Z'
 title: json
 type: Dependency
 ---

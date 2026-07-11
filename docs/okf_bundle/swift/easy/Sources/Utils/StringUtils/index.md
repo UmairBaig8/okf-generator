@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/easy/Sources/Utils/StringUtils
 resource: swift/easy/Sources/Utils/StringUtils
-timestamp: '2026-07-11T09:38:37Z'
+timestamp: '2026-07-11T09:39:25Z'
 title: StringUtils
 type: Index
 ---

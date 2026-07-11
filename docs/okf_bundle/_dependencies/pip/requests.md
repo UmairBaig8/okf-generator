@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:python
 - domain:easy
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-- manifest:requirements.txt
 - version:==2.31.0
+- manifest:requirements.txt
 - ecosystem:pip
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-11T09:38:55Z'
 title: requests
 type: Dependency
 ---

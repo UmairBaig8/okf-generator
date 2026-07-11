@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for c/complex
 resource: c/complex
-timestamp: '2026-07-11T09:38:36Z'
+timestamp: '2026-07-11T09:39:25Z'
 title: complex
 type: Index
 ---

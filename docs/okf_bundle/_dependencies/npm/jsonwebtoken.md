@@ -9,12 +9,12 @@ tags:
 - type:Dependency
 - module:javascript
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
+- ecosystem:npm
 - version:^9.0.2
 - manifest:package.json
-- ecosystem:npm
-timestamp: '2026-07-07T06:58:41Z'
+timestamp: '2026-07-11T09:38:55Z'
 title: jsonwebtoken
 type: Dependency
 ---

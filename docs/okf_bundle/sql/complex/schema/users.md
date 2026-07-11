@@ -9,9 +9,9 @@ tags:
 - type:Table
 - module:sql
 - domain:complex
-- git:branch:HEAD
+- git:branch:main
 - git:repo:okf-generator
-timestamp: '2026-07-07T06:58:42Z'
+timestamp: '2026-07-11T09:38:55Z'
 title: users
 type: Table
 ---
