@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore — OKF Bundle Prototype (Cosmos v3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0a0a0f; --surface:#131319; --surface-2:#191922; --surface-3:#1f1f2b;
+  --border:#26262f; --border-strong:#34343f;
+  --text:#f2f2f5; --text-2:#a3a3b5; --text-3:#6f6f82;
+  --accent:#7c6cff; --accent-strong:#9385ff; --accent-soft:rgba(124,108,255,.14);
+  --shadow-md:0 4px 16px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+html[data-theme="light"] {
+  --surface:#ffffff; --surface-2:#f4f4f9; --surface-3:#ececf4;
+  --border:#e3e3ec; --border-strong:#d3d3e0;
+  --text:#131320; --text-2:#5c5c72; --text-3:#8a8aa0;
+  --accent:#6d5efc; --accent-strong:#5847e8; --accent-soft:rgba(109,94,252,.1);
+  --shadow-md:0 8px 24px rgba(20,20,40,.08);
+  --shadow-lg:0 8px 32px rgba(20,20,40,.1);
+}
+body {
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg); color:var(--text); height:100vh; overflow:hidden;
+  font-size:14px; transition:color .18s var(--ease);
+}
+code, .mono { font-family:'JetBrains Mono',ui-monospace,Menlo,monospace; }
+button, select, input { font:inherit; }
+
+#topbar { height:60px; display:flex; align-items:center; justify-content:center; position:relative; z-index:60; }
+#topbar-inner {
+  width:92%; max-width:1200px; height:46px; display:flex; align-items:center; gap:16px; padding:0 16px;
+  border-radius:16px; background:rgba(255,255,255,.08); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.12); box-shadow:0 4px 32px rgba(0,0,0,.3), 0 1px 4px rgba(0,0,0,.15);
+}
+html[data-theme="light"] #topbar-inner { background:rgba(255,255,255,.1); border-color:rgba(0,0,0,.08); box-shadow:0 4px 32px rgba(20,20,40,.08); }
+#brand { display:flex; align-items:center; gap:10px; }
+#brand .dot { width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#a78bfa); box-shadow:0 0 12px rgba(124,58,237,.6); }
+#brand .name { font-weight:700; font-size:15px; }
+.nav-seg { display:flex; border-radius:10px; background:rgba(255,255,255,.06); padding:3px; gap:2px; }
+html[data-theme="light"] .nav-seg { background:rgba(0,0,0,.04); }
+.nav-seg-item { font-size:13px; font-weight:500; color:var(--text-3); padding:4px 18px; border-radius:8px; background:transparent; border:none; cursor:default; }
+.nav-seg-item.active { color:var(--text); background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+#topbar-spacer { flex:1; }
+.icon-btn {
+  width:34px; height:34px; border-radius:6px; background:transparent; border:1px solid transparent;
+  color:var(--text-2); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.icon-btn:hover { background:var(--surface-2); color:var(--text); border-color:var(--border); }
+.icon-btn svg { width:17px; height:17px; }
+
+#stage { position:relative; height:calc(100vh - 60px); background:var(--bg); }
+#cosmos-container { position:absolute; inset:0; cursor:grab; }
+#cosmos-container canvas { display:block; }
+
+/* Domain cluster labels — constellation names */
+#cluster-labels { position:absolute; inset:0; z-index:15; pointer-events:none; }
+.cluster-label {
+  position:absolute; transform:translate(-50%, -100%); font-size:11px; font-weight:700;
+  color:rgba(255,255,255,.55); text-transform:uppercase; letter-spacing:.08em;
+  text-shadow:0 1px 6px rgba(0,0,0,.8), 0 0 20px rgba(0,0,0,.5); white-space:nowrap;
+}
+
+#toolbar {
+  position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:20;
+  display:flex; align-items:center; gap:8px; padding:8px; border-radius:14px;
+  background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md);
+  max-width:min(92vw, 780px);
+}
+html[data-theme="light"] #toolbar { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
+.search-box { position:relative; }
+.search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
+#search {
+  width:220px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:8px 10px 8px 30px; color:var(--text); font-size:13px; outline:none;
+  transition:border-color .15s var(--ease), width .2s var(--ease);
+}
+#search:focus { border-color:var(--accent); width:270px; }
+#search::placeholder { color:var(--text-3); }
+#chip-row { display:flex; gap:6px; flex-wrap:wrap; max-width:460px; }
+.filter-chip {
+  font-size:11px; font-weight:600; padding:6px 12px; border-radius:99px; cursor:pointer; user-select:none;
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text-2);
+  transition:all .15s var(--ease); display:flex; align-items:center; gap:5px; white-space:nowrap;
+}
+.filter-chip .dot { width:6px; height:6px; border-radius:50%; }
+.filter-chip:hover { border-color:var(--border-strong); color:var(--text); }
+.filter-chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
+.toolbar-sep { width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
+
+#legend {
+  position:absolute; bottom:16px; left:16px; z-index:20; border-radius:12px;
+  background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md); overflow:hidden;
+}
+html[data-theme="light"] #legend { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
+#legend-head { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 12px; cursor:pointer; }
+#legend-head span.t { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); }
+#legend-head svg { width:12px; height:12px; color:var(--text-3); transition:transform .15s var(--ease); }
+#legend.collapsed #legend-body { display:none; }
+#legend.collapsed #legend-head svg { transform:rotate(-90deg); }
+#legend-body { padding:0 12px 12px; display:flex; flex-direction:column; gap:6px; }
+.legend-item { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-2); }
+.legend-item .dot { width:8px; height:8px; border-radius:50%; flex:none; }
+
+#zoomctl {
+  position:absolute; bottom:16px; right:16px; z-index:20; display:flex; flex-direction:column; gap:2px;
+  border-radius:12px; background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md); overflow:hidden;
+}
+html[data-theme="light"] #zoomctl { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
+#zoomctl button {
+  width:38px; height:38px; background:transparent; border:none; color:var(--text-2); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .12s var(--ease), color .12s var(--ease);
+}
+#zoomctl button:hover { background:var(--surface-2); color:var(--text); }
+#zoomctl button:not(:last-child) { border-bottom:1px solid var(--border); }
+#zoomctl svg { width:16px; height:16px; }
+
+#status-pill {
+  position:absolute; top:16px; left:16px; z-index:20; font-size:11px; color:var(--text-3);
+  background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08); border-radius:99px; padding:7px 12px;
+  display:flex; align-items:center; gap:6px; box-shadow:var(--shadow-md);
+}
+html[data-theme="light"] #status-pill { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
+#status-pill .n { color:var(--text); font-weight:700; }
+
+#loading {
+  position:absolute; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; background:var(--bg); transition:opacity .3s var(--ease); text-align:center; padding:24px;
+}
+.spinner { width:26px; height:26px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+#loading .lbl { font-size:12.5px; color:var(--text-3); max-width:420px; }
+#loading.hide { opacity:0; pointer-events:none; }
+#loading.error .spinner { display:none; }
+#loading.error .lbl { color:#f87171; font-family:'JetBrains Mono',monospace; font-size:11.5px; white-space:pre-wrap; }
+
+#hover-tag {
+  position:absolute; z-index:25; pointer-events:none; font-size:11.5px; font-weight:600;
+  background:rgba(19,19,25,.9); color:var(--text); border:1px solid rgba(255,255,255,.1);
+  padding:5px 10px; border-radius:8px; box-shadow:var(--shadow-md); opacity:0; transition:opacity .1s;
+  transform:translate(-50%, -130%);
+}
+#hover-tag.show { opacity:1; }
+#hover-tag .type { color:var(--text-3); font-weight:500; margin-left:5px; }
+
+#info-card {
+  position:absolute; z-index:30; width:280px; border-radius:14px;
+  background:rgba(19,19,25,.9); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow-lg);
+  opacity:0; transform:scale(.96) translateY(4px); pointer-events:none;
+  transition:opacity .15s var(--ease), transform .15s var(--ease);
+}
+#info-card.show { opacity:1; transform:none; pointer-events:auto; }
+#info-card-head { display:flex; align-items:center; justify-content:space-between; padding:12px 12px 0; }
+.type-badge {
+  display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:99px; font-size:10.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.04em;
+}
+.type-badge .dot { width:6px; height:6px; border-radius:50%; }
+#info-card-close {
+  width:22px; height:22px; border-radius:6px; background:transparent; border:none; color:var(--text-3);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+#info-card-close:hover { background:var(--surface-2); color:var(--text); }
+#info-card-close svg { width:13px; height:13px; }
+#info-card-body { padding:8px 14px 4px; }
+#info-card-body h4 { font-size:15px; font-weight:700; letter-spacing:-.01em; margin-bottom:4px; color:#fff; }
+#info-card-body p { font-size:12px; color:var(--text-2); line-height:1.5; margin-bottom:8px; }
+#info-card-path {
+  font-size:10.5px; color:var(--text-3); font-family:'JetBrains Mono',monospace;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:4px 8px;
+  margin-bottom:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+#info-card-rels { display:flex; gap:6px; margin-bottom:10px; }
+.rel-stat { flex:1; text-align:center; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:6px 4px; }
+.rel-stat .n { font-size:14px; font-weight:700; color:var(--accent-strong); }
+.rel-stat .l { font-size:9.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em; margin-top:1px; }
+#info-card-footer { padding:0 14px 14px; }
+.detail-btn {
+  width:100%; padding:9px; border-radius:8px; border:1px solid var(--accent); background:var(--accent-soft);
+  color:var(--accent-strong); font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s var(--ease);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.detail-btn:hover { background:var(--accent); color:#fff; }
+.detail-btn svg { width:13px; height:13px; }
+
+#toast {
+  position:absolute; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); z-index:60;
+  background:var(--surface); border:1px solid var(--border-strong); color:var(--text); font-size:12.5px;
+  padding:10px 16px; border-radius:10px; box-shadow:var(--shadow-lg); opacity:0; transition:all .25s var(--ease); pointer-events:none;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration:.01ms !important; animation-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="topbar-inner">
+    <div id="brand"><span class="dot"></span><span class="name">OKF Generator</span></div>
+    <div id="topbar-spacer"></div>
+    <div class="nav-seg">
+      <button class="nav-seg-item">Browse</button>
+      <button class="nav-seg-item active">Explore</button>
+    </div>
+    <div id="topbar-spacer"></div>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme (UI chrome only — graph stays dark)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+  </div>
+</div>
+
+<div id="stage">
+  <div id="cosmos-container"></div>
+  <div id="cluster-labels"></div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="lbl" id="loading-lbl">Loading Cosmos renderer…</div>
+  </div>
+
+  <div id="hover-tag"></div>
+
+  <div id="status-pill"><span class="n" id="status-n">0</span><span>concepts</span><span style="opacity:.4">·</span><span class="n" id="status-e">0</span><span>edges</span></div>
+
+  <div id="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input id="search" type="text" placeholder="Search concepts…">
+    </div>
+    <div class="toolbar-sep"></div>
+    <div id="chip-row"></div>
+  </div>
+
+  <div id="legend">
+    <div id="legend-head" onclick="document.getElementById('legend').classList.toggle('collapsed')">
+      <span class="t">Legend</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"></path></svg>
+    </div>
+    <div id="legend-body"></div>
+  </div>
+
+  <div id="zoomctl">
+    <button onclick="zoomBy(1.4)" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button onclick="zoomBy(0.71)" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+    <button onclick="resetView()" title="Fit to screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+  </div>
+
+  <div id="info-card">
+    <div id="info-card-head">
+      <span class="type-badge" id="ic-badge"></span>
+      <button id="info-card-close" onclick="closeCard()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div id="info-card-body">
+      <h4 id="ic-title"></h4>
+      <p id="ic-desc"></p>
+      <div id="info-card-path" class="mono"></div>
+      <div id="info-card-rels">
+        <div class="rel-stat"><div class="n" id="ic-calls">0</div><div class="l">Calls</div></div>
+        <div class="rel-stat"><div class="n" id="ic-calledby">0</div><div class="l">Called by</div></div>
+        <div class="rel-stat"><div class="n" id="ic-related">0</div><div class="l">Related</div></div>
+      </div>
+    </div>
+    <div id="info-card-footer">
+      <button class="detail-btn" onclick="showDetailsToast()">
+        Show Details
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast">Would switch to Browse tab and open this concept →</div>
+</div>
+
+<script type="module">
+/* ============ Seeded RNG ============ */
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(42);
+const pick = arr => arr[Math.floor(rand() * arr.length)];
+const ri = (a, b) => a + Math.floor(rand() * (b - a + 1));
+
+/* ============ Dummy data ============ */
+const TYPE_COLORS = {
+  Class:"#a78bfa", Dependency:"#4ade80", Function:"#38bdf8",
+  Index:"#f472b6", Interface:"#22d3ee", Method:"#c084fc",
+  Module:"#fbbf24", Table:"#fb7185", Trigger:"#f43f5e",
+  Type:"#818cf8", View:"#fb923c",
+};
+const TYPES = Object.keys(TYPE_COLORS);
+const DOMAINS = [
+  { name:'parsers/python', n:70 }, { name:'parsers/javascript', n:60 },
+  { name:'parsers/go', n:45 }, { name:'parsers/rust', n:38 },
+  { name:'linker', n:32 }, { name:'mcp_server', n:55 },
+  { name:'cli', n:40 }, { name:'manifest', n:50 },
+  { name:'core', n:60 },
+];
+const NAME_PARTS = ['scan','parse','build','emit','resolve','walk','extract','load','write','link','make','register','visit','collect','normalize','index','tag','hook','merge','flatten'];
+const NAME_OBJS = ['Concept','Bundle','Node','Edge','Scanner','Manifest','Symbol','Token','Graph','Cache','Job','Query','Server','Client','Route','Schema','Field'];
+
+function genData() {
+  const nodes = [], edges = [];
+  let id = 0;
+  const byDomain = {};
+  DOMAINS.forEach((dom, domainIdx) => {
+    byDomain[dom.name] = [];
+    for (let i = 0; i < dom.n; i++) {
+      const type = pick(TYPES);
+      const name = (type === 'Function' || type === 'Method' ? pick(NAME_PARTS) + pick(NAME_OBJS) : pick(NAME_OBJS) + (rand() > .6 ? pick(NAME_OBJS) : ''));
+      const nid = dom.name + '/' + name + '_' + id;
+      nodes.push({ id: nid, title: name, type, domain: dom.name, domainIdx,
+        desc: 'Handles ' + name.replace(/([A-Z])/g,' $1').trim().toLowerCase() + ' within the ' + dom.name + ' pipeline stage.',
+        path: dom.name + '/' + name.toLowerCase() + '.py' });
+      byDomain[dom.name].push(nodes.length - 1);
+      id++;
+    }
+  });
+  DOMAINS.forEach(dom => {
+    const idxs = byDomain[dom.name];
+    idxs.forEach(ni => {
+      const links = ri(0, 3);
+      for (let k = 0; k < links; k++) {
+        const target = pick(idxs);
+        if (target !== ni) edges.push([ni, target]);
+      }
+    });
+  });
+  for (let i = 0; i < 140; i++) {
+    const a = ri(0, nodes.length - 1), b = ri(0, nodes.length - 1);
+    if (a !== b) edges.push([a, b]);
+  }
+  return { nodes, edges };
+}
+
+const DATA = genData();
+const N = DATA.nodes.length;
+
+const degree = new Array(N).fill(0);
+DATA.edges.forEach(([a, b]) => { degree[a]++; degree[b]++; });
+
+function relCounts(idx) {
+  let calls = 0, calledBy = 0;
+  DATA.edges.forEach(([a, b]) => { if (a === idx) calls++; if (b === idx) calledBy++; });
+  return { calls, calledBy, related: Math.max(0, degree[idx] - calls - calledBy) };
+}
+
+document.getElementById('status-n').textContent = N;
+document.getElementById('status-e').textContent = DATA.edges.length;
+
+/* ============ Colors / sizes / positions / clusters ============ */
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255];
+}
+const pointColors = new Float32Array(N * 4);
+DATA.nodes.forEach((n, i) => {
+  const [r,g,b] = hexToRgb(TYPE_COLORS[n.type] || '#888888');
+  pointColors[i*4] = r; pointColors[i*4+1] = g; pointColors[i*4+2] = b; pointColors[i*4+3] = 0.92;
+});
+const BASE_POINT_COLORS = pointColors.slice(); // untouched copy — search/filter dim from this, never from a dimmed state
+
+function sizeForDeg(d) { return Math.min(18, 4 + d * 1.1); }
+const pointSizes = new Float32Array(DATA.nodes.map((_, i) => sizeForDeg(degree[i])));
+
+// Seed near per-domain cluster centroids on a wide ring — same pattern the
+// official Cosmos "collision" example uses, so clusters start close to
+// their resolved layout instead of a random pile the simulation has to untangle.
+const SPACE_SIZE = 4096;
+const spaceCenter = SPACE_SIZE / 2;
+const clusterRingRadius = 1300;
+const clusterCenters = DOMAINS.map((d, i) => {
+  const angle = (i / DOMAINS.length) * Math.PI * 2;
+  return [spaceCenter + Math.cos(angle) * clusterRingRadius, spaceCenter + Math.sin(angle) * clusterRingRadius];
+});
+const pointPositions = new Float32Array(N * 2);
+const pointClusters = new Array(N);
+DATA.nodes.forEach((n, i) => {
+  const [cx, cy] = clusterCenters[n.domainIdx];
+  const angle = rand() * Math.PI * 2;
+  const radius = Math.sqrt(rand()) * 220;
+  pointPositions[i*2] = cx + Math.cos(angle) * radius;
+  pointPositions[i*2+1] = cy + Math.sin(angle) * radius;
+  pointClusters[i] = n.domainIdx;
+});
+
+const linkIndexes = new Float32Array(DATA.edges.length * 2);
+const linkColors = new Float32Array(DATA.edges.length * 4);
+DATA.edges.forEach(([a, b], i) => {
+  linkIndexes[i*2] = a; linkIndexes[i*2+1] = b;
+  linkColors[i*4] = 0.45; linkColors[i*4+1] = 0.45; linkColors[i*4+2] = 0.55; linkColors[i*4+3] = 0.28;
+});
+
+/* ============ Legend ============ */
+const legendBody = document.getElementById('legend-body');
+TYPES.forEach(t => {
+  const row = document.createElement('div');
+  row.className = 'legend-item';
+  row.innerHTML = `<span class="dot" style="background:${TYPE_COLORS[t]}"></span><span>${t}</span>`;
+  legendBody.appendChild(row);
+});
+
+/* ============ Filter chips + search state ============ */
+const activeTypes = new Set(TYPES);
+let matchSet = null;
+const chipRow = document.getElementById('chip-row');
+TYPES.forEach(t => {
+  const chip = document.createElement('div');
+  chip.className = 'filter-chip active';
+  chip.innerHTML = `<span class="dot" style="background:${TYPE_COLORS[t]}"></span>${t}`;
+  chip.onclick = () => {
+    if (activeTypes.has(t)) { activeTypes.delete(t); chip.classList.remove('active'); }
+    else { activeTypes.add(t); chip.classList.add('active'); }
+    updateFilterHighlight();
+  };
+  chipRow.appendChild(chip);
+});
+
+/* ============ Load Cosmos (ESM via jsDelivr) ============ */
+const loadingEl = document.getElementById('loading');
+const loadingLbl = document.getElementById('loading-lbl');
+function fail(msg, err) {
+  loadingEl.classList.add('error');
+  loadingLbl.textContent = msg + (err ? '\n\n' + (err.message || err) : '');
+  console.error(msg, err);
+}
+
+let Graph;
+try {
+  loadingLbl.textContent = 'Loading Cosmos renderer…';
+  ({ Graph } = await import('https://cdn.jsdelivr.net/npm/@cosmos.gl/graph@2/+esm'));
+  if (!Graph) throw new Error('Graph export not found on @cosmos.gl/graph module');
+} catch (err) {
+  fail('Failed to load @cosmos.gl/graph from jsDelivr. Check network/ad-blocker, or the CDN path may have changed.', err);
+  throw err;
+}
+
+/* ============ Init ============ */
+const container = document.getElementById('cosmos-container');
+let clickedIdx = null; // point currently focused via click (neighborhood explore)
+let hoveringIdx = null;
+let lastPointerX = 0, lastPointerY = 0;
+
+container.addEventListener('mousemove', e => {
+  const r = container.getBoundingClientRect();
+  lastPointerX = e.clientX - r.left; lastPointerY = e.clientY - r.top;
+  if (hoveringIdx !== null) positionHoverTag();
+});
+
+let graph;
+try {
+  const config = {
+    spaceSize: SPACE_SIZE,
+    backgroundColor: '#0a0a0f',
+    rescalePositions: false,   // we already seeded real-scale positions
+    enableDrag: true,
+    scalePointsOnZoom: true,
+    curvedLinks: false,
+    linkDefaultArrows: false,
+
+    fitViewOnInit: true,
+    fitViewDelay: 700,
+    fitViewDuration: 1000,
+    fitViewPadding: 0.18,
+
+    // Physics — tuned against Cosmos' own examples. The earlier build used
+    // simulationLinkDistance:3 against point sizes up to ~18, which blew the
+    // spring force up and flung the graph off-screen. 45 clears the largest
+    // collision radius comfortably, per Cosmos' own collision-demo guidance.
+    simulationRepulsion: 0.5,
+    simulationGravity: 0.06,
+    simulationLinkSpring: 0.3,
+    simulationLinkDistance: 45,
+    simulationFriction: 0.25,
+    simulationDecay: 1000000,   // keeps a gentle "breathing" motion instead of freezing dead
+
+    // Clustering — pulls same-domain points together (native Cosmos force)
+    simulationCluster: 0.15,
+
+    // Collision — keeps points from piling on top of each other
+    simulationCollision: 0.4,
+    simulationCollisionPadding: 2,
+
+    // Hover/focus visuals
+    renderHoveredPointRing: true,
+    hoveredPointRingColor: '#ffffff',
+    focusedPointRingColor: '#ffffff',
+    outlinedPointRingColor: '#9385ff',
+    pointGreyoutOpacity: 0.1,
+    linkGreyoutOpacity: 0.04,
+    hoveredLinkWidthIncrease: 1,
+    focusedLinkWidthIncrease: 2,
+
+    onPointMouseOver: (idx) => { hoveringIdx = idx; container.style.cursor = 'pointer'; onPointHoverPreview(idx); showHoverTag(idx); },
+    onPointMouseOut: () => { hoveringIdx = null; container.style.cursor = 'grab'; clearHoverPreview(); hideHoverTag(); },
+    onPointClick: (idx, pos) => onPointClicked(idx, pos),
+    onBackgroundClick: () => clearFocus(),
+
+    onZoom: () => updateClusterLabels(),
+    onSimulationTick: () => updateClusterLabels(),
+  };
+  graph = new Graph(container, config);
+  graph.setPointPositions(pointPositions);
+  graph.setPointColors(pointColors);
+  graph.setPointSizes(pointSizes);
+  graph.setLinks(linkIndexes);
+  graph.setLinkColors(linkColors);
+  graph.setPointClusters(pointClusters);
+  graph.render();
+  loadingEl.classList.add('hide');
+} catch (err) {
+  fail('Cosmos failed to initialize (likely a WebGL or API-shape issue).', err);
+  throw err;
+}
+
+/* ============ Domain cluster labels ("constellation" names) ============ */
+const clusterLabelsRoot = document.getElementById('cluster-labels');
+const clusterLabelEls = DOMAINS.map(d => {
+  const el = document.createElement('div');
+  el.className = 'cluster-label';
+  el.textContent = d.name;
+  clusterLabelsRoot.appendChild(el);
+  return el;
+});
+function updateClusterLabels() {
+  try {
+    const positions = graph.getClusterPositions();
+    if (!positions || !positions.length) return;
+    for (let i = 0; i < DOMAINS.length; i++) {
+      const x = positions[i*2], y = positions[i*2+1];
+      if (x === undefined || y === undefined) continue;
+      const screen = graph.spaceToScreenPosition([x, y]);
+      clusterLabelEls[i].style.left = screen[0] + 'px';
+      clusterLabelEls[i].style.top = (screen[1] - 40) + 'px';
+    }
+  } catch (err) { /* getClusterPositions/spaceToScreenPosition unavailable — labels just won't move */ }
+}
+
+/* ============ Hover preview (Explore Connections pattern) ============ */
+function onPointHoverPreview(idx) {
+  if (clickedIdx !== null) return;
+  try {
+    const neighbors = graph.getNeighboringPointIndices(idx);
+    const neighborhood = [idx, ...neighbors];
+    const connectedLinks = graph.getConnectedLinkIndices(neighborhood);
+    graph.setConfigPartial({ outlinedPointIndices: neighborhood, highlightedLinkIndices: connectedLinks });
+  } catch (err) { console.warn('hover preview failed (renderHoveredPointRing still applies):', err); }
+}
+function clearHoverPreview() {
+  if (clickedIdx !== null) return;
+  try { graph.setConfigPartial({ outlinedPointIndices: undefined, highlightedLinkIndices: undefined }); } catch (err) { console.warn('clearHoverPreview failed:', err); }
+}
+
+/* ============ Click focus + info card ============ */
+function onPointClicked(idx, pos) {
+  if (clickedIdx === idx) { clearFocus(); return; }
+  clickedIdx = idx;
+  try {
+    const neighbors = graph.getNeighboringPointIndices(idx);
+    const neighborhood = [idx, ...neighbors];
+    const connectedLinks = graph.getConnectedLinkIndices(neighborhood);
+    graph.setConfigPartial({
+      focusedPointIndex: idx,
+      highlightedPointIndices: neighborhood,
+      highlightedLinkIndices: connectedLinks,
+      outlinedPointIndices: undefined,
+    });
+  } catch (err) {
+    try { graph.setConfigPartial({ focusedPointIndex: idx }); } catch (e2) {}
+  }
+  openCardFor(idx, pos);
+}
+function clearFocus() {
+  clickedIdx = null;
+  try {
+    graph.setConfigPartial({ focusedPointIndex: undefined, highlightedPointIndices: undefined, highlightedLinkIndices: undefined, outlinedPointIndices: undefined });
+  } catch (err) { console.warn('clearFocus setConfigPartial failed:', err); }
+  updateFilterHighlight();
+  closeCard();
+}
+
+/* ============ Search + type filter — direct color mutation, the one API
+   confirmed to work in every real Cosmos example. (Earlier build tried the
+   highlightedPointIndices config system here and silently swallowed a likely
+   type-mismatch error — that's why search did nothing.) ============ */
+function updateFilterHighlight() {
+  const noSearch = matchSet === null;
+  const allTypesOn = activeTypes.size === TYPES.length;
+  const working = new Float32Array(BASE_POINT_COLORS);
+  if (!(noSearch && allTypesOn)) {
+    for (let i = 0; i < N; i++) {
+      const typeOk = activeTypes.has(DATA.nodes[i].type);
+      const searchOk = noSearch || matchSet.has(i);
+      if (!(typeOk && searchOk)) working[i*4+3] = 0.05; // dim alpha, keep hue
+    }
+  }
+  try {
+    graph.setPointColors(working);
+    graph.render();
+  } catch (err) {
+    console.error('Search/filter recolor failed:', err);
+  }
+}
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  const q = e.target.value.trim().toLowerCase();
+  searchTimer = setTimeout(() => {
+    matchSet = q ? new Set(DATA.nodes.map((n,i)=>[n,i]).filter(([n])=>n.title.toLowerCase().includes(q)).map(([,i])=>i)) : null;
+    updateFilterHighlight();
+  }, 120);
+});
+
+/* ============ Hover tag ============ */
+const hoverTag = document.getElementById('hover-tag');
+function showHoverTag(idx) {
+  const n = DATA.nodes[idx];
+  hoverTag.innerHTML = `${n.title}<span class="type">${n.type}</span>`;
+  hoverTag.classList.add('show');
+  positionHoverTag();
+}
+function hideHoverTag() { hoverTag.classList.remove('show'); }
+function positionHoverTag() { hoverTag.style.left = lastPointerX + 'px'; hoverTag.style.top = lastPointerY + 'px'; }
+
+/* ============ Info card ============ */
+function openCardFor(idx, spacePos) {
+  const data = DATA.nodes[idx];
+  const rels = relCounts(idx);
+  const color = TYPE_COLORS[data.type] || '#888';
+
+  document.getElementById('ic-badge').innerHTML = `<span class="dot" style="background:${color}"></span>${data.type}`;
+  document.getElementById('ic-badge').style.background = color + '22';
+  document.getElementById('ic-badge').style.color = color;
+  document.getElementById('ic-title').textContent = data.title;
+  document.getElementById('ic-desc').textContent = data.desc;
+  document.getElementById('info-card-path').textContent = data.path;
+  document.getElementById('ic-calls').textContent = rels.calls;
+  document.getElementById('ic-calledby').textContent = rels.calledBy;
+  document.getElementById('ic-related').textContent = rels.related;
+
+  let sx = lastPointerX, sy = lastPointerY;
+  try {
+    if (spacePos) { const screen = graph.spaceToScreenPosition(spacePos); sx = screen[0]; sy = screen[1]; }
+  } catch (err) {}
+  positionCard(sx, sy);
+  document.getElementById('info-card').classList.add('show');
+}
+function positionCard(px, py) {
+  const stage = document.getElementById('stage').getBoundingClientRect();
+  const card = document.getElementById('info-card');
+  const w = 280, h = 300;
+  let x = px + 24, y = py - 40;
+  if (x + w > stage.width - 12) x = px - w - 24;
+  if (y + h > stage.height - 12) y = stage.height - h - 12;
+  if (y < 12) y = 12;
+  card.style.left = x + 'px';
+  card.style.top = y + 'px';
+}
+function closeCard() { document.getElementById('info-card').classList.remove('show'); }
+function showDetailsToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ============ Zoom controls ============ */
+function zoomBy(f) {
+  try { graph.zoom(graph.getZoomLevel() * f, 250); } catch (err) { console.warn('zoom() unavailable', err); }
+}
+function resetView() {
+  clearFocus();
+  try { graph.fitView(300); } catch (err) { console.warn('fitView() unavailable', err); }
+}
+
+/* ============ Theme (UI chrome only — graph canvas always dark) ============ */
+document.documentElement.setAttribute('data-theme', 'dark');
+function toggleTheme() {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+window.closeCard = closeCard;
+window.showDetailsToast = showDetailsToast;
+window.zoomBy = zoomBy;
+window.resetView = resetView;
+window.toggleTheme = toggleTheme;
+</script>
+</body>
+</html>
