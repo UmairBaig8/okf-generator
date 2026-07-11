@@ -274,7 +274,9 @@ html[data-theme="light"] #browse-content {
 }
 .stat-card .n { font-size:28px; font-weight:700; letter-spacing:-.03em; }
 .stat-card .l { font-size:12px; color:var(--text-3); margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
-#landing .domains h3 { font-size:12px; color:var(--text-3); margin-bottom:var(--sp-3); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+#landing .domains { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-2); align-items:start; }
+#landing .domains { display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-2) var(--sp-5); align-items:start; max-height:360px; overflow-y:auto; }
+#landing .domains h3 { font-size:12px; color:var(--text-3); margin-bottom:var(--sp-3); text-transform:uppercase; letter-spacing:.06em; font-weight:600; grid-column:1/-1; }
 .domain-row {
   display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:var(--r-md); cursor:pointer;
   border:1px solid transparent; transition:background .12s var(--ease), border-color .12s var(--ease);
@@ -360,10 +362,11 @@ html[data-theme="light"] #detail-header {
   background:transparent !important; margin:0;
 }
 #code-split-source pre code { background:transparent !important; }
-html[data-theme="light"] #code-split-source pre[class*="language-"],
-html[data-theme="light"] #code-split-source code[class*="language-"] { background:transparent !important; color:#000 !important; }
-html[data-theme="light"] #code-split-source .token.operator,
-html[data-theme="light"] #code-split-source .token.punctuation { color:#333 !important; }
+html[data-theme="light"] pre[class*="language-"],
+html[data-theme="light"] code[class*="language-"] { color:#000 !important; background:transparent !important; }
+html[data-theme="light"] .token.operator,
+html[data-theme="light"] .token.punctuation,
+html[data-theme="light"] .token.plain-text { color:#333 !important; }
 
 #detail-tab-bar { display:flex; gap:0; margin:0 0 var(--sp-4); padding:var(--sp-1); background:rgba(255,255,255,.04); border-radius:var(--r-md); border:1px solid rgba(255,255,255,.06); width:fit-content; }
 html[data-theme="light"] #detail-tab-bar { background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.06); }
