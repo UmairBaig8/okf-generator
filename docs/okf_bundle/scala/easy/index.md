@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for scala/easy
 resource: scala/easy
-timestamp: '2026-07-11T19:57:27Z'
+timestamp: '2026-07-11T20:17:46Z'
 title: easy
 type: Index
 ---
