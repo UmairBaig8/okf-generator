@@ -927,13 +927,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#github-actions" class="md-nav__link">
+  <a href="#github-actions-one-click-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GitHub Actions
+        GitHub Actions — One-Click Setup
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="GitHub Actions — One-Click Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1425,6 +1442,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Future Plans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/" class="md-nav__link">
         
   
@@ -1472,13 +1516,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#github-actions" class="md-nav__link">
+  <a href="#github-actions-one-click-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GitHub Actions
+        GitHub Actions — One-Click Setup
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="GitHub Actions — One-Click Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1624,13 +1685,20 @@
 
 <h1 id="cicd-cloud-integration">CI/CD &amp; Cloud Integration<a class="headerlink" href="#cicd-cloud-integration" title="Permanent link">&para;</a></h1>
 <p>Because <code>okf generate</code> is fully offline and deterministic, it fits naturally into automated pipelines and serverless infrastructure.</p>
-<h2 id="github-actions">GitHub Actions<a class="headerlink" href="#github-actions" title="Permanent link">&para;</a></h2>
-<p>Generate your bundle on every push:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/okf-bundle.yml</span>
-<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate OKF Bundle</span>
+<h2 id="github-actions-one-click-setup">GitHub Actions — One-Click Setup<a class="headerlink" href="#github-actions-one-click-setup" title="Permanent link">&para;</a></h2>
+<p>Copy this ready-made workflow into your repo to auto-generate and commit an OKF bundle on every push:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/okf-auto-bundle.yml</span>
+<span class="c1"># Full file: docs/examples/okf-auto-bundle.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OKF Auto-Bundle</span>
+
 <span class="nt">on</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">push</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+
 <span class="nt">jobs</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">generate</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
@@ -1638,14 +1706,35 @@
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.11&quot;</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install okf-generator</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf generate ./src ./okf_bundle</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.12&quot;</span>
+<span class="w">          </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Rust</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rustup show || curl --proto &#39;=https&#39; --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install okf-generator</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install okf-generator</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate OKF bundle</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">okf generate ./src ./okf_bundle</span>
+<span class="w">          </span><span class="no">echo &quot;Concepts: $(find okf_bundle -name &#39;*.md&#39; | wc -l)&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Commit bundle</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stefanzweifel/git-auto-commit-action@v5</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf-bundle</span>
-<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./okf_bundle</span>
+<span class="w">          </span><span class="nt">commit_message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;chore:</span><span class="nv"> </span><span class="s">update</span><span class="nv"> </span><span class="s">OKF</span><span class="nv"> </span><span class="s">bundle</span><span class="nv"> </span><span class="s">[skip</span><span class="nv"> </span><span class="s">ci]&quot;</span>
+<span class="w">          </span><span class="nt">file_pattern</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf_bundle/</span>
+<span class="w">          </span><span class="nt">commit_user_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">okf-bot</span>
+<span class="w">          </span><span class="nt">commit_user_email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bot@okf.dev</span>
 </code></pre></div>
+<p>Customize <code>okf generate ./src ./okf_bundle</code> to match your source directory. Add <code>--enrich deep</code> if you have an LLM configured.</p>
+<blockquote>
+<p>📄 <strong>Ready-to-copy template:</strong> <a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/examples/okf-auto-bundle.yml"><code>docs/examples/okf-auto-bundle.yml</code></a></p>
+</blockquote>
+<h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>On push to <code>main</code></strong> — the workflow runs <code>okf generate</code> on your source code</li>
+<li><strong>Bundle is committed</strong> — <code>okf_bundle/</code> gets updated in your repo</li>
+<li><strong>AI agents see it</strong> — Claude Code, Cursor, Copilot, and OpenCode auto-detect the bundle and use it for context</li>
+<li><strong>Zero maintenance</strong> — no manual re-generation, no server to run</li>
+</ol>
 <h2 id="serverless-cloud-storage">Serverless / Cloud Storage<a class="headerlink" href="#serverless-cloud-storage" title="Permanent link">&para;</a></h2>
 <p>Push the bundle to cloud storage for centralized multi-tenant access:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Generate</span>

@@ -1,0 +1,85 @@
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f14"/>
+      <stop offset="100%" stop-color="#11161d"/>
+    </linearGradient>
+    <linearGradient id="accentText" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#9ecbff"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="280" fill="url(#bg)"/>
+
+  <!-- faint corner accent -->
+  <circle cx="1180" cy="20" r="160" fill="#1f6feb" opacity="0.05"/>
+  <circle cx="20" cy="260" r="120" fill="#1f6feb" opacity="0.04"/>
+
+  <!-- wordmark -->
+  <text x="60" y="76" font-size="42" font-weight="700" fill="#f0f6fc">okf<tspan fill="url(#accentText)">-generator</tspan></text>
+  <text x="60" y="104" font-size="16" fill="#8b949e">Turn any codebase into a structured, agent-readable knowledge bundle</text>
+
+  <!-- diagram: source -> bundle -->
+  <g transform="translate(60,140)">
+    <!-- source code block -->
+    <rect width="150" height="92" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="75" y="22" font-size="11" font-weight="600" fill="#8b949e" text-anchor="middle">YOUR CODEBASE</text>
+    <g fill="#6e7681" font-size="10" font-family="ui-monospace, Menlo, monospace">
+      <rect x="14" y="34" width="80" height="6" rx="2" fill="#30363d"/>
+      <rect x="14" y="48" width="110" height="6" rx="2" fill="#30363d"/>
+      <rect x="14" y="62" width="60" height="6" rx="2" fill="#30363d"/>
+      <rect x="14" y="76" width="95" height="6" rx="2" fill="#30363d"/>
+    </g>
+
+    <!-- arrow -->
+    <line x1="160" y1="46" x2="222" y2="46" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="191" y="36" font-size="9.5" fill="#58a6ff" text-anchor="middle" font-weight="600">okf generate</text>
+
+    <!-- bundle block -->
+    <rect x="232" width="160" height="92" rx="10" fill="#0f1a2b" stroke="#1f6feb55"/>
+    <text x="312" y="22" font-size="11" font-weight="600" fill="#79c0ff" text-anchor="middle">OKF BUNDLE</text>
+    <g font-size="9" fill="#9ecbff" font-family="ui-monospace, Menlo, monospace">
+      <text x="246" y="38">SUMMARY.md</text>
+      <text x="246" y="51">index.md</text>
+      <text x="246" y="64">_dependencies/</text>
+      <text x="246" y="77">src/.../Class.md</text>
+    </g>
+
+    <!-- arrow to agent -->
+    <line x1="402" y1="46" x2="464" y2="46" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="433" y="36" font-size="9.5" fill="#58a6ff" text-anchor="middle" font-weight="600">okf lookup</text>
+
+    <!-- agent block -->
+    <rect x="474" width="150" height="92" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="549" y="22" font-size="11" font-weight="600" fill="#8b949e" text-anchor="middle">AI AGENT</text>
+    <text x="549" y="44" font-size="9" fill="#6e7681" text-anchor="middle">Claude Code · Cursor</text>
+    <text x="549" y="58" font-size="9" fill="#6e7681" text-anchor="middle">Windsurf · Copilot</text>
+    <text x="549" y="72" font-size="9" fill="#6e7681" text-anchor="middle">OpenCode · Cline</text>
+  </g>
+
+  <!-- divider -->
+  <line x1="724" y1="140" x2="724" y2="232" stroke="#21262d" stroke-width="1"/>
+
+  <!-- stat blocks -->
+  <g transform="translate(760,140)">
+    <text x="0" y="14" font-size="34" font-weight="800" fill="#f0f6fc">7</text>
+    <text x="0" y="32" font-size="11" fill="#8b949e">languages parsed</text>
+
+    <text x="0" y="62" font-size="34" font-weight="800" fill="#f0f6fc">12</text>
+    <text x="0" y="80" font-size="11" fill="#8b949e">manifest formats</text>
+
+    <text x="138" y="14" font-size="20" font-weight="800" fill="#56d364">0</text>
+    <text x="138" y="32" font-size="11" fill="#8b949e">LLM calls required</text>
+
+    <text x="138" y="62" font-size="20" font-weight="800" fill="#f0f6fc">1</text>
+    <text x="138" y="80" font-size="11" fill="#8b949e">command to look up any concept</text>
+  </g>
+
+  <!-- bottom hairline + tagline -->
+  <line x1="60" y1="248" x2="1140" y2="248" stroke="#21262d" stroke-width="1"/>
+  <text x="60" y="268" font-size="12" fill="#6e7681">MIT licensed · OKF v0.1 conformant · pip install okf-generator</text>
+</svg>

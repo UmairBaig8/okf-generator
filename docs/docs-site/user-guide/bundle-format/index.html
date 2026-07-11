@@ -663,10 +663,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#call-graph" class="md-nav__link">
+  <a href="#relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Call Graph
+        Relationships
       
     </span>
   </a>
@@ -700,17 +700,6 @@
     <span class="md-ellipsis">
       
         Returns
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#versioning" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Versioning
       
     </span>
   </a>
@@ -1491,6 +1480,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Future Plans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/" class="md-nav__link">
         
   
@@ -1632,10 +1648,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#call-graph" class="md-nav__link">
+  <a href="#relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Call Graph
+        Relationships
       
     </span>
   </a>
@@ -1669,17 +1685,6 @@
     <span class="md-ellipsis">
       
         Returns
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#versioning" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Versioning
       
     </span>
   </a>
@@ -1850,6 +1855,7 @@
 <h2 id="concept-frontmatter">Concept Frontmatter<a class="headerlink" href="#concept-frontmatter" title="Permanent link">&para;</a></h2>
 <p>Every concept file starts with YAML frontmatter. Only these fields appear in the frontmatter:</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">okf_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.2&quot;</span>
 <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Function</span>
 <span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slugify</span>
 <span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Convert arbitrary text into a URL-safe slug.</span>
@@ -1859,6 +1865,9 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type:Function</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">module:utils</span>
 <span class="nt">timestamp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2026-07-01T10:22:03Z</span>
+<span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<span class="nt">concept_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python/easy/utils/slugify</span>
+<span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">active</span>
 <span class="nn">---</span>
 </code></pre></div>
 <table>
@@ -1870,6 +1879,11 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>okf_version</code></td>
+<td>yes</td>
+<td>Schema version (<code>"0.2"</code>)</td>
+</tr>
 <tr>
 <td><code>type</code></td>
 <td>yes</td>
@@ -1900,9 +1914,24 @@
 <td>yes</td>
 <td>ISO 8601 generation timestamp</td>
 </tr>
+<tr>
+<td><code>language</code></td>
+<td>yes</td>
+<td>Source language (extracted from tags)</td>
+</tr>
+<tr>
+<td><code>concept_id</code></td>
+<td>yes</td>
+<td>Unique concept path (relative to bundle root, no extension)</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>no</td>
+<td><code>active</code>, <code>deprecated</code>, or <code>experimental</code></td>
+</tr>
 </tbody>
 </table>
-<p>Everything else (signature, docstring, params, calls, related, methods, source) goes in the <strong>Markdown body</strong> under <code>##</code> headings.</p>
+<p>Everything else (signature, docstring, params, relationships, methods, source) goes in the <strong>Markdown body</strong> under <code>##</code> headings.</p>
 <h2 id="concept-types">Concept Types<a class="headerlink" href="#concept-types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2090,24 +2119,9 @@
 <td>Line range in source file</td>
 </tr>
 <tr>
-<td><code>## Related</code></td>
+<td><code>## Relationships</code></td>
 <td>Any</td>
-<td>Links to related concepts (parent module, child functions)</td>
-</tr>
-<tr>
-<td><code>## Related (AI-suggested)</code></td>
-<td>Any</td>
-<td>Semantic cross-links from LLM enrichment</td>
-</tr>
-<tr>
-<td><code>## Calls</code></td>
-<td>Functions</td>
-<td>Concepts called by this function</td>
-</tr>
-<tr>
-<td><code>## Called By</code></td>
-<td>Functions</td>
-<td>Concepts that call this function</td>
+<td>Typed table of related/called/called-by edges — see <a href="#relationships">Relationships</a></td>
 </tr>
 <tr>
 <td><code>## Usage Example</code></td>
@@ -2174,19 +2188,21 @@
 </tbody>
 </table>
 <p>Followed by a <code>## Used By</code> section listing dependent modules.</p>
-<h2 id="call-graph">Call Graph<a class="headerlink" href="#call-graph" title="Permanent link">&para;</a></h2>
-<p>Links in <code>## Related</code>, <code>## Calls</code>, <code>## Called By</code>, and <code>## Used By</code> use relative markdown links:</p>
-<div class="highlight"><pre><span></span><code><span class="gu">## Related</span>
-<span class="k">-</span><span class="w"> </span>[<span class="nt">slugify</span>](<span class="na">/utils/slugify.md</span>)
-<span class="k">-</span><span class="w"> </span>[<span class="nt">chunk_list</span>](<span class="na">/utils/chunk_list.md</span>)
+<h2 id="relationships">Relationships<a class="headerlink" href="#relationships" title="Permanent link">&para;</a></h2>
+<p>All typed edges (related, calls, called_by, inherits) appear in a single <code>## Relationships</code> table:</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## Relationships</span>
 
-<span class="gu">## Calls</span>
-<span class="k">-</span><span class="w"> </span>[<span class="nt">requests.get</span>](<span class="na">/_dependencies/pip/requests.md</span>)
-
-<span class="gu">## Called By</span>
-<span class="k">-</span><span class="w"> </span>[<span class="nt">main.run_pipeline</span>](<span class="na">/_dependencies/_modules/main.md</span>)
+| Type | Target |
+|------|--------|
+| related | [<span class="nt">slugify</span>](<span class="na">/utils/slugify.md</span>) |
+| calls | [<span class="nt">requests.get</span>](<span class="na">/_dependencies/pip/requests.md</span>) |
+| called_by | [<span class="nt">main.run_pipeline</span>](<span class="na">/_dependencies/_modules/main.md</span>) |
+| related (AI) | [<span class="nt">chunk_list</span>](<span class="na">/utils/chunk_list.md</span>) |
 </code></pre></div>
-<p>All paths are relative to the bundle root.</p>
+<p>Relationship types: <code>related</code>, <code>related (AI)</code>, <code>calls</code>, <code>called_by</code>, <code>inherits</code>, <code>implements</code>. All target paths are relative to the bundle root.</p>
+<blockquote>
+<p><strong>Migration:</strong> v0.1 bundles used separate <code>## Related</code>, <code>## Calls</code>, <code>## Called By</code> sections. Run <code>okf migrate v0.1-to-v0.2 &lt;bundle_dir&gt;</code> to convert.</p>
+</blockquote>
 <h2 id="minimal-valid-example">Minimal Valid Example<a class="headerlink" href="#minimal-valid-example" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>---
 type: Function
@@ -2232,9 +2248,32 @@ def add_numbers(a: int, b: int) -&gt; int
 </table>
 <h2 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h2>
 <p><code>int</code>
-```</p>
-<h2 id="versioning">Versioning<a class="headerlink" href="#versioning" title="Permanent link">&para;</a></h2>
-<p>This schema targets <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">OKF v0.1</a>. Breaking changes will be called out in the <a href="../../changelog/">Changelog</a>.</p>
+<div class="highlight"><pre><span></span><code>## Versioning
+
+This schema targets **OKF v0.2**. Every concept file contains `okf_version: &quot;0.2&quot;` in frontmatter.
+
+### Why v0.2?
+
+The bump from v0.1 to v0.2 formalizes the schema for downstream tooling:
+
+| What | v0.1 | v0.2 | Why |
+|------|------|------|-----|
+| Schema version | Only in index.md | Every concept file | Tools can validate format without reading root |
+| Concept identity | Implicit (file path) | Explicit `concept_id` field | Graph DB import, dedup across bundles |
+| Language | In tags only (`lang:python`) | Dedicated `language` field | One less parse step for consumers |
+| Status | Not tracked | `status: active\|deprecated\|experimental` | Enables deprecation-aware tools |
+| Relationship edges | 4 separate `##` sections (Related, Calls, Called By, Related AI) | Single `## Relationships` table with typed rows | Queryable by edge type, easier to parse, extensible to new types |
+
+### Migrating from v0.1
+
+```bash
+okf migrate v0.1-to-v0.2 ./path/to/bundle
+</code></pre></div></p>
+<p>Run <code>--dry-run</code> first to preview changes. The migration:
+- Adds <code>okf_version</code>, <code>concept_id</code>, <code>language</code> to every concept frontmatter
+- Merges <code>## Related</code>, <code>## Calls</code>, <code>## Called By</code>, <code>## Related (AI-suggested)</code> into a single <code>## Relationships</code> table
+- Is idempotent: running it again on a v0.2 bundle is a no-op</p>
+<p>Breaking changes between versions are called out in the <a href="../../changelog/">Changelog</a>.</p>
 
 
 

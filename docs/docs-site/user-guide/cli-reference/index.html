@@ -786,6 +786,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#okf-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-migrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf migrate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#okf-install" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1441,6 +1463,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Future Plans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/" class="md-nav__link">
         
   
@@ -1547,6 +1596,28 @@
     <span class="md-ellipsis">
       
         okf summarize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-migrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf migrate
       
     </span>
   </a>
@@ -1664,7 +1735,7 @@ okf<span class="w"> </span>--version<span class="w">           </span>Show<span 
 <h2 id="okf-generate"><code>okf generate</code><a class="headerlink" href="#okf-generate" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>&lt;source_dir&gt;<span class="w"> </span><span class="o">[</span>output_dir<span class="o">]</span><span class="w"> </span><span class="o">[</span>--exclude<span class="w"> </span>&lt;dir&gt;<span class="w"> </span>...<span class="o">]</span>
 </code></pre></div>
-<p>Scans a source directory and produces an OKF v0.1 knowledge bundle.</p>
+<p>Scans a source directory and produces an OKF v0.2 knowledge bundle.</p>
 <table>
 <thead>
 <tr>
@@ -1849,6 +1920,71 @@ Changes are detected via content hash (description, signature, tags).</p>
 </code></pre></div>
 <p>Regenerate SUMMARY.md from an existing bundle (no re-scan).</p>
 <hr />
+<h2 id="okf-agent"><code>okf agent</code><a class="headerlink" href="#okf-agent" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>agent<span class="w"> </span><span class="o">[</span>--bundle<span class="w"> </span>&lt;path&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--resume<span class="w"> </span>&lt;session_id&gt;<span class="o">]</span>
+</code></pre></div>
+<p>Interactive REPL over an OKF bundle with persistent sessions and slash commands.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/lookup &lt;name&gt;</code></td>
+<td>Full concept detail card</td>
+</tr>
+<tr>
+<td><code>/source &lt;name&gt;</code></td>
+<td>Show source code lines</td>
+</tr>
+<tr>
+<td><code>/calls [name]</code></td>
+<td>Show what this calls</td>
+</tr>
+<tr>
+<td><code>/called-by [name]</code></td>
+<td>Show what calls this</td>
+</tr>
+<tr>
+<td><code>/related [name]</code></td>
+<td>Show relationships</td>
+</tr>
+<tr>
+<td><code>/save</code></td>
+<td>Save session to disk</td>
+</tr>
+<tr>
+<td><code>/export [json\|md]</code></td>
+<td>Export session</td>
+</tr>
+<tr>
+<td><code>/sessions</code></td>
+<td>List saved sessions</td>
+</tr>
+<tr>
+<td><code>/resume &lt;id&gt;</code></td>
+<td>Resume a previous session</td>
+</tr>
+<tr>
+<td><code>/history</code></td>
+<td>Show conversation history</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>Clear context</td>
+</tr>
+</tbody>
+</table>
+<p>Sessions stored in <code>~/.okf/sessions/</code>. Requires LLM configured in <code>.okfconfig</code> for Q&amp;A.</p>
+<hr />
+<h2 id="okf-migrate"><code>okf migrate</code><a class="headerlink" href="#okf-migrate" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>migrate<span class="w"> </span>v0.1-to-v0.2<span class="w"> </span>&lt;bundle_dir&gt;<span class="w"> </span><span class="o">[</span>--dry-run<span class="o">]</span>
+</code></pre></div>
+<p>Convert OKF v0.1 bundles to v0.2 format in-place. Adds <code>okf_version</code>, <code>concept_id</code>, <code>language</code> to frontmatter and merges relationship sections. Use <code>--dry-run</code> to preview changes.</p>
+<hr />
 <h2 id="okf-install"><code>okf install</code><a class="headerlink" href="#okf-install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>install<span class="w"> </span><span class="o">[</span>agent<span class="o">]</span><span class="w"> </span><span class="o">[</span>agent<span class="w"> </span>...<span class="o">]</span>
 </code></pre></div>
@@ -1895,12 +2031,14 @@ Changes are detected via content hash (description, signature, tags).</p>
 <h2 id="okf-visualize"><code>okf visualize</code><a class="headerlink" href="#okf-visualize" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>visualize<span class="w"> </span>&lt;bundle_dir&gt;<span class="w"> </span><span class="o">[</span>output.html<span class="o">]</span>
 </code></pre></div>
-<p>Generate an interactive HTML graph of an OKF bundle. Uses D3.js force-directed graph with:
-- Color-coded nodes by concept type (Class, Function, Module, Dependency, etc.)
-- Relationship edges (calls, called-by, imports, related)
-- Search/filter by name
-- Tooltip on hover showing description and resource
-- Pan/zoom</p>
+<p>Generate an interactive HTML explorer for an OKF bundle. Features:
+- <strong>Knowledge graph</strong> — Cytoscape.js force-directed layout, color-coded by type
+- <strong>Concept detail panel</strong> — signature, docstring, params, relationships, source code snippet
+- <strong>Source code viewer</strong> — relevant lines from source file, Prism.js syntax highlighting
+- <strong>Parse tree viewer</strong> — tree-sitter WASM-powered AST browser (Python, JS, TS, Go, Java, Ruby, Rust, C, C++, PHP)
+- <strong>Ego graph</strong> — local neighborhood around any concept
+- <strong>Global graph</strong> — full network overview with vis.js
+- <strong>Glass UI</strong> — frosted glass cards, breathing gradient, theme toggle</p>
 <p>Output is a self-contained HTML file (no server, no install).</p>
 <hr />
 <h2 id="okf-serve"><code>okf serve</code><a class="headerlink" href="#okf-serve" title="Permanent link">&para;</a></h2>
