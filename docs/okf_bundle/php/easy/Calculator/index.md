@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/easy/Calculator
 resource: php/easy/Calculator
-timestamp: '2026-07-11T09:01:39Z'
+timestamp: '2026-07-11T09:04:53Z'
 title: Calculator
 type: Index
 ---
