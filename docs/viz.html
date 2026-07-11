@@ -371,7 +371,7 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
 #detail-right { position:sticky; top:var(--sp-4); display:flex; flex-direction:column; gap:var(--sp-4); }
 @media (max-width:1080px) { #detail-right { position:static; } }
 #code-split { display:flex; min-height:400px; flex:1; gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
-#code-split-source { flex:1; overflow:auto; padding:var(--sp-4); background:rgba(0,0,0,.15); }
+#code-split-source { flex:1; overflow:auto; padding:var(--sp-4); background:var(--surface-2); }
 #code-split-source pre { margin:0; font-size:13px; white-space:pre-wrap; word-break:break-word; }
 #code-split-divider { width:4px; cursor:col-resize; background:var(--border); flex:none; }
 #code-split-divider:hover { background:var(--accent); }
@@ -1157,7 +1157,9 @@ var _tsWasmUrls = {
 async function getTsParser(langName) {
   if (_tsParsers[langName]) return _tsParsers[langName];
   if (!_tsInitialized) {
-    await TreeSitter.init();
+    await TreeSitter.init({
+      locateFile: function(p) { return 'https://cdn.jsdelivr.net/npm/web-tree-sitter@0.20.8/' + p; }
+    });
     _tsInitialized = true;
   }
   var url = _tsWasmUrls[langName];
