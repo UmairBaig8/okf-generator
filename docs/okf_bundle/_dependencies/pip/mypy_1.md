@@ -14,7 +14,7 @@ tags:
 - ecosystem:pip
 - version:>=1.7.0
 - manifest:pyproject.toml
-timestamp: '2026-07-11T11:35:27Z'
+timestamp: '2026-07-11T11:41:46Z'
 title: mypy
 type: Dependency
 ---
