@@ -8,9 +8,9 @@ tags:
 - type:Function
 - module:c
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-11T09:34:13Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: vector2i_dot
 type: Function
 ---

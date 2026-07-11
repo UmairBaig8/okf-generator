@@ -9,9 +9,9 @@ tags:
 - type:View
 - module:sql
 - domain:easy
-- git:branch:main
+- git:branch:HEAD
 - git:repo:okf-generator
-timestamp: '2026-07-11T09:34:13Z'
+timestamp: '2026-07-07T06:58:42Z'
 title: available_inventory
 type: View
 ---
