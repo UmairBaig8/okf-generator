@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for dart/easy/calculator
 resource: dart/easy/calculator
-timestamp: '2026-07-11T10:43:49Z'
+timestamp: '2026-07-11T10:49:55Z'
 title: calculator
 type: Index
 ---

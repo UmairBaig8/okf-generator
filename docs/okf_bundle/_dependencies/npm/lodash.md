@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:^4.17.21
-- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-11T10:43:13Z'
+- ecosystem:npm
+timestamp: '2026-07-11T10:49:18Z'
 title: lodash
 type: Dependency
 ---

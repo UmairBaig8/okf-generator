@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies
 resource: _dependencies
-timestamp: '2026-07-11T10:43:49Z'
+timestamp: '2026-07-11T10:49:55Z'
 title: _dependencies
 type: Index
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/complex/services/payment
 resource: python/complex/services/payment
-timestamp: '2026-07-11T10:43:49Z'
+timestamp: '2026-07-11T10:49:55Z'
 title: payment
 type: Index
 ---

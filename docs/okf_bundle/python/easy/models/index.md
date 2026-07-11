@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/easy/models
 resource: python/easy/models
-timestamp: '2026-07-11T10:43:49Z'
+timestamp: '2026-07-11T10:49:55Z'
 title: models
 type: Index
 ---
