@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
+- version:^9.0.0
 - ecosystem:npm
 - manifest:package.json
-- version:^9.0.0
-timestamp: '2026-07-11T09:09:13Z'
+timestamp: '2026-07-11T09:16:36Z'
 title: uuid
 type: Dependency
 ---

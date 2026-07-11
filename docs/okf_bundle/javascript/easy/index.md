@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for javascript/easy
 resource: javascript/easy
-timestamp: '2026-07-11T09:09:51Z'
+timestamp: '2026-07-11T09:17:16Z'
 title: easy
 type: Index
 ---

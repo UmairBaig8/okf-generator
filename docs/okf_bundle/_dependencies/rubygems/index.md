@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/rubygems
 resource: _dependencies/rubygems
-timestamp: '2026-07-11T09:09:51Z'
+timestamp: '2026-07-11T09:17:16Z'
 title: rubygems
 type: Index
 ---

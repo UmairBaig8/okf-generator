@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for swift/complex
 resource: swift/complex
-timestamp: '2026-07-11T09:09:51Z'
+timestamp: '2026-07-11T09:17:16Z'
 title: complex
 type: Index
 ---

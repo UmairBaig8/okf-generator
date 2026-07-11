@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/easy
 resource: csharp/easy
-timestamp: '2026-07-11T09:09:51Z'
+timestamp: '2026-07-11T09:17:15Z'
 title: easy
 type: Index
 ---
