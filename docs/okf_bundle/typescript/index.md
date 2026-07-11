@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for typescript
 resource: typescript
-timestamp: '2026-07-11T09:39:25Z'
+timestamp: '2026-07-11T10:38:08Z'
 title: typescript
 type: Index
 ---

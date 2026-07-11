@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:rubygems
 - manifest:Gemfile
 - version:~> 3.2
-timestamp: '2026-07-11T09:38:55Z'
+- ecosystem:rubygems
+timestamp: '2026-07-11T10:37:38Z'
 title: csv
 type: Dependency
 ---
