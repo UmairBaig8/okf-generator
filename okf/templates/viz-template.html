@@ -324,31 +324,7 @@ html[data-theme="light"] #detail-header {
 .meta-tag .label { color:var(--text-3); font-weight:400; text-transform:none; }
 .meta-tag-vis { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
 
-#code-panel {
-  position:fixed; top:56px; right:0; width:480px; max-width:90vw; height:calc(100vh - 56px);
-  background:var(--surface); border-left:1px solid var(--border-strong);
-  z-index:100; display:none; flex-direction:column; box-shadow:-4px 0 24px rgba(0,0,0,.3);
-  animation:slideIn .2s var(--ease);
-}
-#code-panel.open { display:flex; }
-@keyframes slideIn { from { transform:translateX(100%); } to { transform:none; } }
-#code-panel-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:var(--sp-4) var(--sp-5); border-bottom:1px solid var(--border);
-  flex:none;
-}
-#code-panel-tabs { display:flex; gap:0; }
-#code-panel-tabs .code-tab {
-  background:transparent; border:1px solid var(--border); color:var(--text-3); padding:5px 14px;
-  font-size:12px; font-weight:500; cursor:pointer; transition:all .15s var(--ease);
-  border-radius:var(--r-sm) var(--r-sm) 0 0; margin-bottom:-1px;
-}
-#code-panel-tabs .code-tab.active { background:var(--surface-2); color:var(--accent-strong); border-bottom-color:var(--surface-2); }
-#code-panel-tabs .code-tab:hover:not(.active) { color:var(--text); background:var(--surface); }
-.code-tab-pane { display:none; }
-.code-tab-pane.active { display:block; }
-#code-panel-parse { padding:var(--sp-3); overflow:auto; height:100%; font-size:13px; }
-.parse-node {
+#code-split-parse .parse-node {
   padding:2px 0 2px 20px; cursor:default; white-space:nowrap;
   border-left:1px solid var(--border); margin-left:10px;
 }
@@ -372,18 +348,33 @@ html[data-theme="light"] #detail-header {
   color:var(--text-2); display:flex; align-items:center; justify-content:center; cursor:pointer;
   transition:background .12s var(--ease);
 }
-#code-panel-header .close-btn:hover { background:var(--surface-2); }
-#code-panel-body { flex:1; overflow:auto; padding:var(--sp-4); }
-#code-panel-body pre {
-  font-size:12px; line-height:1.6; white-space:pre; tab-size:2; overflow-x:auto;
+#code-split-source pre {
+  font-size:12px; line-height:1.6; white-space:pre-wrap; tab-size:2; overflow-x:auto;
   color:var(--text); font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
 }
 
+#detail-tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); margin:0 0 var(--sp-4); }
+.detail-tab {
+  background:transparent; border:none; color:var(--text-3); padding:8px 20px;
+  font-size:13px; font-weight:500; cursor:pointer; transition:all .15s var(--ease);
+  border-bottom:2px solid transparent; margin-bottom:-1px; font-family:inherit;
+}
+.detail-tab:hover { color:var(--text); background:var(--surface-2); }
+.detail-tab.active { color:var(--accent-strong); border-bottom-color:var(--accent); }
+.detail-tab-content { display:none; }
+.detail-tab-content.active { display:block; }
 #detail-grid { display:grid; grid-template-columns:1fr minmax(260px,340px); gap:var(--sp-5); align-items:start; }
 @media (max-width:1080px) { #detail-grid { grid-template-columns:1fr; } }
 @media (max-width:720px) { #detail { padding:0; } }
 #detail-right { position:sticky; top:var(--sp-4); display:flex; flex-direction:column; gap:var(--sp-4); }
 @media (max-width:1080px) { #detail-right { position:static; } }
+#code-split { display:flex; height:calc(100vh - 320px); min-height:400px; gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
+#code-split-source { flex:1; overflow:auto; padding:var(--sp-4); background:rgba(0,0,0,.15); }
+#code-split-source pre { margin:0; font-size:13px; white-space:pre-wrap; word-break:break-word; }
+#code-split-divider { width:4px; cursor:col-resize; background:var(--border); flex:none; }
+#code-split-divider:hover { background:var(--accent); }
+#code-split-parse { flex:1; overflow:auto; padding:var(--sp-4); }
+.code-placeholder { color:var(--text-3); font-size:13px; text-align:center; padding:var(--sp-8); }
 
 .sec {
   background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
@@ -514,9 +505,22 @@ html[data-theme="light"] #detail-header {
           <div id="detail-header"></div>
           <div id="landing"></div>
           <div id="detail" class="hidden">
-            <div id="detail-grid">
-              <div id="detail-left"></div>
-              <div id="detail-right"></div>
+            <div id="detail-tab-bar">
+              <button class="detail-tab active" data-tab="details" onclick="switchDetailTab('details',this)">Details</button>
+              <button class="detail-tab" data-tab="code" onclick="switchDetailTab('code',this)">Code</button>
+            </div>
+            <div id="detail-tab-details" class="detail-tab-content active">
+              <div id="detail-grid">
+                <div id="detail-left"></div>
+                <div id="detail-right"></div>
+              </div>
+            </div>
+            <div id="detail-tab-code" class="detail-tab-content">
+              <div id="code-split">
+                <div id="code-split-source"><div class="code-placeholder">Select a concept to view source</div></div>
+                <div id="code-split-divider"></div>
+                <div id="code-split-parse"><div class="code-placeholder">Parse tree appears here</div></div>
+              </div>
             </div>
           </div>
         </div>
@@ -529,21 +533,7 @@ html[data-theme="light"] #detail-header {
   </div>
 </div>
 
-<div id="code-panel-backdrop" onclick="closeCodePanel()" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99;display:none;background:rgba(0,0,0,0.3)"></div>
-<div id="code-panel">
-  <div id="code-panel-header">
-    <div id="code-panel-tabs">
-      <button class="code-tab active" data-tab="source" onclick="switchCodeTab('source')">Source</button>
-      <button class="code-tab" data-tab="parse" onclick="switchCodeTab('parse')">Parse Tree</button>
-    </div>
-    <span id="code-panel-path" style="font-size:11px;color:var(--text-3);font-weight:400;flex:1;text-align:center"></span>
-    <button class="close-btn" onclick="closeCodePanel()" aria-label="Close code panel">&times;</button>
-  </div>
-  <div id="code-panel-body">
-    <pre id="code-panel-source" class="code-tab-pane active"></pre>
-    <div id="code-panel-parse" class="code-tab-pane"></div>
-  </div>
-</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -898,7 +888,6 @@ var egoCy = null;
 var globalCy = null;
 
 async function selectConcept(id) {
-  closeCodePanel();
   qs('landing').classList.add('hidden');
   qs('detail-header').classList.remove('hidden');
   qs('detail').classList.remove('hidden');
@@ -1114,44 +1103,37 @@ function renderDetail(c) {
 
 // ---- Code Panel ----
 function showCodePanel(id) {
+  switchDetailTab('code', document.querySelector('.detail-tab[data-tab="code"]'));
   var c = conceptCache[id] || __nodeById[id];
   if (!c) return;
   var code = c.code || '';
   var body = c.body || '';
   var ext = (c.resource || '').split('.').pop();
   var lang = {js:'javascript',ts:'typescript',py:'python',rb:'ruby',rs:'rust',go:'go',java:'java',kt:'kotlin',cs:'csharp',cpp:'cpp',c:'c',sql:'sql',sh:'bash',yaml:'yaml',json:'json',html:'html',css:'css',toml:'ini',swift:'swift',php:'php',scala:'scala',dart:'dart'}[ext] || ext || '';
-  var html = '';
+  var sourceContainer = qs('code-split-source');
   if (code) {
-    html += '<div class="sec"><h3>Source Code</h3><pre><code class="language-' + lang + '">' + esc(code) + '</code></pre></div>';
+    sourceContainer.innerHTML = '<pre><code class="language-' + lang + '">' + esc(code) + '</code></pre>';
   } else if (body) {
-    html = '<pre><code>' + esc(body.slice(0, 3000)) + '</code></pre>';
-  }
-  if (!html) return;
-  qs('code-panel-source').innerHTML = html;
-  qs('code-panel-path').textContent = c.resource || '';
-  qs('code-panel').classList.add('open');
-  qs('code-panel-backdrop').style.display = 'block';
-  var codeEl = qs('code-panel-source').querySelector('code');
+    sourceContainer.innerHTML = '<pre><code>' + esc(body.slice(0, 3000)) + '</code></pre>';
+  } else { return; }
+  var codeEl = sourceContainer.querySelector('code');
   if (codeEl && window.Prism) Prism.highlightElement(codeEl);
-}
-function closeCodePanel() {
-  qs('code-panel').classList.remove('open');
-  qs('code-panel-backdrop').style.display = 'none';
+  showParseTreePrompt(id);
 }
 
-// ---- Tab Switching ----
-var _currentCodeId = '';
-function switchCodeTab(tab) {
-  document.querySelectorAll('.code-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.tab === tab); });
-  document.querySelectorAll('.code-tab-pane').forEach(function(p) { p.classList.toggle('active', p.id === 'code-panel-' + tab); });
-  if (tab === 'parse') showParseTreePrompt(_currentCodeId);
-}
-
+// ---- Code Tab Split ----
 var _parseTreeLoaded = {};
 function showParseTreePrompt(id) {
   if (_parseTreeLoaded[id]) return;
-  var container = qs('code-panel-parse');
+  var container = qs('code-split-parse');
   container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:var(--sp-4);padding:var(--sp-8)"><p style="color:var(--text-3);text-align:center;font-size:14px">Parse source code with tree-sitter to see the full AST</p><button onclick="renderParseTree(\'' + id.replace(/'/g,"\\'") + '\');this.disabled=true;this.textContent=\'Loading…\'" style="padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;font-weight:600;font-size:13px">Parse</button></div>';
+}
+
+function switchDetailTab(name, btn) {
+  document.querySelectorAll('.detail-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.detail-tab-content').forEach(function(t) { t.classList.remove('active'); });
+  qs('detail-tab-' + name).classList.add('active');
 }
 
 // ---- Tree-sitter WASM Parser ----
@@ -1247,7 +1229,7 @@ function toggleParseNode(el) {
 }
 
 async function renderParseTree(id) {
-  var container = qs('code-panel-parse');
+  var container = qs('code-split-parse');
   if (!id) return;
   if (_parseTreeLoaded[id]) return;
 
@@ -1321,24 +1303,7 @@ async function renderParseTree(id) {
   }
 }
 
-// Update showCodePanel to store current concept ID
-var _origShowCodePanel = showCodePanel;
-showCodePanel = function(id) {
-  _currentCodeId = id;
-  switchCodeTab('source');
-  _origShowCodePanel(id);
 
-  // Hide parse tree tab for unsupported languages
-  var c = conceptCache[id] || __nodeById[id];
-  var ext = (c && c.resource || '').split('.').pop();
-  var langName = _tsLangMap[ext];
-  var supported = langName && _tsWasmUrls[langName];
-  var parseTab = document.querySelector('.code-tab[data-tab="parse"]');
-  if (parseTab) {
-    parseTab.style.display = supported ? '' : 'none';
-    if (!supported) switchCodeTab('source');
-  }
-};
 
 // ---- Ego Graph (Cytoscape) ----
 function renderEgoGraph(centerId, concept) {
@@ -1498,7 +1463,6 @@ function toggleTheme() {
 
 // ---- Keyboard shortcuts ----
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') { closeCodePanel(); }
   if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement !== qs('search')) { qs('search').focus(); e.preventDefault(); }
 });
 </script>
