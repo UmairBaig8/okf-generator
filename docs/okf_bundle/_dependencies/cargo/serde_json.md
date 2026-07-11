@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- manifest:Cargo.toml
 - ecosystem:cargo
+- manifest:Cargo.toml
 - version:1.0
-timestamp: '2026-07-11T11:32:11Z'
+timestamp: '2026-07-11T11:35:27Z'
 title: serde_json
 type: Dependency
 ---

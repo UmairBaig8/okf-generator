@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
-- manifest:package.json
-- ecosystem:npm
 - version:^20.10.0
-timestamp: '2026-07-11T11:32:11Z'
+- ecosystem:npm
+- manifest:package.json
+timestamp: '2026-07-11T11:35:27Z'
 title: '@types/node'
 type: Dependency
 ---
