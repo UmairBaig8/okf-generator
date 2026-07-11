@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/complex/MiddlewareInterface
 resource: php/complex/MiddlewareInterface
-timestamp: '2026-07-11T19:04:16Z'
+timestamp: '2026-07-11T19:57:27Z'
 title: MiddlewareInterface
 type: Index
 ---

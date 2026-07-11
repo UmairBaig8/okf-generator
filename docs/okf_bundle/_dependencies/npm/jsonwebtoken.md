@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:^9.0.2
-- manifest:package.json
 - ecosystem:npm
-timestamp: '2026-07-11T19:03:44Z'
+- manifest:package.json
+timestamp: '2026-07-11T19:56:54Z'
 title: jsonwebtoken
 type: Dependency
 ---

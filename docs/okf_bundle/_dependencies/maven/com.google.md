@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:32.1.3-jre
-- ecosystem:maven
 - manifest:pom.xml
-timestamp: '2026-07-11T19:03:44Z'
+- ecosystem:maven
+timestamp: '2026-07-11T19:56:54Z'
 title: com.google.guava:guava
 type: Dependency
 ---
