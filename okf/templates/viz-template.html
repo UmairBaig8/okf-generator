@@ -301,7 +301,8 @@ html[data-theme="light"] #detail-header {
   border-bottom-color:rgba(0,0,0,.06);
 }
 #detail-header.hidden { display:none; }
-#detail-topbar { display:flex; align-items:center; justify-content:space-between; gap:var(--sp-3); flex-wrap:wrap; }
+#detail-topbar { display:flex; align-items:center; justify-content:space-between; gap:var(--sp-3); flex-wrap:wrap; min-height:28px; }
+#detail-topbar + #detail-topbar { margin-top:2px; }
 #detail-topbar-left { display:flex; flex-direction:column; align-items:flex-start; }
 #detail-topbar-right { display:flex; align-items:center; gap:var(--sp-2); flex-shrink:0; }
 #detail-topbar .resource { font-size:11px; color:var(--text-3); }
@@ -1009,18 +1010,25 @@ function renderDetail(c) {
     sections: sections,
   };
 
-  var top = '<div id="detail-topbar"><div id="detail-topbar-left">';
-  top += '<span class="type-badge" style="background:' + color + '18;color:' + color + '"><span class="dot" style="background:' + color + '"></span>' + esc(d.type) + '</span>';
-  top += '<h2>' + esc(d.title) + '</h2></div>';
-  top += '<div id="detail-topbar-right">';
-  // Right side: resource path + visibility + decorators
-  if (d.resource) top += '<span class="resource">' + esc(d.resource) + '</span>';
   var visDec = [];
   if (d.visibility && d.visibility.length) visDec.push('<span class="meta-tag meta-tag-vis"><span class="label">visibility:</span> ' + esc(d.visibility.join(', ')) + '</span>');
   if (d.decorators && d.decorators.length) visDec.push('<span class="meta-tag meta-tag-vis"><span class="label">decorators:</span> ' + esc(d.decorators.join(', ')) + '</span>');
-  if (visDec.length) top += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">' + visDec.join('') + '</div>';
+
+  var top = '<div id="detail-topbar"><div id="detail-topbar-left">';
+  top += '<span class="type-badge" style="background:' + color + '18;color:' + color + '"><span class="dot" style="background:' + color + '"></span>' + esc(d.type) + '</span>';
+  top += '</div><div id="detail-topbar-right">';
+  if (visDec.length) top += '<div style="display:flex;flex-wrap:wrap;gap:4px">' + visDec.join('') + '</div>';
   top += '</div></div>';
-  if (d.description) top += '<p class="desc">' + esc(d.description) + '</p>';
+
+  top += '<div id="detail-topbar"><div id="detail-topbar-left">';
+  top += '<h2>' + esc(d.title) + '</h2>';
+  top += '</div></div>';
+
+  top += '<div id="detail-topbar"><div id="detail-topbar-left">';
+  if (d.description) top += '<p class="desc" style="margin:0">' + esc(d.description) + '</p>';
+  top += '</div><div id="detail-topbar-right">';
+  if (d.resource) top += '<span class="resource">' + esc(d.resource) + '</span>';
+  top += '</div></div>';
 
   var md = [];
   if (d.inheritance && d.inheritance.length) md.push({l:'inherits', v:d.inheritance.join(', ')});
