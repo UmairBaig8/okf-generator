@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service/handler
 resource: kotlin/complex/src/main/kotlin/com/okfgen/service/handler
-timestamp: '2026-07-11T11:42:17Z'
+timestamp: '2026-07-11T19:04:16Z'
 title: handler
 type: Index
 ---
