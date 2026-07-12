@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for javascript/complex
 resource: javascript/complex
-timestamp: '2026-07-12T22:03:19Z'
+timestamp: '2026-07-12T22:05:28Z'
 title: complex
 type: Index
 ---

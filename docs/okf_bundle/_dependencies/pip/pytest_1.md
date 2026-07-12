@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
+- manifest:pyproject.toml
 - version:>=7.4.0
 - ecosystem:pip
-- manifest:pyproject.toml
-timestamp: '2026-07-12T22:02:43Z'
+timestamp: '2026-07-12T22:04:57Z'
 title: pytest
 type: Dependency
 ---
