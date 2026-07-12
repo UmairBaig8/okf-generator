@@ -1720,7 +1720,7 @@ async function loadCosmosExplore() {
       curvedLinks: false, linkDefaultArrows: false,
       fitViewOnInit: true, fitViewDelay: 700, fitViewDuration: 1000, fitViewPadding: 0.18,
       simulationRepulsion: 0.5, simulationGravity: 0.06, simulationLinkSpring: 0.3,
-      simulationLinkDistance: 45, simulationFriction: 0.25, simulationDecay: 3000,
+      simulationLinkDistance: 45, simulationFriction: 0.9, simulationDecay: 100,
       simulationCluster: 0.15, simulationCollision: 0.4, simulationCollisionPadding: 2,
       renderHoveredPointRing: true, hoveredPointRingColor: '#ffffff',
       focusedPointRingColor: '#ffffff', outlinedPointRingColor: '#9385ff',
@@ -2003,11 +2003,14 @@ function cosmosTogglePhysics() {
       simulationRepulsion: _cosmosPhysicsPaused ? 0 : 0.5,
       simulationGravity: _cosmosPhysicsPaused ? 0 : 0.06,
       simulationLinkSpring: _cosmosPhysicsPaused ? 0 : 0.3,
+      simulationLinkDistance: _cosmosPhysicsPaused ? 1 : 45,
+      simulationFriction: _cosmosPhysicsPaused ? 1 : 0.9,
+      simulationDecay: _cosmosPhysicsPaused ? 1 : 100,
       simulationCluster: _cosmosPhysicsPaused ? 0 : 0.15,
       simulationCollision: _cosmosPhysicsPaused ? 0 : 0.4,
     });
-    if (_cosmosPhysicsPaused) _cosmosGraph.pauseSimulation();
-    else _cosmosGraph.resumeSimulation();
+    // Force re-render to apply physics change
+    _cosmosGraph.render();
   } catch(e) { console.warn('physics toggle', e); }
   var btn = qs('cosmos-pause-btn');
   if (btn) btn.innerHTML = _cosmosPhysicsPaused
