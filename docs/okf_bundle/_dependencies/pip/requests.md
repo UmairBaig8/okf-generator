@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
-- version:==2.31.0
-- manifest:requirements.txt
 - ecosystem:pip
-timestamp: '2026-07-07T06:58:41Z'
+- manifest:requirements.txt
+- version:==2.31.0
+timestamp: '2026-07-12T22:02:43Z'
 title: requests
 type: Dependency
 ---

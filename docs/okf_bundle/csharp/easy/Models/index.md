@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/easy/Models
 resource: csharp/easy/Models
-timestamp: '2026-07-12T22:02:21Z'
+timestamp: '2026-07-12T22:03:19Z'
 title: Models
 type: Index
 ---

@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for csharp/complex
 resource: csharp/complex
-timestamp: '2026-07-12T22:02:21Z'
+timestamp: '2026-07-12T22:03:19Z'
 title: complex
 type: Index
 ---
