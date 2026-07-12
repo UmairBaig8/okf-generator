@@ -347,17 +347,17 @@ html[data-theme="light"] #detail-header {
   position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:20;
   display:flex; align-items:center; gap:8px; padding:8px; border-radius:14px;
   background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md); max-width:min(92vw,780px);
+  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md);   max-width:min(96vw,960px);
 }
 html[data-theme="light"] #cosmos-toolbar { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
 #cosmos-toolbar .search-box { position:relative; }
 #cosmos-toolbar .search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
 #cosmos-search {
-  width:200px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  width:240px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
   padding:8px 10px 8px 30px; color:var(--text); font-size:13px; outline:none;
   transition:border-color .15s var(--ease),width .2s var(--ease);
 }
-#cosmos-search:focus { border-color:var(--accent); width:250px; }
+#cosmos-search:focus { border-color:var(--accent); width:300px; }
 #cosmos-search::placeholder { color:var(--text-3); }
 #chip-row { display:flex; gap:6px; flex-wrap:wrap; max-width:460px; }
 .filter-chip {
@@ -429,7 +429,7 @@ html[data-theme="light"] #zoomctl { background:rgba(255,255,255,.75); border-col
 .cosmos-mode { display:flex; border-radius:8px; background:rgba(255,255,255,.06); padding:2px; gap:1px; }
 html[data-theme="light"] .cosmos-mode { background:rgba(0,0,0,.04); }
 .mode-btn {
-  font-size:11px; font-weight:600; padding:5px 12px; border-radius:6px; cursor:pointer; user-select:none;
+  font-size:11px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; user-select:none;
   background:transparent; border:none; color:var(--text-3); transition:all .15s var(--ease);
   font-family:inherit; white-space:nowrap;
 }
@@ -1807,6 +1807,10 @@ function cosmosSetMode(mode, btn) {
   _cosmosMode = mode;
   document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
+  // Clear search and re-trigger filter
+  var searchEl = qs('cosmos-search');
+  if (searchEl) searchEl.value = '';
+  _cosmosMatchSet = null;
   _cosmosClearFocus();
   // Toggle point labels
   var showLabels = mode === 'labels';
