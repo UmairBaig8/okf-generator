@@ -130,7 +130,6 @@ packages = ["okf"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "SKILL.md" = "okf/SKILL.md"
-"okf/domains/rules/" = "okf/domains/rules/"
 
 [tool.hatch.build.targets.sdist]
 include = [
