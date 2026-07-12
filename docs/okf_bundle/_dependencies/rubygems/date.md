@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
+- version:~> 3.3
 - ecosystem:rubygems
 - manifest:Gemfile
-- version:~> 3.3
-timestamp: '2026-07-12T11:29:36Z'
+timestamp: '2026-07-07T06:58:41Z'
 title: date
 type: Dependency
 ---

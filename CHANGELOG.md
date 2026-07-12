@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+
+## [0.1.46] — 2026-07-13
+
+### Added
+
+- **Cosmos.gl 3D Explore tab** — full 3D particle graph with search, filter, and info card for interactive codebase exploration.
+- **4-mode cosmos switcher** — Explore, Paths, Labels, and Focus modes with dropdown selector, clears search on switch, frees toolbar space.
+- **Detail page tabs** — Details | Code split panel with auto-populated code tab, capsule tab design, and auto-loading parse tree.
+
+### Changed
+
+- **Light theme polish** — code text color #000, syntax token colors, glass opacity .7, blur 24px, code panel transparent bg.
+- **Domains grid** — 2-column grid layout, scrollable when many domains.
+- **Detail header** — 3-row layout (type|vis, title, desc|resource), visibility+decorators moved to top-right, resource path below.
+- **Landing page** — balanced spacing (not cramped, not oversized), 100px bottom breathing room.
+
+### Fixed
+
+- **Graph physics** — pause/resume button + space key, graph settles in 3s → 1s (friction 0.9, decay 100), toggle uses setConfigPartial.
+- **Relationships parsing** — empty array now correctly handled as truthy, blocked fallback.
+- **Web-tree-sitter WASM** — correct locateFile for WASM assets, theme-aware code panel bg.
+- **Cosmos theme** — support for light/dark mode, reduced decay, canvas bg toggle.
+
 ## [0.1.45] — 2026-07-11
 
 ### Added
@@ -801,7 +832,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.45...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.46...HEAD
+[0.1.46]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.46
 [0.1.45]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.45
 [0.1.44]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.44
 [0.1.43]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.43

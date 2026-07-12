@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for julia/easy/math
 resource: julia/easy/math
-timestamp: '2026-07-12T11:30:04Z'
+timestamp: '2026-07-12T20:40:49Z'
 title: math
 type: Index
 ---

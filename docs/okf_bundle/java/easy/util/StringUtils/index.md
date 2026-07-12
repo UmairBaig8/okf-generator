@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for java/easy/util/StringUtils
 resource: java/easy/util/StringUtils
-timestamp: '2026-07-12T11:30:04Z'
+timestamp: '2026-07-12T20:40:49Z'
 title: StringUtils
 type: Index
 ---
