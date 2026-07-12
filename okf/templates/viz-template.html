@@ -712,6 +712,7 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
           <button onclick="cosmosZoom(1.4)" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
           <button onclick="cosmosZoom(0.71)" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
           <button onclick="cosmosReset()" title="Fit to screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+          <button id="cosmos-pause-btn" onclick="cosmosTogglePhysics()" title="Pause/resume physics animation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
         </div>
 
         <div id="cosmos-info-card">
@@ -1719,7 +1720,7 @@ async function loadCosmosExplore() {
       curvedLinks: false, linkDefaultArrows: false,
       fitViewOnInit: true, fitViewDelay: 700, fitViewDuration: 1000, fitViewPadding: 0.18,
       simulationRepulsion: 0.5, simulationGravity: 0.06, simulationLinkSpring: 0.3,
-      simulationLinkDistance: 45, simulationFriction: 0.25, simulationDecay: 50000,
+      simulationLinkDistance: 45, simulationFriction: 0.25, simulationDecay: 3000,
       simulationCluster: 0.15, simulationCollision: 0.4, simulationCollisionPadding: 2,
       renderHoveredPointRing: true, hoveredPointRingColor: '#ffffff',
       focusedPointRingColor: '#ffffff', outlinedPointRingColor: '#9385ff',
@@ -1994,6 +1995,25 @@ function cosmosShowDetails() {
 function cosmosZoom(f) {
   try { _cosmosGraph.zoom(_cosmosGraph.getZoomLevel() * f, 250); } catch(e) { console.warn('zoom', e); }
 }
+var _cosmosPhysicsPaused = false;
+function cosmosTogglePhysics() {
+  _cosmosPhysicsPaused = !_cosmosPhysicsPaused;
+  try {
+    _cosmosGraph.setConfigPartial({
+      simulationRepulsion: _cosmosPhysicsPaused ? 0 : 0.5,
+      simulationGravity: _cosmosPhysicsPaused ? 0 : 0.06,
+      simulationLinkSpring: _cosmosPhysicsPaused ? 0 : 0.3,
+      simulationCluster: _cosmosPhysicsPaused ? 0 : 0.15,
+      simulationCollision: _cosmosPhysicsPaused ? 0 : 0.4,
+    });
+    if (_cosmosPhysicsPaused) _cosmosGraph.pauseSimulation();
+    else _cosmosGraph.resumeSimulation();
+  } catch(e) { console.warn('physics toggle', e); }
+  var btn = qs('cosmos-pause-btn');
+  if (btn) btn.innerHTML = _cosmosPhysicsPaused
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+}
 function cosmosReset() {
   _cosmosClearFocus();
   try { _cosmosGraph.fitView(300); } catch(e) { console.warn('fitView', e); }
@@ -2002,6 +2022,7 @@ window.cosmosCloseCard = cosmosCloseCard;
 window.cosmosShowDetails = cosmosShowDetails;
 window.cosmosZoom = cosmosZoom;
 window.cosmosReset = cosmosReset;
+window.cosmosTogglePhysics = cosmosTogglePhysics;
 
 // ---- Tab Switching ----
 function switchTab(name, btn) {
@@ -2066,6 +2087,7 @@ function toggleTheme() {
 // ---- Keyboard shortcuts ----
 document.addEventListener('keydown', function(e) {
   if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement !== qs('search')) { qs('search').focus(); e.preventDefault(); }
+  if (e.key === ' ' && e.target === document.body) { e.preventDefault(); cosmosTogglePhysics(); }
 });
 </script>
 </body>
