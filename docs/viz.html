@@ -426,15 +426,14 @@ html[data-theme="light"] #zoomctl { background:rgba(255,255,255,.75); border-col
 #cosmos-info-card-body p { font-size:12px; color:var(--text-2); line-height:1.5; margin-bottom:8px; }
 #ic-path { font-size:10.5px; color:var(--text-3); font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:4px 8px; margin-bottom:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 #ic-rels { display:flex; gap:6px; margin-bottom:10px; }
-.cosmos-mode { display:flex; border-radius:8px; background:rgba(255,255,255,.06); padding:2px; gap:1px; }
-html[data-theme="light"] .cosmos-mode { background:rgba(0,0,0,.04); }
-.mode-btn {
-  font-size:11px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; user-select:none;
-  background:transparent; border:none; color:var(--text-3); transition:all .15s var(--ease);
-  font-family:inherit; white-space:nowrap;
+#cosmos-mode-select {
+  font-size:12px; font-weight:600; padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none;
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text-2);
+  font-family:inherit; outline:none; min-width:100px;
+  transition:border-color .15s var(--ease);
 }
-.mode-btn:hover { color:var(--text-2); }
-.mode-btn.active { color:var(--text); background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+#cosmos-mode-select:focus { border-color:var(--accent); }
+#cosmos-mode-select option { background:var(--surface); color:var(--text); }
 .rel-stat { flex:1; text-align:center; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:6px 4px; }
 .rel-stat .n { font-size:14px; font-weight:700; color:var(--accent-strong); }
 .rel-stat .l { font-size:9.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em; margin-top:1px; }
@@ -686,16 +685,16 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
         <div id="status-pill"><span class="n" id="status-n">0</span><span> concepts </span><span style="opacity:.4">·</span><span> </span><span class="n" id="status-e">0</span><span> edges</span></div>
 
         <div id="cosmos-toolbar">
-          <div class="cosmos-mode">
-            <button class="mode-btn active" data-mode="explore" onclick="cosmosSetMode('explore',this)">Explore</button>
-            <button class="mode-btn" data-mode="paths" onclick="cosmosSetMode('paths',this)">Paths</button>
-            <button class="mode-btn" data-mode="labels" onclick="cosmosSetMode('labels',this)">Labels</button>
-            <button class="mode-btn" data-mode="focus" onclick="cosmosSetMode('focus',this)">Focus</button>
-          </div>
+          <select id="cosmos-mode-select" onchange="cosmosSetMode(this.value)">
+            <option value="explore">✦ Explore</option>
+            <option value="paths">◈ Paths</option>
+            <option value="labels">◎ Labels</option>
+            <option value="focus">⊙ Focus</option>
+          </select>
           <div class="toolbar-sep"></div>
           <div class="search-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-            <input id="cosmos-search" type="text" placeholder="Search concepts…">
+            <input id="cosmos-search" type="text" placeholder="Search concepts…" style="width:180px">
           </div>
           <div class="toolbar-sep"></div>
           <div id="chip-row"></div>
@@ -1803,10 +1802,8 @@ function _cosmosUpdateLabels() {
   } catch(e) {}
 }
 
-function cosmosSetMode(mode, btn) {
+function cosmosSetMode(mode) {
   _cosmosMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
   // Clear search and re-trigger filter
   var searchEl = qs('cosmos-search');
   if (searchEl) searchEl.value = '';
