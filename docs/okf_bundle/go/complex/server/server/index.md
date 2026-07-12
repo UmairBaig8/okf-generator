@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for go/complex/server/server
 resource: go/complex/server/server
-timestamp: '2026-07-12T20:42:30Z'
+timestamp: '2026-07-12T22:02:21Z'
 title: server
 type: Index
 ---

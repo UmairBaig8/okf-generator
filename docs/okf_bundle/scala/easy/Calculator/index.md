@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for scala/easy/Calculator
 resource: scala/easy/Calculator
-timestamp: '2026-07-12T20:42:30Z'
+timestamp: '2026-07-12T22:02:21Z'
 title: Calculator
 type: Index
 ---

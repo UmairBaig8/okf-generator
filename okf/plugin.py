@@ -84,6 +84,7 @@ _BUILTIN_PARSERS: dict[str, str] = {
     "dart":       "okf.parsers.dart:DartParser",
     "scala":      "okf.parsers.scala:ScalaParser",
     "julia":      "okf.parsers.julia:JuliaParser",
+    "yaml":       "okf.parsers.yaml:YamlParser",
 }
 
 

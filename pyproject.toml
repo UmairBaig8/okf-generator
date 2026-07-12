@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name            = "okf-generator"
-version         = "0.1.46"
+version         = "0.1.47"
 description     = "Generate OKF v0.1 knowledge bundles from codebases — Claude skill + OpenCode integration"
 readme          = "README.md"
 license         = { text = "MIT" }
@@ -93,6 +93,7 @@ php        = "okf.parsers.php:PHPParser"
 dart       = "okf.parsers.dart:DartParser"
 scala      = "okf.parsers.scala:ScalaParser"
 julia      = "okf.parsers.julia:JuliaParser"
+yaml       = "okf.parsers.yaml:YamlParser"
 
 [project.entry-points."okf.manifests"]
 requirements-txt    = "okf.manifest_scanner:parse_requirements_txt"
@@ -129,6 +130,7 @@ packages = ["okf"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "SKILL.md" = "okf/SKILL.md"
+"okf/domains/rules/" = "okf/domains/rules/"
 
 [tool.hatch.build.targets.sdist]
 include = [

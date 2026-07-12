@@ -1,0 +1,137 @@
+# Crossplane domain classification rules
+# This file is data — no code changes needed for new domains.
+# Known unsupported: Composition Functions pipeline step logic (KCL/Go-template
+# embedded inside YAML strings in spec.pipeline[*].in). Which function is used
+# IS extracted (spec.pipeline[*].functionRef.name), but what the function
+# does internally remains opaque to dot-path extraction.
+
+domain: crossplane
+
+rules:
+  # ── CompositeResourceDefinition ────────────────────────────────────────
+  - name: XRD
+    match:
+      apiVersion: {"$glob": "apiextensions.crossplane.io/*"}
+      kind: "CompositeResourceDefinition"
+    type: XRD
+    add_tags:
+      - domain:crossplane
+      - xrd
+    extract:
+      - from: spec.group
+        to: returns
+      - from: spec.names.kind
+        to: signature
+      - from: spec.versions[0].schema.openAPIV3Schema.properties
+        to: fields
+    links:
+      - field: spec.claimNames.kind
+        target_type: Claim
+        match_on: [kind]
+
+  # ── Composition, V2 Pipeline style ────────────────────────────────────
+  # Matches first for Pipeline-mode Compositions (Crossplane V2+).
+  - name: Composition-V2-Pipeline
+    match:
+      apiVersion: {"$glob": "apiextensions.crossplane.io/*"}
+      kind: "Composition"
+      spec.mode: "Pipeline"
+    type: Composition
+    add_tags:
+      - domain:crossplane
+      - composition
+      - crossplane-v2-pipeline
+    extract:
+      - from: spec.pipeline[*].functionRef.name
+        to: fields
+      - from: spec.compositeTypeRef
+        to: signature
+    links:
+      - field: spec.compositeTypeRef
+        target_type: XRD
+        match_on: [apiVersion, kind]
+      - field: spec.pipeline[*].functionRef.name
+        target_type: ManagedResource
+        match_on: [name]
+
+  # ── Composition, V1 Resources style ──────────────────────────────────
+  # Matches second for resource/patch-based Compositions (legacy V1).
+  - name: Composition-V1-Style
+    match:
+      apiVersion: {"$glob": "apiextensions.crossplane.io/*"}
+      kind: "Composition"
+      has_key: spec.resources
+    type: Composition
+    add_tags:
+      - domain:crossplane
+      - composition
+      - crossplane-v1-style
+    extract:
+      - from: spec.compositeTypeRef
+        to: signature
+    links:
+      - field: spec.compositeTypeRef
+        target_type: XRD
+        match_on: [apiVersion, kind]
+      - field: spec.resources[*].base
+        target_type: ManagedResource
+        match_on: [apiVersion, kind]
+
+  # ── Composition, generic fallback ─────────────────────────────────────
+  # Matches last for any Composition that doesn't fit V1 or V2 patterns.
+  - name: Composition-Generic
+    match:
+      apiVersion: {"$glob": "apiextensions.crossplane.io/*"}
+      kind: "Composition"
+    type: Composition
+    add_tags:
+      - domain:crossplane
+      - composition
+
+  # ── ProviderConfig ──────────────────────────────────────────────────────
+  - name: ProviderConfig
+    match:
+      kind: "ProviderConfig"
+    type: ProviderConfig
+    add_tags:
+      - domain:crossplane
+      - provider-config
+    links:
+      - field: spec.credentials.secretRef.name
+        target_type: ManagedResource
+        match_on: [name]
+
+  # ── Provider package ────────────────────────────────────────────────────
+  - name: Provider
+    match:
+      apiVersion: {"$glob": "pkg.crossplane.io/*"}
+      kind: "Provider"
+    type: Provider
+    add_tags:
+      - domain:crossplane
+      - provider
+
+  # ── Configuration package ───────────────────────────────────────────────
+  - name: Configuration
+    match:
+      apiVersion: {"$glob": "pkg.crossplane.io/*"}
+      kind: "Configuration"
+    type: Configuration
+    add_tags:
+      - domain:crossplane
+      - configuration
+
+  # ── Catch-all: k8s-like resources → ManagedResource ────────────────────
+  # Only fires for docs that have both apiVersion and kind (i.e., actual
+  # kubernetes-style resources), so CI configs, Helm values, etc. are left
+  # as the generic Resource type the YAML parser assigned.
+  - name: ManagedResource
+    match:
+      default: true
+      require_keys:
+        - apiVersion
+        - kind
+    type: ManagedResource
+    add_tags:
+      - domain:crossplane
+      - managed-resource

@@ -1,0 +1,41 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xpostgresqlinstances.example.org
+  labels:
+    provider: aws
+spec:
+  compositeTypeRef:
+    apiVersion: example.org/v1alpha1
+    kind: XPostgreSQLInstance
+  resources:
+    - name: rds-instance
+      base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: RDSInstance
+        spec:
+          forProvider:
+            engine: postgres
+            engineVersion: "14"
+            storageGB: 20
+            masterUsername: admin
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.storageGB
+          toFieldPath: spec.forProvider.storageGB
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.engineVersion
+          toFieldPath: spec.forProvider.engineVersion
+    - name: security-group
+      base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: SecurityGroup
+        spec:
+          forProvider:
+            description: PostgreSQL security group
+            ingress:
+              - fromPort: 5432
+                toPort: 5432
+                protocol: tcp

@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <b>Scan any codebase into structured, agent-ready knowledge — 17 languages, ~100x fewer tokens than reading whole files, zero LLM required.</b>
+  <b>Scan any codebase into structured, agent-ready knowledge — 18 languages, ~100x fewer tokens than reading whole files, zero LLM required.</b>
 </p>
 
 <p align="center">
@@ -133,8 +133,8 @@ Agents waste tokens re-reading entire files to find one function signature — 1
   Deterministic, offline-capable. tree-sitter + AST parsers, no API calls required.
   [→ How it works](getting-started/quick-start.md)
 
-- :material-graph:{ .lg } **17 languages, 17 manifest formats**
-  Python, JS/TS, Go, Java, Rust, Swift, Kotlin, Ruby, C/C++/C#, SQL, PHP, Dart, Scala, Julia.
+- :material-graph:{ .lg } **18 languages, 17 manifest formats**
+  Python, JS/TS, Go, Java, Rust, Swift, Kotlin, Ruby, C/C++/C#, SQL, PHP, Dart, Scala, Julia, **YAML**.
   [→ Language coverage](user-guide/languages-and-manifests.md)
 
 - :material-robot:{ .lg } **Works with your agent**

@@ -108,7 +108,7 @@
         for AI coding agents
       </h1>
       <p class="text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed mb-10">
-        Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across <strong class="text-zinc-900 dark:text-white">17 languages</strong> — zero LLM required.
+        Parse any codebase into structured, agent-ready knowledge. High-velocity extraction across <strong class="text-zinc-900 dark:text-white">18 languages</strong> — zero LLM required.
       </p>
       <br>
       <div class="flex items-center justify-center gap-4 flex-wrap mb-8">
@@ -144,7 +144,7 @@
         </a>
       </div>
       <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
-        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">17</strong> languages</span>
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">18</strong> languages</span>
         <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">22</strong> manifest formats</span>
         <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">~100×</strong> fewer tokens</span>
       </div>
@@ -291,7 +291,7 @@
         <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
           <div class="w-10 h-10 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg border border-brand-200 dark:border-brand-800/30 group-hover:bg-brand-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-code"></i></div>
           <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">AST Multi-Language Parsers</h4>
-          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Native Tree-Sitter parsing across <span class="text-zinc-800 dark:text-zinc-200 font-semibold">13 languages</span> (Python, Rust, Go, JS, TS, Java, C#, C, C++, Swift, Ruby, Kotlin, SQL) to identify classes, structures, and functions.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Native Tree-Sitter + stdlib parsing across <span class="text-zinc-800 dark:text-zinc-200 font-semibold">18 languages</span> (Python, Rust, Go, JS, TS, Java, C#, C, C++, Swift, Ruby, Kotlin, SQL, YAML, PHP, Dart, Scala, Julia) to identify classes, structures, and functions.</p>
         </div>
         <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
           <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg border border-indigo-200 dark:border-indigo-800/30 group-hover:bg-indigo-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-network-wired"></i></div>
@@ -304,6 +304,11 @@
           <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Scans and cross-indexes <span class="text-zinc-800 dark:text-zinc-200 font-semibold">17+ configuration manifests</span> (Cargo.toml, package.json, requirements.txt, build.gradle, go.mod, Mix, Gemfile) to map libraries.</p>
         </div>
         <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800/30 group-hover:bg-amber-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-layer-group"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Domain Classification</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Re-classify YAML concepts using data-driven rules. Built-in Crossplane support (XRD, Composition, Claim, ProviderConfig). Custom domains via <span class="text-zinc-800 dark:text-zinc-200 font-semibold">--domain-rules</span>.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
           <div class="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center text-lg border border-pink-200 dark:border-pink-800/30 group-hover:bg-pink-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-circle-nodes"></i></div>
           <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Native MCP Server Integration</h4>
           <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Exposes code concepts natively as tools via the <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Model Context Protocol</span>. Cursor, Claude Desktop, and Cline can explore, search, and parse code automatically.</p>
@@ -313,7 +318,7 @@
           <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Fine-Tuning Dataset Generator</h4>
           <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Extracts high-fidelity <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Instruction Pairs</span> (<code class="text-xs">okf pairs</code>) from AST nodes to train custom private coding SLMs tailored strictly to your architecture.</p>
         </div>
-        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm lg:col-start-2">
           <div class="w-10 h-10 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center text-lg border border-teal-200 dark:border-teal-800/30 group-hover:bg-teal-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-images"></i></div>
           <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Interactive Visual Dashboard</h4>
           <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Generates beautiful, search-enabled 2D interactive graphs of your codebase structure. Great for human onboarding, audits, and code architecture mapping.</p>
@@ -324,7 +329,7 @@
   <section id="languages" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Language Coverage</h2>
-      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">17 languages, modular parsers</h3>
+      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">18 languages, modular parsers</h3>
       <p class="text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto mb-12">Each language lives in its own parser file. Adding a new language is a self-contained tree-sitter grammar mapping — no core changes.</p>
       <div class="flex flex-wrap justify-center gap-3">
         <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#3572A5"></span>Python</span>
@@ -344,6 +349,7 @@
         <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#00D2B8"></span>Dart</span>
         <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#DC322F"></span>Scala</span>
         <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#4063D8"></span>Julia</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#CB171E"></span>YAML</span>
       </div>
       <p class="mt-8 text-sm text-zinc-500">Plus <strong class="text-zinc-700 dark:text-zinc-300">22 manifest formats</strong>: requirements.txt · pyproject.toml · package.json · Cargo.toml · go.mod · pom.xml · Gemfile and more.</p>
     </div>

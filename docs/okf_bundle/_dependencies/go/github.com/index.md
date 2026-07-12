@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/go/github.com
 resource: _dependencies/go/github.com
-timestamp: '2026-07-12T20:42:30Z'
+timestamp: '2026-07-12T22:02:21Z'
 title: github.com
 type: Index
 ---

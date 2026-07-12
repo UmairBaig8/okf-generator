@@ -3,6 +3,9 @@
 Commands:
   okf generate   <source_dir> [output_dir]   Generate OKF bundle from codebase
   okf generate --enrich [base|deep|security|full]  Enrich with mode selection
+  okf generate --domains crossplane   Generate with domain classification
+  okf generate --domain-rules ./rules.yaml   Generate with custom domain rules
+  okf domains   [list|validate <file>]   List domain rules or validate a rule file
   okf enrich     [--bundle <bundle_dir>] [--mode base|deep|security|full] [--src <path>]
                                                Enrich an EXISTING bundle (default: ./okf_bundle)
   okf lookup     <query> [options]            Look up a concept in a bundle
@@ -266,6 +269,7 @@ def main():
         print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline, mcp)")
         print("  mcp             Start MCP server (stdio or HTTP). Use --install to register in client configs")
         print("  plugin          Manage parser plugins (list, install, uninstall)")
+        print("  domains         [list|validate <file>]  List or validate domain rules")
         print("  migrate         Convert OKF bundle between schema versions (v0.1→v0.2)")
         print("  agent           Interactive REPL with persistent sessions, slash commands")
         sys.exit(0)
@@ -405,6 +409,41 @@ Examples:
     elif cmd == "mcp":
         from okf.mcp_server import main as _main
         _main()
+
+    elif cmd == "domains":
+        if rest and rest[0] == "validate":
+            if len(rest) < 2:
+                print("Usage: okf domains validate <rule-file>")
+                sys.exit(1)
+            from okf.domains.engine import validate_rule_file
+            from pathlib import Path
+            errors = validate_rule_file(Path(rest[1]))
+            if not errors:
+                print(f"✅ {rest[1]} — valid")
+            else:
+                print(f"❌ {rest[1]} — {len(errors)} error(s):\n")
+                for e in errors:
+                    print(f"   • {e}")
+                sys.exit(1)
+        elif rest and rest[0] in ("-h", "--help", "help"):
+            print("Usage: okf domains [list|validate <file>]")
+            print()
+            print("  okf domains              List available domain rule sets")
+            print("  okf domains validate     Validate a rule file for correctness")
+        else:
+            from okf.domains.engine import list_domains
+            domains = list_domains()
+            if not domains:
+                print("No domain rule sets found.")
+                print("  Check: okf/domains/rules/ (built-in) or .okf/domains/ (project)")
+                return
+            print(f"\n  Available domains ({len(domains)}):\n")
+            for d in domains:
+                print(f"    {d['domain']:25s} [{d['source']}]  {d['path']}")
+            print()
+            print("  Use: okf generate --domains <domain>")
+            print("  Use: okf domains validate <rule-file>")
+            print()
 
     elif cmd == "migrate":
         from okf.migrate import main as _main

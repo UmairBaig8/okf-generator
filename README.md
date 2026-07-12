@@ -116,11 +116,15 @@ Core extraction is fully deterministic and offline. Enrichment is optional, resu
 
 > Full language table with per-parser details: **[docs/languages-and-manifests.md](docs/languages-and-manifests.md)**
 
-### Supported languages (17)
+### Supported languages (18)
 
-`Python` · `JavaScript` · `TypeScript` · `Go` · `Java` · `Rust` · `Swift` · `Kotlin` · `PHP` · `Dart` · `Scala` · `Julia` · `Ruby` · `C` · `C++` · `C#` · `SQL`
+`Python` · `JavaScript` · `TypeScript` · `Go` · `Java` · `Rust` · `Swift` · `Kotlin` · `PHP` · `Dart` · `Scala` · `Julia` · `Ruby` · `C` · `C++` · `C#` · `SQL` · `YAML`
 
 Each language lives in its own file under `okf/parsers/`. Add a new one in minutes — one file + one registry entry.
+
+### Domain Classification
+
+Use `--domains crossplane` to re-classify YAML concepts using data-driven rules. Built-in rules for Crossplane (XRD, Composition, Claim, ProviderConfig, ManagedResource). Custom domains via `--domain-rules ./my-rules.yaml`. See **[docs/domain-classification.md](docs/domain-classification.md)**.
 
 ### Manifest formats (17)
 
@@ -351,6 +355,7 @@ okf --version           Show version
 | `install` | `okf install [agent]` | Write agent integration rules/configs |
 | `init` | `okf init [dir]` | Interactive wizard for bundle setup |
 | `summarize` | `okf summarize <bundle>` | Regenerate SUMMARY.md for agents |
+| `domains` | `okf domains` | List available domain classification rule sets |
 | `plugin` | `okf plugin [list\|install\|uninstall]` | Manage external parser plugins |
 
 > Full CLI reference: **[docs/cli-reference.md](docs/cli-reference.md)**
@@ -360,7 +365,7 @@ okf --version           Show version
 ## FAQ
 
 **Does this require an API key or internet connection?**
-No. Core extraction (`okf generate`) is **fully offline and deterministic** — no LLM call is made unless you explicitly enable `--enrich`. All 17 language parsers use tree-sitter and work completely air-gapped.
+No. Core extraction (`okf generate`) is **fully offline and deterministic** — no LLM call is made unless you explicitly enable `--enrich`. All 18 language parsers use tree-sitter (or stdlib equivalent) and work completely air-gapped.
 
 **How is this different from RAG / vector search?**
 RAG retrieves chunks by semantic similarity, which is approximate and can miss exact symbols. `okf lookup` is **exact**: it indexes real functions, classes, modules, and dependencies by name and resolves to the precise concept, with zero embedding/vector infrastructure required. Same result every run.

@@ -16,6 +16,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 
+## [0.1.47] — 2026-07-13
+
+### Added
+
+- **YAML language parser** — parses `.yaml`/`.yml` files with multi-doc support (`---`). Each document becomes a `Resource` concept with raw parsed dict stored in `body_extra.yaml_doc` for downstream classification. PyYAML-based — no tree-sitter dependency.
+- **Domain classification engine** — new Layer 3 architecture (`okf/domains/engine.py`) that re-classifies YAML concepts using data-driven rule files. Rules are pure YAML data — no Python code required for new domains.
+- **Crossplane domain rules** — built-in `okf/domains/rules/crossplane.yaml` with 8 rules: XRD, Composition V1/V2, ProviderConfig, Provider, Configuration, catch-all ManagedResource. V1 vs V2 Compositions are distinguished via `has_key` and `spec.mode` matching.
+- **`has_key` match primitive** — presence-check operator for rule matching (`has_key: spec.resources`). Used for V1 legacy style detection.
+- **`okf domains list`** — lists all discoverable domain rule sets (built-in + project-local).
+- **`okf domains validate <file>`** — validates a rule file against the schema (required fields, valid operators, extract/link structure).
+- **Rule audit logging** — `classify()` logs per-rule match counts so users can verify their rules fired correctly.
+- **Crossplane V2 function name extraction** — `spec.pipeline[*].functionRef.name` is extracted into concept fields, surfacing function names like `function-kro`.
+- **`--domains` CLI flag** — `okf generate --domains crossplane` loads built-in domain rules.
+- **`--domain-rules` CLI flag** — `okf generate --domain-rules ./my-rules.yaml` loads custom rule files.
+
+### Changed
+
+- **Language count** — 17 → 18 (added YAML). Docs updated across README, docs/index.html, docs/index.md, languages-and-manifests.md.
+- **Crossplane rules restructured** — three Composition rules (V2 pipeline, V1 resources, generic fallback) with distinct tags instead of a single generic Composition rule.
+- **generator.py** — `scan_codebase()` accepts optional `domain_rules` param; domain classification runs after `link_all()`.
+
+### Fixed
+
+- **Catch-all guard** — `default: true` rules now support `require_keys` to prevent misclassifying non-k8s YAML (CI configs, Helm values) as `ManagedResource`.
+- **Linker hashability** — Concept set usage replaced with concept_id list to avoid `TypeError: unhashable type`.
+
+
 ## [0.1.46] — 2026-07-13
 
 ### Added
@@ -832,7 +859,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.46...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.47...HEAD
+[0.1.47]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.47
 [0.1.46]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.46
 [0.1.45]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.45
 [0.1.44]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.44

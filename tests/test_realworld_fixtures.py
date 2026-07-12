@@ -30,6 +30,7 @@ LANGUAGE_DIRS = {
     "dart":       REALWORLD / "dart",
     "scala":      REALWORLD / "scala",
     "julia":      REALWORLD / "julia",
+    "yaml":       REALWORLD / "yaml",
 }
 
 
@@ -56,7 +57,7 @@ def test_realworld_all_languages_detected():
         if tag:
             langs.add(tag)
     expected = {"python", "javascript", "typescript", "go", "java", "rust",
-                "ruby", "c", "cpp", "csharp", "sql", "swift", "kotlin", "manifest"}
+                "ruby", "c", "cpp", "csharp", "sql", "swift", "kotlin", "yaml", "manifest"}
     missing = expected - langs
     assert not missing, f"Languages missing from realworld: {missing}"
 

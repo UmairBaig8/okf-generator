@@ -219,6 +219,18 @@ okf diff /tmp/v1 /tmp/v2 --impact 2>&1
 
 ## Phase 7 — CLI: `okf mcp` + `okf serve` + `okf init`
 
+### 7.0 Domain classification
+```bash
+okf domains
+```
+**Verify:** Shows `crossplane` (builtin) in the list.
+
+```bash
+cd "$(git rev-parse --show-toplevel)"
+okf generate tests/fixtures/realworld/yaml/crossplane /tmp/domain_test --domains crossplane 2>&1
+```
+**Verify:** Exit 0. Log shows "Domain rules loaded". Concepts in bundle include XRD, Composition, ProviderConfig types.
+
 ### 7.1 MCP server
 ```bash
 okf mcp /tmp/okf_bundle &

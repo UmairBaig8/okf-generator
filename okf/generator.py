@@ -1171,7 +1171,8 @@ def _walk_source_dirs(root: Path) -> set[str]:
     return dirs
 
 
-def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]:
+def scan_codebase(root: Path, exclude: list[str] | None = None,
+                  domain_rules: list[dict] | None = None) -> list[Concept]:
     git = _git_info(root)
     if git:
         log.info(f"Git: repo={git.get('repo','?')} branch={git.get('branch','?')}")
@@ -1249,6 +1250,12 @@ def scan_codebase(root: Path, exclude: list[str] | None = None) -> list[Concept]
     from okf.linker import link_all
     stats = link_all(concepts)
     log.info(stats.summary_line())
+
+    if domain_rules:
+        from okf.domains.engine import classify
+        before = len(concepts)
+        concepts = classify(concepts, domain_rules)
+        log.info(f"Domain classification: {before} → {len(concepts)} concepts")
 
     return concepts
 
@@ -1695,10 +1702,18 @@ def main():
             sys.exit(1)
 
     exclude = []
+    domain_names: list[str] = []
+    domain_rule_files: list[Path] = []
     i = 3
     while i < len(sys.argv):
         if sys.argv[i] == "--exclude" and i + 1 < len(sys.argv):
             exclude.append(sys.argv[i + 1])
+            i += 2
+        elif sys.argv[i] == "--domains" and i + 1 < len(sys.argv):
+            domain_names.extend(sys.argv[i + 1].split(","))
+            i += 2
+        elif sys.argv[i] == "--domain-rules" and i + 1 < len(sys.argv):
+            domain_rule_files.append(Path(sys.argv[i + 1]))
             i += 2
         else:
             i += 1
@@ -1713,8 +1728,15 @@ def main():
     if exclude:
         log.info(f"Excluding: {', '.join(exclude)}")
 
+    # --- Domain rules ---
+    domain_rules = None
+    if domain_names or domain_rule_files:
+        from okf.domains.engine import load_rules
+        domain_rules = load_rules(domain_names=domain_names, user_files=domain_rule_files)
+        log.info(f"Domain rules loaded: {len(domain_rules)} rules from {len(domain_names)} domain(s)")
+
     # --- Scan ---
-    concepts = scan_codebase(source_dir, exclude=exclude)
+    concepts = scan_codebase(source_dir, exclude=exclude, domain_rules=domain_rules)
     log.info(f"Found {len(concepts)} concepts")
 
     if not concepts:

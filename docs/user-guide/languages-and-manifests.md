@@ -16,6 +16,11 @@
 | C++ | tree-sitter | Functions, classes, structs, methods with `///` doc comments |
 | C# | tree-sitter | Classes, methods, top-level functions |
 | SQL | tree-sitter | Tables, views, functions, indexes, types, triggers with preceding `--`/`/* */` comments |
+| **YAML** | `PyYAML` (multi-doc) | Multi-document YAML, `body_extra.yaml_doc` preserved for domain classification |
+
+## Domain Classification
+
+YAML files can be re-classified using data-driven rule sets. See **[domain-classification.md](domain-classification.md)**.
 
 ## Manifest / Build Files
 

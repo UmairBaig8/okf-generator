@@ -1,0 +1,10 @@
+apiVersion: example.org/v1alpha1
+kind: PostgreSQLInstance
+metadata:
+  name: my-db
+  namespace: default
+spec:
+  storageGB: 100
+  engineVersion: "15"
+  writeConnectionSecretToRef:
+    name: db-conn

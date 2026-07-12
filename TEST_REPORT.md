@@ -1,8 +1,8 @@
 # OKF Generator — Test Report
 
-**Date:** 2026-07-12T20:39:47Z
+**Date:** 2026-07-12T22:01:06Z
 **Env:** Darwin / Python 3.14.4
-**Version:** v0.1.43-145-gf06c9b20f
+**Version:** v0.1.46-1-gc0f8f0bf6
 **Fixture:** tests/fixtures/realworld (96 files, 13 languages)
 
 ---
@@ -43,7 +43,7 @@
 
 | Test | Status | Detail |
 |------|--------|--------|
-| okf visualize — generated (1420 KB) | ✅ PASS | |
+| okf visualize — generated (1444 KB) | ✅ PASS | |
 
 ### Phase 4: MCP & Serve
 

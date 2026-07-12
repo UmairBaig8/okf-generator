@@ -1,16 +1,16 @@
 ---
-description: 'Top-level OKF summary: 664 concepts across 17 domains and 76 modules'
+description: 'Top-level OKF summary: 683 concepts across 18 domains and 84 modules'
 git_branch: main
 git_repo: okf-generator
 okf_version: '0.2'
-timestamp: '2026-07-12T20:42:30Z'
+timestamp: '2026-07-12T22:02:21Z'
 title: realworld — Knowledge Summary
 type: Index
 ---
 
 # realworld — Knowledge Summary
 
-> OKF v0.2 bundle | 664 concepts | 17 domains | 76 modules
+> OKF v0.2 bundle | 683 concepts | 18 domains | 84 modules
 
 ## Stats
 
@@ -18,9 +18,10 @@ type: Index
 |------|-------|
 | Function | 392 |
 | Class | 93 |
-| Module | 80 |
+| Module | 88 |
 | Dependency | 46 |
 | Interface | 17 |
+| Resource | 11 |
 | Table | 8 |
 | Enum | 6 |
 | Index | 5 |
@@ -48,6 +49,7 @@ type: Index
 | cpp | 24 |
 | c | 22 |
 | dart | 22 |
+| yaml | 19 |
 | scala | 15 |
 | julia | 14 |
 
@@ -181,6 +183,17 @@ Use these links to navigate the bundle or prime an AI agent with focused context
 - [typescript/complex/models/user](typescript/complex/models/user/index.md) (9 concepts) — User domain model for the user management service.
 - [typescript/easy/types](typescript/easy/types/index.md) (9 concepts) — Core type definitions for the utility library.
 - [typescript/easy/helpers](typescript/easy/helpers/index.md) (6 concepts) — Generic helper functions for data transformation.
+
+### [yaml](yaml/index.md) — 19 concepts
+
+- [yaml/complex/multi-doc](yaml/complex/multi-doc/index.md) (4 concepts) — YAML file: multi-doc.yaml (3 document(s))
+- [yaml/complex/nested-refs](yaml/complex/nested-refs/index.md) (3 concepts) — YAML file: nested-refs.yaml (2 document(s))
+- [yaml/crossplane/claim](yaml/crossplane/claim/index.md) (2 concepts) — YAML file: claim.yaml (1 document(s))
+- [yaml/crossplane/composition](yaml/crossplane/composition/index.md) (2 concepts) — YAML file: composition.yaml (1 document(s))
+- [yaml/crossplane/provider-config](yaml/crossplane/provider-config/index.md) (2 concepts) — YAML file: provider-config.yaml (1 document(s))
+- [yaml/crossplane/xrd](yaml/crossplane/xrd/index.md) (2 concepts) — YAML file: xrd.yaml (1 document(s))
+- [yaml/easy/config](yaml/easy/config/index.md) (2 concepts) — YAML file: config.yaml (1 document(s))
+- [yaml/easy/deployment](yaml/easy/deployment/index.md) (2 concepts) — YAML file: deployment.yaml (1 document(s))
 
 ## Dependencies
 
