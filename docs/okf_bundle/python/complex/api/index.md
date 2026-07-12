@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for python/complex/api
 resource: python/complex/api
-timestamp: '2026-07-12T08:49:46Z'
+timestamp: '2026-07-12T09:20:11Z'
 title: api
 type: Index
 ---

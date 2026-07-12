@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for scala/complex
 resource: scala/complex
-timestamp: '2026-07-12T08:49:46Z'
+timestamp: '2026-07-12T09:20:11Z'
 title: complex
 type: Index
 ---

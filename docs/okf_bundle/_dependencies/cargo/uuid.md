@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:1.6
-- ecosystem:cargo
 - manifest:Cargo.toml
-timestamp: '2026-07-12T08:49:14Z'
+- ecosystem:cargo
+timestamp: '2026-07-12T09:19:36Z'
 title: uuid
 type: Dependency
 ---

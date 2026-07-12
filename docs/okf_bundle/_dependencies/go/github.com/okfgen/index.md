@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for _dependencies/go/github.com/okfgen
 resource: _dependencies/go/github.com/okfgen
-timestamp: '2026-07-12T08:49:46Z'
+timestamp: '2026-07-12T09:20:11Z'
 title: okfgen
 type: Index
 ---

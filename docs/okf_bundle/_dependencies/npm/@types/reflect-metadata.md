@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:^0.1.0
-- ecosystem:npm
 - manifest:package.json
-timestamp: '2026-07-12T08:49:14Z'
+- ecosystem:npm
+timestamp: '2026-07-12T09:19:36Z'
 title: '@types/reflect-metadata'
 type: Dependency
 ---
