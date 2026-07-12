@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:rubygems
-- manifest:Gemfile
 - version:~> 3.2
-timestamp: '2026-07-11T20:17:16Z'
+- manifest:Gemfile
+timestamp: '2026-07-12T07:14:59Z'
 title: csv
 type: Dependency
 ---

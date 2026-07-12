@@ -14,7 +14,7 @@ tags:
 - ecosystem:cargo
 - version:1.0
 - manifest:Cargo.toml
-timestamp: '2026-07-11T20:17:16Z'
+timestamp: '2026-07-12T07:14:59Z'
 title: serde_json
 type: Dependency
 ---
