@@ -1438,10 +1438,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-ide-plugins" class="md-nav__link">
+  <a href="#5-sast-enrichment-okf-enrich-sast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. IDE Plugins
+        5. SAST Enrichment (okf enrich --sast)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mkdocs-replacement-static-site-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. MkDocs Replacement / Static Site Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ide-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. IDE Plugins
       
     </span>
   </a>
@@ -1565,10 +1587,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-ide-plugins" class="md-nav__link">
+  <a href="#5-sast-enrichment-okf-enrich-sast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. IDE Plugins
+        5. SAST Enrichment (okf enrich --sast)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mkdocs-replacement-static-site-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. MkDocs Replacement / Static Site Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ide-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. IDE Plugins
       
     </span>
   </a>
@@ -1642,7 +1686,23 @@
 - All 242 tests pass</p>
 <p><strong>What it unlocks:</strong> Viz is no longer a static snapshot. It's an interactive AST browser — click any concept, switch to Parse Tree, see the full tree-sitter parse tree with collapsible scopes and syntax highlighting. Works offline after first load (CDN-cached WASM).</p>
 <hr />
-<h2 id="5-ide-plugins">5. IDE Plugins<a class="headerlink" href="#5-ide-plugins" title="Permanent link">&para;</a></h2>
+<h2 id="5-sast-enrichment-okf-enrich-sast">5. SAST Enrichment (<code>okf enrich --sast</code>)<a class="headerlink" href="#5-sast-enrichment-okf-enrich-sast" title="Permanent link">&para;</a></h2>
+<p><strong>Effort:</strong> Low (1–2 days)</p>
+<p><strong>What:</strong> Wrap deterministic SAST tools (semgrep, bandit, gosec) in the same <code>Enricher</code> contract used by LSP and LLM. Each tool becomes a <code>SastEnricher(Enricher)</code> with <code>start/run/stop</code> lifecycle. Structured CWE/severity output injected into concept frontmatter alongside LSP call graphs and LLM summaries.</p>
+<p><strong>Why:</strong> LSP resolves <em>what</em> calls <em>what</em>. SAST resolves <em>which constructs</em> are <em>vulnerable</em>. Combined they produce a bundle with compiler-accurate call graphs + deterministic security findings + LLM behavioural summaries — three orthogonal passes, one pipeline.</p>
+<p><strong>Design:</strong> <code>okf/enrich/_sast_map.py</code> (ext → tool config), <code>okf/enrich/sast.py</code> (subprocess runner, semgrep JSON → concept mapping, CWE→severity table). <code>okf enrich --sast</code> flag.</p>
+<hr />
+<h2 id="6-mkdocs-replacement-static-site-generator">6. MkDocs Replacement / Static Site Generator<a class="headerlink" href="#6-mkdocs-replacement-static-site-generator" title="Permanent link">&para;</a></h2>
+<p><strong>Effort:</strong> Medium (3–5 days)</p>
+<p><strong>What:</strong> Replace MkDocs with a faster, simpler static site generator. The current docs-site build has two issues: (a) deep nested <code>docs-site/docs-site/</code> path duplication from <code>site_url</code> config, (b) build times scale poorly with 1000+ bundle <code>.md</code> files.</p>
+<p><strong>Options:</strong>
+- <strong>MkDocs config fix</strong> — adjust <code>site_url</code>, exclude <code>okf_bundle/</code> from nav, add <code>not_in_nav</code> plugin. Lowest effort.
+- <strong>Move to mdBook</strong> (Rust) — single binary, no Python deps, native search, gitbook-style sidebar. Used by Rust ecosystem.
+- <strong>Starlight (Astro)</strong> — component-based, MDX support, better for interactive docs. Heavier build but prettier output.
+- <strong>Plain HTML template</strong> — like <code>docs/index.html</code> — custom build script generates nav from filesystem. Full control, zero framework churn.</p>
+<p><strong>Priority:</strong> Low — current docs-site is functional. This is a DX improvement for maintainers, not users.</p>
+<hr />
+<h2 id="7-ide-plugins">7. IDE Plugins<a class="headerlink" href="#7-ide-plugins" title="Permanent link">&para;</a></h2>
 <p><strong>Effort:</strong> Very High (2–4 weeks each)</p>
 <p><strong>VS Code extension:</strong> Reads <code>.okf_bundle/</code> from workspace root. Shows hover tooltips with docstrings/signatures, call-graph peek, jump-to-def across languages. Uses bundle's cross-reference data (no language server needed).</p>
 <p><strong>JetBrains plugin:</strong> Same concept via IntelliJ plugin SDK.</p>

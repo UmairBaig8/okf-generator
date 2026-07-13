@@ -93,6 +93,7 @@ No re-reading the file. No guessing. No LLM call required.
 | **22 manifest formats** | Automatic cross-indexing of `package.json`, `Cargo.toml`, `Dockerfile`, `go.mod`, `requirements.txt`, `Gemfile`, `pyproject.toml`, and 15 more |
 | **Deterministic & offline** | Core extraction is **100% offline** — zero LLM calls, zero API keys, zero vector infrastructure. Same output every run |
 | **Cross-reference linker** | Resolves imports → dependency edges and function calls → caller/callee across all languages. Multi-hop reasoning without grep |
+| **LSP call-graph enrichment** | Optional LSP pass (`okf enrich --lsp`) uses local language servers for compiler-accurate caller/callee resolution — 4 servers mapped (pyright ✅, gopls, rust-analyzer, typescript-language-server), zero token cost |
 | **Interactive visualization** | Self-contained D3.js HTML dashboard — force-directed graph, search, filter, dark/light theme, no server required |
 | **Token efficiency** | ~140 tokens per concept lookup vs 14,000+ reading whole files. Local SLMs become viable for enterprise-scale codebases |
 | **4 enrichment tiers** | Optional LLM layer: `base` (descriptions), `deep` (examples + side effects), `security` (risk audit), `full` (all + semantic links). Runs at generate time or standalone |
@@ -109,10 +110,10 @@ No re-reading the file. No guessing. No LLM call required.
 2. Link  → cross-reference linker resolves imports→deps, calls→callees
 3. Write → OKF v0.2 bundle: structured markdown, mirrors your source tree
 4. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
-5. Enrich → optional LLM layer: 4 modes, multi-provider routing
+5. Enrich → optional LSP pass (deterministic call-graph refinement) + optional LLM layer: 4 modes, multi-provider routing
 ```
 
-Core extraction is fully deterministic and offline. Enrichment is optional, resumable, works with any AI provider.
+Core extraction is fully deterministic and offline. Enrichment is optional, resumable, works with any AI provider. LSP enrichment requires language server binaries on `$PATH`.
 
 > Full language table with per-parser details: **[docs/languages-and-manifests.md](docs/languages-and-manifests.md)**
 

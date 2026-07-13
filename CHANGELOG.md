@@ -9,11 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.1.48] — 2026-07-13
+
 ### Added
+
+- **LSP enrichment (`okf enrich --lsp`)** — compiler-accurate caller/callee resolution via local language servers. Deterministic, zero token cost. 4 servers mapped: pyright (Python), gopls (Go), rust-analyzer (Rust), typescript-language-server (TS/JS). New `okf/enrich/` package with pluggable Enricher contract.
+- **`okf lsp` CLI subcommand** — `okf lsp status|resolve|map` for inspecting and testing available language servers.
+- **`_llm_prompts.py`** — prompt templates extracted from `generator.py` into `okf/enrich/_llm_prompts.py` alongside LSP in the enrich package. Shared security/complexity field spec deduplicated.
+- **301 unit tests** — 19 new tests covering LSP enrichment, line range parsing, concept conversion, URI helpers, CLI flags, and EnrichResult.
+- **Roadmap updates** — SAST enrichment and MkDocs replacement added to `docs/future.md`.
 
 ### Changed
 
+- **`okf enrich` CLI flags** — replaced `--mode base|deep|security|full` with `--lsp`, `--llm`, `--full`, `--mode`. Bare `okf enrich` now errors with usage. LSP and LLM enrichment are independent flags that compose.
+- **Enrichment docs** — updated `docs/user-guide/enrichment.md` with LSP section (how it works, server requirements, status table, LSP→LLM ordering). Updated `docs/user-guide/cli-reference.md` with `okf enrich` + `okf lsp` sections.
+- **Landing page** — added "LSP-Powered Call Graphs" feature card and "4 language servers" badge.
+- **`.gitignore`** — added `dist/` and `*.egg-info` entries.
+
 ### Fixed
+
+- `_parse_source_line_range` regex now handles en-dash (U+2013) and em-dash separators.
 
 
 ## [0.1.47] — 2026-07-13
@@ -859,7 +875,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.47...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.48...HEAD
+[0.1.48]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.48
 [0.1.47]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.47
 [0.1.46]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.46
 [0.1.45]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.45

@@ -1802,3 +1802,151 @@ def test_resolve_provider_mode_cascade():
     assert r["base_url"] == "https://api.anthropic.com/v1"
     assert r["api_key"] == "sk-ant-sec"
     assert r["max_workers"] == 2  # falls back to llm.max_workers
+
+
+# ── LSP enrichment ──────────────────────────────────────────────────────────
+
+
+class TestLspMap:
+    def test_lsp_map_has_pyright(self):
+        from okf.enrich._lsp_map import LSP_MAP
+        assert ".py" in LSP_MAP
+        assert LSP_MAP[".py"].lang == "python"
+        assert "--stdio" in LSP_MAP[".py"].command
+
+    def test_lsp_map_has_go_and_rust(self):
+        from okf.enrich._lsp_map import LSP_MAP
+        assert ".go" in LSP_MAP
+        assert ".rs" in LSP_MAP
+
+    def test_status_table_returns_rows(self):
+        from okf.enrich._lsp_map import status_table
+        rows = status_table()
+        assert len(rows) >= 3
+        langs = {r[1] for r in rows}
+        assert "python" in langs
+        assert "rust" in langs
+
+    def test_detect_returns_installed_only(self):
+        from okf.enrich._lsp_map import detect
+        found = detect({".py", ".xyz"})
+        assert ".xyz" not in found
+        # .py may or may not be installed depending on CI, just check .xyz is excluded
+        assert all(isinstance(v.lang, str) for v in found.values())
+
+
+class TestEnrichResult:
+    def test_full_result(self):
+        from okf.enrich.base import EnrichResult
+        r = EnrichResult(10, 0, 10)
+        assert not r.is_partial
+        assert str(r) == "EnrichResult(10/10 enriched, 0 skipped)"
+
+    def test_partial_result(self):
+        from okf.enrich.base import EnrichResult
+        r = EnrichResult(8, 2, 10, warnings=["socket error"])
+        assert r.is_partial
+        assert r.warnings == ["socket error"]
+
+
+class TestParseSourceLineRange:
+    def test_en_dash(self):
+        from okf.enrich import _parse_source_line_range
+        result = _parse_source_line_range("Lines 30\u201358 in `foo.py`")
+        assert result == (30, 58)
+
+    def test_hyphen(self):
+        from okf.enrich import _parse_source_line_range
+        result = _parse_source_line_range("Lines 42-89 in generator.py")
+        assert result == (42, 89)
+
+    def test_no_match(self):
+        from okf.enrich import _parse_source_line_range
+        result = _parse_source_line_range("Some other text")
+        assert result == (0, 0)
+
+    def test_empty(self):
+        from okf.enrich import _parse_source_line_range
+        result = _parse_source_line_range("")
+        assert result == (0, 0)
+
+
+class TestDictToConcept:
+    def test_basic_conversion(self):
+        from okf.enrich import _dict_to_concept
+        d = {
+            "type": "Function",
+            "title": "hello",
+            "resource": "greet.py",
+            "tags": ["python", "function"],
+            "concept_id": "greet/hello",
+            "sections": {"source": "Lines 10-20 in `greet.py`"},
+        }
+        c = _dict_to_concept(d)
+        assert c.type == "Function"
+        assert c.title == "hello"
+        assert c.resource == "greet.py"
+        assert c.source_lines == (10, 20)
+
+    def test_no_source_section(self):
+        from okf.enrich import _dict_to_concept
+        d = {"type": "Module", "title": "mod", "resource": "mod.py", "concept_id": "mod", "sections": {}}
+        c = _dict_to_concept(d)
+        assert c.source_lines == (0, 0)
+
+
+class TestLspUri:
+    def test_to_uri(self):
+        from okf.enrich.lsp import _to_uri
+        from pathlib import Path
+        uri = _to_uri(Path("/foo/bar/baz.py"))
+        assert uri.startswith("file:///")
+        assert uri.endswith("/baz.py")
+        assert "////" not in uri
+
+    def test_from_uri(self):
+        from okf.enrich.lsp import _from_uri
+        result = _from_uri("file:///Users/test/file.py")
+        assert result == "/Users/test/file.py"
+
+    def test_from_uri_noop(self):
+        from okf.enrich.lsp import _from_uri
+        result = _from_uri("/plain/path.py")
+        assert result == "/plain/path.py"
+
+
+class TestCliEnrich:
+    def test_bare_enrich_errors(self):
+        from okf.cli import main
+        import sys
+        sys.argv = ["okf", "enrich"]
+        with pytest.raises(SystemExit) as exc:
+            main()
+        assert exc.value.code == 1
+
+    def test_lsp_status_runs(self):
+        from okf.lsp import main as lsp_main
+        import sys
+        sys.argv = ["okf lsp", "status"]
+        try:
+            lsp_main()
+        except SystemExit:
+            pytest.fail("okf lsp status should not exit with error")
+
+
+class TestLspEnricher:
+    def test_detect_project_root(self):
+        from okf.enrich.lsp import LspEnricher
+        from pathlib import Path
+        enricher = LspEnricher.__new__(LspEnricher)
+        root = enricher._detect_project_root(Path("okf/enrich"))
+        assert (root / ".git").is_dir() or (root / "pyproject.toml").is_file()
+
+    def test_get_source_include(self):
+        from okf.enrich.lsp import LspEnricher
+        from pathlib import Path
+        enricher = LspEnricher.__new__(LspEnricher)
+        enricher.source_dir = Path("okf/enrich").resolve()
+        enricher._workspace_root = Path.cwd()
+        include = enricher._get_source_include()
+        assert include == "okf/enrich"

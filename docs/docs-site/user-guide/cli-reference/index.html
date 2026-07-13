@@ -772,6 +772,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#okf-enrich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf enrich
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-lsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf lsp
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#okf-lookup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1589,6 +1611,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#okf-enrich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf enrich
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#okf-lsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf lsp
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#okf-lookup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1821,6 +1865,98 @@ okf<span class="w"> </span>--version<span class="w">           </span>Show<span 
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="okf-enrich"><code>okf enrich</code><a class="headerlink" href="#okf-enrich" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>enrich<span class="w"> </span><span class="o">[</span>--lsp<span class="o">]</span><span class="w"> </span><span class="o">[</span>--llm<span class="o">]</span><span class="w"> </span><span class="o">[</span>--full<span class="o">]</span><span class="w"> </span><span class="o">[</span>--mode<span class="w"> </span>base<span class="p">|</span>deep<span class="p">|</span>security<span class="o">]</span><span class="w"> </span><span class="o">[</span>--bundle<span class="w"> </span>&lt;dir&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--src<span class="w"> </span>&lt;path&gt;<span class="o">]</span>
+</code></pre></div>
+<p>Enrich an existing bundle with LSP and/or LLM passes.  At least one of <code>--lsp</code> or <code>--llm</code> must be specified.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--lsp</code></td>
+<td>Run LSP enrichment (caller/callee resolution via local language servers)</td>
+</tr>
+<tr>
+<td><code>--llm</code></td>
+<td>Run LLM enrichment (descriptions, summaries, security audit)</td>
+</tr>
+<tr>
+<td><code>--full</code></td>
+<td>Shortcut for <code>--lsp --llm --mode deep</code></td>
+</tr>
+<tr>
+<td><code>--mode</code></td>
+<td>LLM mode: <code>base</code> (default, no source code), <code>deep</code> (with source), <code>security</code> (audit only)</td>
+</tr>
+<tr>
+<td><code>--bundle PATH</code></td>
+<td>Bundle directory (default: <code>./okf_bundle</code>)</td>
+</tr>
+<tr>
+<td><code>--src PATH</code></td>
+<td>Source code root (read from bundle index.md if omitted)</td>
+</tr>
+<tr>
+<td><code>--file PATH</code></td>
+<td>Filter: only enrich concepts from this source file</td>
+</tr>
+<tr>
+<td><code>--concept ID</code></td>
+<td>Filter: only enrich this specific concept</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># LSP only (free, deterministic)</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--lsp
+
+<span class="c1"># LLM only (safe, no source code sent)</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--llm
+
+<span class="c1"># LSP + LLM deep (maximum accuracy)</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--full
+
+<span class="c1"># With explicit paths</span>
+okf<span class="w"> </span>enrich<span class="w"> </span>--lsp<span class="w"> </span>--bundle<span class="w"> </span>/tmp/my_bundle<span class="w"> </span>--src<span class="w"> </span>/home/user/project
+</code></pre></div>
+<hr />
+<h2 id="okf-lsp"><code>okf lsp</code><a class="headerlink" href="#okf-lsp" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lsp<span class="w"> </span><span class="o">[</span>status<span class="p">|</span>resolve<span class="p">|</span>map<span class="o">]</span>
+</code></pre></div>
+<p>Inspect and test Language Server Protocol servers available on this machine.</p>
+<table>
+<thead>
+<tr>
+<th>Subcommand</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td>Table of detected LSP servers — shows which are installed</td>
+</tr>
+<tr>
+<td><code>resolve FILE:LINE:COL</code></td>
+<td>One-shot LSP resolution for a specific file location</td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td>Display the extension-to-server command mapping</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lsp<span class="w"> </span>status
+okf<span class="w"> </span>lsp<span class="w"> </span>resolve<span class="w"> </span>src/app.py:42:5
+okf<span class="w"> </span>lsp<span class="w"> </span>map
+</code></pre></div>
 <hr />
 <h2 id="okf-lookup"><code>okf lookup</code><a class="headerlink" href="#okf-lookup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span><span class="o">[</span>query<span class="o">]</span><span class="w"> </span><span class="o">[</span>options<span class="o">]</span>

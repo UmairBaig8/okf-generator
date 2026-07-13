@@ -1,6 +1,10 @@
 __pycache__
 .DS_Store
 dev_wspace
+dist/
+*.egg-info
+pyrightconfig.json
+references/
 .okf_lookup_cache.json
 uv.lock
 .venv

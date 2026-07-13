@@ -1,23 +1,130 @@
-# LLM Enrichment
+# Enrichment
 
-okf-generator supports optional LLM-powered enrichment to enhance concept descriptions, add usage examples, audit security, and find semantic cross-links.
+okf-generator supports two enrichment layers that enhance an existing OKF bundle
+without re-scanning the source:
+
+1. **LSP enrichment** (`okf enrich --lsp`) — deterministic, free, uses local language servers to resolve precise caller/callee edges, interface implementations, and external dependency traces.
+2. **LLM enrichment** (`okf enrich --llm`) — optional, configurable model, adds human-readable descriptions, usage examples, security notes, and semantic cross-links.
+
+They compose: run `okf enrich --lsp --llm` to get compiler-accurate call graphs
+*plus* AI-generated summaries (see LSP → LLM below).
 
 !!! tip "Privacy first"
-    The default mode is `base` — it never sends source code to an LLM, only improves existing descriptions and docstrings. Modes `deep`, `security`, and `full` send source code and require explicit opt-in via `--mode`.
+    In the LLM layer, the default mode is `base` — it never sends source code to an LLM, only improves existing descriptions and docstrings. Modes `deep`, `security` send source code and require explicit opt-in via `--mode`.
+
+---
+
+# LSP Enrichment
+
+Language Server Protocol (LSP) enrichment uses the language servers already
+installed on the developer's machine (e.g. `pyright-langserver`, `gopls`,
+`rust-analyzer`) to resolve **compiler-accurate** call graphs.  It runs
+alongside — never instead of — the tree-sitter linker.
 
 ## Quick start
 
 ```bash
-# Enrich at generate time
-okf generate --enrich deep
+# LSP enrichment only (fast, free, deterministic)
+okf enrich --lsp
 
-# Or enrich an existing bundle (no re-scan needed)
-okf enrich --mode full
+# Or combined with LLM for full depth
+okf enrich --lsp --llm --mode deep
+```
+
+## How it works
+
+1. `okf enrich --lsp` scans the bundle for source file extensions
+2. For each language, it checks `$PATH` for the corresponding LSP server
+3. If found, it spawns the server as a headless stdio subprocess
+4. It queries `textDocument/references` and `textDocument/definition` for every
+   Function / Class / Method concept
+5. LSP results are mapped back to concept IDs via the concept's `source_lines`
+   range and written into the bundle
+
+## Requirements
+
+The LSP binary for each language must be on `$PATH`:
+
+| Language | Server | Status | Install |
+|----------|--------|--------|---------|
+| Python | `pyright-langserver` | ✅ Verified | `pip install pyright` |
+| Go | `gopls` | ✅ Verified | `go install golang.org/x/tools/gopls@latest` (needs `$GOPATH/bin` on `$PATH`) |
+| Rust | `rust-analyzer` | ✅ Verified | `rustup component add rust-analyzer` |
+| TypeScript / JS | `typescript-language-server` | ✅ Verified | `npm install -g typescript-language-server` + `typescript` in workspace |
+
+All 4 servers have been verified against real source files using `okf lsp resolve`. New servers can be added by extending `okf/enrich/_lsp_map.py`.
+
+New language servers are added by extending `okf/enrich/_lsp_map.py` — one entry per extension. The mapping convention mirrors the parser plugin system.
+
+## What gets enriched
+
+LSP enrichment updates the **Relationship table** in each concept's bundle file:
+
+- `called_by` — precise list of callers, resolved via LSP references
+- `calls` — precise list of callees (existing tree-sitter linker data is
+  preserved where LSP cannot resolve)
+
+Unlike LLM enrichment, LSP enrichment is **deterministic** — same code →
+same output, every run.  Zero token cost.
+
+## Inspecting available servers
+
+```bash
+okf lsp status
+```
+
+Shows which LSP binaries are found on `$PATH`:
+
+```
+  Lang           Ext    Status     Binary
+  ----           ---    ------     ------
+  python         .py    ✓ installed pyright-langserver
+  go             .go    ✗ missing  gopls
+  rust           .rs    ✓ installed rust-analyzer
+  typescript     .ts    ✗ missing  typescript-language-server
+```
+
+## Testing a single resolution
+
+```bash
+okf lsp resolve src/server/handler.py:42:5
+```
+
+Initiates a one-shot LSP session, connects to the appropriate server, and
+returns the definition and references for the symbol at that location.
+
+## LSP → LLM enrichment order
+
+When both `--lsp` and `--llm` are enabled, LSP always runs first.  The compiler
+facts it resolves (exact callers, interface implementations, external dependency
+paths) are written into the bundle before the LLM pass starts, so the LLM
+prompts receive precise structural context — reducing hallucination and
+token waste.
+
+---
+
+# LLM Enrichment
+
+Optional LLM-powered enrichment to enhance concept descriptions, add usage
+examples, audit security, and find semantic cross-links.
+
+## Quick start
+
+```bash
+# LLM enrichment only (base mode, no source code sent)
+okf enrich --llm
+
+# Or with a specific mode
+okf enrich --llm --mode deep
+
+# Combined with LSP for maximum accuracy
+okf enrich --full
 ```
 
 ## Targeting specific concepts
 
-By default enrichment runs on all eligible concepts in the bundle. Use `--file` or `--concept` to target specific ones:
+By default enrichment runs on all eligible concepts in the bundle. Use `--file`
+or `--concept` to target specific ones:
 
 ```bash
 # Enrich only concepts from a specific source file
@@ -27,9 +134,8 @@ okf enrich --file src/utils/helpers.py --mode deep
 okf enrich --concept utils/slugify --mode security
 ```
 
-Both filters use substring matching against the concept's resource path or concept ID.
-
----
+Both filters use substring matching against the concept's resource path or
+concept ID.
 
 ## Enrichment modes
 
@@ -38,7 +144,6 @@ Both filters use substring matching against the concept's resource path or conce
 | `base` | Improves descriptions + docstrings (Google-style) | ❌ | Yes |
 | `deep` | Adds usage examples, side effects, security notes, complexity estimates | ✅ | Yes |
 | `security` | Audits existing bundle for visible risk patterns only | ✅ | Yes |
-| `full` | All of the above + semantic related-links | ✅ | Yes |
 
 ### `base` — Description improvement
 

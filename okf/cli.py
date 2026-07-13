@@ -6,8 +6,9 @@ Commands:
   okf generate --domains crossplane   Generate with domain classification
   okf generate --domain-rules ./rules.yaml   Generate with custom domain rules
   okf domains   [list|validate <file>]   List domain rules or validate a rule file
-  okf enrich     [--bundle <bundle_dir>] [--mode base|deep|security|full] [--src <path>]
-                                               Enrich an EXISTING bundle (default: ./okf_bundle)
+  okf enrich     [--lsp] [--llm] [--full] [--mode base|deep|security] [--bundle <dir>] [--src <path>]
+                                               Enrich an existing bundle with LSP (4 servers) and/or LLM
+  okf lsp        [status|resolve|map]         Inspect available language servers (4 verified: pyright, gopls, rust-analyzer, typescript)
   okf lookup     <query> [options]            Look up a concept in a bundle
   okf ask        <question>                  AI-powered Q&A about your codebase (requires LLM)
   okf diff       <old> <new>                  Diff two bundles (added/removed/changed)
@@ -302,36 +303,133 @@ def main():
 
     elif cmd == "enrich":
         from pathlib import Path
-        from okf.generator import enrich_bundle
-        # --bundle flag takes precedence, otherwise positional arg, otherwise ./okf_bundle
+        from okf.pairs import load_bundle
+        from okf.enrich import run_enrich
+
         if rest and not rest[0].startswith("--"):
             bundle_dir = Path(rest[0]).resolve()
             rest_args = list(rest[1:])
         else:
             bundle_dir = Path("okf_bundle").resolve()
             rest_args = list(rest)
-        mode = "base"
+
         source_dir = None
         file_filter = None
         concept_filter = None
-        for i, a in enumerate(rest_args):
+        enable_lsp = False
+        enable_llm = False
+        llm_mode = "base"
+
+        i = 0
+        while i < len(rest_args):
+            a = rest_args[i]
             if a == "--bundle" and i + 1 < len(rest_args):
                 bundle_dir = Path(rest_args[i + 1]).resolve()
-            elif a == "--mode" and i + 1 < len(rest_args):
-                mode = rest_args[i + 1]
+                i += 2
             elif a == "--src" and i + 1 < len(rest_args):
                 source_dir = Path(rest_args[i + 1]).resolve()
+                i += 2
             elif a == "--file" and i + 1 < len(rest_args):
                 file_filter = rest_args[i + 1]
+                i += 2
             elif a == "--concept" and i + 1 < len(rest_args):
                 concept_filter = rest_args[i + 1]
+                i += 2
+            elif a == "--lsp":
+                enable_lsp = True
+                i += 1
+            elif a == "--llm":
+                enable_llm = True
+                i += 1
+            elif a == "--full":
+                enable_lsp = True
+                enable_llm = True
+                llm_mode = "deep"
+                i += 1
+            elif a == "--mode" and i + 1 < len(rest_args):
+                llm_mode = rest_args[i + 1]
+                if llm_mode not in {"base", "deep", "security"}:
+                    print(f"Unknown LLM mode: {llm_mode!r}. Use: base, deep, security")
+                    sys.exit(1)
+                i += 2
             elif a == "--force":
-                pass  # passed through
-        if mode not in {"base", "deep", "security", "full"}:
-            print(f"Unknown mode: {mode!r}. Use: base, deep, security, full")
+                i += 1
+            else:
+                print(f"Unknown flag: {a!r}")
+                sys.exit(1)
+
+        if not enable_lsp and not enable_llm:
+            print("Error: specify --lsp, --llm, or --full")
+            print()
+            print("  okf enrich --lsp                LSP enrichment only")
+            print("  okf enrich --llm                LLM enrichment (mode=base)")
+            print("  okf enrich --llm --mode deep    LLM deep enrichment")
+            print("  okf enrich --lsp --llm          LSP + LLM base")
+            print("  okf enrich --full               LSP + LLM deep (shortcut)")
             sys.exit(1)
-        enrich_bundle(bundle_dir, mode=mode, source_dir=source_dir, force="--force" in rest_args or "--force" in rest, file_filter=file_filter, concept_filter=concept_filter)
+
+        if not bundle_dir.exists():
+            print(f"Bundle directory not found: {bundle_dir}")
+            sys.exit(1)
+
+        raw = load_bundle(bundle_dir)
+
+        if file_filter:
+            raw = [r for r in raw if file_filter in r.get("resource", "")]
+        if concept_filter:
+            raw = [r for r in raw if concept_filter in r.get("concept_id", "")]
+
+        if source_dir is None:
+            from okf.generator import _read_source_root
+            source_dir = _read_source_root(bundle_dir)
+
+        if not source_dir:
+            print("No source directory. Pass --src or generate the bundle first.")
+            sys.exit(1)
+
+        # Quick sanity: check if source_dir actually contains source files
+        # referenced by the bundle (sample up to 3)
+        from pathlib import Path as _Path
+        _sample_paths = []
+        for r2 in raw[:3]:
+            res = r2.get("resource", "")
+            if res:
+                _sample_paths.append(str((source_dir / res).resolve()))
+        if _sample_paths and not any(p for p in _sample_paths if _Path(p).exists()):
+            print(f"Warning: --src points to {source_dir} but none of the bundle's")
+            print(f"  source files were found there (e.g. {_sample_paths[0]}).")
+            print("  Enrichment will skip all concepts due to missing files.")
+            print("  The correct source root is where the original code lives.")
+
+        print(f"  Bundle: {bundle_dir}")
+        print(f"  Source: {source_dir}")
+        print(f"  Concepts: {len(raw)}")
+
+        results = run_enrich(
+            bundle_dir, raw, source_dir,
+            enable_lsp=enable_lsp,
+            enable_llm=enable_llm,
+            llm_mode=llm_mode,
+        )
+        for name, result in results:
+            status = "partial" if result.is_partial else "complete"
+            print(f"  {name}: {result.enriched_count}/{result.total_count} enriched ({status})")
+            if result.warnings:
+                _warn_count = len(result.warnings)
+                if _warn_count <= 10:
+                    for w in result.warnings:
+                        print(f"    {w}")
+                else:
+                    print(f"    ({_warn_count} warnings — use --verbose to show all)")
+                    for w in result.warnings[:5]:
+                        print(f"    {w}")
+                    print(f"    ... and {_warn_count - 5} more")
+
         sys.exit(0)
+
+    elif cmd == "lsp":
+        from okf.lsp import main as _lsp_main
+        _lsp_main()
 
     elif cmd == "config":
         from okf.config import load, dump, CONFIG_FILES, _get

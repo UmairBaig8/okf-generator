@@ -1416,7 +1416,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Unreleased">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0148-2026-07-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.48 — 2026-07-13
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.48 — 2026-07-13">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3328,7 +3339,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Unreleased">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0148-2026-07-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.48 — 2026-07-13
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.48 — 2026-07-13">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -5229,10 +5251,27 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h2 id="unreleased"><a href="https://github.com/UmairBaig8/okf-generator/compare/v0.1.47...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="unreleased"><a href="https://github.com/UmairBaig8/okf-generator/compare/v0.1.48...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="0148-2026-07-13"><a href="https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.48">0.1.48</a> — 2026-07-13<a class="headerlink" href="#0148-2026-07-13" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>LSP enrichment (<code>okf enrich --lsp</code>)</strong> — compiler-accurate caller/callee resolution via local language servers. Deterministic, zero token cost. 4 servers mapped: pyright (Python), gopls (Go), rust-analyzer (Rust), typescript-language-server (TS/JS). New <code>okf/enrich/</code> package with pluggable Enricher contract.</li>
+<li><strong><code>okf lsp</code> CLI subcommand</strong> — <code>okf lsp status|resolve|map</code> for inspecting and testing available language servers.</li>
+<li><strong><code>_llm_prompts.py</code></strong> — prompt templates extracted from <code>generator.py</code> into <code>okf/enrich/_llm_prompts.py</code> alongside LSP in the enrich package. Shared security/complexity field spec deduplicated.</li>
+<li><strong>301 unit tests</strong> — 19 new tests covering LSP enrichment, line range parsing, concept conversion, URI helpers, CLI flags, and EnrichResult.</li>
+<li><strong>Roadmap updates</strong> — SAST enrichment and MkDocs replacement added to <code>docs/future.md</code>.</li>
+</ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>okf enrich</code> CLI flags</strong> — replaced <code>--mode base|deep|security|full</code> with <code>--lsp</code>, <code>--llm</code>, <code>--full</code>, <code>--mode</code>. Bare <code>okf enrich</code> now errors with usage. LSP and LLM enrichment are independent flags that compose.</li>
+<li><strong>Enrichment docs</strong> — updated <code>docs/user-guide/enrichment.md</code> with LSP section (how it works, server requirements, status table, LSP→LLM ordering). Updated <code>docs/user-guide/cli-reference.md</code> with <code>okf enrich</code> + <code>okf lsp</code> sections.</li>
+<li><strong>Landing page</strong> — added "LSP-Powered Call Graphs" feature card and "4 language servers" badge.</li>
+<li><strong><code>.gitignore</code></strong> — added <code>dist/</code> and <code>*.egg-info</code> entries.</li>
+</ul>
 <h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>_parse_source_line_range</code> regex now handles en-dash (U+2013) and em-dash separators.</li>
+</ul>
 <h2 id="0147-2026-07-13"><a href="https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.47">0.1.47</a> — 2026-07-13<a class="headerlink" href="#0147-2026-07-13" title="Permanent link">&para;</a></h2>
 <h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>

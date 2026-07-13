@@ -35,6 +35,67 @@ Scans a source directory and produces an OKF v0.2 knowledge bundle.
 
 ---
 
+## `okf enrich`
+
+```bash
+okf enrich [--lsp] [--llm] [--full] [--mode base|deep|security] [--bundle <dir>] [--src <path>]
+```
+
+Enrich an existing bundle with LSP and/or LLM passes.  At least one of `--lsp` or `--llm` must be specified.
+
+| Option | Description |
+|--------|-------------|
+| `--lsp` | Run LSP enrichment (caller/callee resolution via local language servers) |
+| `--llm` | Run LLM enrichment (descriptions, summaries, security audit) |
+| `--full` | Shortcut for `--lsp --llm --mode deep` |
+| `--mode` | LLM mode: `base` (default, no source code), `deep` (with source), `security` (audit only) |
+| `--bundle PATH` | Bundle directory (default: `./okf_bundle`) |
+| `--src PATH` | Source code root (read from bundle index.md if omitted) |
+| `--file PATH` | Filter: only enrich concepts from this source file |
+| `--concept ID` | Filter: only enrich this specific concept |
+
+**Examples:**
+
+```bash
+# LSP only (free, deterministic)
+okf enrich --lsp
+
+# LLM only (safe, no source code sent)
+okf enrich --llm
+
+# LSP + LLM deep (maximum accuracy)
+okf enrich --full
+
+# With explicit paths
+okf enrich --lsp --bundle /tmp/my_bundle --src /home/user/project
+```
+
+---
+
+## `okf lsp`
+
+```bash
+okf lsp [status|resolve|map]
+```
+
+Inspect and test Language Server Protocol servers available on this machine.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Table of detected LSP servers — shows which are installed |
+| `resolve FILE:LINE:COL` | One-shot LSP resolution for a specific file location |
+| `map` | Display the extension-to-server command mapping |
+
+**Examples:**
+
+```bash
+okf lsp status
+okf lsp resolve src/app.py:42:5
+okf lsp map
+```
+
+---
+
 ## `okf lookup`
 
 ```bash

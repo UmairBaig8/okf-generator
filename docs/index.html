@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OKF Generator — The knowledge layer for AI coding agents.</title>
-  <meta name="description" content="Deploy deterministic, tree-sitter AST knowledge graphs. Slash AI agent context costs by 80%, run fully-local SLMs, and integrate seamlessly via Model Context Protocol (MCP).">
+  <meta name="description" content="Deploy deterministic, tree-sitter AST knowledge graphs with LSP-powered call graph enrichment. Slash AI agent context costs by 80%, run fully-local SLMs, and integrate seamlessly via Model Context Protocol (MCP).">
   <meta property="og:title" content="OKF Generator — The knowledge layer for AI coding agents.">
   <meta property="og:description" content="Map any codebase into an interactive, structured knowledge graph. Drop context token bloat, maximize local model intelligence, and protect your privacy.">
   <meta property="og:image" content="https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/banner.png">
@@ -147,6 +147,7 @@
         <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">18</strong> languages</span>
         <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">22</strong> manifest formats</span>
         <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">~100×</strong> fewer tokens</span>
+        <span class="inline-flex items-center gap-2 border border-cyan-200 dark:border-cyan-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-cyan-600 dark:text-cyan-400 font-extrabold text-lg">LSP</strong> 4 language servers · compiler-accurate enrichment</span>
       </div>
 
       <div class="relative max-w-5xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/30 backdrop-blur-md p-2 shadow-2xl shadow-zinc-200/50 dark:shadow-indigo-950/20 transition duration-300">
@@ -296,7 +297,12 @@
         <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
           <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg border border-indigo-200 dark:border-indigo-800/30 group-hover:bg-indigo-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-network-wired"></i></div>
           <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Cross-Reference Linker</h4>
-          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Resolves imports, call sites, and inheritance dependencies into logical graph edges (Calls, Called-by, Depends-on) across internal boundaries.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Resolves imports, call sites, and inheritance dependencies into graph edges. <span class="text-zinc-800 dark:text-zinc-200 font-semibold">LSP enrichment</span> upgrades this with compiler-accurate resolution via <code class="text-xs">okf enrich --lsp</code>.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg border border-cyan-200 dark:border-cyan-800/30 group-hover:bg-cyan-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-microchip"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">LSP-Powered Call Graphs</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Taps local language servers (pyright, gopls, rust-analyzer) for <span class="text-zinc-800 dark:text-zinc-200 font-semibold">compiler-accurate</span> caller/callee resolution. Resolves interfaces, dynamic dispatch, and external dependency traces — zero token cost.</p>
         </div>
         <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
           <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg border border-emerald-200 dark:border-emerald-800/30 group-hover:bg-emerald-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-box-open"></i></div>

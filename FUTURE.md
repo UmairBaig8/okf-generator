@@ -57,7 +57,35 @@ Ordered by development effort (easiest first).
 
 ---
 
-## 5. IDE Plugins
+## 5. SAST Enrichment (`okf enrich --sast`)
+
+**Effort:** Low (1–2 days)
+
+**What:** Wrap deterministic SAST tools (semgrep, bandit, gosec) in the same `Enricher` contract used by LSP and LLM. Each tool becomes a `SastEnricher(Enricher)` with `start/run/stop` lifecycle. Structured CWE/severity output injected into concept frontmatter alongside LSP call graphs and LLM summaries.
+
+**Why:** LSP resolves *what* calls *what*. SAST resolves *which constructs* are *vulnerable*. Combined they produce a bundle with compiler-accurate call graphs + deterministic security findings + LLM behavioural summaries — three orthogonal passes, one pipeline.
+
+**Design:** `okf/enrich/_sast_map.py` (ext → tool config), `okf/enrich/sast.py` (subprocess runner, semgrep JSON → concept mapping, CWE→severity table). `okf enrich --sast` flag.
+
+---
+
+## 6. MkDocs Replacement / Static Site Generator
+
+**Effort:** Medium (3–5 days)
+
+**What:** Replace MkDocs with a faster, simpler static site generator. The current docs-site build has two issues: (a) deep nested `docs-site/docs-site/` path duplication from `site_url` config, (b) build times scale poorly with 1000+ bundle `.md` files.
+
+**Options:**
+- **MkDocs config fix** — adjust `site_url`, exclude `okf_bundle/` from nav, add `not_in_nav` plugin. Lowest effort.
+- **Move to mdBook** (Rust) — single binary, no Python deps, native search, gitbook-style sidebar. Used by Rust ecosystem.
+- **Starlight (Astro)** — component-based, MDX support, better for interactive docs. Heavier build but prettier output.
+- **Plain HTML template** — like `docs/index.html` — custom build script generates nav from filesystem. Full control, zero framework churn.
+
+**Priority:** Low — current docs-site is functional. This is a DX improvement for maintainers, not users.
+
+---
+
+## 7. IDE Plugins
 
 **Effort:** Very High (2–4 weeks each)
 
