@@ -14,7 +14,7 @@ tags:
 - manifest:package.json
 - ecosystem:npm
 - version:^4.17.21
-timestamp: '2026-07-12T22:04:57Z'
+timestamp: '2026-07-13T20:34:09Z'
 title: lodash
 type: Dependency
 ---

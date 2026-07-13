@@ -1,7 +1,7 @@
 ---
 description: Knowledge index for php/easy/User
 resource: php/easy/User
-timestamp: '2026-07-12T22:05:28Z'
+timestamp: '2026-07-13T20:34:49Z'
 title: User
 type: Index
 ---

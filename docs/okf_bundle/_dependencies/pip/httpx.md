@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - version:>=0.25.0
-- manifest:pyproject.toml
 - ecosystem:pip
-timestamp: '2026-07-12T22:04:57Z'
+- manifest:pyproject.toml
+timestamp: '2026-07-13T20:34:09Z'
 title: httpx
 type: Dependency
 ---

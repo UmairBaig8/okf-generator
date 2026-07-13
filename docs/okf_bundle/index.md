@@ -2,7 +2,7 @@
 description: OKF v0.2 bundle generated from the realworld codebase
 okf_version: '0.2'
 source_root: /home/runner/work/okf-generator/okf-generator/tests/fixtures/realworld
-timestamp: '2026-07-12T22:05:27Z'
+timestamp: '2026-07-13T20:34:49Z'
 title: realworld
 type: Index
 ---

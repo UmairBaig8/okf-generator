@@ -3,7 +3,7 @@ description: 'Top-level OKF summary: 683 concepts across 18 domains and 84 modul
 git_branch: main
 git_repo: okf-generator
 okf_version: '0.2'
-timestamp: '2026-07-12T22:05:28Z'
+timestamp: '2026-07-13T20:34:49Z'
 title: realworld — Knowledge Summary
 type: Index
 ---
