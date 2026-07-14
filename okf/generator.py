@@ -345,24 +345,15 @@ def render_dir_index(
     bundle_name: str,
     all_map: dict[str, "Concept"],
 ) -> str:
-    """Render index.md for a directory node in the resource tree."""
-    title = dir_path.split("/")[-1] if dir_path else bundle_name
-    ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    fm = {
-        "type": "Index",
-        "title": title,
-        "description": f"Knowledge index for {dir_path or bundle_name}",
-        "resource": dir_path,
-        "okf_version": "0.2" if not dir_path else None,
-        "timestamp": ts,
-    }
-    # remove None values
-    fm = {k: v for k, v in fm.items() if v is not None}
+    """Render index.md for a directory node in the resource tree.
 
-    lines = [
-        "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",
-        f"# {title}\n",
-    ]
+    Per OKF v0.1 SPEC.md §6, index files contain no frontmatter.
+    The spec permits frontmatter only on the bundle-root index.md,
+    and then only for ``okf_version`` (§11 Versioning).  Subdirectory
+    index files must be pure markdown so they pass ``okft lint``.
+    """
+    title = dir_path.split("/")[-1] if dir_path else bundle_name
+    lines = [f"# {title}\n"]
 
     if subdirs:
         lines.append("## Subdirectories\n")
@@ -395,6 +386,11 @@ def render_dir_index(
 
 
 def render_root_index(bundle_name: str, top_dirs: list[str], total: int, ts: str, source_root: str = "") -> str:
+    # Root index.md frontmatter:   OKF SPEC §11 explicitly sanctions
+    # ``okf_version`` here.  ``type``, ``title``, ``description``,
+    # ``timestamp``, and ``source_root`` are extensions — they're not
+    # spec-sanctioned but are needed internally (source_root for LSP
+    # enrichment, etc.).  Subdirectory index.md has NO frontmatter.
     fm = {
         "type": "Index",
         "title": bundle_name,
