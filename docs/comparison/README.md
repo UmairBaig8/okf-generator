@@ -1,3 +1,10 @@
+# Comparisons
+
+- [OKF Generator vs OpenWiki](./) — code-to-knowledge vs clipboard-to-wiki
+- [OKF Generator vs okft](./okft-comparison.md) — bundle producer vs bundle consumer/validator
+
+---
+
 # OKF Generator vs OpenWiki — Comparison
 
 ## Quick Summary
