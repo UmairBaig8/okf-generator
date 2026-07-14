@@ -1,11 +1,3 @@
----
-description: Knowledge index for php/complex/Router
-resource: php/complex/Router
-timestamp: '2026-07-13T20:34:49Z'
-title: Router
-type: Index
----
-
 # Router
 
 ## Classs

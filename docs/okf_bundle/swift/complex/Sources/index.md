@@ -1,11 +1,3 @@
----
-description: Knowledge index for swift/complex/Sources
-resource: swift/complex/Sources
-timestamp: '2026-07-13T20:34:49Z'
-title: Sources
-type: Index
----
-
 # Sources
 
 ## Subdirectories

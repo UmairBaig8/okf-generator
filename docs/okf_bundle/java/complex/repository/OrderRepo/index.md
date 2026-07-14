@@ -1,11 +1,3 @@
----
-description: Knowledge index for java/complex/repository/OrderRepo
-resource: java/complex/repository/OrderRepo
-timestamp: '2026-07-13T20:34:49Z'
-title: OrderRepo
-type: Index
----
-
 # OrderRepo
 
 ## Classs

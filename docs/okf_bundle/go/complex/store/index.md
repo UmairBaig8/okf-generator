@@ -1,11 +1,3 @@
----
-description: Knowledge index for go/complex/store
-resource: go/complex/store
-timestamp: '2026-07-13T20:34:49Z'
-title: store
-type: Index
----
-
 # store
 
 ## Subdirectories

@@ -14,7 +14,7 @@ tags:
 - manifest:requirements.txt
 - ecosystem:pip
 - version:>=0.1.0
-timestamp: '2026-07-13T20:34:09Z'
+timestamp: '2026-07-14T18:42:52Z'
 title: ruff
 type: Dependency
 ---

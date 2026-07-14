@@ -1,11 +1,3 @@
----
-description: Knowledge index for swift/easy/Sources/Utils/StringUtils
-resource: swift/easy/Sources/Utils/StringUtils
-timestamp: '2026-07-13T20:34:49Z'
-title: StringUtils
-type: Index
----
-
 # StringUtils
 
 ## Functions

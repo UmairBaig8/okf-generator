@@ -1,11 +1,3 @@
----
-description: Knowledge index for go/complex/server
-resource: go/complex/server
-timestamp: '2026-07-13T20:34:49Z'
-title: server
-type: Index
----
-
 # server
 
 ## Subdirectories

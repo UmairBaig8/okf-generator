@@ -1,11 +1,3 @@
----
-description: Knowledge index for ruby/complex/models
-resource: ruby/complex/models
-timestamp: '2026-07-13T20:34:49Z'
-title: models
-type: Index
----
-
 # models
 
 ## Subdirectories

@@ -1,11 +1,3 @@
----
-description: Knowledge index for php/easy/Calculator
-resource: php/easy/Calculator
-timestamp: '2026-07-13T20:34:49Z'
-title: Calculator
-type: Index
----
-
 # Calculator
 
 ## Classs

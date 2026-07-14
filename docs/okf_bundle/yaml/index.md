@@ -1,11 +1,3 @@
----
-description: Knowledge index for yaml
-resource: yaml
-timestamp: '2026-07-13T20:34:49Z'
-title: yaml
-type: Index
----
-
 # yaml
 
 ## Subdirectories

@@ -1,11 +1,3 @@
----
-description: Knowledge index for kotlin/complex/src/main/kotlin/com/okfgen/service
-resource: kotlin/complex/src/main/kotlin/com/okfgen/service
-timestamp: '2026-07-13T20:34:49Z'
-title: service
-type: Index
----
-
 # service
 
 ## Subdirectories

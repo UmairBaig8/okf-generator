@@ -11,10 +11,10 @@ tags:
 - domain:easy
 - git:branch:main
 - git:repo:okf-generator
+- ecosystem:npm
 - version:^5.3.2
 - manifest:package.json
-- ecosystem:npm
-timestamp: '2026-07-13T20:34:09Z'
+timestamp: '2026-07-14T18:42:52Z'
 title: typescript
 type: Dependency
 ---

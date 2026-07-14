@@ -1,11 +1,3 @@
----
-description: Knowledge index for csharp/complex/Repositories/IOrderRepo
-resource: csharp/complex/Repositories/IOrderRepo
-timestamp: '2026-07-13T20:34:49Z'
-title: IOrderRepo
-type: Index
----
-
 # IOrderRepo
 
 ## Classs

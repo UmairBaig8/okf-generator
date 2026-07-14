@@ -1,11 +1,3 @@
----
-description: Knowledge index for go/easy/strings
-resource: go/easy/strings
-timestamp: '2026-07-13T20:34:49Z'
-title: strings
-type: Index
----
-
 # strings
 
 ## Subdirectories

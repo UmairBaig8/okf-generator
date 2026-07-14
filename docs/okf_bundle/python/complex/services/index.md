@@ -1,11 +1,3 @@
----
-description: Knowledge index for python/complex/services
-resource: python/complex/services
-timestamp: '2026-07-13T20:34:49Z'
-title: services
-type: Index
----
-
 # services
 
 ## Subdirectories

@@ -1,11 +1,3 @@
----
-description: Knowledge index for cpp/complex/main
-resource: cpp/complex/main
-timestamp: '2026-07-13T20:34:49Z'
-title: main
-type: Index
----
-
 # main
 
 ## Functions

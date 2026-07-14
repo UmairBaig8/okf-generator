@@ -1,11 +1,3 @@
----
-description: Knowledge index for _dependencies/npm
-resource: _dependencies/npm
-timestamp: '2026-07-13T20:34:49Z'
-title: npm
-type: Index
----
-
 # npm
 
 ## Subdirectories

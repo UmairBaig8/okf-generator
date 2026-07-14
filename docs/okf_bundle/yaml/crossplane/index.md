@@ -1,11 +1,3 @@
----
-description: Knowledge index for yaml/crossplane
-resource: yaml/crossplane
-timestamp: '2026-07-13T20:34:49Z'
-title: crossplane
-type: Index
----
-
 # crossplane
 
 ## Subdirectories

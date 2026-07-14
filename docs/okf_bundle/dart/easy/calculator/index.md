@@ -1,11 +1,3 @@
----
-description: Knowledge index for dart/easy/calculator
-resource: dart/easy/calculator
-timestamp: '2026-07-13T20:34:49Z'
-title: calculator
-type: Index
----
-
 # calculator
 
 ## Classs

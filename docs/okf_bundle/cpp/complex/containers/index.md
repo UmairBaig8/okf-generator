@@ -1,11 +1,3 @@
----
-description: Knowledge index for cpp/complex/containers
-resource: cpp/complex/containers
-timestamp: '2026-07-13T20:34:49Z'
-title: containers
-type: Index
----
-
 # containers
 
 ## Subdirectories

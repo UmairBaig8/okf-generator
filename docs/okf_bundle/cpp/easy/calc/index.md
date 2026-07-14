@@ -1,11 +1,3 @@
----
-description: Knowledge index for cpp/easy/calc
-resource: cpp/easy/calc
-timestamp: '2026-07-13T20:34:49Z'
-title: calc
-type: Index
----
-
 # calc
 
 ## Functions

@@ -1,11 +1,3 @@
----
-description: Knowledge index for ruby/easy/formatter
-resource: ruby/easy/formatter
-timestamp: '2026-07-13T20:34:49Z'
-title: formatter
-type: Index
----
-
 # formatter
 
 ## Classs

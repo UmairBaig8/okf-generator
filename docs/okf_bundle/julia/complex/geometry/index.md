@@ -1,11 +1,3 @@
----
-description: Knowledge index for julia/complex/geometry
-resource: julia/complex/geometry
-timestamp: '2026-07-13T20:34:49Z'
-title: geometry
-type: Index
----
-
 # geometry
 
 ## Classs

@@ -1,11 +1,3 @@
----
-description: Knowledge index for java/complex/service/PaymentDeclinedException
-resource: java/complex/service/PaymentDeclinedException
-timestamp: '2026-07-13T20:34:49Z'
-title: PaymentDeclinedException
-type: Index
----
-
 # PaymentDeclinedException
 
 ## Classs

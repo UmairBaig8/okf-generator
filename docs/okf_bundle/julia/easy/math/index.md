@@ -1,11 +1,3 @@
----
-description: Knowledge index for julia/easy/math
-resource: julia/easy/math
-timestamp: '2026-07-13T20:34:49Z'
-title: math
-type: Index
----
-
 # math
 
 ## Classs

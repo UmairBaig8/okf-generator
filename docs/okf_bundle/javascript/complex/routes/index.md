@@ -1,11 +1,3 @@
----
-description: Knowledge index for javascript/complex/routes
-resource: javascript/complex/routes
-timestamp: '2026-07-13T20:34:49Z'
-title: routes
-type: Index
----
-
 # routes
 
 ## Subdirectories

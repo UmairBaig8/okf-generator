@@ -1,11 +1,3 @@
----
-description: Knowledge index for java/complex/repository
-resource: java/complex/repository
-timestamp: '2026-07-13T20:34:49Z'
-title: repository
-type: Index
----
-
 # repository
 
 ## Subdirectories

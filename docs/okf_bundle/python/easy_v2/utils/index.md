@@ -1,11 +1,3 @@
----
-description: Knowledge index for python/easy_v2/utils
-resource: python/easy_v2/utils
-timestamp: '2026-07-13T20:34:49Z'
-title: utils
-type: Index
----
-
 # utils
 
 ## Functions

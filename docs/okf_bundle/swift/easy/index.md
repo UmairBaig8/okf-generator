@@ -1,11 +1,3 @@
----
-description: Knowledge index for swift/easy
-resource: swift/easy
-timestamp: '2026-07-13T20:34:49Z'
-title: easy
-type: Index
----
-
 # easy
 
 ## Subdirectories

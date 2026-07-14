@@ -1,11 +1,3 @@
----
-description: Knowledge index for c/complex/linked_list
-resource: c/complex/linked_list
-timestamp: '2026-07-13T20:34:49Z'
-title: linked_list
-type: Index
----
-
 # linked_list
 
 ## Classs

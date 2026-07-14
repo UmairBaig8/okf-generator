@@ -1,11 +1,3 @@
----
-description: Knowledge index for java/complex/model
-resource: java/complex/model
-timestamp: '2026-07-13T20:34:49Z'
-title: model
-type: Index
----
-
 # model
 
 ## Subdirectories
