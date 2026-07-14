@@ -20,3 +20,77 @@ GitHub: https://github.com/UmairBaig8/okf-generator
 Site: https://umairbaig8.github.io/okf-generator/
 
 Feedback on the linker accuracy or missing language support especially welcome — that's where I'd focus next.
+
+
+
+-----------
+
+**Title (pick one):**
+
+1. Show HN: OKF Generator – cut AI coding agent context from 45K to 1.2K tokens
+2. Show HN: I stopped my AI agent from re-reading whole files to find one function
+3. Show HN: OKF Generator – deterministic AST maps for AI coding agents, 97% fewer tokens
+
+Go with #1. Numbers in the title outperform vague claims on HN, and "45K to 1.2K" is concrete enough to make people click without sounding like a stat you made up.
+
+**Post body:**
+
+---
+
+Hi HN,
+
+I built okf-generator because I got tired of watching AI coding agents burn 14-45K tokens re-reading entire files just to find one function signature.
+
+The idea: instead of dumping raw files into context, scan the codebase once into structured "concept cards" — one per function/class/module — with typed edges for calls, callers, and dependencies. Looking up a concept becomes a ~1,200 token lookup instead of a 45,000 token file read. About 97% smaller, and it's exact-symbol retrieval, not embedding-similarity guesswork like RAG.
+
+Core extraction is 100% offline and deterministic — tree-sitter + stdlib AST across 17 languages, no LLM calls, no vector DB, no API key required. Same output every run. There's an optional enrichment layer (LSP or LLM) if you want deeper descriptions or call-graph refinement, but the base bundle is fully useful without any of that.
+
+It ships an MCP server (11 tools) so Claude Code, Cursor, or any MCP client can query the bundle directly, plus one-command installs for Claude/Cursor/Copilot/Windsurf/Cline agent configs.
+
+GitHub: https://github.com/UmairBaig8/okf-generator
+Docs: https://umairbaig8.github.io/okf-generator/docs-site/
+Live demo: https://okf-generator.onrender.com
+
+`pip install okf-generator` → `okf generate . ./okf_bundle` → `okf lookup <ConceptName>`
+
+Happy to dig into the tree-sitter integration, the cross-reference linker, or why static AST beat embeddings for this use case.
+
+---
+
+
+
+
+
+------------------
+
+**Top comment — variant A (origin story angle):**
+
+---
+
+Author here. Backstory: I was running local SLMs against a mid-size codebase and kept hitting the same wall — every time the agent needed one class, it read the whole file, chewed through half its context window, and had nothing left for the actual task.
+
+Tried RAG first. It "worked" but chunk boundaries didn't respect syntax — a function would get split mid-body, or a class definition would land in one chunk and its methods in another. The agent got context, just not the *right* context, and confidently hallucinated call relationships that weren't there.
+
+Switched to a different bet: don't chunk text, parse the AST. Every function/class/module becomes its own file with a proper signature, docstring, and resolved call edges. It's basically ctags for the LLM era, except the output is agent-readable Markdown instead of a binary index.
+
+The 97% number isn't cherry-picked — it's the median across a few real repos I tested against (StockAI-style connector modules, a Go microservice, a Rust CLI). Happy to share the actual benchmark script if anyone wants to run it against their own code.
+
+---
+
+**Variant B (more technical/HN-native, leads with the interesting decision):**
+
+---
+
+Author here. The interesting design decision was refusing to use embeddings at all.
+
+Everyone's first instinct for "give agents better code context" is RAG — chunk the repo, embed it, do similarity search. I tried that path first and abandoned it: embeddings don't understand that `def foo():` and its call sites are related unless you explicitly build that graph, and chunk boundaries don't respect syntax, so you get truncated functions and orphaned methods.
+
+So instead: tree-sitter AST extraction (stdlib `ast` for Python) into typed concept nodes — Function, Class, Module — with a two-pass linker resolving imports→dependencies and calls→callers/callees. No embeddings, no vector DB, no LLM in the core path. Same input always produces the same bundle.
+
+Trade-off: it's exact-symbol lookup, not semantic search. You can't ask "find the auth logic" and get a fuzzy match the way you can with embeddings. You *can* fuzzy-match on symbol names though (`okf lookup repo` finds `UserRepository`), and there's an optional `ask` command that layers an LLM on top for the natural-language case.
+
+Genuinely curious if anyone's hit the same RAG-imprecision wall and solved it differently.
+
+---
+
+A is friendlier/relatable, B baits technical discussion (better for HN comment engagement). Pick B if you want debate in the thread, A if you want warmth. My call: **B** — HN rewards "here's a tradeoff I made, argue with me" way more than origin stories.
