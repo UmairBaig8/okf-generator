@@ -96,6 +96,26 @@ okf lsp map
 
 ---
 
+## `okf update`
+
+```bash
+okf update <source_dir> [output_dir]
+```
+
+Incremental bundle generation — re-scans only changed files using a SHA256 manifest. First run does a full scan and writes the manifest; subsequent runs detect changes, re-parse only dirty files, re-link, edge-diff, and write only dirty concept files.
+
+| Option | Description |
+|--------|-------------|
+| `--force` | Full re-scan (same as `okf generate`) |
+| `--enrich` | Re-enrich changed concepts with LLM (requires LLM config) |
+| `--watch` | Continuous file watcher mode |
+| `--debounce MS` | Watch mode debounce in milliseconds (default: 500) |
+| `--exclude <dir>` | Skip directories matching this name (repeatable) |
+
+**.okf-manifest.json** is stored in the bundle directory. It contains SHA256 content hashes per source file and edge hashes per concept. On missing/corrupt manifest, falls back to full scan.
+
+---
+
 ## `okf lookup`
 
 ```bash

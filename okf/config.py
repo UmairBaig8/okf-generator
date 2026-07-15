@@ -38,6 +38,16 @@ Schema (both dotted and nested accepted):
       "semantic_related": { "enabled": false, "max_workers": 2 }
     },
 
+    "update": {
+        "debounce_ms": 500,
+        "ignore": ["*.generated.*", "*.snap"],
+        "watch_extensions": [
+            ".py", ".js", ".ts", ".go", ".rs", ".java", ".rb",
+            ".kt", ".swift", ".sql", ".yaml", ".yml", ".json", ".toml",
+            ".c", ".cpp", ".h", ".hpp", ".cs", ".dart", ".php",
+        ],
+        "enrich_on_change": False,
+    },
     "serve": { "port": 8000, "host": "127.0.0.1" },
     "lookup": { "limit": 10, "min_score": 0.1 },
     "mcp": { "port": 0 },

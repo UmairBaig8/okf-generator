@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name            = "okf-generator"
-version         = "0.1.48"
+version         = "0.1.49"
 description     = "Generate OKF v0.1 knowledge bundles from codebases — Claude skill + OpenCode integration"
 readme          = "README.md"
 license         = { text = "MIT" }
@@ -30,6 +30,7 @@ classifiers = [
 dependencies = [
     "pyyaml>=6.0",
     "tqdm>=4.0",
+    "watchdog>=4.0",
     "tree-sitter>=0.25.0",
     "tree-sitter-python>=0.25.0",
     "tree-sitter-javascript>=0.23.0",

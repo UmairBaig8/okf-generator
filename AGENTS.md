@@ -21,12 +21,15 @@ pytest tests/ -q           # 70+ tests
 | File | Purpose |
 |------|---------|
 | `okf/generator.py` | Core scanner & bundle writer |
+| `okf/manifest.py` | SHA256 manifest model, change detection, rename handling |
+| `okf/update.py` | Incremental update pipeline |
+| `okf/watcher.py` | Watchdog file watcher for `--watch` mode |
 | `okf/manifest_scanner.py` | Dependency/manifest parsers (12 formats) |
 | `okf/lookup.py` | Concept search |
 | `okf/diff.py` | Bundle comparison |
 | `okf/pairs.py` | Training data generation |
 | `okf/cli.py` | CLI entry point |
-| `tests/` | 70+ unit tests |
+| `tests/` | 313+ unit tests |
 | `tests/fixtures/complex/` | Multi-language test data (7 langs, 12 manifests) |
 
 ## Lookup patterns
@@ -66,6 +69,13 @@ okf lookup --bundle ./okf_bundle --json <Name>
 **Generate a bundle:**
 ```
 okf generate ./src ./okf_bundle
+```
+
+**Incremental update (fast):**
+```
+okf update ./src ./okf_bundle          # incremental
+okf update ./src ./okf_bundle --force  # full re-scan
+okf update ./src ./okf_bundle --watch  # continuous watcher
 ```
 
 **Diff two bundles:**

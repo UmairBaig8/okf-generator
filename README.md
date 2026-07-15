@@ -98,6 +98,7 @@ No re-reading the file. No guessing. No LLM call required.
 | **Token efficiency** | ~140 tokens per concept lookup vs 14,000+ reading whole files. Local SLMs become viable for enterprise-scale codebases |
 | **4 enrichment tiers** | Optional LLM layer: `base` (descriptions), `deep` (examples + side effects), `security` (risk audit), `full` (all + semantic links). Runs at generate time or standalone |
 | **Multi-provider routing** | Route cheap work to local llama.cpp, security audits to Claude — one config file |
+| **Incremental updates** | `okf update` re-scans only changed files — SHA256 manifest tracks mtime + content hashes, edge-diff detects cascade changes, writes only dirty concepts. 8 writes for a 1-file edit in a 68-concept bundle |
 | **Bundle diff & impact** | `okf diff --impact` shows exactly what changed between runs — which deps affect which modules |
 | **Training data export** | `okf pairs` converts any bundle into JSONL fine-tuning pairs (codegen, QA, doc, summarize, crosslink) |
 
@@ -109,8 +110,9 @@ No re-reading the file. No guessing. No LLM call required.
 1. Scan  → tree-sitter AST parsers extract functions, classes, modules (17 langs)
 2. Link  → cross-reference linker resolves imports→deps, calls→callees
 3. Write → OKF v0.2 bundle: structured markdown, mirrors your source tree
-4. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
-5. Enrich → optional LSP pass (deterministic call-graph refinement) + optional LLM layer: 4 modes, multi-provider routing
+4. Update → incremental: SHA256 manifest detects changes, re-parses only dirty files, re-links, edge-diffs, writes only dirty concepts
+5. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
+6. Enrich → optional LSP pass (deterministic call-graph refinement) + optional LLM layer: 4 modes, multi-provider routing
 ```
 
 Core extraction is fully deterministic and offline. Enrichment is optional, resumable, works with any AI provider. LSP enrichment requires language server binaries on `$PATH`.
@@ -173,6 +175,18 @@ okf generate ./my_project ./okf_bundle
 ```
 
 That's it — no API key, no vector DB, no config required.
+
+### Incremental updates (fast)
+
+After the first generate, use `okf update` to re-scan only changed files:
+
+```bash
+okf update ./my_project ./okf_bundle          # incremental (default)
+okf update ./my_project ./okf_bundle --force  # full re-scan
+okf update ./my_project ./okf_bundle --watch  # continuous watcher mode
+```
+
+A SHA256 manifest tracks file state. Only changed files are re-parsed; edge-diff detects cascade changes; only dirty concepts are written.
 
 ### Look up any concept
 

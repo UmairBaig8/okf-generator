@@ -40,24 +40,28 @@ Compiler-accurate caller/callee resolution via local language servers. 4 servers
 
 ---
 
-## 1. Incremental Generation (`okf update`)
+## ~~1. Incremental Generation (`okf update`)~~ ✅ Done (v0.1.49)
 
 **Impact:** Very High  
 **Effort:** Medium (3–5 days)
 
-**Problem:** `okf generate` rescans every file every time. On a 50,000-file monorepo, this takes minutes. Most runs change 5-10 files.
-
-**Solution:** `okf update` hashes files, detects changes, regenerates only affected concepts, updates the graph and bundle in-place.
+Store SHA256 manifest per source file + per-concept edge hash. On `okf update`, diff source tree, re-parse only changed files, full re-link, edge-diff to find dirty concepts, write only changed `.md` + indexes + SUMMARY.md + manifest last. Watch mode via `watchdog.Observer`.
 
 ```
-okf update                          # incremental (default)
+okf update                          # incremental
 okf update --force                  # full re-scan
-okf update --watch                  # watch mode, continuous
+okf update --watch                  # watch mode (500ms debounce)
+okf update --exclude tests          # respect exclude patterns
 ```
 
-**Design:** Store file mtime + content hash per concept in a manifest file (`.okf/bundle.manifest.json`). On `okf update`, diff against current file state, re-parse changed files, re-run linker on affected subgraph, write only changed `.md` files.
+**New files:** `okf/manifest.py`, `okf/update.py`, `okf/watcher.py`  
+**Modified:** `okf/cli.py`, `okf/config.py`, `pyproject.toml`  
+**Tests:** 12 in `tests/test_update.py` — equivalence (edit/rename/delete), edge cascade, orphan cleanup, force, corrupt manifest, relink stability. All 313 pass.
 
-**What it unlocks:** CI-ready incremental builds. Bundles stay fresh without the full-scan cost. Watch mode enables editor integration.
+**Known limitations:**
+- `--enrich` flag is CLI-wired but LSP/LLM enrichment not integrated into the update pipeline yet
+- `--watch` debounce from `.okfconfig` loaded but not wired to watcher (hardcoded 500ms)
+- Benchmark fixtures deferred
 
 ---
 

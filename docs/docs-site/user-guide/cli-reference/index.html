@@ -794,6 +794,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#okf-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf update
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#okf-lookup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1633,6 +1644,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#okf-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        okf update
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#okf-lookup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1957,6 +1979,42 @@ okf<span class="w"> </span>enrich<span class="w"> </span>--lsp<span class="w"> <
 okf<span class="w"> </span>lsp<span class="w"> </span>resolve<span class="w"> </span>src/app.py:42:5
 okf<span class="w"> </span>lsp<span class="w"> </span>map
 </code></pre></div>
+<hr />
+<h2 id="okf-update"><code>okf update</code><a class="headerlink" href="#okf-update" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>update<span class="w"> </span>&lt;source_dir&gt;<span class="w"> </span><span class="o">[</span>output_dir<span class="o">]</span>
+</code></pre></div>
+<p>Incremental bundle generation — re-scans only changed files using a SHA256 manifest. First run does a full scan and writes the manifest; subsequent runs detect changes, re-parse only dirty files, re-link, edge-diff, and write only dirty concept files.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--force</code></td>
+<td>Full re-scan (same as <code>okf generate</code>)</td>
+</tr>
+<tr>
+<td><code>--enrich</code></td>
+<td>Re-enrich changed concepts with LLM (requires LLM config)</td>
+</tr>
+<tr>
+<td><code>--watch</code></td>
+<td>Continuous file watcher mode</td>
+</tr>
+<tr>
+<td><code>--debounce MS</code></td>
+<td>Watch mode debounce in milliseconds (default: 500)</td>
+</tr>
+<tr>
+<td><code>--exclude &lt;dir&gt;</code></td>
+<td>Skip directories matching this name (repeatable)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>.okf-manifest.json</strong> is stored in the bundle directory. It contains SHA256 content hashes per source file and edge hashes per concept. On missing/corrupt manifest, falls back to full scan.</p>
 <hr />
 <h2 id="okf-lookup"><code>okf lookup</code><a class="headerlink" href="#okf-lookup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>okf<span class="w"> </span>lookup<span class="w"> </span><span class="o">[</span>query<span class="o">]</span><span class="w"> </span><span class="o">[</span>options<span class="o">]</span>

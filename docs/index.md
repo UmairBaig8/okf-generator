@@ -61,6 +61,7 @@
   var scenes = [
     {cmd:"okf generate . ./okf_bundle", out:"21:28:21 [INFO] Scanning 2 paths...\n21:28:21 [INFO] Linking: 2 call edges resolved\n21:28:21 [INFO] Found 6 concepts\n\n  Bundle: demo_project\n  Type            Concepts\n  ------------------------\n  Class                  2\n  Function               3\n  Module                 1\n  ------------------------\n  TOTAL                  6\n\n21:28:21 [INFO] OKF bundle written -> ./okf_bundle"},
     {cmd:"okf lookup WorldBankConnector", out:"CLASS: WorldBankConnector\n  Description : Fetches World Bank development indicators via wbdata API.\n  Source      : connectors/economic_data.py  line 6\n  Methods     : get_indicator, search\n  Related     : economic_data, get_indicator, search\n\nFUNCTION: get_indicator\n  Signature   : def get_indicator(self, indicator_code: str, country: str = 'US') -> pd.DataFrame\n  Returns     : pd.DataFrame\n  Related     : WorldBankConnector"},
+    {cmd:"okf update ./src ./okf_bundle", out:"23:43:20 [INFO] No manifest found — full scan required\n23:43:20 [INFO] Parsed 77 new/changed concepts; pool size: 67\n23:43:20 [INFO] Written 67 dirty concept files\n23:43:20 [INFO] Manifest written -> .okf-manifest.json\n\n  Second run (no changes):\n  No changes\n\n  After editing 1 file:\n  Updated 8 concept(s)"},
     {cmd:"okf diff ./bundle_v1 ./bundle_v2 --compact", out:"okf diff --compact\n\n  Added (3)\n    [Class]  PaymentGateway    payment.py\n    [Function] validate_iban  payment.py\n    [Dependency] stripe       requirements.txt\n\n  Removed (1)\n    [Function] old_pay  legacy.py\n\n  Changed (2)\n    [Class] Invoice   model.py  (added method: calculate_tax)\n    [Dependency] requests 2.28→2.31  requirements.txt"},
     {cmd:"okf visualize ./okf_bundle viz.html", out:"Visualization written -> viz.html\n  655 concepts, 1132 edges\n  Open in browser: file:///tmp/viz.html"},
     {cmd:"okf mcp ./okf_bundle --port 4567", out:"[MCP] Loading bundle from ./okf_bundle...\n[MCP] 124 concepts indexed\n[MCP] Server listening on http://localhost:4567/sse\n[MCP] Ready for Cursor, Cline, Claude Desktop"},
@@ -144,6 +145,10 @@ Agents waste tokens re-reading entire files to find one function signature — 1
 - :material-file-tree:{ .lg } **MCP server built in**
   11 tools — lookup, get_concept, find_callers, find_callees, search_by_tag, and more — exposed over Model Context Protocol.
   [→ MCP Server](user-guide/mcp-server.md)
+
+- :material-sync:{ .lg } **Incremental updates**
+  `okf update` re-scans only changed files. SHA256 manifest + edge-diff. 8 writes for a 1-file edit.
+  [→ CLI reference](user-guide/cli-reference.md)
 
 - :material-cog:{ .lg } **LLM enrichment, optional**
   Four tiers — base, deep, security, full. Layer on top when you want it, never required.

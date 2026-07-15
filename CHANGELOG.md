@@ -10,6 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.1.49] — 2026-07-16
+
+### Added
+
+- **Incremental bundle updates (`okf update`)** — SHA256 manifest tracks per-file content hashes + per-concept edge hashes. Source tree diff detects new/changed/deleted files. Only changed files are re-parsed; full re-link + edge-diff finds cascade changes; only dirty concept `.md` files are written. Orphan cleanup removes stale files. Manifest written last for crash safety.
+  - `okf update` — incremental (default)
+  - `okf update --force` — full re-scan (same as `generate`)
+  - `okf update --watch` — continuous file watcher via `watchdog.Observer`
+  - `okf update --exclude PAT` — respect exclude patterns
+- **`okf/manifest.py`** — `FileState`, `ConceptState`, `Manifest`, `Changeset` dataclasses; SHA256 hashing; atomic I/O; rename detection via content-hash index.
+- **`okf/update.py`** — Orchestrator: manifest read → source diff → incremental parse → dedup → full re-link → edge-diff → dirty write → orphan prune → cleanup stale → manifest-last.
+- **`okf/watcher.py`** — `watchdog.Observer` + `PatternMatchingEventHandler`, 500ms debounce, editor temp-file filtering.
+- **`update.*` config section** — `.okfconfig` supports `debounce_ms`, `watch_extensions`, `enrich_on_change`.
+- **12 new tests** — `tests/test_update.py` covers equivalence (edit/delete/rename), edge cascade, orphan cleanup, force mode, corrupt manifest, relink stability.
+
+### Changed
+
+- `okf/cli.py` — Added `okf update` subcommand. Fixed `Path` shadowing in `main()`. All 20 commands listed in `--help`.
+- `okf/config.py` — Added `update.*` default config section.
+- `pyproject.toml` — Added `watchdog>=4.0` dependency.
+- `docs/user-guide/cli-reference.md` — Added `okf update` section with option table.
+- `FUTURE.md` — Item 1 (Incremental Generation) marked done.
+
 ## [0.1.48] — 2026-07-13
 
 ### Added
@@ -875,7 +898,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.48...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.49...HEAD
+[0.1.49]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.49
 [0.1.48]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.48
 [0.1.47]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.47
 [0.1.46]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.46

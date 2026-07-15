@@ -2,12 +2,11 @@
 
 Commands:
   okf generate   <source_dir> [output_dir]   Generate OKF bundle from codebase
-  okf generate --enrich [base|deep|security|full]  Enrich with mode selection
-  okf generate --domains crossplane   Generate with domain classification
-  okf generate --domain-rules ./rules.yaml   Generate with custom domain rules
+  okf update     [--force] [--enrich] [--watch] [--debounce MS] [--exclude PAT]
+                                                Incremental bundle update (fast, re-scans only changed files)
   okf domains   [list|validate <file>]   List domain rules or validate a rule file
   okf enrich     [--lsp] [--llm] [--full] [--mode base|deep|security] [--bundle <dir>] [--src <path>]
-                                               Enrich an existing bundle with LSP (4 servers) and/or LLM
+                                                Enrich an existing bundle with LSP (4 servers) and/or LLM
   okf lsp        [status|resolve|map]         Inspect available language servers (4 verified: pyright, gopls, rust-analyzer, typescript)
   okf lookup     <query> [options]            Look up a concept in a bundle
   okf ask        <question>                  AI-powered Q&A about your codebase (requires LLM)
@@ -120,6 +119,7 @@ def _install_agent(agent: str):
     else:
         print(f"Unknown agent: {agent!r}", file=sys.stderr)
         print("Available: claude, opencode, copilot, cursor, windsurf, cline, mcp, all", file=sys.stderr)
+        print("Note: OpenAI Codex reads AGENTS.md — use 'okf install opencode' to set it up.", file=sys.stderr)
         sys.exit(1)
 
 
@@ -208,6 +208,9 @@ Skill installation (instructions/rules for the AI):
   windsurf    Add Windsurf rules (.windsurfrules)
   cline       Add Cline rules (.clinerules)
 
+  Note: OpenAI Codex (CLI + VS Code) reads AGENTS.md — use `okf install opencode`
+  to set it up. Codex is covered automatically via the same AGENTS.md convention.
+
 MCP server registration (preferred — gives agent direct tools):
   mcp         Register OKF MCP server in OpenCode + Claude configs
   all         Install skills for all agents + register MCP
@@ -261,17 +264,24 @@ def main():
         print("")
         print("Commands:")
         print("  generate        Generate OKF bundle from a codebase")
+        print("  update          Incremental bundle update (re-scans only changed files)")
+        print("  enrich          Enrich existing bundle via LSP, LLM, or both")
+        print("  lsp             Inspect available language servers")
         print("  lookup          Look up concepts in a bundle")
+        print("  ask             AI-powered Q&A about your codebase (requires LLM)")
         print("  diff            Compare two bundles (added/removed/changed)")
         print("  pairs           Convert bundle to JSONL training pairs")
         print("  summarize       Regenerate SUMMARY.md from existing bundle")
+        print("  domains         [list|validate <file>]  List or validate domain rules")
+        print("  migrate         Convert OKF bundle between schema versions")
+        print("  visualize       Generate interactive HTML graph of a bundle")
+        print("  serve           Serve bundle as static HTML via local server")
         print("  dashboard       Launch live bundle browser (FastAPI + interactive graph)")
+        print("  config          View or set OKF configuration")
         print("  init            Interactive bundle setup wizard")
         print("  install         Set up agent integration (claude, opencode, copilot, cursor, windsurf, cline, mcp)")
         print("  mcp             Start MCP server (stdio or HTTP). Use --install to register in client configs")
         print("  plugin          Manage parser plugins (list, install, uninstall)")
-        print("  domains         [list|validate <file>]  List or validate domain rules")
-        print("  migrate         Convert OKF bundle between schema versions (v0.1→v0.2)")
         print("  agent           Interactive REPL with persistent sessions, slash commands")
         sys.exit(0)
 
@@ -296,13 +306,69 @@ def main():
         from okf.generator import main as _main
         _main()
 
+    elif cmd == "update":
+        source_dir = None
+        bundle_dir = Path("okf_bundle").resolve()
+        force = False
+        enable_enrich = False
+        watch = False
+        debounce_ms = 500
+        exclude = set()
+
+        i = 0
+        while i < len(rest):
+            a = rest[i]
+            if a == "--force":
+                force = True
+                i += 1
+            elif a == "--enrich":
+                enable_enrich = True
+                i += 1
+            elif a == "--watch":
+                watch = True
+                i += 1
+            elif a == "--debounce" and i + 1 < len(rest):
+                debounce_ms = int(rest[i + 1])
+                i += 2
+            elif a == "--exclude" and i + 1 < len(rest):
+                exclude.add(rest[i + 1])
+                i += 2
+            elif not a.startswith("--") and source_dir is None:
+                source_dir = Path(a).resolve()
+                i += 1
+            elif not a.startswith("--") and bundle_dir == Path("okf_bundle").resolve():
+                bundle_dir = Path(a).resolve()
+                i += 1
+            else:
+                print(f"Unknown flag: {a!r}")
+                sys.exit(1)
+
+        if source_dir is None or not source_dir.exists():
+            print("Error: specify a valid source directory")
+            sys.exit(1)
+
+        if watch:
+            try:
+                from okf.watcher import watch_and_update
+                print(f"Watching {source_dir} for changes...")
+                watch_and_update(source_dir, bundle_dir, debounce_ms, exclude, enable_enrich)
+            except ImportError:
+                print("Watch mode requires 'watchdog' package. Install: pip install watchdog")
+                sys.exit(1)
+        else:
+            from okf.update import update_bundle
+            dirty = update_bundle(source_dir, bundle_dir, exclude, force, enable_enrich)
+            if dirty > 0:
+                print(f"  Updated {dirty} concept(s)")
+            else:
+                print("  No changes")
+
     elif cmd == "summarize":
         sys.argv = ["okf generate", "--summarize"] + rest
         from okf.generator import main as _main
         _main()
 
     elif cmd == "enrich":
-        from pathlib import Path
         from okf.pairs import load_bundle
         from okf.enrich import run_enrich
 
@@ -389,13 +455,12 @@ def main():
 
         # Quick sanity: check if source_dir actually contains source files
         # referenced by the bundle (sample up to 3)
-        from pathlib import Path as _Path
         _sample_paths = []
         for r2 in raw[:3]:
             res = r2.get("resource", "")
             if res:
                 _sample_paths.append(str((source_dir / res).resolve()))
-        if _sample_paths and not any(p for p in _sample_paths if _Path(p).exists()):
+        if _sample_paths and not any(Path(p).exists() for p in _sample_paths):
             print(f"Warning: --src points to {source_dir} but none of the bundle's")
             print(f"  source files were found there (e.g. {_sample_paths[0]}).")
             print("  Enrichment will skip all concepts due to missing files.")
@@ -514,7 +579,6 @@ Examples:
                 print("Usage: okf domains validate <rule-file>")
                 sys.exit(1)
             from okf.domains.engine import validate_rule_file
-            from pathlib import Path
             errors = validate_rule_file(Path(rest[1]))
             if not errors:
                 print(f"✅ {rest[1]} — valid")
