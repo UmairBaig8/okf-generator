@@ -11,10 +11,10 @@ tags:
 - domain:complex
 - git:branch:main
 - git:repo:okf-generator
-- ecosystem:gradle
 - manifest:build.gradle.kts
 - version:2.10.1
-timestamp: '2026-07-14T18:42:52Z'
+- ecosystem:gradle
+timestamp: '2026-07-15T21:16:12Z'
 title: com.google.code.gson:gson
 type: Dependency
 ---

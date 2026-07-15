@@ -14,7 +14,7 @@ tags:
 - ecosystem:rubygems
 - manifest:Gemfile
 - version:~> 3.0
-timestamp: '2026-07-14T18:42:52Z'
+timestamp: '2026-07-15T21:16:12Z'
 title: rack
 type: Dependency
 ---

@@ -11,10 +11,10 @@ tags:
 - domain:go.mod
 - git:branch:main
 - git:repo:okf-generator
-- manifest:go.mod
 - version:v0.0.0
+- manifest:go.mod
 - ecosystem:go
-timestamp: '2026-07-14T18:42:52Z'
+timestamp: '2026-07-15T21:16:12Z'
 title: github.com/okfgen/go-utils
 type: Dependency
 ---

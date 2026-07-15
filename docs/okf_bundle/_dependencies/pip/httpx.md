@@ -14,7 +14,7 @@ tags:
 - version:>=0.25.0
 - manifest:pyproject.toml
 - ecosystem:pip
-timestamp: '2026-07-14T18:42:52Z'
+timestamp: '2026-07-15T21:16:12Z'
 title: httpx
 type: Dependency
 ---
