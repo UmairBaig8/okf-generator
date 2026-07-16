@@ -238,8 +238,6 @@ html[data-theme="light"] #browse-content {
 #main.wide { padding:0; }
 .tab-content { display:none; min-height:0; }
 #tab-browse.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
-#tab-graph.active { display:flex; flex:1; min-height:0; padding:var(--sp-4); }
-#graph-container { flex:1; min-height:0; border-radius:var(--r-md); overflow:hidden; }
 .fade-in { animation:fadeIn .18s var(--ease); }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
 
@@ -523,7 +521,6 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
     <div id="topbar-spacer"></div>
     <div class="nav-seg">
       <button class="nav-seg-item active" onclick="switchTab('browse',this)">Browse</button>
-      <button class="nav-seg-item" onclick="switchTab('graph',this)">Graph</button>
     </div>
     <div id="topbar-spacer"></div>
     <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="icon-btn" style="text-decoration:none" title="GitHub">
@@ -582,9 +579,6 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
     </div>
   </div>
 </div>
-    <div id="tab-graph" class="tab-content">
-      <div id="graph-container"></div>
-    </div>
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -1401,55 +1395,12 @@ function renderEgoGraph(centerId, concept) {
   });
 }
 
-function renderFullGraph() {
-  if (_fullGraph) { _fullGraph.resize(); _fullGraph.fit(); return; }
-  if (!BUNDLE_DATA || !BUNDLE_DATA.nodes) return;
-  var container = qs('graph-container');
-  if (!container) return;
-  container.innerHTML = '';
-  var tv = getComputedStyle(document.documentElement);
-  var textColor = tv.getPropertyValue('--text').trim();
-  var borderColor = tv.getPropertyValue('--border-strong').trim();
-  var surf2 = tv.getPropertyValue('--surface-2').trim();
-  var bgColor = tv.getPropertyValue('--bg').trim();
-  var elements = [];
-  BUNDLE_DATA.nodes.forEach(function(n) {
-    elements.push({ data: { id: n.concept_id || n.id, label: n.title, type: n.type } });
-  });
-  (BUNDLE_DATA.links || BUNDLE_DATA.edges || []).forEach(function(l) {
-    elements.push({ data: { source: l.source, target: l.target } });
-  });
-  _fullGraph = cytoscape({
-    container: container,
-    elements: elements,
-    style: [
-      { selector: 'node', style: {
-        'label': 'data(label)', 'color': textColor, 'font-size':'10px',
-        'text-valign':'bottom', 'text-margin-y':'6px',
-        'width': 16, 'height': 16, 'border-width':1.5, 'border-color': surf2,
-        'background-color': function(ele) { return TYPE_COLORS[ele.data('type')] || '#888'; },
-      } },
-      { selector: 'edge', style: { 'width':1, 'line-color': borderColor, 'target-arrow-color': borderColor, 'target-arrow-shape':'triangle', 'curve-style':'bezier', 'arrow-scale':0.5, 'opacity':.5 } },
-    ],
-    layout: { name: 'cose', animate: true, animationDuration: 800, nodeRepulsion: 8000, idealEdgeLength: 100, nestingFactor: 0.1, gravity: 0.25 },
-    userZoomingEnabled: true,
-    userPanningEnabled: true,
-  });
-  _fullGraph.on('tap', 'node', function(evt) {
-    var id = evt.target.id();
-    var c = BUNDLE_DATA.conceptMap && BUNDLE_DATA.conceptMap[id] ? BUNDLE_DATA.conceptMap[id] : __nodeById[id];
-    if (c) selectConcept(id);
-  });
-}
-
 // ---- Tab Switching ----
-var _fullGraph = null;
 function switchTab(name, btn) {
   document.querySelectorAll('.nav-seg-item').forEach(function(t) { t.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
   qs('tab-' + name).classList.add('active');
-  if (name === 'graph') renderFullGraph();
 }
 
 // ---- Theme ----
