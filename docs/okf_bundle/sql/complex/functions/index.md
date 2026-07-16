@@ -1,7 +1,0 @@
-# functions
-
-## Functions
-
-- [audit_order_changes](audit_order_changes.md) — Trigger: log all changes to orders to the audit table.
-- [calculate_order_total](calculate_order_total.md) — Calculate the total for an order based on its items.
-- [set_updated_at](set_updated_at.md) — Trigger: automatically update updated_at before any row change.

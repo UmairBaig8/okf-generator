@@ -1,6 +1,0 @@
-# helpers
-
-## Functions
-
-- [format_currency](format_currency.md) — Format a number as currency.
-- [greet](greet.md) — Greet a user by name.

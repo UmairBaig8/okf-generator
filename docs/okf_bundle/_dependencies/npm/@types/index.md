@@ -1,7 +1,0 @@
-# @types
-
-## Dependencies
-
-- [@types/node](node.md) — Dev dependency from typescript/complex/package.json
-- [@types/node](node_1.md) — Dev dependency from typescript/easy/package.json
-- [@types/reflect-metadata](reflect-metadata.md) — Dev dependency from typescript/complex/package.json
