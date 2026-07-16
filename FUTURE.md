@@ -178,7 +178,26 @@ Design mirrors the Crossplane domain pattern: YAML-based manifests → domain cl
 
 ---
 
-## 6. Bundle Versioning + Diff
+## 6. Microservice Architecture Awareness
+
+**Impact:** Very High  
+**Effort:** Ongoing (builds on domain engine + multi-repo linking)
+
+**Problem:** OKF today understands a single codebase. Real architecture lives across microservices — shared libraries, service boundaries, API contracts, event buses, Kafka topics with producers/consumers, cross-service data flows. An agent that only sees one repo at a time can't reason about the system.
+
+**Phased approach:**
+
+| Phase | What | How |
+|-------|------|-----|
+| **Phase 1 — Shared libs** | Already works. Index the common library dir and the linker resolves cross-references. | `okf generate ./shared-lib` |
+| **Phase 2 — Multi-repo bundles** | Point at multiple source roots, get a single merged bundle with cross-service edges. Linker resolves by symbol name. | `okf generate ./service-a ./service-b ./shared-lib` |
+| **Phase 3 — Service boundaries** | New concept type `Service` with detected boundaries (API surface, deps on other services). Inferred from directory structure + manifest deps. | Domain rules |
+| **Phase 4 — Event/message topology** | Kafka, RabbitMQ, SQS — topic/exchange nodes linked to their producers and consumers. Domain rule files parse producer/consumer configs. | `okf/domains/rules/kafka.yaml` |
+| **Phase 5 — Data flow graphs** | Trace data lineage across service boundaries: "Service A writes to this topic → Service B reads it → Service C transforms → DB." Agent navigable. | Graph query on merged bundle |
+
+**Design:** Extends the domain classification engine (`okf/domains/engine.py`). Each phase adds rule files, not core changes. The multi-repo merger reuses the existing linker — just feed it concepts from multiple source roots.
+
+**What it unlocks:** An agent that understands architecture, not just files. "Trace this Kafka topic from producer to consumer," "what services depend on this shared library?", "which endpoints does Service A expose to Service B?" — all answerable without reading a dozen repos.
 
 **Impact:** Medium  
 **Effort:** Low (1–2 days)

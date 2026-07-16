@@ -1,3 +1,46 @@
+------------------------------------------------------------------------------------------------------------------------------------------
+Final
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Hi HN,
+
+After the hundredth time watching an AI coding assistant reread my entire codebase just to find one function signature, I realized we were solving the wrong problem. IDEs and compilers don't rebuild from scratch on every keystroke, so why do AI agents? 
+
+That question eventually became OKF Generator. My hypothesis is that repository understanding should be a reusable artifact, not something every AI agent rebuilds from scratch every session.
+
+Instead of repeatedly feeding raw source files into an LLM, it scans the repository once and builds a structured knowledge bundle. Looking up a function goes from ~14,000 tokens (reading a whole file) to ~140 tokens (one exact-match file). 
+
+The core is deliberately boring and deterministic:
+- Tree-sitter/AST parsing: Supports 18 languages and 17 dependency formats (pip, npm, cargo, go.mod, etc.).
+- The core extraction runs entirely offline: Outputs plain Markdown + YAML frontmatter. No LLMs, vector DBs, or API keys required for base extraction.
+- Symbol lookup is deterministic: It matches parsed symbols rather than relying on semantic similarity.
+- Incremental sync: okf update --watch uses a SHA256 manifest to only re-index changed files in the background as you code.
+
+Two optional layers sit on top if you want them:
+- okf enrich --lsp: Uses local language servers (pyright, gopls, rust-analyzer, etc.) for compiler-accurate call graphs at zero token cost.
+- okf enrich --llm: Adds natural language summaries if you point it at a local or remote model.
+
+Integration:
+- Built-in MCP server to query the bundle directly.
+- One-command setup for agents: okf install claude / cursor / copilot / windsurf
+
+GitHub: https://github.com/UmairBaig8/okf-generator
+Docs & Live Demo: https://umairbaig8.github.io/okf-generator/
+Design notes: https://www.linkedin.com/feed/update/urn:li:activity:7481012073091645440/
+
+Quickstart:
+pip install okf-generator
+okf generate . ./okf_bundle
+okf lookup <ConceptName>
+
+Happy to dig into the tree-sitter integration, why static AST works well for this use case, or anything else!
+
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 title: Show HN: I got tired of AI agents re-reading whole files, so I built this
 
 url: https://umairbaig8.github.io/okf-generator/
