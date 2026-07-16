@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:pip
-- manifest:pyproject.toml
 - version:>=7.4.0
-timestamp: '2026-07-16T08:11:36Z'
+- manifest:pyproject.toml
+timestamp: '2026-07-16T08:14:30Z'
 title: pytest
 type: Dependency
 ---

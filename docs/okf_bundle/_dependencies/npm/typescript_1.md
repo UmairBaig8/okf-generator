@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - manifest:package.json
-- ecosystem:npm
 - version:^5.3.2
-timestamp: '2026-07-16T08:11:36Z'
+- ecosystem:npm
+timestamp: '2026-07-16T08:14:30Z'
 title: typescript
 type: Dependency
 ---
