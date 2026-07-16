@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - ecosystem:pip
-- manifest:requirements.txt
 - version:==2.5.0
-timestamp: '2026-07-16T07:24:59Z'
+- manifest:requirements.txt
+timestamp: '2026-07-16T08:11:36Z'
 title: pydantic
 type: Dependency
 ---

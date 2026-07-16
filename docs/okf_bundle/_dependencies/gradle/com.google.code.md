@@ -12,9 +12,9 @@ tags:
 - git:branch:main
 - git:repo:okf-generator
 - manifest:build.gradle.kts
-- ecosystem:gradle
 - version:2.10.1
-timestamp: '2026-07-16T07:24:59Z'
+- ecosystem:gradle
+timestamp: '2026-07-16T08:11:36Z'
 title: com.google.code.gson:gson
 type: Dependency
 ---
