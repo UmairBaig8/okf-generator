@@ -79,14 +79,9 @@ vim okf/__init__.py         # __version__ = "x.y.z"
 - **docs/index.html (landing page)**: If a prominent feature was added (new language, new manifest format, major UX improvement), add it to the hero section feature list, the feature grid, or the comparison table. The landing page must highlight every major capability. Also update: (a) language counts (search `N languages`), (b) CLI reference table (search `okf ` in table rows), (c) feature cards if adding new capabilities, (d) step command examples and enrich command examples. Version badge auto-fetches from PyPI — no manual version update needed.
 - **TEST.md**: If new CLI commands or flags were added, add corresponding test phases.
 - **RELEASE.md**: If release process changed, update this file.
-- **mkdocs docs-site**: If docs content changed, rebuild and commit the static site:
+- **mkdocs docs-site**: Docs auto-deploy to `gh-pages` branch via CI on push to `main`. No manual rebuild or commit needed. For local preview:
   ```bash
-  # Rebuild mkdocs site (changelog + contributing are symlinks — auto-synced)
-  mkdocs build
-  rm -rf docs/docs-site && cp -r build/docs-site docs/docs-site
-  rm -rf docs/docs-site/docs-site  # remove nested copy from site_url path
-
-  git add docs/ && git commit -m "docs: rebuild docs-site" && git push
+  mkdocs build && open build/docs-site/index.html
   ```
   The docs-site is served at `https://umairbaig8.github.io/okf-generator/docs-site/`.
   `docs/changelog.md` and `docs/development/contributing.md` are **symlinks** to the root files — no manual sync needed.
@@ -114,9 +109,9 @@ ruff check okf/ --select E,F,W --ignore E501  # clean
 okf config                    # sectioned output, no errors
 ```
 
-### 7. Update landing page live demo
+### 7. Verify landing page live demo
 
-If the viz template changed or new features affect the demo:
+Viz and docs auto-deploy to `gh-pages` via CI. If the viz template changed or new features affect the demo, verify locally:
 ```bash
 rm -rf _build && mkdir _build
 okf generate tests/fixtures/realworld _build/okf_bundle
@@ -124,7 +119,6 @@ okf visualize _build/okf_bundle _build/viz.html
 # Verify View Source button and code embedding
 grep -c "View Source" _build/viz.html    # >= 1
 grep -c '"code":"' _build/viz.html       # > 0
-cp _build/viz.html docs/viz.html
 ```
 
 ### 8. Commit and tag
@@ -148,6 +142,7 @@ The `publish.yml` workflow automatically:
 | Full test report | Runs `tests/test.sh`, attaches `TEST_REPORT.html` + `TEST_REPORT.md` to release |
 | Docker image | `docker-publish.yml` builds and pushes `ghcr.io/umairbaig8/okf-generator/okf-generator` tagged with semver + `latest` |
 | GitHub Release | Creates release from CHANGELOG section, includes test report artifacts |
+| Docs deploy | `deploy-docs.yml` builds MkDocs + bundle + viz, deploys to `gh-pages` branch; tag pushes also run `mike deploy` for versioned docs |
 
 ### 10. Verify — smoke check all endpoints
 

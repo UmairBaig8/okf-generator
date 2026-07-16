@@ -1,0 +1,68 @@
+name: Deploy docs site
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install deps
+        run: pip install -e ".[dev]"
+
+      - name: Generate bundle
+        run: okf generate tests/fixtures/realworld /tmp/okf_bundle
+
+      - name: Generate viz
+        run: okf visualize /tmp/okf_bundle /tmp/viz.html
+
+      - name: Build mkdocs site
+        run: mkdocs build
+
+      - name: Assemble deploy directory
+        run: |
+          DEPLOY_DIR=/tmp/deploy
+          mkdir -p $DEPLOY_DIR
+          cp -r build/docs-site/* $DEPLOY_DIR/
+          cp docs/index.html $DEPLOY_DIR/index.html
+          cp /tmp/viz.html $DEPLOY_DIR/viz.html
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/deploy
+          publish_branch: gh-pages
+          force_orphan: true
+
+      - name: Mike deploy (versioned, tag pushes only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config user.name "okf-bot"
+          git config user.email "bot@okf.dev"
+          VERSION="${GITHUB_REF_NAME#v}"
+          mike deploy --push --update-aliases "$VERSION" latest
+          mike set-default --push latest

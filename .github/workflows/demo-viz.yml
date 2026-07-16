@@ -1,4 +1,4 @@
-name: Update Live Demo viz.html
+name: Validate bundle + viz
 
 on:
   push:
@@ -12,10 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,45 +22,27 @@ jobs:
           python-version: '3.12'
           cache: pip
 
-      - name: Install Rust (for tree-sitter-kotlin source build)
-        run: rustup show || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - uses: dtolnay/rust-toolchain@stable
 
-      - name: Install okf + deps
-        run: |
-          pip install -e ".[dev]"
-          python -m pytest tests/ -q --tb=short
+      - name: Install deps
+        run: pip install -e ".[dev]"
 
       - name: Generate bundle
         run: okf generate tests/fixtures/realworld /tmp/okf_bundle
 
-      - name: Generate viz (from repo root so source paths resolve)
-        run: okf visualize /tmp/okf_bundle /tmp/viz.html
-
-      - name: Generate bundle to docs/okf_bundle/
+      - name: Verify bundle content
         run: |
-          rm -rf docs/okf_bundle
-          mkdir -p docs/okf_bundle
-          okf generate tests/fixtures/realworld docs/okf_bundle 2>&1
-          echo "Bundle concepts: $(find docs/okf_bundle -name '*.md' | wc -l)"
-          echo "Bundle size: $(du -sh docs/okf_bundle | cut -f1)"
-
-      - name: Verify bundle has content
-        run: |
-          CONCEPTS=$(find docs/okf_bundle -name '*.md' | wc -l)
+          CONCEPTS=$(find /tmp/okf_bundle -name '*.md' | wc -l)
           if [ "$CONCEPTS" -lt 10 ]; then
             echo "ERROR: Bundle only has $CONCEPTS concept files (expected >= 10)"
             exit 1
           fi
           echo "Bundle verified: $CONCEPTS concept files"
 
-      - name: Copy viz to docs/
-        run: |
-          cp /tmp/viz.html docs/viz.html
-          echo "viz.html size: $(wc -c < docs/viz.html) bytes"
+      - name: Generate viz
+        run: okf visualize /tmp/okf_bundle /tmp/viz.html
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update docs/viz.html + docs/okf_bundle/ [skip ci]"
-          file_pattern: docs/viz.html docs/okf_bundle/
-          commit_user_name: okf-bot
-          commit_user_email: bot@okf.dev
+      - name: Verify viz content
+        run: |
+          grep -c "View Source" /tmp/viz.html && echo "viz has View Source button"
+          grep -c '"code":"' /tmp/viz.html && echo "viz has code embeddings"
