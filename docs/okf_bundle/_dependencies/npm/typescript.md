@@ -14,7 +14,7 @@ tags:
 - version:^5.3.2
 - manifest:package.json
 - ecosystem:npm
-timestamp: '2026-07-15T21:16:12Z'
+timestamp: '2026-07-16T07:24:59Z'
 title: typescript
 type: Dependency
 ---
