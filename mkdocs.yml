@@ -40,10 +40,13 @@ plugins:
   - search
   - mike:
       version_selector: true
+      canonical_version: latest
+      alias_type: symlink
 
 extra:
   version:
     provider: mike
+    default: latest
   announce: 🚀 v0.1.41 shipped — Plugin system, 11 MCP tools, okf mcp --install, LLM-powered Q&A
   social:
     - icon: fontawesome/brands/github
@@ -54,6 +57,8 @@ extra:
       name: PyPI
   generator: false
 
+extra_css:
+  - stylesheets/extra.css
 
 copyright: Copyright &copy; 2026 Umair Baig — MIT License
 
