@@ -238,6 +238,7 @@ html[data-theme="light"] #browse-content {
 #main.wide { padding:0; }
 .tab-content { display:none; min-height:0; }
 #tab-browse.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
+#tab-graph.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
 .fade-in { animation:fadeIn .18s var(--ease); }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
 
@@ -521,6 +522,7 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
     <div id="topbar-spacer"></div>
     <div class="nav-seg">
       <button class="nav-seg-item active" onclick="switchTab('browse',this)">Browse</button>
+      <button class="nav-seg-item" onclick="switchTab('graph',this)">Explore</button>
     </div>
     <div id="topbar-spacer"></div>
     <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="icon-btn" style="text-decoration:none" title="GitHub">
@@ -576,6 +578,9 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
           </div>
         </div>
       </div>
+    </div>
+    <div id="tab-graph" class="tab-content">
+      <div id="graph-container"></div>
     </div>
   </div>
 </div>
@@ -1401,6 +1406,11 @@ function switchTab(name, btn) {
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
   qs('tab-' + name).classList.add('active');
+  if (name === 'graph') {
+    qs('main').classList.add('wide');
+  } else {
+    qs('main').classList.remove('wide');
+  }
 }
 
 // ---- Theme ----
