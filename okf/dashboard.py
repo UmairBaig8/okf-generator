@@ -207,6 +207,8 @@ def build_app(bundle_dir: Path):
         html = TEMPLATE_PATH.read_text(encoding="utf-8")
         html = html.replace("{DYNAMIC_FLAG}", "true")
         html = html.replace("{BUNDLE_DATA}", "null")
+        html = html.replace("{BG_PATH}", "bg-dark.png")
+        html = html.replace("{BG_PATH_LIGHT}", "bg-light.png")
         return HTMLResponse(html)
 
     return app
