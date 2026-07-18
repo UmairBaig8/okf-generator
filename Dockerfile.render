@@ -10,7 +10,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir "okf-generator[dashboard]"
 
 # Generate a knowledge bundle from the realworld fixture (rich cross-references for graph demo)
-RUN echo "Build date: $(date)" && okf generate tests/fixtures/realworld okf_bundle
+RUN okf generate tests/fixtures/realworld okf_bundle && echo "Bundle generated $(wc -l < okf_bundle/SUMMARY.md) concepts"
 
 EXPOSE 8000
 
