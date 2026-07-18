@@ -673,10 +673,13 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
          <div id="cosmos-toolbar">
            <div class="search-box">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-             <input id="cosmos-search" type="text" placeholder="Search concepts…" style="width:160px">
+             <input id="cosmos-search" type="text" placeholder="Search concepts…" style="width:140px">
            </div>
            <div class="toolbar-sep"></div>
-           <div id="chip-row"></div>
+           <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+             <div id="chip-row"></div>
+             <div id="bundle-row" style="display:none;gap:4px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
+           </div>
          </div>
 
         <div id="cosmos-legend">
@@ -1554,6 +1557,7 @@ var _cosmosClickedIdx = null;
 var _cosmosHoverIdx = null;
 var _cosmosPtrX = 0, _cosmosPtrY = 0;
 var _cosmosActiveTypes = null;
+var _cosmosActiveBundles = null;
 var _cosmosMatchSet = null;
 var _cosmosNodes = [];
 var _cosmosEdges = [];
@@ -1685,6 +1689,15 @@ function _canvas2DInit() {
     }
     return best;
   }
+  function _nodeBundle(n) { var p = (n.id || n.concept_id || '').split('/'); return p[0] || 'root'; }
+  function _nodeVisible(ni) {
+    var n = nodes[ni];
+    if (!n) return false;
+    if (_cosmosActiveTypes && !_cosmosActiveTypes.has(n.type)) return false;
+    if (_cosmosActiveBundles && !_cosmosActiveBundles.has(_nodeBundle(n))) return false;
+    if (_cosmosMatchSet !== null && !_cosmosMatchSet.has(ni)) return false;
+    return true;
+  }
   function draw() {
     ctx.clearRect(0, 0, _W, _H);
     ctx.save(); ctx.translate(view.x, view.y); ctx.scale(view.k, view.k);
@@ -1711,14 +1724,14 @@ function _canvas2DInit() {
       var ti = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
       if (si < 0 || ti < 0) continue;
       var isHi = focusIdx >= 0 && (si === focusIdx || ti === focusIdx);
+      var edgeOk = _nodeVisible(si) && _nodeVisible(ti);
       if (focusIdx >= 0) {
-        var sOk = _cosmosActiveTypes && _cosmosActiveTypes.has(nodes[si].type);
-        var tOk = _cosmosActiveTypes && _cosmosActiveTypes.has(nodes[ti].type);
-        var sSearch = _cosmosMatchSet === null || _cosmosMatchSet.has(si);
-        var tSearch = _cosmosMatchSet === null || _cosmosMatchSet.has(ti);
-        var edgeFiltered = !(sOk && tOk && sSearch && tSearch);
-        if (edgeFiltered && !isHi) continue;
+        if (!edgeOk && !isHi) continue;
         if (isHi) hiEdges.push({ ei: ei, si: si, ti: ti, s: ps[si], t: ps[ti], l: l });
+      } else if (!edgeOk) {
+        ctx.globalAlpha = 0.08; ctx.beginPath(); ctx.moveTo(ps[si].x, ps[si].y); ctx.lineTo(ps[ti].x, ps[ti].y);
+        ctx.strokeStyle = textMuted; ctx.lineWidth = 0.6 / view.k; ctx.stroke(); ctx.globalAlpha = 1;
+        continue;
       }
       ctx.beginPath(); ctx.moveTo(ps[si].x, ps[si].y); ctx.lineTo(ps[ti].x, ps[ti].y);
       ctx.globalAlpha = isHi ? 1 : (focusIdx >= 0 ? 0.12 : 1);
@@ -1761,15 +1774,13 @@ function _canvas2DInit() {
       var n = nodes[ni]; var p = ps[ni];
       if (!n) continue;
       var col = TYPE_COLORS[n.type] || '#888';
+      var vis = _nodeVisible(ni);
       if (focusIdx >= 0) {
-        var typeOk = _cosmosActiveTypes && _cosmosActiveTypes.has(n.type);
-        var searchOk = _cosmosMatchSet === null || _cosmosMatchSet.has(ni);
-        var filtered = !typeOk || !searchOk;
-        if (filtered) continue;
+        if (!vis && !neighSet.has(ni)) continue;
         var dim = !neighSet.has(ni);
         ctx.globalAlpha = dim ? 0.2 : 1;
       } else {
-        ctx.globalAlpha = 1;
+        ctx.globalAlpha = vis ? 1 : 0.15;
       }
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7);
       ctx.fillStyle = col; ctx.fill();
@@ -2088,6 +2099,26 @@ async function loadCosmosExplore() {
     };
     chipRow.appendChild(chip);
   });
+
+  // Bundle chips
+  var bundleNames = {};
+  _cosmosNodes.forEach(function(n) { var b = (n.id || n.concept_id || '').split('/')[0] || 'root'; bundleNames[b] = (bundleNames[b] || 0) + 1; });
+  var bundleKeys = Object.keys(bundleNames).sort();
+  _cosmosActiveBundles = new Set(bundleKeys);
+  if (bundleKeys.length > 1) {
+    var bundleRow = qs('bundle-row');
+    bundleRow.style.display = 'flex';
+    bundleKeys.forEach(function(b) {
+      var chip = document.createElement('div');
+      chip.className = 'filter-chip active';
+      chip.innerHTML = b + '<span style="font-size:9px;color:var(--text-3);margin-left:3px">' + bundleNames[b] + '</span>';
+      chip.onclick = function() {
+        if (_cosmosActiveBundles.has(b)) { _cosmosActiveBundles.delete(b); chip.classList.remove('active'); }
+        else { _cosmosActiveBundles.add(b); chip.classList.add('active'); }
+      };
+      bundleRow.appendChild(chip);
+    });
+  }
 
   var labelRoot = qs('cluster-labels');
   labelRoot.innerHTML = '';
