@@ -152,54 +152,57 @@ def build_app(bundle_dir: Path):
         }
 
     @app.get("/api/graph")
-    def graph(max_nodes: int = Query(120)):
-        ref_count: dict[str, int] = {}
+    def graph(max_nodes: int = Query(200)):
+
+        # All concepts (up to max_nodes), prefer non-Dependency
+        scored = [(c["type"] != "Dependency", sum(1 for t in c.get("tags", []) if t.startswith("lang:")), c["concept_id"]) for c in concepts]
+        ranked = [c for _, c in sorted(zip(scored, concepts), key=lambda x: (-x[0][0], -x[0][1], x[0][2]))]
+        selected = {c["concept_id"] for c in ranked[:max_nodes]}
+
+        nodes = []
         for c in concepts:
-            for line in c.get("sections", {}).get("related", "").splitlines():
-                m = re.search(r"\]\(/(.+?)\.md\)", line)
-                if m:
-                    ref_count[m.group(1)] = ref_count.get(m.group(1), 0) + 1
-        top_ids: set[str] = {
-            t[0] for t in sorted(ref_count.items(), key=lambda x: -x[1])[:max_nodes]
-        }
-        for c in concepts:
-            if c["type"] == "Dependency" and c["concept_id"] not in top_ids:
-                ub = [
-                    m.group(1)
-                    for line in c.get("sections", {}).get("used by", "").splitlines()
-                    if (m := re.search(r"\]\(/(.+?)\.md\)", line))
-                ]
-                if ub and len(top_ids) < max_nodes:
-                    top_ids.add(c["concept_id"])
-                    top_ids.update(ub[:5])
-        # If no relationships found, fall back to showing all non-Dependency concepts
-        if not top_ids:
-            for c in concepts:
-                if c["type"] != "Dependency" and len(top_ids) < max_nodes:
-                    top_ids.add(c["concept_id"])
-        nodes, edges = [], []
-        for c in concepts:
-            if c["concept_id"] not in top_ids:
+            if c["concept_id"] not in selected:
                 continue
-            nodes.append(
-                {
-                    "id": c["concept_id"],
-                    "label": c["title"],
-                    "title": f"{c['type']}: {c['title']}",
-                    "group": c["type"],
-                }
-            )
-            for sec_key in ("related", "calls"):
-                for line in c.get("sections", {}).get(sec_key, "").splitlines():
+            nodes.append({
+                "id": c["concept_id"],
+                "label": c["title"],
+                "title": f"{c['type']}: {c['title']}",
+                "group": c["type"],
+            })
+
+        edges = []
+        for c in concepts:
+            cid = c["concept_id"]
+            if cid not in selected:
+                continue
+            secs = c.get("sections", {})
+            # related / calls / called_by
+            for rel_type in ("related", "calls"):
+                for line in secs.get(rel_type, "").splitlines():
                     m = re.search(r"\]\(/(.+?)\.md\)", line)
-                    if m and m.group(1) in top_ids:
-                        edges.append(
-                            {"from": c["concept_id"], "to": m.group(1), "type": sec_key}
-                        )
-            for line in c.get("sections", {}).get("used by", "").splitlines():
+                    if m and m.group(1) in selected:
+                        edges.append({"from": cid, "to": m.group(1), "type": rel_type})
+            for line in secs.get("called by", "").splitlines():
                 m = re.search(r"\]\(/(.+?)\.md\)", line)
-                if m and m.group(1) in top_ids:
-                    edges.append({"from": m.group(1), "to": c["concept_id"], "type": "uses"})
+                if m and m.group(1) in selected:
+                    edges.append({"from": m.group(1), "to": cid, "type": "called_by"})
+            for line in secs.get("used by", "").splitlines():
+                m = re.search(r"\]\(/(.+?)\.md\)", line)
+                if m and m.group(1) in selected:
+                    edges.append({"from": m.group(1), "to": cid, "type": "uses"})
+            # relationships table
+            rel_table = secs.get("relationships", "")
+            if rel_table:
+                for line in rel_table.splitlines():
+                    if not line.startswith("|"):
+                        continue
+                    cells = [c.strip() for c in line.split("|")[1:-1]]
+                    if len(cells) >= 2:
+                        rt = cells[0].lower()
+                        m = re.search(r"\(/([^)]+)\.md\)", cells[1])
+                        if m and m.group(1) in selected:
+                            edges.append({"from": cid, "to": m.group(1), "type": rt})
+
         return {"nodes": nodes, "edges": edges, "total": len(concepts), "shown": len(nodes)}
 
     @app.get("/")
