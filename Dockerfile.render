@@ -9,8 +9,8 @@ COPY . /app
 WORKDIR /app
 RUN pip install --no-cache-dir "okf-generator[dashboard]"
 
-# Generate a knowledge bundle from the okf-generator source itself (serves as live demo)
-RUN okf generate okf/ okf_bundle
+# Generate a knowledge bundle from the realworld fixture (rich cross-references for graph demo)
+RUN okf generate tests/fixtures/realworld okf_bundle
 
 EXPOSE 8000
 
