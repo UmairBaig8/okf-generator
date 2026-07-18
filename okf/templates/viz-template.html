@@ -1887,10 +1887,23 @@ function _canvas2DUpdateClusterLabels(ps, view) {
 
 // ---- Graph Sidebar ----
 var _gsIdx = null;
-function graphSidebarOpen(idx) {
+async function graphSidebarOpen(idx) {
   _gsIdx = idx;
   var n = _cosmosNodes[idx];
   if (!n) return;
+  // In dynamic mode, fetch full concept details from API
+  if (DYNAMIC && (!n.description || !n.sections)) {
+    try {
+      var full = await getConcept(n.id || n.concept_id);
+      if (full) {
+        n.description = full.description || n.description;
+        n.sections = full.sections || {};
+        n.code = full.code || n.code;
+        n.resource = full.resource || n.resource;
+        n.tags = full.tags || n.tags || [];
+      }
+    } catch(e) {}
+  }
   // Hide default
   var def = qs('gs-details-default');
   if (def) def.style.display = 'none';
@@ -2015,8 +2028,29 @@ async function loadCosmosExplore() {
   _cosmosLoading = true;
   var loadingEl = qs('cosmos-loading');
 
-  var deg = _cosmosInitData();
-  _cosmosN = _cosmosNodes.length;
+  // Dynamic mode: fetch graph from API
+  if (DYNAMIC) {
+    try {
+      var gd = await api('/api/graph?max_nodes=500');
+      _cosmosNodes = (gd.nodes || []).map(function(n) { return { id: n.id, title: n.label || n.title, type: n.group || n.type, resource: n.resource || '', tags: n.tags || [] }; });
+      _cosmosEdges = (gd.edges || []).map(function(e) { return { source: e.from || e.source, target: e.to || e.target, type: e.type || 'related' }; });
+    } catch(e) {
+      _cosmosNodes = []; _cosmosEdges = [];
+    }
+    _cosmosN = _cosmosNodes.length;
+    // Build domain map
+    var doms = {};
+    _cosmosNodes.forEach(function(n) {
+      var parts = (n.id || '').split('/');
+      var d = parts[0] || 'root';
+      if (!doms[d]) doms[d] = [];
+      doms[d].push(n);
+    });
+    _cosmosDomainNames = Object.keys(doms).sort();
+  } else {
+    var deg = _cosmosInitData();
+    _cosmosN = _cosmosNodes.length;
+  }
 
   _cosmosPointColors = new Float32Array(_cosmosN * 4);
   _cosmosNodes.forEach(function(n, i) {
