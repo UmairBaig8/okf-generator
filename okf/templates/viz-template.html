@@ -330,10 +330,36 @@ html[data-theme="light"] #detail-header {
 .meta-tag-vis { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
 
 /* ---- Cosmos Explore Tab ---- */
-#cosmos-stage { position:relative; height:100%; min-height:0; flex:1; background:var(--bg); }
-#cosmos-container { position:absolute; inset:0; cursor:grab; }
-#cosmos-container canvas { display:block; }
+#graph-main { display:flex; flex:1; min-height:0; gap:var(--sp-3); padding:var(--sp-3); }
+#cosmos-stage { position:relative; flex:0 0 70%; border-radius:var(--r-xl); overflow:hidden; background:var(--bg); border:1px solid rgba(255,255,255,.07); }
+#cosmos-canvas { position:absolute; inset:0; z-index:9; pointer-events:none; width:100%; height:100%; }
 #cluster-labels { position:absolute; inset:0; z-index:15; pointer-events:none; }
+#graph-sidebar { flex:0 0 calc(30% - var(--sp-3)); display:flex; flex-direction:column; background:rgba(19,19,25,.72); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,.07); border-radius:var(--r-xl); box-shadow:var(--shadow-md); overflow:hidden; }
+html[data-theme="light"] #graph-sidebar { background:rgba(255,255,255,.1); border-color:rgba(0,0,0,.08); }
+#gs-header { display:flex; flex-direction:column; justify-content:start; padding:var(--sp-4) var(--sp-4) var(--sp-3); border-bottom:1px solid var(--border); flex:0 0 auto; gap:var(--sp-1); }
+#gs-header .top { display:flex; align-items:center; gap:var(--sp-2); flex-wrap:wrap; }
+#gs-title { font-size:13px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#gs-tabs { display:flex; flex:0 0 auto; border-bottom:1px solid var(--border); padding:0 var(--sp-2); gap:0; }
+.gs-tab { flex:1; background:transparent; border:none; color:var(--text-3); font-size:12px; font-weight:600; padding:var(--sp-2) var(--sp-2); cursor:pointer; transition:all .12s var(--ease); font-family:inherit; border-bottom:2px solid transparent; }
+.gs-tab:hover { color:var(--text-2); }
+.gs-tab.active { color:var(--accent-strong); border-bottom-color:var(--accent); }
+#gs-body { flex:1; min-height:0; overflow:auto; }
+.gs-pane { display:none; padding:var(--sp-4); }
+.gs-pane.active { display:block; }
+.gs-pane .gs-section { margin-bottom:var(--sp-3); padding-bottom:var(--sp-3); border-bottom:1px solid var(--border); }
+.gs-pane .gs-section:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.gs-pane .gs-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:var(--sp-2); }
+.gs-pane .gs-desc { font-size:13px; color:var(--text-2); line-height:1.6; }
+.gs-pane .gs-meta { display:flex; flex-wrap:wrap; gap:4px; }
+.gs-pane .gs-tag { font-size:10px; font-weight:600; padding:2px 8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-2); }
+.gs-pane .gs-chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:var(--r-md); font-size:11px; font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,.03); border:1px solid var(--border); color:var(--text); cursor:pointer; transition:all .15s var(--ease); margin:0 4px 4px 0; }
+.gs-pane .gs-chip:hover { border-color:var(--accent); background:var(--accent-soft); color:var(--accent-strong); }
+.gs-pane .gs-chip .dot { width:5px; height:5px; border-radius:50%; flex:none; }
+.gs-pane .gs-code { font-size:12px; line-height:1.6; white-space:pre-wrap; font-family:'JetBrains Mono',monospace; color:var(--text-2); background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--sp-3); overflow-x:auto; }
+.gs-empty { color:var(--text-3); font-size:12px; padding:var(--sp-6); text-align:center; }
+.gs-type-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:99px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+.gs-type-badge .dot { width:5px; height:5px; border-radius:50%; }
+
 .cluster-label {
   position:absolute; transform:translate(-50%,-100%); font-size:11px; font-weight:700;
   color:rgba(255,255,255,.55); text-transform:uppercase; letter-spacing:.08em;
@@ -344,31 +370,32 @@ html[data-theme="light"] #detail-header {
 #cosmos-loading.error .spinner { display:none; }
 #cosmos-loading.error .lbl { color:#f87171; }
 #cosmos-toolbar {
-  position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:20;
-  display:flex; align-items:center; gap:8px; padding:8px; border-radius:14px;
+  position:absolute; top:10px; left:50%; transform:translateX(-42%); z-index:20;
+  display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:14px;
   background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md);   max-width:min(96vw,960px);
+  border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-md); width:84%;
 }
 html[data-theme="light"] #cosmos-toolbar { background:rgba(255,255,255,.75); border-color:rgba(0,0,0,.08); }
-#cosmos-toolbar .search-box { position:relative; }
+#cosmos-toolbar .search-box { position:relative; flex:0 0 auto; }
 #cosmos-toolbar .search-box svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
 #cosmos-search {
-  width:240px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
-  padding:8px 10px 8px 30px; color:var(--text); font-size:13px; outline:none;
-  transition:border-color .15s var(--ease),width .2s var(--ease);
+  width:180px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:6px 8px 6px 28px; color:var(--text); font-size:12px; outline:none;
+  transition:border-color .15s var(--ease);
 }
-#cosmos-search:focus { border-color:var(--accent); width:300px; }
+#cosmos-search:focus { border-color:var(--accent); }
 #cosmos-search::placeholder { color:var(--text-3); }
-#chip-row { display:flex; gap:6px; flex-wrap:wrap; max-width:460px; }
+#chip-row { display:flex; gap:4px; flex:1; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+#chip-row::-webkit-scrollbar { display:none; }
 .filter-chip {
-  font-size:11px; font-weight:600; padding:6px 12px; border-radius:99px; cursor:pointer; user-select:none;
+  font-size:10px; font-weight:600; padding:4px 10px; border-radius:99px; cursor:pointer; user-select:none;
   background:var(--surface-2); border:1px solid var(--border); color:var(--text-2);
-  transition:all .15s var(--ease); display:flex; align-items:center; gap:5px; white-space:nowrap;
+  transition:all .12s var(--ease); display:flex; align-items:center; gap:4px; white-space:nowrap; flex:0 0 auto;
 }
-.filter-chip .dot { width:6px; height:6px; border-radius:50%; }
+.filter-chip .dot { width:5px; height:5px; border-radius:50%; }
 .filter-chip:hover { border-color:var(--border-strong); color:var(--text); }
 .filter-chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); }
-.toolbar-sep { width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
+.toolbar-sep { width:1px; align-self:stretch; background:var(--border); margin:2px 0; flex:0 0 auto; }
 #status-pill {
   position:absolute; top:16px; left:16px; z-index:20; font-size:11px; color:var(--text-3);
   background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
@@ -394,8 +421,12 @@ html[data-theme="light"] #cosmos-legend { background:rgba(255,255,255,.75); bord
 #cosmos-legend-head span.t { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); }
 #cosmos-legend-head svg { width:12px; height:12px; color:var(--text-3); transition:transform .15s var(--ease); }
 #cosmos-legend.collapsed #cosmos-legend-body { display:none; }
+#cosmos-legend.collapsed #cosmos-legend-body { display:none; }
 #cosmos-legend.collapsed #cosmos-legend-head svg { transform:rotate(-90deg); }
-#cosmos-legend-body { padding:0 12px 12px; display:flex; flex-direction:column; gap:6px; }
+#cosmos-legend-body { padding:0 12px 12px; display:flex; flex-direction:column; gap:4px; }
+.legend-item { display:flex; align-items:center; gap:8px; padding:4px 6px; border-radius:6px; cursor:default; font-size:11px; font-weight:500; color:var(--text-2); transition:background .12s var(--ease); }
+.legend-item .dot { width:8px; height:8px; border-radius:50%; flex:none; }
+.legend-item .count { color:var(--text-3); margin-left:auto; font-size:10px; font-weight:600; }
 #zoomctl {
   position:absolute; bottom:16px; right:16px; z-index:20; display:flex; flex-direction:column; gap:2px;
   border-radius:12px; background:rgba(19,19,25,.72); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
@@ -409,55 +440,10 @@ html[data-theme="light"] #zoomctl { background:rgba(255,255,255,.75); border-col
 #zoomctl button:hover { background:var(--surface-2); color:var(--text); }
 #zoomctl button:not(:last-child) { border-bottom:1px solid var(--border); }
 #zoomctl svg { width:16px; height:16px; }
-#cosmos-info-card {
-  position:absolute; z-index:30; width:280px; border-radius:14px;
-  background:rgba(19,19,25,.9); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow-lg);
-  opacity:0; transform:scale(.96) translateY(4px); pointer-events:none;
-  transition:opacity .15s var(--ease),transform .15s var(--ease);
-}
-#cosmos-info-card.show { opacity:1; transform:none; pointer-events:auto; }
-#cosmos-info-card-head { display:flex; align-items:center; justify-content:space-between; padding:12px 12px 0; }
-#ic-close { width:22px; height:22px; border-radius:6px; background:transparent; border:none; color:var(--text-3); cursor:pointer; display:flex; align-items:center; justify-content:center; }
-#ic-close:hover { background:var(--surface-2); color:var(--text); }
-#ic-close svg { width:13px; height:13px; }
-#cosmos-info-card-body { padding:8px 14px 4px; }
-#cosmos-info-card-body h4 { font-size:15px; font-weight:700; letter-spacing:-.01em; margin-bottom:4px; color:var(--text); }
-#cosmos-info-card-body p { font-size:12px; color:var(--text-2); line-height:1.5; margin-bottom:8px; }
-#ic-path { font-size:10.5px; color:var(--text-3); font-family:'JetBrains Mono',monospace; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:4px 8px; margin-bottom:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-#ic-rels { display:flex; gap:6px; margin-bottom:10px; }
-#cosmos-mode-select {
-  font-size:12px; font-weight:600; padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none;
-  background:var(--surface-2); border:1px solid var(--border); color:var(--text-2);
-  font-family:inherit; outline:none; min-width:100px;
-  transition:border-color .15s var(--ease);
-}
-#cosmos-mode-select:focus { border-color:var(--accent); }
-#cosmos-mode-select option { background:var(--surface); color:var(--text); }
-.rel-stat { flex:1; text-align:center; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:6px 4px; }
-.rel-stat .n { font-size:14px; font-weight:700; color:var(--accent-strong); }
-.rel-stat .l { font-size:9.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em; margin-top:1px; }
-#cosmos-info-card-footer { padding:0 14px 14px; }
-.detail-btn {
-  width:100%; padding:9px; border-radius:8px; border:1px solid var(--accent); background:var(--accent-soft);
-  color:var(--accent-strong); font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s var(--ease);
-  display:flex; align-items:center; justify-content:center; gap:6px;
-}
 .detail-btn:hover { background:var(--accent); color:#fff; }
 .detail-btn svg { width:13px; height:13px; }
-#cosmos-labels { position:absolute; inset:0; z-index:12; pointer-events:none; }
-.cosmos-label {
-  position:absolute; font-size:9px; font-weight:500; color:rgba(255,255,255,.7);
-  text-shadow:0 1px 4px rgba(0,0,0,.9); white-space:nowrap; transform:translate(-50%,-14px);
-  pointer-events:none; transition:opacity .2s var(--ease);
-}
-#cosmos-toast {
-  position:absolute; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); z-index:60;
-  background:var(--surface); border:1px solid var(--border-strong); color:var(--text); font-size:12.5px;
-  padding:10px 16px; border-radius:10px; box-shadow:var(--shadow-lg); opacity:0; transition:all .25s var(--ease); pointer-events:none;
-}
-#cosmos-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
+/* ---- Parse Tree ---- */
 #code-split-parse .parse-node {
   padding:2px 0 2px 20px; cursor:default; white-space:nowrap;
   border-left:1px solid var(--border); margin-left:10px;
@@ -611,8 +597,8 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
     </div>
     <div id="topbar-spacer"></div>
     <div class="nav-seg">
-      <button class="nav-seg-item active" onclick="switchTab('browse',this)">Browse</button>
-      <button class="nav-seg-item" onclick="switchTab('graph',this)">Explore</button>
+      <button class="nav-seg-item" onclick="switchTab('browse',this)">Browse</button>
+      <button class="nav-seg-item active" onclick="switchTab('graph',this)">Explore</button>
     </div>
     <div id="topbar-spacer"></div>
     <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="icon-btn" style="text-decoration:none" title="GitHub">
@@ -625,7 +611,7 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
 </div>
 <div id="layout">
   <div id="main">
-    <div id="tab-browse" class="tab-content active">
+    <div id="tab-browse" class="tab-content">
       <div id="browse-layout">
         <div id="sidebar">
           <div class="field-wrap">
@@ -669,36 +655,29 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
         </div>
       </div>
     </div>
-    <div id="tab-graph" class="tab-content">
+    <div id="tab-graph" class="tab-content active">
+      <div id="graph-main">
       <div id="cosmos-stage">
-        <div id="cosmos-container"></div>
+        <canvas id="cosmos-canvas"></canvas>
         <div id="cluster-labels"></div>
-        <div id="cosmos-labels"></div>
 
         <div id="cosmos-loading">
           <div class="spinner"></div>
-          <div class="lbl" id="cosmos-loading-lbl">Loading cosmos graph…</div>
+          <div class="lbl" id="cosmos-loading-lbl">Loading graph…</div>
         </div>
 
         <div id="hover-tag"></div>
 
         <div id="status-pill"><span class="n" id="status-n">0</span><span> concepts </span><span style="opacity:.4">·</span><span> </span><span class="n" id="status-e">0</span><span> edges</span></div>
 
-        <div id="cosmos-toolbar">
-          <select id="cosmos-mode-select" onchange="cosmosSetMode(this.value)">
-            <option value="explore">✦ Explore</option>
-            <option value="paths">◈ Paths</option>
-            <option value="labels">◎ Labels</option>
-            <option value="focus">⊙ Focus</option>
-          </select>
-          <div class="toolbar-sep"></div>
-          <div class="search-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
-            <input id="cosmos-search" type="text" placeholder="Search concepts…" style="width:180px">
-          </div>
-          <div class="toolbar-sep"></div>
-          <div id="chip-row"></div>
-        </div>
+         <div id="cosmos-toolbar">
+           <div class="search-box">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+             <input id="cosmos-search" type="text" placeholder="Search concepts…" style="width:160px">
+           </div>
+           <div class="toolbar-sep"></div>
+           <div id="chip-row"></div>
+         </div>
 
         <div id="cosmos-legend">
           <div id="cosmos-legend-head" onclick="document.getElementById('cosmos-legend').classList.toggle('collapsed')">
@@ -712,33 +691,34 @@ html[data-theme="light"] .detail-tab:hover { background:rgba(0,0,0,.04); }
           <button onclick="cosmosZoom(1.4)" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
           <button onclick="cosmosZoom(0.71)" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
           <button onclick="cosmosReset()" title="Fit to screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-          <button id="cosmos-pause-btn" onclick="cosmosTogglePhysics()" title="Pause/resume physics animation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
         </div>
-
-        <div id="cosmos-info-card">
-          <div id="cosmos-info-card-head">
-            <span class="type-badge" id="ic-badge"></span>
-            <button id="ic-close" onclick="cosmosCloseCard()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-          </div>
-          <div id="cosmos-info-card-body">
-            <h4 id="ic-title"></h4>
-            <p id="ic-desc"></p>
-            <div id="ic-path" class="mono"></div>
-            <div id="ic-rels">
-              <div class="rel-stat"><div class="n" id="ic-calls">0</div><div class="l">Calls</div></div>
-              <div class="rel-stat"><div class="n" id="ic-calledby">0</div><div class="l">Called by</div></div>
-              <div class="rel-stat"><div class="n" id="ic-related">0</div><div class="l">Related</div></div>
+      </div>
+      <div id="graph-sidebar">
+          <div id="gs-header">
+            <div class="top">
+              <span id="gs-header-badge" style="display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;display:none"></span>
+              <span id="gs-title">Concept Details</span>
             </div>
+            <div id="gs-header-desc" style="display:none;font-size:12px;color:var(--text-2);line-height:1.5;margin-top:2px"></div>
           </div>
-          <div id="cosmos-info-card-footer">
-            <button class="detail-btn" onclick="cosmosShowDetails()">
-              Show Details
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
+        <div id="gs-tabs">
+          <button class="gs-tab active" data-gs="details" onclick="gsSwitchTab('details',this)">Details</button>
+          <button class="gs-tab" data-gs="source" onclick="gsSwitchTab('source',this)">Source</button>
+        </div>
+        <div id="gs-body">
+          <div class="gs-pane active" id="gs-details">
+            <div class="gs-section" id="gs-details-default" style="padding:var(--sp-6) 0;text-align:center">
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:var(--sp-2)">Knowledge Bundle Explorer</div>
+              <div style="font-size:12px;color:var(--text-3);line-height:1.6;max-width:240px;margin:0 auto">Click any node in the graph to inspect its details, relationships, and source code.</div>
+              <div style="margin-top:var(--sp-5);display:flex;flex-wrap:wrap;gap:var(--sp-2);justify-content:center" id="gs-default-stats"></div>
+            </div>
+            <div id="gs-details-body"></div>
+          </div>
+          <div class="gs-pane" id="gs-source">
+            <pre class="gs-code" id="gs-source-content">Click a concept to view source.</pre>
           </div>
         </div>
-
-        <div id="cosmos-toast">Switch to Browse to see concept details →</div>
+      </div>
       </div>
     </div>
   </div>
@@ -939,7 +919,8 @@ async function init() {
   });
   bsel.addEventListener('change', doSearch);
 
-  showLanding();
+  // Activate default tab (Explore)
+  switchTab('graph', document.querySelector('.nav-seg-item.active'));
 
   // Pre-load cosmos in background (dynamic mode)
   if (DYNAMIC) loadCosmosExplore();
@@ -1565,9 +1546,8 @@ function renderEgoGraph(centerId, concept) {
   });
 }
 
-// ---- Cosmos Explore Tab (loaded dynamically) ----
-var _exploreData = null;
-var _cosmosGraph = null;
+// ---- Cosmos Explore Tab (pure Canvas 2D) ----
+var _canvasVars = null;
 var _cosmosLoaded = false;
 var _cosmosLoading = false;
 var _cosmosClickedIdx = null;
@@ -1579,10 +1559,10 @@ var _cosmosNodes = [];
 var _cosmosEdges = [];
 var _cosmosDomainNames = [];
 var _cosmosN = 0;
-var _cosmosMode = 'explore';
-var _cosmosLabels = [];
 var _cosmosDomIdx = {};
 var _cosmosPointColors = null;
+var _edgeRelType = [];
+var REL_VERB_MAP = {"calls":"calls","called_by":"called by","imports":"imports","related":"relates to"};
 
 function _cosmosHexToRgb(h) {
   var x = h.replace('#','');
@@ -1590,13 +1570,12 @@ function _cosmosHexToRgb(h) {
 }
 
 function _cosmosInitData() {
-  var nodes = BUNDLE_DATA.nodes || [];
-  var links = BUNDLE_DATA.links || [];
+  var nodes = (BUNDLE_DATA && BUNDLE_DATA.nodes) || [];
+  var links = (BUNDLE_DATA && BUNDLE_DATA.links) || [];
   _cosmosNodes = nodes;
   _cosmosEdges = links;
   _cosmosN = nodes.length;
 
-  // Build domain map
   var doms = {};
   nodes.forEach(function(n) {
     var parts = (n.id || n.concept_id || '').split('/');
@@ -1611,7 +1590,6 @@ function _cosmosInitData() {
     });
   });
 
-  // Degree
   var deg = new Array(_cosmosN).fill(0);
   links.forEach(function(l) {
     var si = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
@@ -1619,7 +1597,416 @@ function _cosmosInitData() {
     if (si >= 0) deg[si]++;
     if (ti >= 0) deg[ti]++;
   });
+  _edgeRelType = new Array(links.length);
+  links.forEach(function(l, i) {
+    _edgeRelType[i] = REL_VERB_MAP[l.type] || l.type || '';
+  });
   return deg;
+}
+
+// ---- Pure Canvas 2D Graph Engine ----
+function _canvas2DInit() {
+  if (_canvasVars && _canvasVars.raf) cancelAnimationFrame(_canvasVars.raf);
+  var canvas = qs('cosmos-canvas');
+  if (!canvas) return;
+  var stage = qs('cosmos-stage');
+  var rect = stage.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) {
+    setTimeout(_canvas2DInit, 100);
+    return;
+  }
+  var dpr = window.devicePixelRatio || 1;
+  var ctx = canvas.getContext('2d');
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  var nodes = _cosmosNodes || [];
+  var edges = _cosmosEdges || [];
+  var deg = new Array(nodes.length).fill(0);
+  edges.forEach(function(l) {
+    var si = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
+    var ti = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
+    if (si >= 0) deg[si]++; if (ti >= 0) deg[ti]++;
+  });
+  var ps = nodes.map(function(n, i) {
+    var a = (i / nodes.length) * Math.PI * 2;
+    return { x: Math.cos(a) * 280, y: Math.sin(a) * 280, vx: 0, vy: 0, r: 8 + Math.sqrt(deg[i] || 0) * 2.8 };
+  });
+  var view = { x: rect.width / 2, y: rect.height / 2, k: 1 };
+  var alpha = 1;
+  var _W = rect.width, _H = rect.height;
+  function resize() {
+    var r = stage.getBoundingClientRect();
+    _W = r.width; _H = r.height;
+    canvas.width = _W * dpr; canvas.height = _H * dpr;
+    canvas.style.width = _W + 'px'; canvas.style.height = _H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  function tick() {
+    if (alpha < 0.005) { alpha = 0; } else { alpha *= 0.985; }
+    var k = alpha;
+    for (var i = 0; i < ps.length; i++) {
+      for (var j = i + 1; j < ps.length; j++) {
+        var dx = ps[i].x - ps[j].x, dy = ps[i].y - ps[j].y;
+        var d2 = dx * dx + dy * dy || 1;
+        var f = 2800 / d2; var d = Math.sqrt(d2); dx /= d; dy /= d;
+        ps[i].vx += dx * f * k; ps[i].vy += dy * f * k;
+        ps[j].vx -= dx * f * k; ps[j].vy -= dy * f * k;
+      }
+    }
+    for (var ei = 0; ei < edges.length; ei++) {
+      var l = edges[ei];
+      var si = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
+      var ti = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
+      if (si < 0 || ti < 0) continue;
+      var dx = ps[ti].x - ps[si].x, dy = ps[ti].y - ps[si].y;
+      var d = Math.sqrt(dx * dx + dy * dy) || 1;
+      var f = (d - 90) * 0.04 * k; dx /= d; dy /= d;
+      ps[si].vx += dx * f; ps[si].vy += dy * f;
+      ps[ti].vx -= dx * f; ps[ti].vy -= dy * f;
+    }
+    for (var ni = 0; ni < ps.length; ni++) {
+      ps[ni].vx += (-ps[ni].x) * 0.002 * k;
+      ps[ni].vy += (-ps[ni].y) * 0.002 * k;
+      ps[ni].vx *= 0.86; ps[ni].vy *= 0.86;
+      ps[ni].x += ps[ni].vx; ps[ni].y += ps[ni].vy;
+    }
+  }
+  function toWorld(px, py) { return { x: (px - view.x) / view.k, y: (py - view.y) / view.k }; }
+  function pick(px, py) {
+    var w = toWorld(px, py); var best = -1, bd = 1e9;
+    for (var i = 0; i < ps.length; i++) {
+      var dx = ps[i].x - w.x, dy = ps[i].y - w.y, d = dx * dx + dy * dy;
+      var r = ps[i].r + 4;
+      if (d < r * r && d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+  function draw() {
+    ctx.clearRect(0, 0, _W, _H);
+    ctx.save(); ctx.translate(view.x, view.y); ctx.scale(view.k, view.k);
+    var focusIdx = _cosmosClickedIdx >= 0 ? _cosmosClickedIdx : (_cosmosHoverIdx >= 0 ? _cosmosHoverIdx : -1);
+    var neighSet = new Set();
+    if (focusIdx >= 0) {
+      neighSet.add(focusIdx);
+      edges.forEach(function(l) {
+        var si = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
+        var ti = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
+        if (si === focusIdx) neighSet.add(ti);
+        if (ti === focusIdx) neighSet.add(si);
+      });
+    }
+    var hiEdges = [];
+    var cs = getComputedStyle(document.documentElement);
+    var textColor = cs.getPropertyValue('--text').trim() || '#f2f2f5';
+    var textMuted = cs.getPropertyValue('--text-2').trim() || '#8b949e';
+    var accentColor = cs.getPropertyValue('--accent').trim() || '#7c6cff';
+    var bgColor = cs.getPropertyValue('--bg').trim() || '#0a0a0f';
+    for (var ei = 0; ei < edges.length; ei++) {
+      var l = edges[ei];
+      var si = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
+      var ti = nodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
+      if (si < 0 || ti < 0) continue;
+      var isHi = focusIdx >= 0 && (si === focusIdx || ti === focusIdx);
+      if (focusIdx >= 0) {
+        var sOk = _cosmosActiveTypes && _cosmosActiveTypes.has(nodes[si].type);
+        var tOk = _cosmosActiveTypes && _cosmosActiveTypes.has(nodes[ti].type);
+        var sSearch = _cosmosMatchSet === null || _cosmosMatchSet.has(si);
+        var tSearch = _cosmosMatchSet === null || _cosmosMatchSet.has(ti);
+        var edgeFiltered = !(sOk && tOk && sSearch && tSearch);
+        if (edgeFiltered && !isHi) continue;
+        if (isHi) hiEdges.push({ ei: ei, si: si, ti: ti, s: ps[si], t: ps[ti], l: l });
+      }
+      ctx.beginPath(); ctx.moveTo(ps[si].x, ps[si].y); ctx.lineTo(ps[ti].x, ps[ti].y);
+      ctx.globalAlpha = isHi ? 1 : (focusIdx >= 0 ? 0.12 : 1);
+      ctx.strokeStyle = isHi ? textMuted : textMuted;
+      ctx.lineWidth = isHi ? 2 / view.k : 0.8 / view.k;
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    for (var hi = 0; hi < hiEdges.length; hi++) {
+      var h = hiEdges[hi];
+      var dx = h.t.x - h.s.x, dy = h.t.y - h.s.y;
+      var d = Math.sqrt(dx * dx + dy * dy) || 1;
+      var ang = Math.atan2(dy, dx);
+      var aSize = 10 / view.k;
+      ctx.beginPath(); ctx.moveTo(h.t.x, h.t.y);
+      ctx.lineTo(h.t.x - Math.cos(ang - 0.45) * aSize, h.t.y - Math.sin(ang - 0.45) * aSize);
+      ctx.lineTo(h.t.x - Math.cos(ang + 0.45) * aSize, h.t.y - Math.sin(ang + 0.45) * aSize);
+      ctx.closePath();
+      ctx.fillStyle = accentColor; ctx.globalAlpha = 0.85; ctx.fill(); ctx.globalAlpha = 1;
+      var rel = _edgeRelType[h.ei];
+      if (rel) {
+        var mx = (h.s.x + h.t.x) / 2, my = (h.s.y + h.t.y) / 2;
+        var fontSize = 11 / view.k;
+        ctx.font = '600 ' + fontSize + 'px Inter,-apple-system,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        var tw = ctx.measureText(rel).width;
+        var pad = 7 / view.k, rh = fontSize + 6 / view.k, rw = tw + pad * 2;
+        var rx = mx - rw / 2, ry = my - rh / 2;
+        ctx.fillStyle = bgColor; ctx.globalAlpha = 0.82;
+        var rr = 5 / view.k;
+        ctx.beginPath(); ctx.moveTo(rx + rr, ry); ctx.lineTo(rx + rw - rr, ry);
+        ctx.arcTo(rx + rw, ry, rx + rw, ry + rh, rr); ctx.lineTo(rx + rw, ry + rh);
+        ctx.arcTo(rx + rw, ry + rh, rx + rw - rr, ry + rh, rr);
+        ctx.lineTo(rx + rr, ry + rh); ctx.arcTo(rx, ry + rh, rx, ry + rh - rr, rr);
+        ctx.lineTo(rx, ry + rr); ctx.arcTo(rx, ry, rx + rr, ry, rr);
+        ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+        ctx.fillStyle = textColor; ctx.fillText(rel, mx, my);
+      }
+    }
+    for (var ni = 0; ni < ps.length; ni++) {
+      var n = nodes[ni]; var p = ps[ni];
+      if (!n) continue;
+      var col = TYPE_COLORS[n.type] || '#888';
+      if (focusIdx >= 0) {
+        var typeOk = _cosmosActiveTypes && _cosmosActiveTypes.has(n.type);
+        var searchOk = _cosmosMatchSet === null || _cosmosMatchSet.has(ni);
+        var filtered = !typeOk || !searchOk;
+        if (filtered) continue;
+        var dim = !neighSet.has(ni);
+        ctx.globalAlpha = dim ? 0.2 : 1;
+      } else {
+        ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7);
+      ctx.fillStyle = col; ctx.fill();
+      if (ni === focusIdx) { ctx.lineWidth = 2 / view.k; ctx.strokeStyle = textColor; ctx.stroke(); }
+      ctx.globalAlpha = 1;
+      if (ni === focusIdx || deg[ni] >= 6 || (focusIdx < 0 && view.k > 1.2)) {
+        ctx.font = (10 / view.k) + 'px Inter,-apple-system,sans-serif';
+        ctx.textAlign = 'center'; ctx.fillStyle = textColor;
+        ctx.fillText(n.title || '', p.x, p.y + p.r + 12 / view.k);
+      }
+    }
+    ctx.restore();
+  }
+  function loop() {
+    try { tick(); draw(); _canvas2DUpdateClusterLabels(ps, view); }
+    catch(e) { console.error('Canvas render error:', e); if(e.stack) console.error(e.stack); }
+    _canvasVars.raf = requestAnimationFrame(loop);
+  }
+  var dragNode = -1, dragMoved = false, panning = false, lastX = 0, lastY = 0;
+  canvas.onmousedown = function(e) {
+    var i = pick(e.offsetX, e.offsetY);
+    if (i >= 0) { dragNode = i; dragMoved = false; alpha = Math.max(alpha, 0.3); }
+    else { panning = true; canvas.style.cursor = 'grabbing'; }
+    lastX = e.offsetX; lastY = e.offsetY;
+  };
+  canvas.onmousemove = function(e) {
+    _cosmosPtrX = e.offsetX; _cosmosPtrY = e.offsetY;
+    if (dragNode >= 0) {
+      var w = toWorld(e.offsetX, e.offsetY);
+      ps[dragNode].x = w.x; ps[dragNode].y = w.y;
+      ps[dragNode].vx = 0; ps[dragNode].vy = 0;
+      dragMoved = true; alpha = Math.max(alpha, 0.2);
+    } else if (panning) {
+      view.x += e.offsetX - lastX; view.y += e.offsetY - lastY;
+      lastX = e.offsetX; lastY = e.offsetY;
+    } else {
+      var i = pick(e.offsetX, e.offsetY);
+      if (i !== _cosmosHoverIdx) {
+        _cosmosHoverIdx = i;
+        if (i >= 0) { _cosmosShowHoverTag(i); } else { _cosmosHideHoverTag(); }
+      } else if (_cosmosHoverIdx >= 0) {
+        _cosmosPosHoverTag();
+      }
+      canvas.style.cursor = i >= 0 ? 'pointer' : 'grab';
+    }
+  };
+  canvas.onmouseup = function(e) {
+    if (dragNode >= 0 && !dragMoved) {
+      var n = nodes[dragNode];
+      if (n) {
+        if (_cosmosClickedIdx === dragNode) { graphSidebarClose(); }
+        else { _cosmosClickedIdx = dragNode; graphSidebarOpen(dragNode); }
+      }
+    }
+    dragNode = -1; panning = false;
+    canvas.style.cursor = 'grab';
+  };
+  canvas.onwheel = function(e) {
+    e.preventDefault();
+    var s = Math.exp(-e.deltaY * 0.0012);
+    view.x = e.offsetX - (e.offsetX - view.x) * s;
+    view.y = e.offsetY - (e.offsetY - view.y) * s;
+    view.k = Math.max(0.15, Math.min(4, view.k * s));
+  };
+  _canvasVars = { raf: null, running: true, view: view, nodes: nodes, W: _W, H: _H };
+  new ResizeObserver(function() {
+    var r = stage.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0 && (r.width !== _W || r.height !== _H)) {
+      _W = r.width; _H = r.height;
+      canvas.width = _W * dpr; canvas.height = _H * dpr;
+      canvas.style.width = _W + 'px'; canvas.style.height = _H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  }).observe(stage);
+  _canvasVars.raf = requestAnimationFrame(loop);
+}
+function _canvas2DStop() {
+  if (_canvasVars && _canvasVars.raf) {
+    cancelAnimationFrame(_canvasVars.raf);
+    _canvasVars = null;
+  }
+}
+function _canvas2DSwitch() {
+  _canvas2DStop();
+  var canvas = qs('cosmos-canvas');
+  canvas.style.display = 'block';
+  canvas.style.pointerEvents = 'auto';
+  _canvas2DInit();
+  qs('status-n').textContent = _cosmosN;
+  qs('status-e').textContent = _cosmosEdges.length;
+}
+function _canvas2DUpdateClusterLabels(ps, view) {
+  if (!_cosmosDomainNames || !_cosmosDomainNames.length) return;
+  var els = qs('cluster-labels').children;
+  if (!els || !els.length) return;
+  for (var di = 0; di < _cosmosDomainNames.length && di < els.length; di++) {
+    var dname = _cosmosDomainNames[di];
+    var cx = 0, cy = 0, count = 0;
+    for (var ni = 0; ni < ps.length; ni++) {
+      var n = _cosmosNodes[ni];
+      if (!n) continue;
+      var parts = (n.id || n.concept_id || '').split('/');
+      if (parts[0] === dname || (parts.length > 1 && parts[0] === dname)) {
+        cx += ps[ni].x; cy += ps[ni].y; count++;
+      }
+    }
+    if (count === 0) continue;
+    cx /= count; cy /= count;
+    var sx = cx * view.k + view.x;
+    var sy = cy * view.k + view.y;
+    els[di].style.left = sx + 'px';
+    els[di].style.top = (sy - 40) + 'px';
+  }
+}
+
+// ---- Graph Sidebar ----
+var _gsIdx = null;
+function graphSidebarOpen(idx) {
+  _gsIdx = idx;
+  var n = _cosmosNodes[idx];
+  if (!n) return;
+  // Hide default
+  var def = qs('gs-details-default');
+  if (def) def.style.display = 'none';
+  // Description in header
+  var hd = qs('gs-header-desc');
+  if (hd) { hd.style.display = n.description ? 'block' : 'none'; hd.textContent = n.description || ''; }
+  var col = TYPE_COLORS[n.type] || '#888';
+  // Badge in header
+  var hb = qs('gs-header-badge');
+  if (hb) { hb.style.display = 'inline-flex'; hb.innerHTML = '<span class="dot" style="width:6px;height:6px;border-radius:50%;background:' + col + ';flex:none"></span>' + esc(n.type); hb.style.background = col + '22'; hb.style.color = col; hb.style.border = '1px solid ' + col + '44'; }
+  qs('gs-title').textContent = n.title || '';
+
+  // Build details body: Signature → Relationships → Resource → Tags → Docstring
+  var detailsHtml = '';
+  var rsrc = n.resource || '';
+  // 1. Signature (with syntax highlight)
+  if (n.sections && n.sections.signature) {
+    var sigText = n.sections.signature.replace(/```\w*\n?/g, '').trim();
+    var sigLang = (n.sections.signature.match(/```(\w+)/) || [])[1] || '';
+    if (!sigLang && rsrc) {
+      var extMap = {js:'javascript',ts:'typescript',py:'python',rb:'ruby',rs:'rust',go:'go',java:'java',kt:'kotlin',cs:'csharp',cpp:'cpp',c:'c',sql:'sql',sh:'bash',yaml:'yaml',json:'json',html:'html',css:'css'};
+      sigLang = extMap[(rsrc || '').split('.').pop()] || '';
+    }
+    detailsHtml += '<div class="gs-section"><div class="gs-label">Signature</div><pre class="gs-code' + (sigLang ? ' language-' + sigLang : '') + '"><code' + (sigLang ? ' class="language-' + sigLang + '"' : '') + '>' + esc(sigText) + '</code></pre></div>';
+  }
+  // 2. Relationships
+  var sid = n.id || n.concept_id;
+  var relsHtml = '';
+  if (sid) {
+    var calls = [], calledBy = [];
+    _cosmosEdges.forEach(function(l) {
+      if (l.source === sid) { var tn = _cosmosNodes.find(function(x) { return (x.id || x.concept_id) === l.target; }); if (tn) calls.push({ title: tn.title, id: tn.id || tn.concept_id, type: tn.type, rel: l.type }); }
+      if (l.target === sid) { var sn = _cosmosNodes.find(function(x) { return (x.id || x.concept_id) === l.source; }); if (sn) calledBy.push({ title: sn.title, id: sn.id || sn.concept_id, type: sn.type, rel: l.type }); }
+    });
+    var relTypes = { 'related': 'relates to', 'calls': 'calls', 'called_by': 'called by', 'imports': 'imports' };
+    var anyRel = false;
+    [['Outgoing', calls], ['Incoming', calledBy]].forEach(function(pair) {
+      var label = pair[0], items = pair[1];
+      if (!items.length) return;
+      anyRel = true;
+      relsHtml += '<div class="gs-section"><div class="gs-label">' + label + '</div>';
+      items.forEach(function(r) {
+        var rc = TYPE_COLORS[r.type || ''] || '#888';
+        var verb = relTypes[r.rel] || r.rel || '';
+        relsHtml += '<span class="gs-chip" onclick="graphSidebarJump(\'' + r.id.replace(/'/g,"\\'") + '\')"><span class="dot" style="background:' + rc + '"></span>' + esc(r.title) + '<span style="font-size:9px;color:var(--text-3);margin-left:4px">' + esc(verb) + '</span></span>';
+      });
+      relsHtml += '</div>';
+    });
+    if (!anyRel) relsHtml = '<div class="gs-section"><div class="gs-desc" style="color:var(--text-3)">No relationships.</div></div>';
+  }
+  if (relsHtml) detailsHtml += relsHtml;
+  // 3. Resource
+  if (rsrc) detailsHtml += '<div class="gs-section"><div class="gs-label">Resource</div><div style="font-size:12px;color:var(--text-3);font-family:JetBrains Mono,monospace">' + esc(rsrc) + '</div></div>';
+  // 4. Tags
+  var tagsHtml = (n.tags || []).map(function(t) { return '<span class="gs-tag">' + esc(t) + '</span>'; }).join('');
+  if (tagsHtml) detailsHtml += '<div class="gs-section"><div class="gs-label">Tags</div><div class="gs-meta">' + tagsHtml + '</div></div>';
+  // 5. Docstring (as markdown code block, matching Browse tab style)
+  if (n.sections && n.sections.docstring) {
+    var md = n.sections.docstring.slice(0, 400).trim();
+    detailsHtml += '<div class="gs-section"><div class="gs-label">Docstring</div><pre class="gs-code"><code class="language-md">' + esc(md) + '</code></pre></div>';
+  }
+  // Set details content atomically
+  var detailsBody = qs('gs-details-body');
+  if (detailsBody) detailsBody.innerHTML = detailsHtml;
+  // Highlight signature code if Prism is available
+  if (window.Prism) {
+    var sigCode = detailsBody && detailsBody.querySelector('pre.gs-code code');
+    if (sigCode) Prism.highlightElement(sigCode);
+  }
+
+  // Source
+  var src = n.code || n.body || n.source || '';
+  var ext = (rsrc || '').split('.').pop();
+  if (src) {
+    qs('gs-source-content').textContent = src;
+    var langMap = {js:'javascript',ts:'typescript',py:'python',rb:'ruby',rs:'rust',go:'go',java:'java',kt:'kotlin',cs:'csharp',cpp:'cpp',c:'c',sql:'sql',sh:'bash',yaml:'yaml',json:'json',html:'html',css:'css'};
+    var lang = langMap[ext] || '';
+    if (lang && window.Prism) {
+      qs('gs-source-content').className = 'gs-code language-' + lang;
+      Prism.highlightElement(qs('gs-source-content'));
+    }
+  } else {
+    qs('gs-source-content').textContent = 'No source code available for this concept.';
+  }
+
+  // Stay on current tab — don't switch to details
+  var curTab = document.querySelector('.gs-tab.active');
+  if (curTab) gsSwitchTab(curTab.dataset.gs, curTab);
+  else gsSwitchTab('details', document.querySelector('.gs-tab'));
+}
+function graphSidebarClose() {
+  _gsIdx = null;
+  _cosmosClickedIdx = null;
+  var def = qs('gs-details-default');
+  if (def) def.style.display = '';
+  var body = qs('gs-details-body');
+  if (body) body.innerHTML = '';
+  qs('gs-title').textContent = 'Concept Details';
+  var hb = qs('gs-header-badge');
+  if (hb) hb.style.display = 'none';
+  var hd = qs('gs-header-desc');
+  if (hd) hd.style.display = 'none';
+}
+function graphSidebarJump(id) {
+  var idx = _cosmosNodes.findIndex(function(n) { return (n.id || n.concept_id) === id; });
+  if (idx >= 0) {
+    _cosmosClickedIdx = idx;
+    graphSidebarOpen(idx);
+  }
+}
+function gsSwitchTab(name, btn) {
+  document.querySelectorAll('.gs-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.gs-pane').forEach(function(p) { p.classList.remove('active'); });
+  var pane = qs('gs-' + name);
+  if (pane) pane.classList.add('active');
 }
 
 async function loadCosmosExplore() {
@@ -1627,293 +2014,74 @@ async function loadCosmosExplore() {
   if (_cosmosLoading) return;
   _cosmosLoading = true;
   var loadingEl = qs('cosmos-loading');
-  var lbl = qs('cosmos-loading-lbl');
-  lbl.textContent = 'Loading cosmos renderer…';
 
-  try {
-    var mod = await import('https://cdn.jsdelivr.net/npm/@cosmos.gl/graph@2/+esm');
-    var Graph = mod.Graph;
-    if (!Graph) throw new Error('Graph export not found');
+  var deg = _cosmosInitData();
+  _cosmosN = _cosmosNodes.length;
 
-    var deg = _cosmosInitData();
-    _cosmosN = _cosmosNodes.length;
+  _cosmosPointColors = new Float32Array(_cosmosN * 4);
+  _cosmosNodes.forEach(function(n, i) {
+    var c = TYPE_COLORS[n.type] || '#888';
+    var rgb = _cosmosHexToRgb(c);
+    _cosmosPointColors[i*4] = rgb[0]; _cosmosPointColors[i*4+1] = rgb[1];
+    _cosmosPointColors[i*4+2] = rgb[2]; _cosmosPointColors[i*4+3] = 0.92;
+  });
 
-    // Build colors
-    _cosmosPointColors = new Float32Array(_cosmosN * 4);
-    _cosmosNodes.forEach(function(n, i) {
-      var c = TYPE_COLORS[n.type] || '#888';
-      var rgb = _cosmosHexToRgb(c);
-      _cosmosPointColors[i*4] = rgb[0]; _cosmosPointColors[i*4+1] = rgb[1];
-      _cosmosPointColors[i*4+2] = rgb[2]; _cosmosPointColors[i*4+3] = 0.92;
-    });
+  qs('status-n').textContent = _cosmosN;
+  qs('status-e').textContent = _cosmosEdges.length;
 
-    // Sizes by degree
-    var sizes = new Float32Array(_cosmosNodes.map(function(_, i) { return Math.min(18, 4 + deg[i] * 1.1); }));
+  var legendBody = qs('cosmos-legend-body');
+  legendBody.innerHTML = '';
+  var typeCounts = {};
+  _cosmosNodes.forEach(function(n) { typeCounts[n.type] = (typeCounts[n.type] || 0) + 1; });
+  Object.keys(TYPE_COLORS).forEach(function(t) {
+    var row = document.createElement('div');
+    row.className = 'legend-item';
+    var cnt = typeCounts[t] || 0;
+    row.innerHTML = '<span class="dot" style="background:' + TYPE_COLORS[t] + '"></span><span>' + t + '</span><span class="count">' + cnt + '</span>';
+    legendBody.appendChild(row);
+  });
 
-    // Cluster ring positions
-    var SPACE = 4096, CENTER = SPACE / 2, RING = 1300;
-    var nDoms = _cosmosDomainNames.length;
-    var centers = _cosmosDomainNames.map(function(_, i) {
-      var a = (i / nDoms) * Math.PI * 2;
-      return [CENTER + Math.cos(a) * RING, CENTER + Math.sin(a) * RING];
-    });
-    var pos = new Float32Array(_cosmosN * 2);
-    var clusters = new Array(_cosmosN);
-    _cosmosNodes.forEach(function(n, i) {
-      var parts = (n.id || n.concept_id || '').split('/');
-      var d = parts[0] || 'root';
-      var ci = _cosmosDomainNames.indexOf(d);
-      if (ci < 0) ci = 0;
-      var cx = centers[ci][0], cy = centers[ci][1];
-      var a = Math.random() * Math.PI * 2;
-      var r = Math.sqrt(Math.random()) * 220;
-      pos[i*2] = cx + Math.cos(a) * r;
-      pos[i*2+1] = cy + Math.sin(a) * r;
-      clusters[i] = ci;
-    });
-
-    // Links
-    var linkIdx = new Float32Array(_cosmosEdges.length * 2);
-    var linkCol = new Float32Array(_cosmosEdges.length * 4);
-    _cosmosEdges.forEach(function(l, i) {
-      var si = _cosmosNodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
-      var ti = _cosmosNodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
-      linkIdx[i*2] = si; linkIdx[i*2+1] = ti;
-      linkCol[i*4] = 0.45; linkCol[i*4+1] = 0.45; linkCol[i*4+2] = 0.55; linkCol[i*4+3] = 0.28;
-    });
-
-    // Status
-    qs('status-n').textContent = _cosmosN;
-    qs('status-e').textContent = _cosmosEdges.length;
-
-    // Legend
-    var legendBody = qs('cosmos-legend-body');
-    legendBody.innerHTML = '';
-    Object.keys(TYPE_COLORS).forEach(function(t) {
-      var row = document.createElement('div');
-      row.className = 'legend-item';
-      row.innerHTML = '<span class="dot" style="background:' + TYPE_COLORS[t] + '"></span><span>' + t + '</span>';
-      legendBody.appendChild(row);
-    });
-
-    // Filter chips
-    _cosmosActiveTypes = new Set(Object.keys(TYPE_COLORS));
-    var chipRow = qs('chip-row');
-    chipRow.innerHTML = '';
-    Object.keys(TYPE_COLORS).forEach(function(t) {
-      var chip = document.createElement('div');
-      chip.className = 'filter-chip active';
-      chip.innerHTML = '<span class="dot" style="background:' + TYPE_COLORS[t] + '"></span>' + t;
-      chip.onclick = function() {
-        if (_cosmosActiveTypes.has(t)) { _cosmosActiveTypes.delete(t); chip.classList.remove('active'); }
-        else { _cosmosActiveTypes.add(t); chip.classList.add('active'); }
-        _cosmosUpdateFilter();
-      };
-      chipRow.appendChild(chip);
-    });
-
-    // Container
-    var container = qs('cosmos-container');
-    var config = {
-      spaceSize: SPACE, backgroundColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#f7f7fb' : '#0a0a0f',
-      rescalePositions: false, enableDrag: true, scalePointsOnZoom: true,
-      curvedLinks: false, linkDefaultArrows: false,
-      fitViewOnInit: true, fitViewDelay: 700, fitViewDuration: 1000, fitViewPadding: 0.18,
-      simulationRepulsion: 0.5, simulationGravity: 0.06, simulationLinkSpring: 0.3,
-      simulationLinkDistance: 45, simulationFriction: 0.9, simulationDecay: 100,
-      simulationCluster: 0.15, simulationCollision: 0.4, simulationCollisionPadding: 2,
-      renderHoveredPointRing: true, hoveredPointRingColor: '#ffffff',
-      focusedPointRingColor: '#ffffff', outlinedPointRingColor: '#9385ff',
-      pointGreyoutOpacity: 0.1, linkGreyoutOpacity: 0.04,
-      hoveredLinkWidthIncrease: 1, focusedLinkWidthIncrease: 2,
-      onPointMouseOver: function(idx) { _cosmosHoverIdx = idx; container.style.cursor = 'pointer'; _cosmosHoverPreview(idx); _cosmosShowHoverTag(idx); },
-      onPointMouseOut: function() { _cosmosHoverIdx = null; container.style.cursor = 'grab'; _cosmosClearHover(); _cosmosHideHoverTag(); },
-      onPointClick: function(idx, pos) { _cosmosOnClick(idx, pos); },
-      onBackgroundClick: function() { _cosmosClearFocus(); },
-      onZoom: function() { _cosmosUpdateLabels(); },
-      onSimulationTick: function() { _cosmosUpdateLabels(); },
+  _cosmosActiveTypes = new Set(Object.keys(TYPE_COLORS));
+  var chipRow = qs('chip-row');
+  chipRow.innerHTML = '';
+  Object.keys(TYPE_COLORS).forEach(function(t) {
+    var chip = document.createElement('div');
+    chip.className = 'filter-chip active';
+    chip.innerHTML = '<span class="dot" style="background:' + TYPE_COLORS[t] + '"></span>' + t;
+    chip.onclick = function() {
+      if (_cosmosActiveTypes.has(t)) { _cosmosActiveTypes.delete(t); chip.classList.remove('active'); }
+      else { _cosmosActiveTypes.add(t); chip.classList.add('active'); }
     };
-    _cosmosGraph = new Graph(container, config);
-    _cosmosGraph.setPointPositions(pos);
-    _cosmosGraph.setPointColors(_cosmosPointColors);
-    _cosmosGraph.setPointSizes(sizes);
-    _cosmosGraph.setLinks(linkIdx);
-    _cosmosGraph.setLinkColors(linkCol);
-    _cosmosGraph.setPointClusters(clusters);
-    _cosmosGraph.render();
+    chipRow.appendChild(chip);
+  });
 
-    // Pre-create label overlays for Labels mode (hidden by default)
-    var labelContainer = qs('cosmos-labels');
-    _cosmosLabels = _cosmosNodes.map(function(n) {
-      var el = document.createElement('div');
-      el.className = 'cosmos-label';
-      el.textContent = n.title || '';
-      el.style.display = 'none';
-      labelContainer.appendChild(el);
-      return el;
-    });
+  var labelRoot = qs('cluster-labels');
+  labelRoot.innerHTML = '';
+  _cosmosDomainNames.forEach(function(d) {
+    var el = document.createElement('div');
+    el.className = 'cluster-label'; el.textContent = d;
+    labelRoot.appendChild(el);
+  });
 
-    // If huge bundle, disable physics for performance
-    if (_cosmosN > 5000) {
-      try { _cosmosGraph.setConfigPartial({ simulationRepulsion: 0, simulationGravity: 0, simulationCluster: 0, simulationLinkSpring: 0 }); } catch(e) {}
-    }
-
-    // Domain labels
-    var labelRoot = qs('cluster-labels');
-    labelRoot.innerHTML = '';
-    _cosmosDomainNames.forEach(function(d) {
-      var el = document.createElement('div');
-      el.className = 'cluster-label'; el.textContent = d;
-      labelRoot.appendChild(el);
-    });
-    setTimeout(_cosmosUpdateLabels, 1500);
-
-    loadingEl.classList.add('hide');
-    _cosmosLoaded = true;
-  } catch(err) {
-    loadingEl.classList.add('error');
-    lbl.textContent = 'Failed to load cosmos graph: ' + (err.message || err);
-    console.error('Cosmos init failed:', err);
-  }
+  _canvas2DSwitch();
+  loadingEl.classList.add('hide');
+  _cosmosLoaded = true;
   _cosmosLoading = false;
+
+  // Populate default sidebar stats
+  var statsHtml = '';
+  var typeCounts = {};
+  _cosmosNodes.forEach(function(n) { typeCounts[n.type] = (typeCounts[n.type] || 0) + 1; });
+  Object.keys(typeCounts).sort().forEach(function(t) {
+    var c = TYPE_COLORS[t] || '#888';
+    statsHtml += '<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:8px 12px;min-width:70px"><div style="font-size:16px;font-weight:700;color:' + c + '">' + typeCounts[t] + '</div><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px">' + t + '</div></div>';
+  });
+  var defStats = qs('gs-default-stats');
+  if (defStats) defStats.innerHTML = statsHtml;
 }
 
-function _cosmosUpdateLabels() {
-  if (!_cosmosGraph) return;
-  try {
-    // Update cluster labels
-    var positions = _cosmosGraph.getClusterPositions();
-    if (positions && positions.length) {
-      var els = qs('cluster-labels').children;
-      for (var i = 0; i < _cosmosDomainNames.length && i < els.length; i++) {
-        var x = positions[i*2], y = positions[i*2+1];
-        if (x === undefined || y === undefined) continue;
-        var screen = _cosmosGraph.spaceToScreenPosition([x, y]);
-        els[i].style.left = screen[0] + 'px';
-        els[i].style.top = (screen[1] - 40) + 'px';
-      }
-    }
-    // Update point labels (Labels mode)
-    if (_cosmosMode === 'labels' && _cosmosLabels.length) {
-      for (var li = 0; li < Math.min(_cosmosN, _cosmosLabels.length); li++) {
-        var sp = _cosmosGraph.spaceToScreenPosition(_cosmosGraph.getPointPosition(li));
-        if (sp) { _cosmosLabels[li].style.left = sp[0] + 'px'; _cosmosLabels[li].style.top = sp[1] + 'px'; }
-      }
-    }
-  } catch(e) {}
-}
-
-function cosmosSetMode(mode) {
-  _cosmosMode = mode;
-  // Clear search and re-trigger filter
-  var searchEl = qs('cosmos-search');
-  if (searchEl) searchEl.value = '';
-  _cosmosMatchSet = null;
-  _cosmosClearFocus();
-  // Toggle point labels
-  var showLabels = mode === 'labels';
-  _cosmosLabels.forEach(function(el) { el.style.display = showLabels ? 'block' : 'none'; });
-  // Reset hover/click effects per mode
-  try {
-    var cfg = {};
-    if (mode === 'focus') { cfg.renderHoveredPointRing = false; cfg.pointGreyoutOpacity = 0.15; }
-    else { cfg.renderHoveredPointRing = true; cfg.pointGreyoutOpacity = 0.1; }
-    _cosmosGraph.setConfigPartial(cfg);
-  } catch(e) {}
-  _cosmosUpdateFilter();
-}
-window.cosmosSetMode = cosmosSetMode;
-function _cosmosHoverPreview(idx) {
-  if (_cosmosClickedIdx !== null) return;
-  try {
-    var n = _cosmosGraph.getNeighboringPointIndices(idx);
-    var hood = [idx].concat(n);
-    _cosmosGraph.setConfigPartial({ outlinedPointIndices: hood, highlightedLinkIndices: _cosmosGraph.getConnectedLinkIndices(hood) });
-  } catch(e) {}
-}
-function _cosmosClearHover() {
-  if (_cosmosClickedIdx !== null) return;
-  try { _cosmosGraph.setConfigPartial({ outlinedPointIndices: undefined, highlightedLinkIndices: undefined }); } catch(e) {}
-}
-function _cosmosBFS(start, maxHops) {
-  // Breadth-first search to find all nodes within maxHops of start
-  var visited = new Set([start]), queue = [[start, 0]];
-  while (queue.length) {
-    var cur = queue.shift();
-    var ci = cur[0], dist = cur[1];
-    if (dist >= maxHops) continue;
-    _cosmosEdges.forEach(function(l) {
-      var si = _cosmosNodes.findIndex(function(n) { return (n.id || n.concept_id) === l.source; });
-      var ti = _cosmosNodes.findIndex(function(n) { return (n.id || n.concept_id) === l.target; });
-      [si, ti].forEach(function(ni) {
-        if (ni >= 0 && !visited.has(ni)) { visited.add(ni); queue.push([ni, dist + 1]); }
-      });
-    });
-  }
-  return Array.from(visited);
-}
-
-function _cosmosOnClick(idx, pos) {
-  if (_cosmosMode === 'focus') {
-    // Focus mode: zoom to node, dim rest
-    try { _cosmosGraph.fitView(300, { padding: 0.3, nodeFilter: function(ni) { return ni === idx; } }); } catch(e) {}
-    var hood = _cosmosBFS(idx, 2);
-    var hoodSet = new Set(hood);
-    if (!_cosmosPointColors) return;
-    var working = new Float32Array(_cosmosPointColors);
-    for (var fi = 0; fi < _cosmosN; fi++) {
-      if (!hoodSet.has(fi)) working[fi*4+3] = 0.05;
-    }
-    try { _cosmosGraph.setPointColors(working); _cosmosGraph.render(); } catch(e) { console.error('focus dim failed', e); }
-    _cosmosClickedIdx = idx;
-    _cosmosOpenCard(idx, pos);
-    return;
-  }
-  if (_cosmosClickedIdx === idx) { _cosmosClearFocus(); return; }
-  _cosmosClickedIdx = idx;
-  try {
-    var n, hood;
-    if (_cosmosMode === 'paths') {
-      // Paths mode: show all nodes up to 3 hops
-      hood = _cosmosBFS(idx, 3);
-    } else {
-      // Explore mode: show direct neighbors
-      n = _cosmosGraph.getNeighboringPointIndices(idx);
-      hood = [idx].concat(n);
-    }
-    _cosmosGraph.setConfigPartial({ focusedPointIndex: idx, highlightedPointIndices: hood, highlightedLinkIndices: _cosmosGraph.getConnectedLinkIndices(hood), outlinedPointIndices: undefined });
-  } catch(e) {
-    try { _cosmosGraph.setConfigPartial({ focusedPointIndex: idx }); } catch(e2) {}
-  }
-  _cosmosOpenCard(idx, pos);
-}
-function _cosmosClearFocus() {
-  _cosmosClickedIdx = null;
-  try {
-    _cosmosGraph.setConfigPartial({ focusedPointIndex: undefined, highlightedPointIndices: undefined, highlightedLinkIndices: undefined, outlinedPointIndices: undefined });
-  } catch(e) {}
-  // Reset colors if focus mode dimmed them
-  if (_cosmosMode === 'focus' && _cosmosPointColors) {
-    try { _cosmosGraph.setPointColors(_cosmosPointColors); _cosmosGraph.render(); } catch(e) {}
-  }
-  _cosmosUpdateFilter();
-  _cosmosCloseCard();
-}
-function _cosmosUpdateFilter() {
-  if (!_cosmosGraph || !_cosmosPointColors) return;
-  var noSearch = _cosmosMatchSet === null;
-  var allTypes = _cosmosActiveTypes.size === Object.keys(TYPE_COLORS).length;
-  if (noSearch && allTypes) return;
-  var working = new Float32Array(_cosmosPointColors);
-  for (var i = 0; i < _cosmosN; i++) {
-    var typeOk = _cosmosActiveTypes.has(_cosmosNodes[i].type);
-    var searchOk = noSearch || (_cosmosMatchSet && _cosmosMatchSet.has(i));
-    if (!(typeOk && searchOk)) working[i*4+3] = 0.05;
-  }
-  try { _cosmosGraph.setPointColors(working); _cosmosGraph.render(); } catch(e) { console.error('filter failed', e); }
-}
 var _cosmosSearchTimer;
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   var searchEl = qs('cosmos-search');
   if (!searchEl) return;
   searchEl.addEventListener('input', function(e) {
@@ -1921,10 +2089,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var q = e.target.value.trim().toLowerCase();
     _cosmosSearchTimer = setTimeout(function() {
       _cosmosMatchSet = q ? new Set(_cosmosNodes.map(function(n,i){ return [n,i]; }).filter(function(p){ return (p[0].title||'').toLowerCase().includes(q); }).map(function(p){ return p[1]; })) : null;
-      _cosmosUpdateFilter();
     }, 120);
   });
-});
+})();
 
 // Hover tag
 var _cosmosHoverEl = qs('hover-tag');
@@ -1935,97 +2102,14 @@ function _cosmosShowHoverTag(idx) {
   _cosmosHoverEl.classList.add('show');
   _cosmosPosHoverTag();
 }
-document.addEventListener('DOMContentLoaded', function() {
-  var stage = qs('cosmos-stage');
-  if (!stage) return;
-  stage.addEventListener('mousemove', function(e) {
-    var r = stage.getBoundingClientRect();
-    _cosmosPtrX = e.clientX - r.left;
-    _cosmosPtrY = e.clientY - r.top;
-    if (_cosmosHoverIdx !== null) _cosmosPosHoverTag();
-  });
-});
 function _cosmosHideHoverTag() { _cosmosHoverEl.classList.remove('show'); }
 function _cosmosPosHoverTag() { _cosmosHoverEl.style.left = _cosmosPtrX + 'px'; _cosmosHoverEl.style.top = _cosmosPtrY + 'px'; }
 
-// Info card
-function _cosmosOpenCard(idx, spacePos) {
-  var n = _cosmosNodes[idx];
-  if (!n) return;
-  var c = TYPE_COLORS[n.type] || '#888';
-  var calls = 0, calledBy = 0;
-  _cosmosEdges.forEach(function(l) {
-    if (l.source === (n.id || n.concept_id)) calls++;
-    if (l.target === (n.id || n.concept_id)) calledBy++;
-  });
-  qs('ic-badge').innerHTML = '<span class="dot" style="background:' + c + '"></span>' + (n.type || '');
-  qs('ic-badge').style.background = c + '22';
-  qs('ic-badge').style.color = c;
-  qs('ic-title').textContent = n.title || '';
-  qs('ic-desc').textContent = n.description || '';
-  qs('ic-path').textContent = n.resource || '';
-  qs('ic-calls').textContent = calls;
-  qs('ic-calledby').textContent = calledBy;
-  qs('ic-related').textContent = Math.max(0, (_cosmosEdges.filter(function(l){ return l.source === (n.id||n.concept_id) || l.target === (n.id||n.concept_id); }).length) - calls - calledBy);
-  var sx = _cosmosPtrX, sy = _cosmosPtrY;
-  try { if (spacePos) { var sc = _cosmosGraph.spaceToScreenPosition(spacePos); sx = sc[0]; sy = sc[1]; } } catch(e) {}
-  _cosmosPosCard(sx, sy);
-  qs('cosmos-info-card').classList.add('show');
-}
-function _cosmosPosCard(px, py) {
-  var stage = qs('cosmos-stage').getBoundingClientRect();
-  var card = qs('cosmos-info-card');
-  var w = 280, h = 300;
-  var x = px + 24, y = py - 40;
-  if (x + w > stage.width - 12) x = px - w - 24;
-  if (y + h > stage.height - 12) y = stage.height - h - 12;
-  if (y < 12) y = 12;
-  card.style.left = x + 'px';
-  card.style.top = y + 'px';
-}
-function _cosmosCloseCard() { qs('cosmos-info-card').classList.remove('show'); }
-function cosmosCloseCard() { _cosmosClearFocus(); }
-function cosmosShowDetails() {
-  if (_cosmosClickedIdx === null) return;
-  var n = _cosmosNodes[_cosmosClickedIdx];
-  if (!n) return;
-  var id = n.id || n.concept_id;
-  if (id) { selectConcept(id); switchTab('browse', document.querySelector('.nav-seg-item')); }
-}
-function cosmosZoom(f) {
-  try { _cosmosGraph.zoom(_cosmosGraph.getZoomLevel() * f, 250); } catch(e) { console.warn('zoom', e); }
-}
-var _cosmosPhysicsPaused = false;
-function cosmosTogglePhysics() {
-  _cosmosPhysicsPaused = !_cosmosPhysicsPaused;
-  try {
-    _cosmosGraph.setConfigPartial({
-      simulationRepulsion: _cosmosPhysicsPaused ? 0 : 0.5,
-      simulationGravity: _cosmosPhysicsPaused ? 0 : 0.06,
-      simulationLinkSpring: _cosmosPhysicsPaused ? 0 : 0.3,
-      simulationLinkDistance: _cosmosPhysicsPaused ? 1 : 45,
-      simulationFriction: _cosmosPhysicsPaused ? 1 : 0.9,
-      simulationDecay: _cosmosPhysicsPaused ? 1 : 100,
-      simulationCluster: _cosmosPhysicsPaused ? 0 : 0.15,
-      simulationCollision: _cosmosPhysicsPaused ? 0 : 0.4,
-    });
-    // Force re-render to apply physics change
-    _cosmosGraph.render();
-  } catch(e) { console.warn('physics toggle', e); }
-  var btn = qs('cosmos-pause-btn');
-  if (btn) btn.innerHTML = _cosmosPhysicsPaused
-    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-}
-function cosmosReset() {
-  _cosmosClearFocus();
-  try { _cosmosGraph.fitView(300); } catch(e) { console.warn('fitView', e); }
-}
-window.cosmosCloseCard = cosmosCloseCard;
-window.cosmosShowDetails = cosmosShowDetails;
+function cosmosZoom(f) {}
+function cosmosTogglePhysics() {}
+function cosmosReset() {}
 window.cosmosZoom = cosmosZoom;
 window.cosmosReset = cosmosReset;
-window.cosmosTogglePhysics = cosmosTogglePhysics;
 
 // ---- Tab Switching ----
 function switchTab(name, btn) {
@@ -2053,10 +2137,6 @@ function toggleTheme() {
   html.setAttribute('data-theme', next);
   localStorage.setItem('okf-theme', next);
   if (egoCy) { var c = conceptCache[currentId]; if (c) renderEgoGraph(currentId, c); }
-  // Update cosmos canvas bg
-  if (_cosmosGraph) {
-    try { _cosmosGraph.setConfigPartial({ backgroundColor: next === 'light' ? '#f7f7fb' : '#0a0a0f' }); } catch(e) {}
-  }
 }
 
 // ---- Sidebar resize ----
@@ -2090,7 +2170,7 @@ function toggleTheme() {
 // ---- Keyboard shortcuts ----
 document.addEventListener('keydown', function(e) {
   if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement !== qs('search')) { qs('search').focus(); e.preventDefault(); }
-  if (e.key === ' ' && e.target === document.body) { e.preventDefault(); cosmosTogglePhysics(); }
+  if (e.key === ' ' && e.target === document.body) { e.preventDefault(); }
 });
 </script>
 </body>
