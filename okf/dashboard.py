@@ -207,19 +207,7 @@ def build_app(bundle_dir: Path):
         html = TEMPLATE_PATH.read_text(encoding="utf-8")
         html = html.replace("{DYNAMIC_FLAG}", "true")
         html = html.replace("{BUNDLE_DATA}", "null")
-        html = html.replace("{BG_PATH}", "bg-dark.png")
-        html = html.replace("{BG_PATH_LIGHT}", "bg-light.png")
         return HTMLResponse(html)
-
-    @app.get("/bg-dark.png")
-    def bg_dark():
-        from fastapi.responses import FileResponse
-        return FileResponse(Path(__file__).parent / "templates" / "bg-dark.png", media_type="image/png")
-
-    @app.get("/bg-light.png")
-    def bg_light():
-        from fastapi.responses import FileResponse
-        return FileResponse(Path(__file__).parent / "templates" / "bg-light.png", media_type="image/png")
 
     return app
 
