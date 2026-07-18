@@ -66,3 +66,14 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           mike deploy --push --update-aliases "$VERSION" latest
           mike set-default --push latest
+
+      - name: Trigger Render deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_HOOK" ]; then
+            curl -s -X POST "$RENDER_HOOK" && echo "Render deploy triggered"
+          else
+            echo "No RENDER_DEPLOY_HOOK secret set — skipping Render deploy"
+          fi
