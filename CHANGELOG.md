@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [Unreleased]
+## [0.1.50] — 2026-07-19
+
+### Added
+
+- **Git repository support in `okf serve`** — Serve any remote repo directly without manual clone. `okf serve https://github.com/user/repo.git@main` clones to `~/.cache/okf/repos/`. Supports `@ref` (branch/tag/commit), `--update` (re-fetch), HTTPS/SSH/bare URLs. Deterministic cache via SHA256.
+- **`--generate` flag for `okf serve`** — Auto-run `okf generate` if `okf_bundle/index.md` is missing. Only on first clone, never on `--update`. Opt-in (default off) — preserves serve's fast static identity.
+- **`.okfignore` / `.gitignore` / `.okf-exclude` support** — Gitignore-format pattern matching across the entire pipeline. New `okf/ignore.py` module (~100 lines, zero deps). Supports `*`, `**`, `?`, `!` negation, trailing `/` for dirs, leading `/` for anchored, `#` comments. Integrated into `generate`, `update`, `--watch`, and `serve`.
+- **Homepage enhancements** — "What's New" ribbon, dedicated Git feature showcase with terminal mockup, architecture diagram (Source→AST→Bundle→LSP/LLM→MCP), Before/After developer workflow comparison, CLI table regrouped by workflow categories.
+- **23+30 tests** — `tests/test_ignore.py` covers pattern matching, integration, git URL parsing, `--generate` logic.
+
+### Fixed
+
+- `okf/serve.py` — Better error message when git ref doesn't exist.
+- `okf/serve.py` — Removed extraneous f-strings.
+
+### Infrastructure
+
+- All docs updated: CLI reference (`docs/user-guide/cli-reference.md`), landing page (`docs/index.html`), MCP card (`docs/index.md`).
+- Issues #2 (git URLs) and #3 (.okfignore) closed as implemented.
 
 
 ## [0.1.49] — 2026-07-16
@@ -898,7 +916,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.49...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.50...HEAD
+[0.1.50]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.50
 [0.1.49]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.49
 [0.1.48]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.48
 [0.1.47]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.47

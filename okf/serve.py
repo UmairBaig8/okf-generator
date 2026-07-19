@@ -142,26 +142,26 @@ def _resolve_bundle(directory: Path, generate: bool) -> Path | None:
     if _has_bundle_marker(directory):
         return bundle_sub
     if generate:
-        print(f"  No bundle found — generating (this may take a while)...")
+        print("  No bundle found — generating (this may take a while)...")
         try:
             result = subprocess.run(
                 ["okf", "generate", str(directory), str(bundle_sub)],
                 capture_output=True, text=True, timeout=600,
             )
             if result.returncode != 0:
-                print(f"  WARNING: okf generate failed:", file=sys.stderr)
+                print("  WARNING: okf generate failed:", file=sys.stderr)
                 for line in result.stderr.splitlines()[-5:]:
                     print(f"    {line}")
-                print(f"  Serving source tree instead.")
+                print("  Serving source tree instead.")
                 return None
             print(f"  Bundle generated → {bundle_sub}")
             return bundle_sub
         except FileNotFoundError:
-            print(f"  WARNING: 'okf' not found on PATH. Cannot generate bundle.")
+            print("  WARNING: 'okf' not found on PATH. Cannot generate bundle.")
             print(f"  Run 'okf generate {directory} {bundle_sub}' manually.")
             return None
         except subprocess.TimeoutExpired:
-            print(f"  ERROR: generation timed out (10 min limit).")
+            print("  ERROR: generation timed out (10 min limit).")
             print(f"  Run 'okf generate {directory} {bundle_sub}' manually.")
             return None
     return None

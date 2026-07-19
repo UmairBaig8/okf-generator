@@ -38,7 +38,7 @@ IGNORE_PATTERNS = {
 
 
 def _load_watch_ignore_patterns(source_root: Path) -> list:
-    from okf.ignore import load_patterns, matches
+    from okf.ignore import load_patterns
     pats = load_patterns(source_root)
     return pats
 
