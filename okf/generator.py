@@ -69,6 +69,7 @@ from tqdm import tqdm
 
 from okf import manifest_scanner
 from okf._walk import walk_files, walk_dirs, MAX_WORKERS, MAX_PARALLEL_WORKERS
+from okf.frontmatter import dump_frontmatter
 from okf.enrich._llm_prompts import DEEP_ENRICH_PROMPT, ENRICH_PROMPT, RELATED_PROMPT, SECURITY_PROMPT
 from okf.ignore import load_patterns, matches as ignore_matches
 from okf.parsers import get_parser
@@ -216,14 +217,13 @@ def _frontmatter(concept: Concept) -> str:
         fm["timestamp"] = concept.timestamp
     if concept.concept_id:
         fm["concept_id"] = concept.concept_id
-    # extract language from tags
     for t in concept.tags:
         if t.startswith("lang:"):
             fm["language"] = t.removeprefix("lang:")
             break
     if concept.status:
         fm["status"] = concept.status
-    return "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n"
+    return dump_frontmatter(fm)
 
 
 def _body(concept: Concept, all_concepts: dict[str, Concept], source_dir: Path | None = None) -> str:
@@ -1225,14 +1225,24 @@ def write_bundle(
     _dir_lock = threading.Lock()
 
     _fmt_total = 0.0
+    _fm_total  = 0.0   # frontmatter (PyYAML)
+    _body_total = 0.0  # body (Markdown string building)
     _io_total  = 0.0
     _mkdir_total = 0
 
-    def _write_one(c):
-        nonlocal _fmt_total, _io_total, _mkdir_total
+    def _profile_render(c, all_map, src_dir):
+        """Profile render_concept split: frontmatter (yaml) vs body (markdown)."""
         t0 = time.perf_counter()
-        content = render_concept(c, all_map, source_dir=src_dir)
+        fm = _frontmatter(c)
         t1 = time.perf_counter()
+        body = _body(c, all_map, source_dir=src_dir)
+        t2 = time.perf_counter()
+        return fm + "\n" + body, t1 - t0, t2 - t1
+
+    def _write_one(c):
+        nonlocal _fmt_total, _fm_total, _body_total, _io_total, _mkdir_total
+        content, fm_sec, body_sec = _profile_render(c, all_map, src_dir)
+        t_render_end = time.perf_counter()
 
         out_path = _concept_output_path(c, output_dir)
         parent = str(out_path.parent)
@@ -1249,20 +1259,23 @@ def write_bundle(
                 if len(fm_parts) >= 2:
                     fm = yaml.safe_load(fm_parts[1]) or {}
                     if len(fm.get("description", "")) > 60:
-                        _fmt_total += t1 - t0
+                        _fm_total += fm_sec
+                        _body_total += body_sec
                         return
             except Exception:
                 pass
         out_path.write_text(content, encoding="utf-8")
-        t2 = time.perf_counter()
-        _fmt_total += t1 - t0
-        _io_total  += t2 - t1
+        t3 = time.perf_counter()
+        _fm_total += fm_sec
+        _body_total += body_sec
+        _io_total  += t3 - t_render_end
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         list(tqdm(pool.map(_write_one, concepts), total=len(concepts), desc="Writing", unit="files"))
     _t_write_end = time.perf_counter()
+    _render_wall = _fm_total + _body_total
     log.info(f"[perf] write concepts: {len(concepts)} files in {_t_write_end - _t_write_start:.2f}s"
-             f"  (fmt={_fmt_total:.2f}s io={_io_total:.2f}s mkdirs={_mkdir_total})")
+             f"  (yaml={_fm_total:.2f}s body={_body_total:.2f}s io={_io_total:.2f}s mkdirs={_mkdir_total})")
 
     _t_index_start = time.perf_counter()
 
