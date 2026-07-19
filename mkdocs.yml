@@ -107,5 +107,6 @@ nav:
   - Development:
       - Architecture Overview: development/architecture.md
       - Contributing: development/contributing.md
+  - Performance: performance.md
   - Future Plans: future.md
   - Changelog: changelog.md
