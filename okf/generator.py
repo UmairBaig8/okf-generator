@@ -68,6 +68,7 @@ from tqdm import tqdm
 
 from okf import manifest_scanner
 from okf.enrich._llm_prompts import DEEP_ENRICH_PROMPT, ENRICH_PROMPT, RELATED_PROMPT, SECURITY_PROMPT
+from okf.ignore import load_patterns, matches as ignore_matches
 from okf.parsers import get_parser
 from okf.parsers.base import Concept, SKIP_DIRS, SKIP_DIR_SUFFIXES
 
@@ -1027,10 +1028,10 @@ def _resolve_client(cfg: dict, mode: str):
 # Scanner
 # ---------------------------------------------------------------------------
 
-def _walk_source_dirs(root: Path) -> set[str]:
-    """All non-hidden, non-skipped directories under root (relative posix paths,
-    '' for root itself). Used so directories with no parseable concepts —
-    including genuinely empty ones — still appear in the bundle layout."""
+def _walk_source_dirs(root: Path, ignore_pats: list | None = None) -> set[str]:
+    if ignore_pats is None:
+        from okf.ignore import load_patterns as _lp
+        ignore_pats = _lp(root)
     dirs = {""}
     for path in root.rglob("*"):
         if not path.is_dir():
@@ -1042,6 +1043,9 @@ def _walk_source_dirs(root: Path) -> set[str]:
             any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES)
             for part in rel_parts
         ):
+            continue
+        rel = path.relative_to(root)
+        if ignore_matches(rel, ignore_pats):
             continue
         dirs.add("/".join(rel_parts))
     return dirs
@@ -1058,6 +1062,10 @@ def scan_codebase(root: Path, exclude: list[str] | None = None,
         return []
 
     exclude = exclude or []
+    ignore_pats = load_patterns(root)
+    if ignore_pats:
+        log.info(f"Loaded {len(ignore_pats)} ignore patterns")
+
     concepts = []
     all_paths = sorted(root.rglob("*"))
     log.info(f"Scanning {len(all_paths)} paths...")
@@ -1067,6 +1075,9 @@ def scan_codebase(root: Path, exclude: list[str] | None = None,
         rel = path.relative_to(root)
         # per-run exclude patterns (e.g. --exclude tests, --exclude docs)
         if any(part in exclude for part in rel.parts):
+            continue
+        # ignore file patterns (.gitignore, .okfignore, .okf-exclude)
+        if ignore_matches(rel, ignore_pats):
             continue
         if not path.is_file():
             continue

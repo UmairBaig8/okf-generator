@@ -16,7 +16,10 @@ Commands:
   okf install    [agent]                     Install agent integration (claude, opencode, copilot, cursor, windsurf, cline, all)
   okf init                                   Interactive bundle setup wizard
   okf visualize  <bundle> [output.html]       Generate interactive HTML graph of a bundle
-  okf serve      [dir] [--port] [--open]     Serve bundle + auto-open viz
+   okf serve      [dir|git-url] [--port] [--open] [--generate]
+                                               Serve bundle + auto-open viz.
+                                               Supports git URLs: okf serve https://github.com/user/repo.git@main
+                                               --generate runs okf generate if bundle missing
   okf dashboard  <bundle> [--port] [--open]   Live bundle browser (FastAPI + interactive graph)
   okf mcp        <bundle> [--port] [--install] MCP server for AI agents. --install registers in opencode.json / claude_desktop_config.json
   okf plugin     [list|install|uninstall]     Manage parser plugins
@@ -275,7 +278,7 @@ def main():
         print("  domains         [list|validate <file>]  List or validate domain rules")
         print("  migrate         Convert OKF bundle between schema versions")
         print("  visualize       Generate interactive HTML graph of a bundle")
-        print("  serve           Serve bundle as static HTML via local server")
+        print("  serve           Serve bundle as static HTML. Supports git URLs (--generate to auto-build)")
         print("  dashboard       Launch live bundle browser (FastAPI + interactive graph)")
         print("  config          View or set OKF configuration")
         print("  init            Interactive bundle setup wizard")

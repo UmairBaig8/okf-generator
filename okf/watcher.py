@@ -37,6 +37,12 @@ IGNORE_PATTERNS = {
 }
 
 
+def _load_watch_ignore_patterns(source_root: Path) -> list:
+    from okf.ignore import load_patterns, matches
+    pats = load_patterns(source_root)
+    return pats
+
+
 def watch_and_update(
     source_root: Path,
     bundle_dir: Path,
@@ -44,15 +50,11 @@ def watch_and_update(
     exclude: set[str] | None = None,
     enable_enrich: bool = False,
 ):
-    """Watch source_root for file changes and trigger incremental updates.
-
-    Uses watchdog.Observer with PatternMatchingEventHandler.
-    Debounces rapid save bursts with a threading.Timer.
-    """
     from watchdog.observers import Observer
     from watchdog.events import PatternMatchingEventHandler
 
     exclude = exclude or set()
+    ignore_pats = _load_watch_ignore_patterns(source_root)
     timer: threading.Timer | None = None
     timer_lock = threading.Lock()
 
@@ -70,23 +72,25 @@ def watch_and_update(
 
     def _debounce_trigger(event):
         nonlocal timer
-        # Filter out editor temp-file patterns
         src_path = getattr(event, "src_path", "")
         if src_path:
             for pat in IGNORE_PATTERNS:
                 fnmatch = __import__("fnmatch")
                 if fnmatch.fnmatch(src_path, pat):
                     return
+            rel = Path(src_path).relative_to(source_root) if source_root in Path(src_path).parents else None
+            if rel is not None:
+                from okf.ignore import matches
+                if matches(rel, ignore_pats):
+                    return
 
-        # Filter to known extensions only
         ext = Path(src_path).suffix.lower() if src_path else ""
         exts = DEFAULT_WATCH_EXTENSIONS
         if ext and ext not in exts:
             return
 
-        # Also filter manifest files
         if ext in {".json", ".toml", ".yml", ".yaml"}:
-            pass  # always include manifests
+            pass
 
         with timer_lock:
             nonlocal timer

@@ -272,12 +272,9 @@ def _parse_file(path: Path, source_root: Path, parser, exclude: set[str] | None 
 
 
 def _walk_source_dirs(source_root: Path, exclude: set[str] | None = None) -> set[str]:
-    """Walk source tree and return set of relative directory paths.
-
-    Needed for index.md generation — empty dirs with only unparseable files
-    must still produce directory entries.
-    """
     exclude = exclude or set()
+    from okf.ignore import load_patterns, matches
+    ignore_pats = load_patterns(source_root)
     dirs: set[str] = set()
     for path in sorted(source_root.rglob("*")):
         if not path.is_dir():
@@ -285,6 +282,8 @@ def _walk_source_dirs(source_root: Path, exclude: set[str] | None = None) -> set
         rel = path.relative_to(source_root)
         parts = rel.parts
         if any(part in exclude for part in parts):
+            continue
+        if matches(rel, ignore_pats):
             continue
         if any(part.startswith(".") for part in parts):
             continue

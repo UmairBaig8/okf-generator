@@ -164,13 +164,14 @@ def _manifest_to_dict(m: Manifest) -> dict:
 # Source tree walk helpers
 # ---------------------------------------------------------------------------
 
-def _should_skip(rel_path: Path, exclude: set[str]) -> bool:
-    """Check if a path should be skipped based on exclude patterns and hidden dirs."""
+def _should_skip(rel_path: Path, exclude: set[str], ignore_pats: list | None = None) -> bool:
     parts = rel_path.parts
-    # User-specified exclude patterns (e.g. --exclude tests)
     if any(part in exclude for part in parts):
         return True
-    # Non-manifest files: skip hidden dirs/vendor dirs
+    if ignore_pats:
+        from okf.ignore import matches
+        if matches(rel_path, ignore_pats):
+            return True
     if any(part.startswith(".") for part in parts):
         return True
     from okf.parsers.base import SKIP_DIRS, SKIP_DIR_SUFFIXES
@@ -182,8 +183,9 @@ def _should_skip(rel_path: Path, exclude: set[str]) -> bool:
 
 
 def walk_source_files(source_root: Path, exclude: set[str] | None = None) -> dict[Path, str]:
-    """Walk source tree and return {relpath: sha256_hash} for all parseable files."""
     exclude = exclude or set()
+    from okf.ignore import load_patterns
+    ignore_pats = load_patterns(source_root)
     result: dict[Path, str] = {}
     from okf.parsers import get_parser
     import okf.manifest_scanner as manifest_scanner
@@ -192,13 +194,11 @@ def walk_source_files(source_root: Path, exclude: set[str] | None = None) -> dic
         if not path.is_file():
             continue
         rel = path.relative_to(source_root)
-        if _should_skip(rel, exclude):
+        if _should_skip(rel, exclude, ignore_pats):
             continue
-        # Check manifests first
         if manifest_scanner.is_manifest_file(path):
             result[rel] = compute_file_hash(path)
             continue
-        # Then check for a language parser
         if get_parser(path.suffix.lower()) is not None:
             result[rel] = compute_file_hash(path)
     return result
