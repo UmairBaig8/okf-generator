@@ -148,7 +148,7 @@ if parent not in _created_dirs:
 | Metric | Before | After |
 |--------|--------|-------|
 | Strategy | Sequential | Threaded (16 workers) |
-| Time | ~60s (estimated) | 14s |
+| Time | ~98s (baseline) | 14s |
 
 **But we were not done here.** We profiled *inside* the write stage and found a surprise.
 
@@ -198,17 +198,25 @@ The 14s write stage dropped to **4.1s** — dominated by disk I/O, which was alr
 ## The progression
 
 ```
-Stage        Baseline   After walk  After parse  After link  After write  After yaml
-───────────  ────────   ─────────   ───────────  ──────────  ───────────  ──────────
-Walk         58.0s      0.58s       0.58s        0.58s       0.58s        0.58s
-Parse        ~17s       ~17s        3.4s         3.4s        3.4s         3.4s
-Link         ~1s        ~1s         ~1s          0.55s       0.55s        0.55s
-Write        ~98s       ~98s        ~98s         ~98s        14s          4.1s
-───────────  ────────   ─────────   ───────────  ──────────  ───────────  ──────────
-TOTAL        157s       117s        103s         96s         21s          12s
+Stage        Baseline   After walk   After parse  After link  After write  After yaml
+                         + parse      + link fix   threading
+───────────  ────────   ──────────   ───────────  ──────────  ───────────  ──────────
+Walk         58.0s      0.58s        0.58s        0.58s       0.58s        0.58s
+Parse        ~17s       3.4s         3.4s         3.4s        3.4s         3.4s
+Link         ~1s¹       9.5s²        0.55s        0.55s       0.55s        0.55s
+Write        ~81s³      ~81s         ~81s         14s         14s          4.1s
+───────────  ────────   ──────────   ───────────  ──────────  ───────────  ──────────
+Sum          ~157s      95s          85s          19s         19s          8.6s
+Measured     157s       —            —            —           21s          12s
 ```
 
-Each column represents one optimization landed on top of the previous. The bottleneck kept moving: filesystem → parser → linker → YAML serializer.
+Each column represents one optimization on top of the previous. The bottleneck moved: filesystem → parser → linker → YAML serializer.
+
+¹ The baseline linker was fast (~1s) because 86K of 124K concepts were flat dependency entries with no call edges, processed in a single pass.
+
+² After walk pruning excluded vendored deps, only 41K concepts remained — but they had richer cross-references. Link time jumped to 9.5s (Stage 3's starting point). This is not a regression; it is the correct cost of linking real code after removing noise.
+
+³ Baseline stage times marked ~ are reconstructed from later profiling. Only the 157s TOTAL and 58.0s Walk were directly measured in the baseline run. Per-stage approximations do not sum exactly to 157s; the "Sum" row reflects the arithmetic of the estimates shown.
 
 ---
 
@@ -219,7 +227,7 @@ Each column represents one optimization landed on top of the previous. The bottl
 | `os.walk` + dir pruning | 58.0s | 0.58s | **84×** | 80 |
 | `ProcessPoolExecutor` parse | 16.7s | 3.4s | **5×** | 60 |
 | Precomputed indexes + resolve cache + set dedup | 9.5s | 0.55s | **17×** | 90 |
-| `ThreadPoolExecutor` write + dir cache | ~60s | 14s | **4×** | 40 |
+| `ThreadPoolExecutor` write + dir cache | ~81s | 14s | **5.8×** | 40 |
 | Hand-rolled frontmatter serializer | 9.87s | 0.91s | **10.8×** | 140 + 71 tests |
 
 ---
