@@ -143,7 +143,7 @@ Agents waste tokens re-reading entire files to find one function signature — 1
   [→ Agent integration](user-guide/agent-integration.md)
 
 - :material-file-tree:{ .lg } **MCP server built in**
-  11 tools — lookup, get_concept, find_callers, find_callees, search_by_tag, and more — exposed over Model Context Protocol.
+  11 tools — lookup, get_concept, find_callers, find_callees, search_by_tag, and more — exposed over Model Context Protocol. Serve remote repos directly: `okf serve https://github.com/user/repo.git@main --generate`.
   [→ MCP Server](user-guide/mcp-server.md)
 
 - :material-sync:{ .lg } **Incremental updates**

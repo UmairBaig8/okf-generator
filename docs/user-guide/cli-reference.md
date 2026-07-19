@@ -265,14 +265,33 @@ Output is a self-contained HTML file (no server, no install).
 ## `okf serve`
 
 ```bash
-okf serve [bundle_dir] [options]
+okf serve [bundle_dir|git-url] [options]
 ```
 
 Launch a local HTTP server for browsing an OKF bundle.
+
+Supports **git repository URLs** — no manual clone needed:
+
+```bash
+# Local bundle
+okf serve ./okf_bundle
+
+# Git repo (clones to ~/.cache/okf/repos/, serves immediately)
+okf serve https://github.com/user/repo.git@main
+
+# Auto-generate bundle from source if missing
+okf serve ./src --generate
+okf serve https://github.com/user/repo.git@main --generate
+```
+
+When `--generate` is passed, runs `okf generate` on first clone (never on `--update`).
+If the repo already has an `okf_bundle/` committed, generation is skipped.
 
 | Option | Description |
 |--------|-------------|
 | `--port, -p PORT` | Port (default: 8000) |
 | `--open, -o` | Open browser automatically |
-| `--quiet, -q` | Suppress request logs |
 | `--host HOST` | Host (default: 127.0.0.1) |
+| `--stop` | Stop running server |
+| `--update` | Fetch latest from git remote before serving |
+| `--generate` | Auto-generate bundle if `okf_bundle/index.md` missing (first clone only) |
