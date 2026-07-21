@@ -1,0 +1,3033 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="High-velocity codebase parser — structured, agent-ready knowledge across 17 languages">
+      
+      
+      
+        <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/user-guide/domain-classification/">
+      
+      
+        <link rel="prev" href="../languages-and-manifests/">
+      
+      
+        <link rel="next" href="../enrichment/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/okf-icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Domain Classification - OKF Generator</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep_purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#domain-classification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OKF Generator" class="md-header__button md-logo" aria-label="OKF Generator" data-md-component="logo">
+      
+  <img src="../../images/okf-icon-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OKF Generator
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Domain Classification
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep_purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep_purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/UmairBaig8/okf-generator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OKF Generator" class="md-nav__button md-logo" aria-label="OKF Generator" data-md-component="logo">
+      
+  <img src="../../images/okf-icon-white.svg" alt="logo">
+
+    </a>
+    OKF Generator
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/UmairBaig8/okf-generator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bundle-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bundle Format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../languages-and-manifests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Classification
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works-three-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works — Three Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-file-format-full-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule File Format — Full Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#match-conditions-complete-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match Conditions — Complete Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Match Conditions — Complete Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-exact-string-match" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Exact String Match
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-glob-match-glob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Glob Match ($glob)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-regex-match-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Regex Match ($regex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-presence-check-has_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Presence Check (has_key)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-catch-all-default-with-guard-require_keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Catch-all (default) with Guard (require_keys)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-multiple-conditions-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Multiple Conditions (AND)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-priority-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match Priority Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract-paths-dot-path-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extract Paths — Dot-Path Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extract Paths — Dot-Path Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#destination-fields-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destination Fields (to)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#link-rules-cross-reference-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Link Rules — Cross-Reference Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Link Rules — Cross-Reference Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-linking-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How linking works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-behavior-multiple-matches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match behavior — multiple matches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-composition-xrd-11-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Composition → XRD (1:1 reference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1-vs-v2-crossplane-practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 vs V2 Crossplane — Practical Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="V1 vs V2 Crossplane — Practical Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v1-composition-patchresources-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 Composition (patch/resources style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#v2-composition-pipeline-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V2 Composition (pipeline style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit-log-verifying-your-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit Log — Verifying Your Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-your-own-domain-rules-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing Your Own Domain Rules — Step-by-Step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing Your Own Domain Rules — Step-by-Step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-identify-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Identify the pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-rule-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create the rule file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Use it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-check-the-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Check the audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-doc-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Doc Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-domain-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Domain Composition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-local-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-Local Overrides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-sources-priority-order-highest-to-lowest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule Sources — Priority Order (highest to lowest)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composition-functions-only-function-names-not-pipeline-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composition Functions — only function names, not pipeline logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#claim-cross-linking-requires-prior-xrd-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claim cross-linking requires prior XRD classification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-based-links-are-approximate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template-based links are approximate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regex-dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regex dialect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using OKF
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using OKF
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Codebase Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Extending
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding a Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Future Plans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works-three-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works — Three Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-file-format-full-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule File Format — Full Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#match-conditions-complete-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match Conditions — Complete Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Match Conditions — Complete Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-exact-string-match" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Exact String Match
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-glob-match-glob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Glob Match ($glob)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-regex-match-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Regex Match ($regex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-presence-check-has_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Presence Check (has_key)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-catch-all-default-with-guard-require_keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Catch-all (default) with Guard (require_keys)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-multiple-conditions-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Multiple Conditions (AND)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-priority-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match Priority Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract-paths-dot-path-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extract Paths — Dot-Path Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extract Paths — Dot-Path Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#destination-fields-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destination Fields (to)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#link-rules-cross-reference-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Link Rules — Cross-Reference Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Link Rules — Cross-Reference Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-linking-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How linking works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-behavior-multiple-matches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match behavior — multiple matches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-composition-xrd-11-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Composition → XRD (1:1 reference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v1-vs-v2-crossplane-practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 vs V2 Crossplane — Practical Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="V1 vs V2 Crossplane — Practical Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v1-composition-patchresources-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 Composition (patch/resources style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#v2-composition-pipeline-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V2 Composition (pipeline style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit-log-verifying-your-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit Log — Verifying Your Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-your-own-domain-rules-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing Your Own Domain Rules — Step-by-Step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing Your Own Domain Rules — Step-by-Step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-identify-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Identify the pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-rule-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create the rule file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Use it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-check-the-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Check the audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-doc-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Doc Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-domain-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Domain Composition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-local-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-Local Overrides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-sources-priority-order-highest-to-lowest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule Sources — Priority Order (highest to lowest)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composition-functions-only-function-names-not-pipeline-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composition Functions — only function names, not pipeline logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#claim-cross-linking-requires-prior-xrd-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claim cross-linking requires prior XRD classification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-based-links-are-approximate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template-based links are approximate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regex-dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regex dialect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../bundle-format/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Core Concepts
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="domain-classification">Domain Classification<a class="headerlink" href="#domain-classification" title="Permanent link">&para;</a></h1>
+<p>Domain classification re-classifies YAML-sourced concepts using data-driven rule files. No code changes needed for new domains — just add a <code>.yaml</code> rule file.</p>
+<p><strong>Use cases:</strong>
+- Crossplane (XRD, Composition V1/V2, Claim, ProviderConfig)
+- Helm charts (HelmRelease, HelmChartConfig)
+- Kubernetes native resources (Deployments, Services, ConfigMaps)
+- Any YAML-based domain with known schemas</p>
+<hr />
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># List available built-in domains</span>
+okf<span class="w"> </span>domains
+
+<span class="c1"># Generate with Crossplane domain classification</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--domains<span class="w"> </span>crossplane
+
+<span class="c1"># Generate with a custom rule file</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--domain-rules<span class="w"> </span>./my-rules.yaml
+
+<span class="c1"># Combine built-in + custom</span>
+okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--domains<span class="w"> </span>crossplane<span class="w"> </span>--domain-rules<span class="w"> </span>./my-overrides.yaml
+
+<span class="c1"># Validate your rule file before using it</span>
+okf<span class="w"> </span>domains<span class="w"> </span>validate<span class="w"> </span>./my-rules.yaml
+</code></pre></div>
+<hr />
+<h2 id="how-it-works-three-steps">How It Works — Three Steps<a class="headerlink" href="#how-it-works-three-steps" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>YAML files (.yaml/.yml)
+    │
+    ▼
+[1] YAML Parser (Layer 1)
+    ├── Parses with yaml.safe_load_all()  (multi-doc --- support)
+    ├── Produces per file: 1 Module + N Resource concepts
+    │   (Module = file-level wrapper, never reclassified)
+    │   (Resource = one per YAML document — carries body_extra.yaml_doc)
+    └── Stores raw parsed dict on Resource concepts only
+    │
+    ▼
+[2] Domain Engine (Layer 3) runs AFTER scan_codebase()
+    ├── Loads rule files (built-in + project + CLI)
+    ├── Matches each **Resource** concept&#39;s yaml_doc against rule conditions
+    ├── Re-classifies type, adds tags, extracts fields
+    │   (Module concepts are invisible to domain rules — they stay as-is)
+    └── Links cross-references (Composition→XRD, Claim→XRD)
+    │
+    ▼
+[3] Audit log shows what matched
+    Domain classification audit: 12 concepts matched, 1 unmatched
+      Rule [XRD] matched 1 concept(s)
+      Rule [Composition-V2-Pipeline] matched 2 concept(s)
+      Rule [Composition-V1-Style] matched 1 concept(s)
+      Rule [ManagedResource] matched 5 concept(s)
+</code></pre></div>
+<hr />
+<h2 id="rule-file-format-full-reference">Rule File Format — Full Reference<a class="headerlink" href="#rule-file-format-full-reference" title="Permanent link">&para;</a></h2>
+<p>A rule file is a single YAML document with a <code>domain</code> name and a list of <code>rules</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-domain</span><span class="w">               </span><span class="c1"># Required: domain name (used for merging)</span>
+<span class="nt">rules</span><span class="p">:</span><span class="w">                          </span><span class="c1"># Required: list of classification rules</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyRuleName</span><span class="w">            </span><span class="c1"># Optional: used in audit logs</span>
+<span class="w">    </span><span class="nt">match</span><span class="p">:</span><span class="w">                      </span><span class="c1"># Required: conditions to match a concept</span>
+<span class="w">      </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MyKind&quot;</span><span class="w">            </span><span class="c1">#   Exact string match</span>
+<span class="w">      </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;example.io/*&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Glob match</span>
+
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MyType</span><span class="w">                </span><span class="c1"># New concept type if matched</span>
+<span class="w">    </span><span class="nt">add_tags</span><span class="p">:</span><span class="w">                   </span><span class="c1"># Tags to add</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">domain:my-domain</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-tag</span>
+
+<span class="w">    </span><span class="nt">extract</span><span class="p">:</span><span class="w">                    </span><span class="c1"># Extract YAML fields into concept fields</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.group</span><span class="w">        </span><span class="c1">#   Dot-path to extract from yaml_doc</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">returns</span><span class="w">             </span><span class="c1">#   Destination concept field</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.names.kind</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">signature</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.versions[0].schema.properties</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fields</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.pipeline[*].functionRef.name</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fields</span>
+
+<span class="w">    </span><span class="nt">links</span><span class="p">:</span><span class="w">                      </span><span class="c1"># Cross-reference links to other concepts</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.compositeTypeRef</span><span class="w">     </span><span class="c1"># Field to extract from yaml_doc</span>
+<span class="w">        </span><span class="nt">target_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XRD</span><span class="w">                 </span><span class="c1"># Target concept type to link to</span>
+<span class="w">        </span><span class="nt">match_on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">apiVersion</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kind</span><span class="p p-Indicator">]</span><span class="w">     </span><span class="c1"># Fields to match against target</span>
+</code></pre></div>
+<hr />
+<h2 id="match-conditions-complete-reference">Match Conditions — Complete Reference<a class="headerlink" href="#match-conditions-complete-reference" title="Permanent link">&para;</a></h2>
+<h3 id="1-exact-string-match">1. Exact String Match<a class="headerlink" href="#1-exact-string-match" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Composition&quot;</span><span class="w">           </span><span class="c1"># Must equal &quot;Composition&quot;</span>
+<span class="w">  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v1&quot;</span><span class="w">              </span><span class="c1"># Must equal &quot;v1&quot;</span>
+</code></pre></div>
+<h3 id="2-glob-match-glob">2. Glob Match (<code>$glob</code>)<a class="headerlink" href="#2-glob-match-glob" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;apiextensions.crossplane.io/*&quot;</span><span class="p p-Indicator">}</span><span class="w">   </span><span class="c1"># Wildcard prefix</span>
+</code></pre></div>
+<p>Matches any value that fits the glob pattern. Uses standard <code>fnmatch</code> syntax — <code>*</code> matches any sequence, <code>?</code> matches single character.</p>
+<p>Common patterns:
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;apiextensions.crossplane.io/*&quot;</span><span class="p p-Indicator">}</span><span class="w">   </span><span class="c1"># Any version of crossplane apiextensions</span>
+<span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;*.crossplane.io/*&quot;</span><span class="p p-Indicator">}</span><span class="w">               </span><span class="c1"># Any crossplane API group</span>
+<span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;pkg.crossplane.io/*&quot;</span><span class="p p-Indicator">}</span><span class="w">             </span><span class="c1"># Crossplane packages only</span>
+</code></pre></div></p>
+<h3 id="3-regex-match-regex">3. Regex Match (<code>$regex</code>)<a class="headerlink" href="#3-regex-match-regex" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$regex&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;^X.*&quot;</span><span class="p p-Indicator">}</span><span class="w">      </span><span class="c1"># Starts with &quot;X&quot; (XRD claim names)</span>
+<span class="w">  </span><span class="nt">metadata.name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$regex&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;prod-&quot;</span><span class="p p-Indicator">}</span><span class="w">   </span><span class="c1"># Contains &quot;prod-&quot;</span>
+</code></pre></div>
+<p>Uses Python's <code>re.search()</code> — matches if the pattern is found <strong>anywhere</strong> in the value. Use <code>^</code> for start-anchored, <code>$</code> for end-anchored. Standard Python regex syntax applies (no custom dialect).</p>
+<h3 id="4-presence-check-has_key">4. Presence Check (<code>has_key</code>)<a class="headerlink" href="#4-presence-check-has_key" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">has_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;spec.resources&quot;</span><span class="w">     </span><span class="c1"># The doc MUST have this key</span>
+</code></pre></div>
+<p>Useful when a value-based match won't work — e.g., detecting V1-style Compositions that lack <code>spec.mode</code> but have <code>spec.resources</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># V1 Composition: has spec.resources but no spec.mode</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Composition&quot;</span>
+<span class="w">    </span><span class="nt">has_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;spec.resources&quot;</span>
+
+<span class="c1"># V2 Pipeline Composition: has spec.mode: Pipeline</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Composition&quot;</span>
+<span class="w">    </span><span class="nt">spec.mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Pipeline&quot;</span>
+</code></pre></div>
+<p>Also accepts a list to require multiple keys:
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">has_key</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;spec.resources&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;spec.compositeTypeRef&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div></p>
+<h3 id="5-catch-all-default-with-guard-require_keys">5. Catch-all (<code>default</code>) with Guard (<code>require_keys</code>)<a class="headerlink" href="#5-catch-all-default-with-guard-require_keys" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">require_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">apiVersion</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kind</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># Only match k8s-like resources</span>
+</code></pre></div>
+<p>The catch-all rule is evaluated last (all other rules are tried first). The <code>require_keys</code> guard prevents it from matching non-k8s YAML like CI configs, Helm values, or settings files.</p>
+<h3 id="6-multiple-conditions-and">6. Multiple Conditions (AND)<a class="headerlink" href="#6-multiple-conditions-and" title="Permanent link">&para;</a></h3>
+<p>Multiple keys in the same <code>match:</code> block are ANDed — all must match:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;apiextensions.crossplane.io/*&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Composition&quot;</span>
+<span class="w">  </span><span class="nt">has_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;spec.resources&quot;</span>
+<span class="w">  </span><span class="nt">spec.compositeTypeRef.kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;X*&quot;</span><span class="w">    </span><span class="c1"># Regex not shown but would work</span>
+</code></pre></div>
+<h3 id="match-priority-rules">Match Priority Rules<a class="headerlink" href="#match-priority-rules" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>First-match-wins</strong> within a rule file — earlier rules take priority</li>
+<li><strong>Catch-all (<code>default: true</code>) is always evaluated last</strong> within that domain</li>
+<li><strong>Multi-domain ordering</strong> — <code>--domains A,B</code> evaluates A's rules first, then B</li>
+</ol>
+<hr />
+<h2 id="extract-paths-dot-path-reference">Extract Paths — Dot-Path Reference<a class="headerlink" href="#extract-paths-dot-path-reference" title="Permanent link">&para;</a></h2>
+<p>The <code>from</code> field in extract rules uses dot-path notation to navigate the YAML document:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+<th>Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.group</code></td>
+<td>Simple nested key</td>
+<td><code>"example.org"</code></td>
+</tr>
+<tr>
+<td><code>spec.names.kind</code></td>
+<td>Deeper nesting</td>
+<td><code>"XPostgreSQLInstance"</code></td>
+</tr>
+<tr>
+<td><code>spec.versions[0].name</code></td>
+<td>List index (0-based)</td>
+<td><code>"v1alpha1"</code></td>
+</tr>
+<tr>
+<td><code>spec.versions[*].name</code></td>
+<td>Wildcard (first item)</td>
+<td><code>"v1alpha1"</code></td>
+</tr>
+<tr>
+<td><code>spec.pipeline[*].functionRef.name</code></td>
+<td>Wildcard through list + nested</td>
+<td><code>"function-kro"</code></td>
+</tr>
+<tr>
+<td><code>metadata.name</code></td>
+<td>Top-level common field</td>
+<td><code>"my-db"</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="destination-fields-to">Destination Fields (<code>to</code>)<a class="headerlink" href="#destination-fields-to" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th><code>to</code> value</th>
+<th>Concept field</th>
+<th>Accepts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>signature</code></td>
+<td><code>Concept.signature</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>returns</code></td>
+<td><code>Concept.returns</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>Concept.description</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>fields</code></td>
+<td><code>Concept.fields</code></td>
+<td>dict (OpenAPI properties), string, or list of strings</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>to: fields</code> accepts:</strong>
+- <strong>dict</strong> (e.g., OpenAPI <code>properties</code> object): <strong>Replaces</strong> the current <code>fields</code> list → each key becomes <code>{"name": k, "type": v.type, "visibility": ""}</code>
+- <strong>string</strong> (e.g., a function name): <strong>Appends</strong> to the current <code>fields</code> list → <code>{"name": "function-kro", "type": "string", "visibility": ""}</code>
+- <strong>list of strings</strong>: Each string <strong>appended</strong> as a separate field entry</p>
+<p>Default behavior: <code>to: fields</code> with a dict <strong>overwrites</strong> any fields the YAML parser may have already set (e.g., top-level keys like <code>apiVersion</code>, <code>kind</code>). String/list extracts <strong>append</strong> to existing fields. If you need both, use separate extract rules (one dict, one string) or extract to different destinations.</p>
+<hr />
+<h2 id="link-rules-cross-reference-reference">Link Rules — Cross-Reference Reference<a class="headerlink" href="#link-rules-cross-reference-reference" title="Permanent link">&para;</a></h2>
+<p>Links create <code>related</code> edges between concepts — the same mechanism used by the code linker for function calls and imports.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">links</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.compositeTypeRef</span><span class="w">    </span><span class="c1"># Extract this field from the matched doc</span>
+<span class="w">    </span><span class="nt">target_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XRD</span><span class="w">               </span><span class="c1"># Target concept type (informational)</span>
+<span class="w">    </span><span class="nt">match_on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">apiVersion</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kind</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># Fields to match against target concepts</span>
+</code></pre></div>
+<h3 id="how-linking-works">How linking works<a class="headerlink" href="#how-linking-works" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Extract</strong>: The linker extracts the <code>field</code> value from the matched concept's <code>yaml_doc</code></li>
+<li><strong>Index</strong>: All concepts are indexed by <code>concept_id</code> and key fields (name, kind, apiVersion)</li>
+<li><strong>Match</strong>: The extracted value is compared against the concept index. See "Match behavior" below for how multiple matches are handled</li>
+<li><strong>Link</strong>: All matching concept IDs are added to the source concept's <code>related</code> list</li>
+</ol>
+<h3 id="match-behavior-multiple-matches">Match behavior — multiple matches<a class="headerlink" href="#match-behavior-multiple-matches" title="Permanent link">&para;</a></h3>
+<p>Links resolve to <strong>ALL</strong> concepts that match the criteria, not just the first one.</p>
+<p><strong>Dict-based links</strong> (e.g., <code>spec.compositeTypeRef</code> → <code>{apiVersion, kind}</code>):
+- The linker finds every concept where <code>body_extra.yaml_doc.apiVersion == X</code> AND <code>body_extra.yaml_doc.kind == Y</code>
+- In a single-XRD repo, this resolves 1:1 (one Composition → one XRD)
+- In a multi-XRD repo, this can resolve 1:N (one Composition → multiple XRDs of the same apiVersion/kind)</p>
+<p><strong>Template-based links</strong> (e.g., <code>spec.resources[*].base</code> → <code>{apiVersion, kind}</code>):
+- The extracted value is a <em>template</em> describing what kind of ManagedResource to create
+- The linker links to <strong>all</strong> existing ManagedResource concepts matching that apiVersion/kind pair
+- If three <code>RDSInstance</code> manifests exist in the bundle, all three appear in <code>related</code></p>
+<p>This means <code>related</code> for a Composition may include:
+- <strong>Specific references</strong>: The one XRD it actually composes (via <code>compositeTypeRef</code>)
+- <strong>Template matches</strong>: All ManagedResources whose apiVersion/kind match its resource templates (via <code>resources[*].base</code>)</p>
+<h3 id="example-composition-xrd-11-reference">Example: Composition → XRD (1:1 reference)<a class="headerlink" href="#example-composition-xrd-11-reference" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># In a Composition concept&#39;s yaml_doc:</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">compositeTypeRef</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example.org/v1&quot;</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;XPostgreSQLInstance&quot;</span>
+
+<span class="c1"># Link config:</span>
+<span class="nt">links</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.compositeTypeRef</span>
+<span class="w">    </span><span class="nt">target_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XRD</span>
+<span class="w">    </span><span class="nt">match_on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">apiVersion</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">kind</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>The linker finds the XRD concept whose <code>body_extra.yaml_doc</code> has <code>apiVersion: "example.org/v1"</code> AND <code>kind: "XPostgreSQLInstance"</code>, then adds <code>xrd-concept-id</code> to the Composition's <code>related</code> list.</p>
+<hr />
+<h2 id="v1-vs-v2-crossplane-practical-example">V1 vs V2 Crossplane — Practical Example<a class="headerlink" href="#v1-vs-v2-crossplane-practical-example" title="Permanent link">&para;</a></h2>
+<p>The built-in crossplane rules distinguish between V1 (resources/patches) and V2 (pipeline/functions) Compositions.</p>
+<h3 id="v1-composition-patchresources-style">V1 Composition (patch/resources style)<a class="headerlink" href="#v1-composition-patchresources-style" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apiextensions.crossplane.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Composition</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">compositeTypeRef</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example.org/v1</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XPostgreSQLInstance</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">                     </span><span class="c1"># ← V1 indicator: has_key: spec.resources</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rds-instance</span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database.aws.crossplane.io/v1beta1</span>
+<span class="w">        </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RDSInstance</span>
+<span class="w">      </span><span class="nt">patches</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FromCompositeFieldPath</span>
+<span class="w">          </span><span class="nt">fromFieldPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.storageGB</span>
+<span class="w">          </span><span class="nt">toFieldPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.forProvider.storageGB</span>
+</code></pre></div>
+<p>→ Classified as <code>type: Composition</code> with tags: <code>crossplane-v1-style</code></p>
+<h3 id="v2-composition-pipeline-style">V2 Composition (pipeline style)<a class="headerlink" href="#v2-composition-pipeline-style" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apiextensions.crossplane.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Composition</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span><span class="w">                  </span><span class="c1"># ← V2 indicator: spec.mode == &quot;Pipeline&quot;</span>
+<span class="w">  </span><span class="nt">compositeTypeRef</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example.org/v1</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XPostgreSQLInstance</span>
+<span class="w">  </span><span class="nt">pipeline</span><span class="p">:</span><span class="w">                       </span><span class="c1"># functions pipeline</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">functionRef</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">function-kro</span><span class="w">        </span><span class="c1"># ← extracted to fields</span>
+<span class="w">      </span><span class="nt">step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">functionRef</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">function-auto-ready</span>
+<span class="w">      </span><span class="nt">step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ready</span>
+</code></pre></div>
+<p>→ Classified as <code>type: Composition</code> with tags: <code>crossplane-v2-pipeline</code>
+→ Pipeline function names (<code>function-kro</code>, <code>function-auto-ready</code>) extracted to <code>fields</code></p>
+<hr />
+<h2 id="audit-log-verifying-your-rules">Audit Log — Verifying Your Rules<a class="headerlink" href="#audit-log-verifying-your-rules" title="Permanent link">&para;</a></h2>
+<p>Every time domain classification runs, the engine logs a summary of what matched:</p>
+<div class="highlight"><pre><span></span><code>Domain classification audit: 12 concepts matched, 1 unmatched
+  Rule [XRD] matched 1 concept(s)
+  Rule [Composition-V2-Pipeline] matched 2 concept(s)
+  Rule [Composition-V1-Style] matched 1 concept(s)
+  Rule [Composition-Generic] matched 0 concept(s)
+  Rule [ManagedResource] matched 5 concept(s)
+  Rule [ProviderConfig] matched 1 concept(s)
+</code></pre></div>
+<p><strong>What to check:</strong>
+- <strong><code>0 unmatched</code></strong> means all YAML concepts were classified by some rule. If there are unmatched concepts, they stayed as the generic <code>Resource</code> type.
+- <strong><code>Rule [X] matched 0 concept(s)</code></strong> means a rule never fired — check your match conditions. This is useful during rule authoring.
+- <strong>Rules with <code>0 matched</code> that SHOULD have matched</strong> indicate incorrect match conditions or rule ordering (a higher-priority rule caught it first).</p>
+<hr />
+<h2 id="rule-validation">Rule Validation<a class="headerlink" href="#rule-validation" title="Permanent link">&para;</a></h2>
+<p>Use <code>okf domains validate</code> to check a rule file for structural errors before using it:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>domains<span class="w"> </span>validate<span class="w"> </span>./my-rules.yaml
+</code></pre></div>
+<p>Output for a valid file:
+<div class="highlight"><pre><span></span><code>✅ ./my-rules.yaml — valid
+</code></pre></div></p>
+<p>Output for an invalid file:
+<div class="highlight"><pre><span></span><code>❌ ./my-rules.yaml — 2 error(s):
+
+   • rules[0]: missing &#39;match&#39; block (required)
+   • rules[0].extract[0]: &#39;to&#39; must be one of {&#39;returns&#39;, &#39;signature&#39;, &#39;fields&#39;, &#39;description&#39;}
+</code></pre></div></p>
+<p><strong>What validation checks:</strong>
+| Check | Description |
+|-------|-------------|
+| File exists + readable | Checks path and parseable YAML/JSON |
+| <code>domain</code> field | Must be a non-empty string |
+| <code>rules</code> is a list | Must be present and a list |
+| Each rule has <code>match</code> | Match block is required |
+| Match operator validity | Only <code>$glob</code> and <code>$regex</code> are valid dict operators (not <code>$badop</code>) |
+| Extract <code>from</code>/<code>to</code> | Both required; <code>to</code> must be a valid field name |
+| Link <code>field</code>/<code>match_on</code> | Both required |
+| Empty rules list | Warns if no rules defined |</p>
+<hr />
+<h2 id="writing-your-own-domain-rules-step-by-step">Writing Your Own Domain Rules — Step-by-Step<a class="headerlink" href="#writing-your-own-domain-rules-step-by-step" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-identify-the-pattern">Step 1: Identify the pattern<a class="headerlink" href="#step-1-identify-the-pattern" title="Permanent link">&para;</a></h3>
+<p>Look at the YAML files in your domain. What fields reliably identify the resource type?</p>
+<p>For a hypothetical "HelmRelease" domain:
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm.cattle.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HelmRelease</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-release</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">chart</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.0.0&quot;</span>
+</code></pre></div></p>
+<p>Key identifiers: <code>apiVersion: helm.cattle.io/v1</code> and <code>kind: HelmRelease</code>.</p>
+<h3 id="step-2-create-the-rule-file">Step 2: Create the rule file<a class="headerlink" href="#step-2-create-the-rule-file" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm</span>
+<span class="nt">rules</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HelmRelease</span>
+<span class="w">    </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;$glob&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;helm.cattle.io/*&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;HelmRelease&quot;</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HelmRelease</span>
+<span class="w">    </span><span class="nt">add_tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">domain:helm</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helm-release</span>
+<span class="w">    </span><span class="nt">extract</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.chart.name</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">signature</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spec.chart.version</span>
+<span class="w">        </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">returns</span>
+</code></pre></div>
+<h3 id="step-3-validate">Step 3: Validate<a class="headerlink" href="#step-3-validate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>domains<span class="w"> </span>validate<span class="w"> </span>./helm-rules.yaml
+</code></pre></div>
+<h3 id="step-4-use-it">Step 4: Use it<a class="headerlink" href="#step-4-use-it" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--domain-rules<span class="w"> </span>./helm-rules.yaml
+</code></pre></div>
+<h3 id="step-5-check-the-audit">Step 5: Check the audit<a class="headerlink" href="#step-5-check-the-audit" title="Permanent link">&para;</a></h3>
+<p>Verify your rules fired correctly:
+<div class="highlight"><pre><span></span><code>Domain classification audit: 5 concepts matched, 0 unmatched
+  Rule [HelmRelease] matched 3 concept(s)
+</code></pre></div></p>
+<hr />
+<h2 id="multi-doc-files">Multi-Doc Files<a class="headerlink" href="#multi-doc-files" title="Permanent link">&para;</a></h2>
+<p>YAML files can contain multiple documents separated by <code>---</code>. Each document is parsed independently by the YAML parser and becomes its own Resource concept with its own <code>body_extra.yaml_doc</code>. Domain rules match each document independently.</p>
+<p>Example — a single file containing both a Composition and an XRD:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apiextensions.crossplane.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CompositeResourceDefinition</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xpostgresqlinstances.example.org</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example.org</span>
+<span class="w">  </span><span class="nt">names</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XPostgreSQLInstance</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apiextensions.crossplane.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Composition</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xpostgresqlinstances.example.org</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">compositeTypeRef</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example.org/v1</span>
+<span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XPostgreSQLInstance</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+<span class="w">  </span><span class="nt">pipeline</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">functionRef</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">function-kro</span>
+</code></pre></div>
+<p>Running <code>--domains crossplane</code> against this file produces two matched concepts:</p>
+<div class="highlight"><pre><span></span><code>Domain classification audit: 2 concepts matched, 0 unmatched
+  Rule [XRD] matched 1 concept(s)                     ← first document
+  Rule [Composition-V2-Pipeline] matched 1 concept(s)  ← second document
+</code></pre></div>
+<p>Each document's type is set independently — one becomes <code>XRD</code>, the other <code>Composition</code>. The link between them (Composition → XRD via <code>compositeTypeRef</code>) is resolved in the linker pass.</p>
+<hr />
+<h2 id="multi-domain-composition">Multi-Domain Composition<a class="headerlink" href="#multi-domain-composition" title="Permanent link">&para;</a></h2>
+<p>When using <code>--domains A,B</code>, domains are evaluated in list order:</p>
+<div class="highlight"><pre><span></span><code>okf<span class="w"> </span>generate<span class="w"> </span>./src<span class="w"> </span>./bundle<span class="w"> </span>--domains<span class="w"> </span>crossplane,helm
+</code></pre></div>
+<ul>
+<li>Domain A (<code>crossplane</code>) rules get first shot at every concept</li>
+<li>If no rule in A matches, the concept falls through to Domain B (<code>helm</code>)</li>
+<li>Within each domain, rules are first-match-wins, with catch-all last</li>
+<li>Domain A's catch-all fires before Domain B's first rule</li>
+</ul>
+<p>This means <strong>put more specific domains first</strong> and <strong>generic/catch-all domains last</strong>.</p>
+<hr />
+<h2 id="project-local-overrides">Project-Local Overrides<a class="headerlink" href="#project-local-overrides" title="Permanent link">&para;</a></h2>
+<p>Place rule files in <code>.okf/domains/</code> for project-specific overrides (git-committable):</p>
+<div class="highlight"><pre><span></span><code>.okf/
+└── domains/
+    ├── crossplane.yaml     # Overrides built-in crossplane rules
+    └── team-specific.yaml  # New domain, additive
+</code></pre></div>
+<p>Same <code>domain</code> key = user rules override built-in rules. New <code>domain</code> key = additive.</p>
+<hr />
+<h2 id="rule-sources-priority-order-highest-to-lowest">Rule Sources — Priority Order (highest to lowest)<a class="headerlink" href="#rule-sources-priority-order-highest-to-lowest" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Path</th>
+<th>Overrides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLI</td>
+<td><code>--domain-rules ./file.yaml</code></td>
+<td>Everything</td>
+</tr>
+<tr>
+<td>Project</td>
+<td><code>.okf/domains/*.yaml</code></td>
+<td>Built-in (same domain key)</td>
+</tr>
+<tr>
+<td>Built-in</td>
+<td><code>okf/domains/rules/*.yaml</code></td>
+<td>Base rules for known domains</td>
+</tr>
+</tbody>
+</table>
+<p>All rules with the same <code>domain</code> key are merged — project rules replace built-in rules with matching names. Rules with different <code>domain</code> keys are additive.</p>
+<hr />
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<h3 id="composition-functions-only-function-names-not-pipeline-logic">Composition Functions — only function names, not pipeline logic<a class="headerlink" href="#composition-functions-only-function-names-not-pipeline-logic" title="Permanent link">&para;</a></h3>
+<p>The <code>extract</code> rule for V2 Pipeline Compositions surfaces <code>spec.pipeline[*].functionRef.name</code> — so the AI agent sees <strong>which</strong> function is used (e.g., <code>function-kro</code>, <code>function-auto-ready</code>). What the function <strong>does</strong> internally (KCL logic, Go-template strings, embedded code in <code>spec.pipeline[*].in</code>) is <strong>not</strong> extracted. Dot-path extraction cannot reach into string-embedded configuration logic. Function names are visible; function behavior is not.</p>
+<h3 id="claim-cross-linking-requires-prior-xrd-classification">Claim cross-linking requires prior XRD classification<a class="headerlink" href="#claim-cross-linking-requires-prior-xrd-classification" title="Permanent link">&para;</a></h3>
+<p>A Claim references its XRD via <code>spec.compositeRef</code> (e.g., <code>apiVersion: example.org/v1, kind: XPostgreSQLInstance</code>). The linker resolves this by matching against already-classified XRD concepts in the same bundle. If the XRD and Claim are in separate repos or different <code>okf generate</code> runs, the link won't resolve. Cross-bundle linking is not supported — both the source and target must exist in the same generation pass.</p>
+<h3 id="template-based-links-are-approximate">Template-based links are approximate<a class="headerlink" href="#template-based-links-are-approximate" title="Permanent link">&para;</a></h3>
+<p>Links using <code>spec.resources[*].base</code> (Composition → ManagedResource templates) match by <code>apiVersion + kind</code> against all existing concepts. If a repo has no actual <code>RDSInstance</code> manifests (because the Composition creates them dynamically), the link resolves to zero concepts. This is correct behavior — the link describes a <em>template reference</em>, not an <em>instance reference</em> — but it may surprise users who expect "links" to always resolve to something solid.</p>
+<h3 id="regex-dialect">Regex dialect<a class="headerlink" href="#regex-dialect" title="Permanent link">&para;</a></h3>
+<p>The <code>$regex</code> operator uses Python's <code>re.search()</code> — <strong>NOT</strong> grep, PCRE, or JavaScript regex. Key differences:
+- <code>^</code> and <code>$</code> anchor to start/end of string (same as most dialects)
+- No lookbehind/lookahead support (Python <code>re</code> doesn't support variable-length lookbehind)
+- <code>\d</code>, <code>\w</code>, <code>\s</code> shorthand classes work (same as most dialects)
+- No <code>(?i)</code> inline case-insensitive flag — use <code>[Aa]</code> or pre‑normalize values</p>
+<hr />
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Name your rules</strong> — <code>name:</code> field makes audit logs readable</li>
+<li><strong>Test with a single file first</strong> — <code>okf generate ./test-file.yaml /tmp/test --domains your-domain</code></li>
+<li><strong>Check the audit log</strong> — verify your rules matched what you expected</li>
+<li><strong>Validate before using</strong> — <code>okf domains validate ./rules.yaml</code></li>
+<li><strong>Use <code>has_key</code> for structural detection</strong> — more reliable than regex for "does this key exist"</li>
+<li><strong>Catch-all should always have <code>require_keys</code></strong> — prevents misclassifying unrelated YAML</li>
+<li><strong>Put specific rules before generic ones</strong> — first-match-wins</li>
+<li><strong>V1/V2 differentiation</strong> — match on <code>spec.mode</code> for the new style, <code>has_key: spec.resources</code> for the legacy style</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Umair Baig — MIT License
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://pypi.org/project/okf-generator/" target="_blank" rel="noopener" title="PyPI" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.path", "header.autohide", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

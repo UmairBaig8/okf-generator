@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OKF Generator — The knowledge layer for AI coding agents.</title>
+  <meta name="description" content="Deploy deterministic, tree-sitter AST knowledge graphs with LSP-powered call graph enrichment. Slash AI agent context costs by 80%, run fully-local SLMs, and integrate seamlessly via Model Context Protocol (MCP).">
+  <meta property="og:title" content="OKF Generator — The knowledge layer for AI coding agents.">
+  <meta property="og:description" content="Map any codebase into an interactive, structured knowledge graph. Drop context token bloat, maximize local model intelligence, and protect your privacy.">
+  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/banner.png">
+  <meta property="og:url" content="https://umairbaig8.github.io/okf-generator/" />
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OKF Generator — The knowledge layer for AI coding agents." />
+  <meta name="twitter:description" content="Map any codebase into a structured knowledge graph. ~100x fewer tokens." />
+  <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/banner.png" />
+  <link rel="canonical" href="https://umairbaig8.github.io/okf-generator/" />
+  <link rel="icon" type="image/svg+xml" href="images/okf-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "sans-serif"], mono: ["JetBrains Mono", "monospace"] },
+          colors: { brand: { 50: "#f5f3ff", 100: "#ede9fe", 200: "#ddd6fe", 300: "#c084fc", 400: "#a855f7", 500: "#8b5cf6", 600: "#7c3aed", 700: "#6d28d9", 800: "#5b21b6", 900: "#4c1d95", 950: "#0b041a" } },
+          animation: { "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite", float: "float 6s ease-in-out infinite" },
+          transitionProperty: { height: "height" }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #020205; }
+    ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #312e81; }
+    .dark .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(124,58,237,0.04) 1px, transparent 1px); }
+    .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(124,58,237,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(124,58,237,0.06) 1px, transparent 1px); }
+    .nav-inner { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    .nav-scrolled .nav-inner { border-radius: 18px; background: rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0,0,0,0.08); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 0 24px; gap: 20px; }
+    .nav-scrolled .nav-links { gap: 20px; }
+    .nav-scrolled .nav-links a { font-size: 13px; }
+    .nav-scrolled .nav-actions a, .nav-scrolled .nav-actions button { font-size: 12px; padding: 5px 12px; }
+    .nav-scrolled .nav-badge { font-size: 10px; padding: 2px 6px; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+    input[type="range"]::-webkit-slider-runnable-track { background: #e4e4e7; height: 6px; border-radius: 3px; }
+    .dark input[type="range"]::-webkit-slider-runnable-track { background: #1e1b4b; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -5px; background-color: #8b5cf6; height: 16px; width: 16px; border-radius: 50%; box-shadow: 0 0 10px rgba(139,92,246,0.5); transition: all 0.1s ease; }
+    .dark input[type="range"]::-webkit-slider-thumb { background-color: #a855f7; box-shadow: 0 0 10px #a855f7; }
+    input[type="range"]::-webkit-slider-thumb:hover { background-color: #a78bfa; transform: scale(1.2); }
+    .dark input[type="range"]::-webkit-slider-thumb:hover { background-color: #c084fc; }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-brand-500 selection:text-white overflow-x-hidden transition-colors duration-300">
+  <a href="#main" class="sr-only fixed top-2 left-2 z-[200] bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-0 focus:opacity-100 transition-opacity" style="position:fixed">Skip to main content</a>
+  <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-600/5 dark:bg-brand-600/10 rounded-full blur-[120px] pointer-events-none -translate-x-1/2"></div>
+  <div class="absolute top-[800px] right-0 w-[600px] h-[600px] bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+  <div class="absolute bottom-[1000px] left-10 w-[400px] h-[400px] bg-pink-600/5 rounded-full blur-[100px] pointer-events-none"></div>
+  <nav class="nav sticky top-0 z-50 flex items-center justify-center transition-colors duration-300">
+    <div class="nav-inner container max-w-7xl mx-auto px-6 h-16 flex items-center justify-between" style="max-width:1200px">
+      <a href="/okf-generator/" class="flex items-center gap-3 nav-logo" aria-label="okf-generator home">
+        <div class="w-8 h-8 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+          <img src="images/okf-icon.svg" width="32" height="32" alt="">
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-zinc-800 dark:text-zinc-100">OKF Generator</span>
+      </a>
+      <div class="nav-links hidden md:flex items-center gap-8">
+        <a href="#how-it-works" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">How it works</a>
+        <a href="#features" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Features</a>
+        <a href="#languages" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Languages</a>
+        <a href="#cli" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">CLI</a>
+        <a href="#comparison" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Comparison</a>
+        <a href="#faq" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">FAQ</a>
+        <a href="docs-site/" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">Docs</a>
+        <span class="nav-badge font-mono text-xs font-semibold bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full" id="version-badge">v0.1.41</span>
+      </div>
+      <div class="nav-actions flex items-center gap-3 flex-shrink-0">
+        <button onclick="toggleTheme()" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-2.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900/50 transition duration-200" title="Toggle theme"><i id="theme-icon" class="fa-solid fa-sun text-base dark:hidden"></i><i id="theme-icon-dark" class="fa-solid fa-moon text-base hidden dark:block"></i></button>
+        <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition border border-zinc-200 dark:border-zinc-800/80" aria-label="View on GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <span id="gh-stars" class="font-mono text-xs font-bold">GitHub</span>
+        </a>
+        <a href="#install" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-500 transition shadow-lg shadow-brand-600/20">Install</a>
+      </div>
+    </div>
+  </nav>
+  <main id="main">
+  <header class="relative pt-12 pb-24 overflow-hidden bg-grid-pattern">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <img src="images/okf_banner.jpg" alt="okf-generator pipeline overview" class="max-w-full mx-auto mb-10 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800" style="max-width:100%;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.1)" />
+      <br><br>
+      <div class="inline-flex items-center gap-2 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 rounded-full px-4 py-1.5 mb-6">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="text-brand-600 dark:text-brand-400"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span class="text-xs font-bold text-brand-600 dark:text-brand-300">OKF v0.2 · extended dialect of Google's OKF v0.1 · MIT License</span>
+      </div>
+
+      <img src="images/okf-logo-light.svg" alt="OKF Generator" width="580" style="max-width:85%;margin:0 auto 24px;display:block;padding-left:16px;" class="dark:brightness-110" />
+
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-white max-w-5xl mx-auto leading-[1.08] mb-6">
+        The <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 via-fuchsia-500 to-pink-500 dark:from-brand-400 dark:via-fuchsia-500 dark:to-pink-500">knowledge layer</span><br>
+        for AI coding agents
+      </h1>
+      <p class="text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed mb-10">
+        Turn any repository into structured, agent-ready knowledge. <strong class="text-zinc-900 dark:text-white">Local or remote</strong> — 18 languages, zero LLM required.
+      </p>
+      <br>
+      <div class="flex items-center justify-center gap-4 flex-wrap mb-8">
+        <a href="#install" class="inline-flex items-center gap-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl transition shadow-xl shadow-brand-600/20 transform hover:-translate-y-0.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2v14m0 0l-4-4m4 4l4-4M2 20h20"/></svg>
+          pip install okf-generator
+        </a>
+        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 backdrop-blur-md hover:border-zinc-400 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-800 dark:text-zinc-200 font-bold text-base px-8 py-4 rounded-xl transition transform hover:-translate-y-0.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Codespaces Demo
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 flex-wrap mb-10">
+        <span class="text-xs font-medium text-zinc-500 dark:text-zinc-500 uppercase tracking-wider mr-2">Try it live:</span>
+        <a href="viz.html" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Viz Graph
+        </a>
+        <span class="text-zinc-300 dark:text-zinc-700 text-xs">|</span>
+        <a href="https://github.com/UmairBaig8/okf-generator/tree/main/docs/okf_bundle" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Live Bundle
+        </a>
+        <span class="text-zinc-300 dark:text-zinc-700 text-xs">|</span>
+        <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+          Dev Container
+        </a>
+        <span class="text-zinc-300 dark:text-zinc-700 text-xs">|</span>
+        <a href="https://okf-generator.onrender.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          Render App
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">18</strong> languages</span>
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">22</strong> manifest formats</span>
+        <span class="inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-brand-600 dark:text-brand-400 font-extrabold text-lg">~100×</strong> fewer tokens</span>
+        <span class="inline-flex items-center gap-2 border border-cyan-200 dark:border-cyan-800 rounded-full px-5 py-2.5 text-sm font-semibold text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900/40 shadow-sm"><strong class="text-cyan-600 dark:text-cyan-400 font-extrabold text-lg">LSP</strong> 4 language servers · compiler-accurate enrichment</span>
+      </div>
+
+      <!-- What's New ribbon -->
+      <div class="max-w-5xl mx-auto mb-16 rounded-2xl border border-brand-200 dark:border-brand-900/60 bg-gradient-to-r from-brand-500/5 via-fuchsia-500/5 to-cyan-500/5 dark:from-brand-500/10 dark:via-fuchsia-500/10 dark:to-cyan-500/10 p-5 transition duration-300">
+        <div class="flex items-center gap-3 mb-3 justify-center">
+          <span class="px-2.5 py-1 rounded-md bg-gradient-to-r from-brand-600 to-fuchsia-600 text-white text-[10px] font-black uppercase tracking-wider">New in v0.1.51</span>
+          <span class="text-xs text-zinc-500 dark:text-zinc-400">13× faster okf generate · 157s → 12s · 5 optimizations · 71 new tests</span>
+        </div>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-gauge-high text-emerald-500"></i> <strong>13× faster generate</strong> — 157s → 12s</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-tree text-brand-500"></i> Filtered directory walker — 84× faster</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-microchip text-cyan-500"></i> Parallel parsing — 5× faster</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-link text-purple-500"></i> Linker overhaul — 17× faster</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-pen-fancy text-amber-500"></i> Hand-rolled YAML — 10.8× faster</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-flask text-pink-500"></i> 71 round-trip frontmatter tests</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-chart-simple text-indigo-500"></i> Stage-level <code class="font-mono">[perf]</code> instrumentation</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5"><i class="fa-solid fa-file-lines text-fuchsia-500"></i> <a href="https://umairbaig8.github.io/okf-generator/performance/" class="underline hover:text-brand-600">Full performance story</a></span>
+        </div>
+      </div>
+
+      <div class="relative max-w-5xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/30 backdrop-blur-md p-2 shadow-2xl shadow-zinc-200/50 dark:shadow-indigo-950/20 transition duration-300">
+        <div class="absolute -top-12 left-12 w-48 h-48 bg-brand-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="absolute -bottom-12 right-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950/50 rounded-t-xl transition duration-300">
+          <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500/80"></span><span class="w-3 h-3 rounded-full bg-yellow-500/80"></span><span class="w-3 h-3 rounded-full bg-emerald-500/80"></span></div>
+          <div class="font-mono text-xs text-zinc-500">okf-interactive-concept-bundle.md</div>
+          <div class="w-4"></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 min-h-[460px]">
+          <div class="lg:col-span-2 border-r border-zinc-200 dark:border-zinc-900 p-4 text-left font-mono text-sm bg-zinc-50/50 dark:bg-zinc-950/20 transition duration-300">
+            <div class="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wider font-bold mb-4">Workspace Tree</div>
+            <div class="space-y-2 select-none">
+              <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder-open text-amber-500/80"></i><span>my_project/</span></div>
+              <div class="pl-4 space-y-2">
+                <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder text-amber-500/70"></i><span>connectors/</span></div>
+                <button onclick="selectInteractiveNode('connector')" id="btn-node-connector" class="w-full flex items-center justify-between pl-4 text-left p-1.5 rounded bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition"><span class="flex items-center gap-2"><i class="fa-brands fa-python text-blue-500 dark:text-blue-400"></i><span>economic_data.py</span></span><span class="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400">Class</span></button>
+                <div class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400"><i class="fa-regular fa-folder text-amber-500/70"></i><span>pipelines/</span></div>
+                <button onclick="selectInteractiveNode('pipeline')" id="btn-node-pipeline" class="w-full flex items-center justify-between pl-4 text-left p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-transparent transition"><span class="flex items-center gap-2"><i class="fa-brands fa-python text-blue-500 dark:text-blue-400"></i><span>ingest_pipeline.py</span></span><span class="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-600">Caller</span></button>
+              </div>
+              <div class="pl-4">
+                <button onclick="selectInteractiveNode('manifest')" id="btn-node-manifest" class="w-full flex items-center justify-between p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-transparent transition"><span class="flex items-center gap-2"><i class="fa-brands fa-node-js text-emerald-500"></i><span>package.json</span></span><span class="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-600">Manifest</span></button>
+              </div>
+            </div>
+            <div class="mt-8 pt-4 border-t border-zinc-200 dark:border-zinc-900 transition duration-300">
+              <div class="text-zinc-400 dark:text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Deterministic Link</div>
+              <div class="bg-zinc-100 dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-900 space-y-2 text-xs transition duration-300">
+                <div class="flex justify-between"><span class="text-zinc-500">AST Parser:</span><span class="text-zinc-800 dark:text-zinc-300 font-semibold" id="active-ast">tree-sitter-python</span></div>
+                <div class="flex justify-between"><span class="text-zinc-500">Identified Nodes:</span><span class="text-emerald-600 dark:text-emerald-400 font-bold" id="active-nodes">17 classes, 48 methods</span></div>
+                <div class="flex justify-between"><span class="text-zinc-500">Link Resolution:</span><span class="text-indigo-600 dark:text-indigo-400 font-semibold" id="active-resolution">Perfect Cross-Ref</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-3 p-6 text-left font-mono text-sm relative bg-zinc-50/20 dark:bg-zinc-950/40 rounded-r-xl flex flex-col justify-between transition duration-300">
+            <div>
+              <div class="flex items-center justify-between mb-4"><span class="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wider font-bold">Generated Knowledge Node</span><span class="bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-bold px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800/30 flex items-center gap-1"><i class="fa-solid fa-code-fork"></i> Deterministic AST</span></div>
+              <div id="interactive-content-box" class="space-y-4">
+                <div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300">
+                  <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold text-base">CLASS: WorldBankConnector</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 51-140</span></div>
+                  <div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Fetches World Bank development indicators via wbdata API. Caches local payloads to speed up ML training loops.</div>
+                  <div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class WorldBankConnector(BaseConnector)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">get_indicator(), search_index(), validate()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Parameters:</span> <span class="text-zinc-600 dark:text-zinc-400">api_key: str (Optional), cache_ttl: int</span></div></div>
+                  <div class="grid grid-cols-2 gap-3 text-xs pt-1">
+                    <div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> wbdata.get_indicator</div></div>
+                    <div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> IngestPipeline.fetch_economic</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center justify-between text-xs text-zinc-500 transition duration-300"><span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> Code Context Size: <strong class="text-emerald-600 dark:text-emerald-400">350 Tokens</strong> (vs 42,000 raw)</span><span class="font-bold text-zinc-500 dark:text-zinc-400">Saved ~99% on Token API bills</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="py-12 border-t border-b border-zinc-200 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-950/30 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-5">Works with the agents you already use</p>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Claude Code</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Cursor</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Codex</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">GitHub Copilot</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Windsurf</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Cline</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">OpenCode</span>
+        <span class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm">Hermes Agent</span>
+      </div>
+    </div>
+  </div>
+  <section id="why" class="py-24 border-t border-zinc-200 dark:border-zinc-900 bg-zinc-100/30 dark:bg-zinc-950/40 relative transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">The Architectural Paradigm Shift</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Why Traditional AI Context Fetching is Costing You a Fortune</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Vector databases (RAG) lose source code syntax structures, while full-file loading triggers model memory starvation. okf-generator offers a deterministic middle-ground.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-8 flex flex-col justify-between relative overflow-hidden group shadow-sm transition duration-300">
+          <div class="absolute top-0 left-0 w-1.5 h-full bg-red-500/60"></div>
+          <div><div class="flex items-center justify-between mb-6"><span class="text-xs font-black uppercase text-red-600 dark:text-red-400 tracking-wider bg-red-500/10 px-3 py-1 rounded border border-red-500/20">The Context Bloat (Without OKF)</span><i class="fa-solid fa-triangle-exclamation text-red-500/70 text-lg"></i></div>
+            <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-4">Naive File Loading & Semantic Vector Slices</h4>
+            <ul class="space-y-3.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>No call hierarchy tracking:</strong> Vectors chunk code raw, shredding class context and missing how methods connect.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>Heavy API bill overhead:</strong> Feeding entire class files (30K+ tokens) into the LLM just to get one method signature.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-xmark text-red-500 mt-1"></i><span><strong>SLM memory choke:</strong> Local models like Llama 8B or Phi-3 can't process massive code windows. They forget context or run out of memory.</span></li>
+            </ul></div>
+          <div class="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-900/60 bg-red-50 dark:bg-red-950/10 p-4 rounded-xl border border-red-100 dark:border-red-950/20 transition duration-300"><div class="text-xs text-zinc-500 font-mono mb-1">Average cost per AI coding task:</div><div class="flex items-baseline gap-2"><span class="text-3xl font-extrabold text-red-600 dark:text-red-400 font-mono">$1.35</span><span class="text-zinc-500 text-xs">/ task (45,000 raw tokens loaded)</span></div></div>
+        </div>
+        <div class="rounded-2xl border border-brand-200 dark:border-brand-900 bg-white dark:bg-zinc-950 p-8 flex flex-col justify-between relative overflow-hidden shadow-sm dark:shadow-xl dark:shadow-brand-950/10 transition duration-300">
+          <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+          <div><div class="flex items-center justify-between mb-6"><span class="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">The OKF Edge (AST Knowledge Graph)</span><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i></div>
+            <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-4">AST Extraction + Deterministic Cross-Linking</h4>
+            <ul class="space-y-3.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Full AST graph mapping:</strong> Captures exact callers, callees, parameters, types, and dependencies automatically.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Surgically tiny payloads:</strong> Feeds agents highly dense 300-token summaries containing explicit reference signatures.</span></li>
+              <li class="flex items-start gap-2.5"><i class="fa-regular fa-circle-check text-emerald-500 mt-1"></i><span><strong>Unlocks local LLMs:</strong> Tight context requirements fit into local SLM memory instantly, allowing laptops to achieve cloud-like results.</span></li>
+            </ul></div>
+          <div class="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-900/60 bg-emerald-50 dark:bg-emerald-950/10 p-4 rounded-xl border border-emerald-100 dark:border-emerald-950/20 transition duration-300"><div class="text-xs text-zinc-500 font-mono mb-1">Average cost per AI coding task:</div><div class="flex items-baseline gap-2"><span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">$0.0036</span><span class="text-zinc-500 text-xs">/ task (1,200 linked tokens loaded)</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="how-it-works" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">How It Works</h2>
+      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">Three steps to a smarter agent</h3>
+      <p class="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-16">From source code to structured knowledge graph in minutes. No LLM required.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-brand-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-lg mb-5 border border-brand-200 dark:border-brand-800/30">1</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Scan your codebase</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">tree-sitter AST parsers extract every function, class, module, and dependency across 17 languages with full signatures and docstrings.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf generate</span><button onclick="copyText(this, 'okf generate')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-lg mb-5 border border-indigo-200 dark:border-indigo-800/30">2</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Retrieve any concept</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">Exact-symbol lookup returns full concept cards — signature, parameters, callers, callees — in milliseconds. Zero embeddings, zero RAG.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-indigo-600 dark:text-indigo-400 flex items-center justify-between"><span>okf lookup WorldBankConnector</span><button onclick="copyText(this, 'okf lookup WorldBankConnector')" class="text-zinc-400 hover:text-indigo-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition duration-300 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-lg mb-5 border border-emerald-200 dark:border-emerald-800/30">3</div>
+          <h4 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Integrate with any agent</h4>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5">One command installs okf-generator into Claude Code, Cursor, Copilot, Windsurf, Cline, or OpenCode with auto-trigger rules.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 font-mono text-xs text-emerald-600 dark:text-emerald-400 flex items-center justify-between"><span>okf install claude</span><button onclick="copyText(this, 'okf install claude')" class="text-zinc-400 hover:text-emerald-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="architecture" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Architecture</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">From source code to AI agent in one pipeline</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">Deterministic extraction with optional enrichment layers. Zero LLM by default — add LSP and LLM when you need them.</p>
+      </div>
+      <div class="flex flex-col lg:flex-row items-stretch justify-center gap-3 lg:gap-2 max-w-6xl mx-auto">
+        <div class="flex-1 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 p-5 text-center transition duration-300 hover:border-brand-400 dark:hover:border-brand-600 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mb-3"><i class="fa-solid fa-folder-tree text-zinc-600 dark:text-zinc-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">Source Code</div>
+          <div class="text-[10px] text-zinc-500 mt-1">18 languages</div>
+        </div>
+        <div class="flex items-center justify-center text-zinc-300 dark:text-zinc-700"><i class="fa-solid fa-arrow-right lg:rotate-90 text-xs"></i></div>
+        <div class="flex-1 rounded-xl border border-brand-300 dark:border-brand-700 bg-brand-50 dark:bg-brand-950/40 p-5 text-center transition duration-300 hover:border-brand-500 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-brand-500/15 flex items-center justify-center mb-3"><i class="fa-solid fa-code text-brand-600 dark:text-brand-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">Tree-sitter AST</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Functions · Classes · Modules</div>
+        </div>
+        <div class="flex items-center justify-center text-zinc-300 dark:text-zinc-700"><i class="fa-solid fa-arrow-right lg:rotate-90 text-xs"></i></div>
+        <div class="flex-1 rounded-xl border border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/40 p-5 text-center transition duration-300 hover:border-indigo-500 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-indigo-500/15 flex items-center justify-center mb-3"><i class="fa-solid fa-diagram-project text-indigo-600 dark:text-indigo-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">OKF Bundle</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Markdown + YAML frontmatter</div>
+        </div>
+        <div class="flex items-center justify-center text-zinc-300 dark:text-zinc-700"><i class="fa-solid fa-arrow-right lg:rotate-90 text-xs"></i></div>
+        <div class="flex-1 rounded-xl border border-cyan-300 dark:border-cyan-700 bg-cyan-50 dark:bg-cyan-950/40 p-5 text-center transition duration-300 hover:border-cyan-500 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-500/15 flex items-center justify-center mb-3"><i class="fa-solid fa-microchip text-cyan-600 dark:text-cyan-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">LSP <span class="text-[9px] font-normal text-zinc-400">optional</span></div>
+          <div class="text-[10px] text-zinc-500 mt-1">Compiler-accurate edges</div>
+        </div>
+        <div class="flex items-center justify-center text-zinc-300 dark:text-zinc-700"><i class="fa-solid fa-arrow-right lg:rotate-90 text-xs"></i></div>
+        <div class="flex-1 rounded-xl border border-fuchsia-300 dark:border-fuchsia-700 bg-fuchsia-50 dark:bg-fuchsia-950/40 p-5 text-center transition duration-300 hover:border-fuchsia-500 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-fuchsia-500/15 flex items-center justify-center mb-3"><i class="fa-solid fa-brain text-fuchsia-600 dark:text-fuchsia-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">LLM <span class="text-[9px] font-normal text-zinc-400">optional</span></div>
+          <div class="text-[10px] text-zinc-500 mt-1">Docstring enrichment</div>
+        </div>
+        <div class="flex items-center justify-center text-zinc-300 dark:text-zinc-700"><i class="fa-solid fa-arrow-right lg:rotate-90 text-xs"></i></div>
+        <div class="flex-1 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 p-5 text-center transition duration-300 hover:border-emerald-500 hover:shadow-lg">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-500/15 flex items-center justify-center mb-3"><i class="fa-solid fa-robot text-emerald-600 dark:text-emerald-400 text-lg"></i></div>
+          <div class="font-bold text-sm text-zinc-900 dark:text-white">Dashboard · MCP</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Agents consume via 11 tools</div>
+        </div>
+      </div>
+      <div class="text-center mt-8 text-xs text-zinc-500 dark:text-zinc-400">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brand-500"></i> Default path (Source → AST → Bundle → MCP) is fully offline. LSP and LLM are opt-in enrichment layers.</span>
+      </div>
+    </div>
+  </section>
+  <section id="features" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 relative transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Enterprise Capabilities</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Packed with Features Built for Production Systems</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Everything you need to compile codebases into structured metadata instantly ingestible by any AI agent.</p>
+      </div>
+
+      <!-- Git Repository Showcase -->
+      <div class="mb-12 rounded-2xl border border-brand-300 dark:border-brand-700/40 bg-gradient-to-br from-brand-500/10 via-fuchsia-500/5 to-cyan-500/10 dark:from-brand-500/15 dark:via-fuchsia-500/5 dark:to-cyan-500/15 p-8 sm:p-10 shadow-sm relative overflow-hidden transition duration-300">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-black uppercase text-brand-600 dark:text-brand-400 bg-brand-500/10 px-3 py-1 rounded border border-brand-500/20 mb-4"><i class="fa-solid fa-rocket"></i> Remote Repositories</div>
+            <h4 class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white mb-4 leading-tight">Serve any GitHub repository instantly</h4>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">No clone. No setup. No manual indexing. One command clones, builds the knowledge bundle, and launches the server.</p>
+            <ul class="space-y-2 text-sm text-zinc-700 dark:text-zinc-300 mb-6">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Pin to any branch, tag, or commit with <code class="font-mono text-xs bg-white dark:bg-zinc-900 px-1.5 py-0.5 rounded">@ref</code></li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Persistent cache at <code class="font-mono text-xs bg-white dark:bg-zinc-900 px-1.5 py-0.5 rounded">~/.cache/okf/repos/</code></li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> <code class="font-mono text-xs bg-white dark:bg-zinc-900 px-1.5 py-0.5 rounded">--update</code> re-fetches, <code class="font-mono text-xs bg-white dark:bg-zinc-900 px-1.5 py-0.5 rounded">--generate</code> auto-builds</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Perfect for MCP configs — point agents at any public bundle</li>
+            </ul>
+          </div>
+          <div class="bg-zinc-950 rounded-xl border border-zinc-800 shadow-2xl overflow-hidden">
+            <div class="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/50">
+              <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+              <span class="font-mono text-xs text-zinc-500 ml-2">okf-serve-remote.sh</span>
+            </div>
+            <div class="p-5 font-mono text-xs leading-relaxed">
+              <div class="text-zinc-500 mb-2">$ <span class="text-emerald-400">okf serve</span> <span class="text-cyan-400">https://github.com/jkroepke/okf-crossplane-v2.git@main</span> <span class="text-amber-400">--generate</span></div>
+              <div class="text-zinc-400">Git repo: github.com/jkroepke/okf-crossplane-v2.git @ main</div>
+              <div class="text-zinc-400">Cloning <span class="text-zinc-500">...</span> <span class="text-emerald-400">✓</span></div>
+              <div class="text-zinc-400">No bundle found — generating <span class="text-zinc-500">(this may take a while)...</span></div>
+              <div class="text-zinc-400">Bundle generated <span class="text-emerald-400">✓</span></div>
+              <div class="text-zinc-400">OKF Viz: <span class="text-cyan-400">http://127.0.0.1:8000/viz.html</span></div>
+              <div class="text-zinc-400">Serving <span class="text-zinc-500">on 127.0.0.1:8000</span> <span class="text-emerald-400">✓</span></div>
+              <div class="mt-3 pt-3 border-t border-zinc-800 text-zinc-600 text-[10px]"># Ready for Cursor, Claude, Cline, Windsurf MCP clients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg border border-brand-200 dark:border-brand-800/30 group-hover:bg-brand-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-code"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">AST Multi-Language Parsers</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Native Tree-Sitter + stdlib parsing across <span class="text-zinc-800 dark:text-zinc-200 font-semibold">18 languages</span> (Python, Rust, Go, JS, TS, Java, C#, C, C++, Swift, Ruby, Kotlin, SQL, YAML, PHP, Dart, Scala, Julia) to identify classes, structures, and functions.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg border border-indigo-200 dark:border-indigo-800/30 group-hover:bg-indigo-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-network-wired"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Cross-Reference Linker</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Resolves imports, call sites, and inheritance dependencies into graph edges. <span class="text-zinc-800 dark:text-zinc-200 font-semibold">LSP enrichment</span> upgrades this with compiler-accurate resolution via <code class="text-xs">okf enrich --lsp</code>.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg border border-cyan-200 dark:border-cyan-800/30 group-hover:bg-cyan-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-microchip"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">LSP-Powered Call Graphs</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Taps local language servers (pyright, gopls, rust-analyzer) for <span class="text-zinc-800 dark:text-zinc-200 font-semibold">compiler-accurate</span> caller/callee resolution. Resolves interfaces, dynamic dispatch, and external dependency traces — zero token cost.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg border border-emerald-200 dark:border-emerald-800/30 group-hover:bg-emerald-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-box-open"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Manifest Dependency Scanners</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Scans and cross-indexes <span class="text-zinc-800 dark:text-zinc-200 font-semibold">17+ configuration manifests</span> (Cargo.toml, package.json, requirements.txt, build.gradle, go.mod, Mix, Gemfile) to map libraries.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800/30 group-hover:bg-amber-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-layer-group"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Domain Classification</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Re-classify YAML concepts using data-driven rules. Built-in Crossplane support (XRD, Composition, Claim, ProviderConfig). Custom domains via <span class="text-zinc-800 dark:text-zinc-200 font-semibold">--domain-rules</span>.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center text-lg border border-pink-200 dark:border-pink-800/30 group-hover:bg-pink-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-circle-nodes"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Native MCP Server Integration</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Exposes code concepts natively as tools via the <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Model Context Protocol</span>. Cursor, Claude Desktop, and Cline can explore, search, and parse code automatically.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800/30 group-hover:bg-amber-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-chart-line"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Fine-Tuning Dataset Generator</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Extracts high-fidelity <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Instruction Pairs</span> (<code class="text-xs">okf pairs</code>) from AST nodes to train custom private coding SLMs tailored strictly to your architecture.</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-brand-500/40 transition duration-300 space-y-3 group shadow-sm lg:col-start-2">
+          <div class="w-10 h-10 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center text-lg border border-teal-200 dark:border-teal-800/30 group-hover:bg-teal-500 group-hover:text-white transition duration-300"><i class="fa-solid fa-images"></i></div>
+          <h4 class="text-lg font-bold text-zinc-900 dark:text-zinc-200">Interactive Visual Dashboard</h4>
+          <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Generates beautiful, search-enabled 2D interactive graphs of your codebase structure. Great for human onboarding, audits, and code architecture mapping.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="languages" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Language Coverage</h2>
+      <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">18 languages, modular parsers</h3>
+      <p class="text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto mb-12">Each language lives in its own parser file. Adding a new language is a self-contained tree-sitter grammar mapping — no core changes.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#3572A5"></span>Python</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#f7df1e"></span>JavaScript</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#3178c6"></span>TypeScript</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#00ADD8"></span>Go</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#b07219"></span>Java</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#dea584"></span>Rust</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#F05138"></span>Swift</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#A97BFF"></span>Kotlin</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#701516"></span>Ruby</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#555555"></span>C</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#f34b7d"></span>C++</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#178600"></span>C#</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#e38c00"></span>SQL</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#777BB4"></span>PHP</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#00D2B8"></span>Dart</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#DC322F"></span>Scala</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#4063D8"></span>Julia</span>
+        <span class="inline-flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm"><span class="w-2.5 h-2.5 rounded-full" style="background:#CB171E"></span>YAML</span>
+      </div>
+      <p class="mt-8 text-sm text-zinc-500">Plus <strong class="text-zinc-700 dark:text-zinc-300">22 manifest formats</strong>: requirements.txt · pyproject.toml · package.json · Cargo.toml · go.mod · pom.xml · Gemfile and more.</p>
+    </div>
+  </section>
+  <section id="agent-install" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Agent Integration</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">One command per agent</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">okf install writes the exact rules, instructions, and commands each agent needs. No manual configuration.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Claude Code</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Auto-triggers on 'index my codebase'</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install claude</span><button onclick="copyText(this, 'okf install claude')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Cursor</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .cursorrules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install cursor</span><button onclick="copyText(this, 'okf install cursor')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">GitHub Copilot</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes copilot-instructions.md</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install copilot</span><button onclick="copyText(this, 'okf install copilot')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Windsurf</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .windsurfrules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install windsurf</span><button onclick="copyText(this, 'okf install windsurf')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">Cline</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Writes .clinerules — auto-loaded</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install cline</span><button onclick="copyText(this, 'okf install cline')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">OpenCode</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Adds /lookup command + MCP server</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install opencode</span><button onclick="copyText(this, 'okf install opencode')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">MCP</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">11 tools via Model Context Protocol</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install mcp</span><button onclick="copyText(this, 'okf install mcp')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm transition duration-300 hover:border-brand-400/40">
+          <h4 class="text-base font-bold text-zinc-900 dark:text-white mb-1">All Agents</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Install for every agent at once</p>
+          <div class="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf install all</span><button onclick="copyText(this, 'okf install all')" class="text-zinc-400 hover:text-brand-500 transition flex-shrink-0 ml-2"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+      </div>
+      <p class="text-center mt-8 text-sm text-zinc-500">Register MCP server: <code class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded font-mono text-xs">okf mcp --install</code> · <a href="https://github.com/UmairBaig8/okf-generator/blob/main/docs/agent-integration.md" class="text-brand-600 dark:text-brand-400 hover:underline" target="_blank">Full integration guide →</a></p>
+    </div>
+  </section>
+  <section id="enrichment" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Enrichment & LSP</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">Go deeper when you need it</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">Four tiered LLM modes + deterministic LSP call-graph enrichment. All are resumable — interrupt and rerun freely.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#dcfce7;color:#16a34a">lsp</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">LSP Call Graph</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Compiler-accurate caller/callee resolution via local language servers. Zero token cost. 4 servers: pyright, gopls, rust-analyzer, typescript-language-server.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich --lsp</span><button onclick="copyText(this, 'okf enrich --lsp')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#dbeafe;color:#1d4ed8">base</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Base Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Improves descriptions and docstrings with Google-style formatting. Does not require source body — works on existing bundles.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf generate --enrich base</span><button onclick="copyText(this, 'okf generate --enrich base')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#fef9c3;color:#a16207">deep</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Deep Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Adds usage examples, side effects, security notes, and complexity estimates. Requires source body for full context.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich --llm --mode deep</span><button onclick="copyText(this, 'okf enrich --llm --mode deep')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#fee2e2;color:#dc2626">security</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Security Audit</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Audits the bundle for visible risk patterns — injection vectors, auth bypasses, unsafe deserialization. Flags risks with remediation hints.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich --llm --mode security</span><button onclick="copyText(this, 'okf enrich --llm --mode security')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300">
+          <div class="flex items-center gap-3 mb-3"><span class="font-mono text-xs font-bold px-2.5 py-1 rounded" style="background:#ede9fe;color:#5b21b6">full</span><h4 class="text-lg font-bold text-zinc-900 dark:text-white">Full Enrichment</h4></div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">All tiers plus semantic related-links across concepts. Best for training data generation and comprehensive architectural review.</p>
+          <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 font-mono text-xs text-brand-600 dark:text-brand-400 flex items-center justify-between"><span>okf enrich --full</span><button onclick="copyText(this, 'okf enrich --full')" class="text-zinc-400 hover:text-brand-500 transition"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="cli" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-terminal"></i> Command Line Interface</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Comprehensive, Elegant CLI Toolkit</h2>
+           <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Scan, serve, diff, and visualize — from local directories or remote git repos. One binary, zero config. <code class="text-brand-600 dark:text-brand-400 font-mono text-sm">okf serve https://github.com/user/repo.git@main --generate</code></p>
+          <div class="space-y-3 pt-4 select-none">
+            <button onclick="switchTerminalTab('generate')" id="tab-btn-generate" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400"></span><span class="font-mono text-sm font-semibold">okf generate</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Scan & Compile Graph</span>
+            </button>
+            <button onclick="switchTerminalTab('lookup')" id="tab-btn-lookup" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf lookup</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Instant offline search</span>
+            </button>
+            <button onclick="switchTerminalTab('update')" id="tab-btn-update" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf update</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Incremental re-scan</span>
+            </button>
+            <button onclick="switchTerminalTab('mcp')" id="tab-btn-mcp" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf mcp</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Expose to Claude/Cursor</span>
+            </button>
+            <button onclick="switchTerminalTab('visualize')" id="tab-btn-visualize" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf visualize</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">D3/SVG HTML render</span>
+            </button>
+            <button onclick="switchTerminalTab('pairs')" id="tab-btn-pairs" class="w-full flex items-center justify-between p-3.5 rounded-xl border bg-white dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-400 transition text-left">
+              <span class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700"></span><span class="font-mono text-sm font-semibold">okf pairs</span></span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400">Dataset Generator</span>
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-7 bg-zinc-950 border border-zinc-900 rounded-2xl shadow-2xl p-6 relative min-h-[440px] flex flex-col justify-between font-mono">
+          <div class="flex items-center justify-between border-b border-zinc-900 pb-4 mb-4"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-zinc-800"></span><span class="w-3 h-3 rounded-full bg-zinc-800"></span><span class="w-3 h-3 rounded-full bg-zinc-800"></span></div><span class="text-xs text-zinc-500">okf-terminal-session</span><span class="text-xs text-zinc-600">zsh</span></div>
+          <div class="flex-grow space-y-4 text-xs leading-relaxed overflow-y-auto" id="terminal-content">
+            <div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf generate ./my_project ./okf_bundle --enrich deep</span></div><div class="text-zinc-500 mt-2">[1/4] Scanned codebase: 74 python, 12 javascript, 3 manifest files.<br>[2/4] Parsing Tree-Sitter AST nodes for method definitions...<br>[3/4] Resolving cross-references & library import matches...<br>[4/4] Optional LLM enrichment: Enhancing method docstrings (Deep Mode)...</div><div class="text-emerald-400 font-bold mt-2">✓ Generated knowledge bundle at './okf_bundle/' (124 concepts resolved).<br>✓ Code context compressed by 88.4% (avg. concept size 320 tokens).</div></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-zinc-900 flex justify-between items-center"><span class="text-[10px] text-zinc-500">Run in your workspace terminal</span><button onclick="copyTerminalCommand()" class="text-xs bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 rounded px-2.5 py-1.5 flex items-center gap-1.5 transition"><i class="fa-regular fa-copy"></i> <span id="copy-text">Copy Command</span></button></div>
+        </div>
+      </div>
+      <div class="mt-24">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">CLI Reference</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">20 commands, full workflow</h3>
+          <p class="text-zinc-600 dark:text-zinc-400 mt-4">From initial generation to production CI/CD. Every command has a --help flag with full options.</p>
+        </div>
+        <div class="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <table class="w-full text-sm">
+            <thead class="bg-zinc-50 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800"><tr><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Command</th><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Usage</th><th class="text-left px-5 py-3.5 font-bold text-xs uppercase text-zinc-500 tracking-wider">Description</th></tr></thead>
+            <tbody>
+              <tr class="bg-brand-50 dark:bg-brand-950/30 border-b border-brand-200 dark:border-brand-900"><td colspan="3" class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-brand-700 dark:text-brand-400"><i class="fa-solid fa-code mr-1.5"></i> Generation &amp; Enrichment</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">generate</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf generate [src] [out] [--enrich]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Scan codebase — tree-sitter AST extraction (auto-detects project root)</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">update</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf update [src] [out] [--watch]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Incremental re-scan — SHA256 manifest, edge-diff, only changed files</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">enrich</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf enrich [--lsp] [--llm] [--mode]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">LSP call-graph (deterministic) + LLM enrichment (4 modes)</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">lsp</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf lsp [status|resolve|map]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Inspect available language servers (pyright, gopls, rust-analyzer, typescript)</td></tr>
+              <tr class="bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-200 dark:border-indigo-900"><td colspan="3" class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400"><i class="fa-solid fa-magnifying-glass mr-1.5"></i> Browsing &amp; Q&amp;A</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">lookup</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf lookup <query> [--type] [--json]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Instant symbol concept retrieval (zero LLM)</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">ask</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf ask <question></td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">AI-powered Q&A about your codebase (requires LLM)</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">diff</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf diff <old> <new> [--compact]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Compare two bundles — added/removed/changed concepts</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">pairs</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf pairs <bundle> [output.jsonl]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Export training pairs for fine-tuning</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">summarize</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf summarize <bundle></td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Regenerate SUMMARY.md from existing bundle</td></tr>
+              <tr class="bg-cyan-50 dark:bg-cyan-950/30 border-b border-cyan-200 dark:border-cyan-900"><td colspan="3" class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-cyan-700 dark:text-cyan-400"><i class="fa-solid fa-eye mr-1.5"></i> Visualization &amp; Serving</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">visualize</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf visualize <bundle> [out.html]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Generate interactive D3 force-directed graph</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">serve</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf serve [dir|git-url] [--generate] [--port]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Browse bundle via local HTTP server. Supports git URLs + auto-generate</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">dashboard</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf dashboard <bundle> [--port]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Launch FastAPI live bundle browser + graph</td></tr>
+              <tr class="bg-emerald-50 dark:bg-emerald-950/30 border-b border-emerald-200 dark:border-emerald-900"><td colspan="3" class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400"><i class="fa-solid fa-plug mr-1.5"></i> Integration &amp; MCP</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">install</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf install [claude|cursor|copilot|…]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Write agent integration rules/configs</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">mcp</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf mcp <bundle> [--install]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Start MCP server with 11 agent tools</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">agent</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf agent</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Interactive REPL with persistent sessions, slash commands</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">config</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf config [key=value]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">View or set configuration in .okfconfig</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">init</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf init [dir] [--quick]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Interactive bundle setup wizard</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">domains</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf domains [list|validate <file>]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Manage domain classification rule sets</td></tr>
+              <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">migrate</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf migrate <v0.1-to-v0.2> [--dry-run]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Convert bundle between schema versions</td></tr>
+              <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400 whitespace-nowrap">plugin</td><td class="px-5 py-3 text-zinc-700 dark:text-zinc-300 font-mono text-xs">okf plugin [list|install|uninstall]</td><td class="px-5 py-3 text-zinc-500 dark:text-zinc-400 text-xs">Manage parser plugins</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="before-after" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Developer Workflow</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">Why developers keep switching</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">Same question, two workflows. Spot the difference.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-950/10 p-7">
+          <div class="flex items-center gap-2 mb-5"><span class="w-8 h-8 rounded-lg bg-red-500/15 text-red-600 dark:text-red-400 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></span><h4 class="font-bold text-zinc-900 dark:text-white">Without OKF</h4></div>
+          <div class="space-y-3 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>grep -r "UserService" .</span></div>
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>grep -r "UserService" . --include=*.py</span></div>
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>open 17 files manually</span></div>
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>read 14,000 tokens of context</span></div>
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>clone repo before browsing</span></div>
+            <div class="flex items-center gap-2"><span class="text-red-400">✗</span><span>build embeddings infra</span></div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-red-200 dark:border-red-900/40 text-xs text-red-600 dark:text-red-400 font-semibold">~15 min · 14k tokens · approximate</div>
+        </div>
+        <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/10 p-7">
+          <div class="flex items-center gap-2 mb-5"><span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-check"></i></span><h4 class="font-bold text-zinc-900 dark:text-white">With OKF</h4></div>
+          <div class="space-y-3 font-mono text-xs text-zinc-700 dark:text-zinc-300">
+            <div class="flex items-center gap-2"><span class="text-emerald-400">✓</span><span>okf serve github.com/org/repo.git@main --generate</span></div>
+            <div class="flex items-center gap-2"><span class="text-emerald-400">✓</span><span>okf lookup UserService</span></div>
+            <div class="flex items-center gap-2"><span class="text-emerald-400">✓</span><span>okf ask "where is authentication?"</span></div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-emerald-200 dark:border-emerald-900/40 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">~3 sec · 140 tokens · deterministic</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="comparison" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Comparison</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug mb-4">okf-generator vs the alternatives</h3>
+        <p class="text-zinc-600 dark:text-zinc-400">How deterministic AST extraction compares to RAG and naive file loading for code context retrieval.</p>
+      </div>
+      <div class="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-brand-600 text-white"><tr><th class="text-left px-5 py-3.5 font-bold">Capability</th><th class="text-left px-5 py-3.5 font-bold">okf-generator</th><th class="text-left px-5 py-3.5 font-bold">RAG / Vector Search</th><th class="text-left px-5 py-3.5 font-bold">Read Whole File</th></tr></thead>
+          <tbody>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Exact symbol retrieval</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Precise AST lookup</td><td class="px-5 py-3 text-zinc-400">~ Approximate (chunk similarity)</td><td class="px-5 py-3 text-zinc-400">⚠ Manual scan</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Token cost per lookup</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~140 tokens</td><td class="px-5 py-3 text-zinc-400">~ Varies by chunk strategy</td><td class="px-5 py-3 text-zinc-400">✗ 14,000+ tokens</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Cross-reference edges</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Calls / called-by / imports</td><td class="px-5 py-3 text-zinc-400">✗ Not supported</td><td class="px-5 py-3 text-zinc-400">✗ Not supported</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Offline / no API key</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Fully offline</td><td class="px-5 py-3 text-zinc-400">✗ Needs embeddings API</td><td class="px-5 py-3 text-zinc-400">✓ Offline</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Dependency manifest parsing</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ 17 formats</td><td class="px-5 py-3 text-zinc-400">✗ Not designed for this</td><td class="px-5 py-3 text-zinc-400">✗ Manual</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Search speed</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~3-4ms (indexed)</td><td class="px-5 py-3 text-zinc-400">~ 200-500ms (embed + search)</td><td class="px-5 py-3 text-zinc-400">⚠ Manual (seconds+)</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">CI/CD integration</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Built-in GitHub Action</td><td class="px-5 py-3 text-zinc-400">✗ Custom pipeline required</td><td class="px-5 py-3 text-zinc-400">✗ N/A</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Training data export</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ Built-in JSONL pairs</td><td class="px-5 py-3 text-zinc-400">✗ Not a feature</td><td class="px-5 py-3 text-zinc-400">✗ Not a feature</td></tr>
+            <tr class="bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Context compression</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ ~97% reduction</td><td class="px-5 py-3 text-zinc-400">~ Varies by chunk strategy</td><td class="px-5 py-3 text-zinc-400">✗ 0% (full file)</td></tr>
+            <tr class="bg-zinc-50/50 dark:bg-zinc-900/30 border-b border-zinc-100 dark:border-zinc-900"><td class="px-5 py-3 font-semibold text-zinc-800 dark:text-zinc-200">Setup complexity</td><td class="px-5 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">✓ pip install + 1 command</td><td class="px-5 py-3 text-zinc-400">⚠ Vector DB + embedding pipeline</td><td class="px-5 py-3 text-zinc-400">✓ None</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section id="calculator" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-calculator"></i> Business ROI Calculator</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Calculate Your AI Context API Savings</h2>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">AI coding agents query LLM APIs dozens of times daily. Because they lack local repository indexes, they read massive files repeatedly.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Drag the sliders to see how much your engineering team can save in raw API token expenditures by deploying deterministic <strong class="text-zinc-900 dark:text-white">okf-generator</strong> structures.</p>
+          <div class="pt-4 space-y-3 text-sm"><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Average context savings: <strong class="text-zinc-900 dark:text-white">~97.3% less tokens per prompt</strong></span></div><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Context loading delay: <strong class="text-zinc-900 dark:text-white">Reduced from 18 seconds to 1.5 seconds</strong></span></div><div class="flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300"><i class="fa-solid fa-caret-right text-brand-500"></i><span>Fully Local AI option: <strong class="text-zinc-900 dark:text-white">Save 100% of LLM costs</strong> using offline SLMs.</span></div></div>
+        </div>
+        <div class="lg:col-span-7 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 sm:p-8 relative transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full blur-[60px] pointer-events-none"></div>
+          <div class="space-y-6">
+            <div><div class="flex items-center justify-between mb-2"><span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><i class="fa-solid fa-users text-zinc-400"></i> Number of AI Developers</span><span class="font-mono text-base font-bold text-brand-600 dark:text-brand-300" id="calc-devs-display">25 devs</span></div><input type="range" id="calc-devs" min="1" max="250" value="25" class="w-full h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800" oninput="calculateSavings()"><div class="flex justify-between text-[10px] text-zinc-400 dark:text-zinc-600 font-mono mt-1"><span>1 Dev</span><span>250 Devs</span></div></div>
+            <div><div class="flex items-center justify-between mb-2"><span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><i class="fa-solid fa-message text-zinc-400"></i> Daily Queries / Dev</span><span class="font-mono text-base font-bold text-brand-600 dark:text-brand-300" id="calc-queries-display">20 queries</span></div><input type="range" id="calc-queries" min="5" max="100" value="20" class="w-full h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800" oninput="calculateSavings()"><div class="flex justify-between text-[10px] text-zinc-400 dark:text-zinc-600 font-mono mt-1"><span>5 Queries</span><span>100 Queries</span></div></div>
+            <div><label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-robot text-zinc-400"></i> Target AI Model Integration</label><select id="calc-model" class="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition duration-300" onchange="calculateSavings()"><option value="sonnet" selected>Claude 3.5 Sonnet / GPT-4o ($3.00 per 1M input tokens)</option><option value="opus">Claude 3 Opus ($15.00 per 1M input tokens)</option><option value="haiku">Claude 3.5 Haiku ($0.80 per 1M input tokens)</option><option value="llama">DeepSeek-V3 / Open LLM Cloud ($0.27 per 1M input tokens)</option><option value="local">Fully Local SLM ($0.00/1M - Unlimited offline)</option></select></div>
+          </div>
+          <div class="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800/80 text-center transition duration-300"><span class="text-xs uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Estimated Annual Savings</span><div class="mt-2 flex items-center justify-center gap-2"><span class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 font-mono" id="annual-savings">$12,470</span><span class="text-zinc-500 dark:text-zinc-400 text-xs font-semibold" id="pct-saved">/ year (saved 97%)</span></div><p class="text-xs text-zinc-500 mt-4 leading-relaxed bg-white dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-900 transition duration-300" id="savings-note">Calculated assuming an average raw codebase context load of 45K tokens (naive) versus 1,200 tokens using OKF structured AST lookups.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="mcp" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-950 p-6 shadow-2xl">
+          <div class="absolute -top-12 -left-12 w-48 h-48 bg-brand-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-900 mb-4"><span class="font-mono text-xs text-zinc-500">claude_desktop_config.json</span><span class="text-xs text-zinc-500 uppercase font-mono font-bold">MCP Server Configuration</span></div>
+          <pre class="font-mono text-xs text-indigo-300 overflow-x-auto leading-relaxed bg-zinc-950/50 p-4 rounded-xl border border-zinc-900">
+{
+  "mcpServers": {
+    "okf-generator": {
+      "command": "okf",
+      "args": [
+        "mcp",
+        "/Users/username/WSpace/my_project/okf_bundle",
+        "--port",
+        "4567"
+      ]
+    }
+  }
+}</pre>
+          <div class="mt-6 pt-4 border-t border-zinc-900"><div class="text-xs text-zinc-400 mb-2 font-bold">Connect your IDE client directly:</div><div class="grid grid-cols-3 gap-2 text-center text-[11px]"><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Cursor</div><div class="text-zinc-500 mt-1">Tools Panel</div></div><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Cline</div><div class="text-zinc-500 mt-1">Native MCP</div></div><div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300"><div class="font-bold text-white">Claude Desktop</div><div class="text-zinc-500 mt-1">Desktop App</div></div></div></div>
+        </div>
+        <div class="space-y-6">
+          <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 border border-brand-200 dark:border-brand-800/40 px-3 py-1 rounded-full transition duration-300"><i class="fa-solid fa-link"></i> Model Context Protocol</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">Instantly Link Your Codebase Into IDE Agents</h2>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">The Model Context Protocol (MCP) allows client LLMs to invoke external scripts as specialized tools.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">By running <code class="text-brand-600 dark:text-brand-400 font-mono text-sm">okf mcp</code>, you instantly deploy an offline-first MCP server that exposes code definitions, dependencies, and structure maps. Now your agent in Cursor or Claude desktop doesn't guess filenames; it queries your AST-parsed database directly.</p>
+          <div class="pt-2 space-y-3 text-sm text-zinc-700 dark:text-zinc-300"><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Full tool support for <strong class="text-zinc-900 dark:text-white">okf-lookup</strong>, schema extraction, and call mapping.</span></div><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Integrates instantly with <strong class="text-zinc-900 dark:text-white">Cursor, Windsurf, Cline, and Claude Code</strong>.</span></div><div class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-500"></i><span>Zero-latency local network sockets for optimal speed.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <div class="max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">CI/CD Automation</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Keep Your Knowledge Graphs Always Up To Date</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Automate knowledge graph generation on every commit or merge request to ensure your developers and AI agents are always operating on the absolute source of truth.</p>
+      </div>
+      <div class="max-w-4xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-950 p-6 text-left relative shadow-2xl">
+        <div class="absolute top-0 right-10 bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-[10px] font-mono text-zinc-500 font-bold">github-workflow.yml</div>
+        <div class="flex items-center gap-2 pb-4 border-b border-zinc-900 mb-4"><span class="w-3 h-3 rounded-full bg-emerald-500/80"></span><span class="font-mono text-xs text-zinc-500">Deploy via GitHub Actions</span></div>
+        <pre class="font-mono text-xs sm:text-sm text-zinc-300 overflow-x-auto leading-relaxed max-h-[380px]">
+<span class="text-zinc-500"># .github/workflows/okf-bundle.yml</span>
+<span class="text-brand-400">name:</span> okf-pipeline
+
+<span class="text-brand-400">on:</span>
+  <span class="text-brand-400">push:</span>
+    <span class="text-brand-400">branches:</span> [ main, develop ]
+
+<span class="text-brand-400">jobs:</span>
+  <span class="text-brand-400">build:</span>
+    <span class="text-brand-400">runs-on:</span> ubuntu-latest
+    <span class="text-brand-400">steps:</span>
+      - <span class="text-brand-400">uses:</span> actions/checkout@v4
+      - <span class="text-brand-400">name:</span> Set up Python
+        <span class="text-brand-400">uses:</span> actions/setup-python@v5
+        <span class="text-brand-400">with:</span>
+          <span class="text-brand-400">python-version:</span> <span class="text-emerald-400">'3.11'</span>
+      - <span class="text-brand-400">name:</span> Install OKF Generator
+        <span class="text-brand-400">run:</span> |
+          pip install okf-generator
+      - <span class="text-brand-400">name:</span> Compile AST Knowledge Bundle
+        <span class="text-brand-400">run:</span> |
+          okf generate ./src ./okf_bundle --enrich deep
+      - <span class="text-brand-400">name:</span> Deploy Dashboard to GitHub Pages
+        <span class="text-brand-400">run:</span> |
+          okf visualize ./okf_bundle docs/index.html</pre>
+      </div>
+    </div>
+  </section>
+  <section id="quickstart" class="py-24 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Setup Guide</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Adopt in Less Than 2 Minutes</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Install the CLI, generate your code index, and plug it directly into your local IDE.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-200 dark:border-brand-800/30 mb-4">1</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Install Package</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Get the core package via pip, or download the lightweight binary shell runner directly.</p><pre class="bg-white dark:bg-zinc-950 text-brand-600 dark:text-brand-400 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">pip install okf-generator</pre></div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-mono font-bold text-sm border border-indigo-200 dark:border-indigo-800/30 mb-4">2</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Scan Codebase</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Generate your structural graph from your source repository instantly. Fully offline.</p><pre class="bg-white dark:bg-zinc-950 text-indigo-600 dark:text-indigo-300 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">okf generate ./src ./bundle</pre></div>
+        <div class="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm transition duration-300"><div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-sm border border-emerald-200 dark:border-emerald-800/30 mb-4">3</div><h4 class="text-base font-bold text-zinc-900 dark:text-white mb-2">Start MCP Server</h4><p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">Expose your knowledge bundle to Claude Code or Cursor via the local MCP protocol.</p><pre class="bg-white dark:bg-zinc-950 text-emerald-600 dark:text-emerald-300 font-mono text-xs p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition duration-300">okf mcp ./bundle --port 4567</pre></div>
+      </div>
+    </div>
+  </section>
+  <section id="faq" class="py-24 bg-zinc-100/30 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-900 transition duration-300">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-3">Questions & Answers</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">Frequently Asked Questions</h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mt-4">Can't find the answer you need? Get in touch with our engineering team directly via GitHub.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">How is okf-generator different from standard vector database (RAG) retrieval?</span><span id="faq-icon-1" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-1" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">Vector search (RAG) breaks code into arbitrary text chunks and generates embeddings. It is entirely unaware of code syntax. When an agent queries a function, RAG often returns irrelevant snippets while losing import pathways and parameters.<br><br><strong>okf-generator</strong> is deterministic. It maps code structurally using AST Tree-Sitter parsing. This ensures the agent is given an exact mathematical representation of variables, methods, calls, and dependencies with zero hallucination.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Does any part of my proprietary codebase leave my local environment?</span><span id="faq-icon-2" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-2" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">No. By default, core extraction runs 100% offline using your local CPU to execute Tree-Sitter parse commands. No code or metadata is sent to any third-party cloud. Optional LLM enrichment can be enabled manually and is compatible with any self-hosted model or private enterprise API.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Which AI coding agents and IDEs support OKF?</span><span id="faq-icon-3" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-3" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">Our native Model Context Protocol (MCP) server allows okf-generator to connect instantly to major client shells including <strong>Cursor, Cline, Windsurf, Claude Code, and Claude Desktop</strong>. Developers can run simple <code class=\'text-brand-600 dark:text-brand-400\'>okf install [agent]</code> directives to initialize system configurations.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">What are training pairs (`okf pairs`) used for?</span><span id="faq-icon-4" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-4" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300"><code>okf pairs</code> translates your code\'s structural graph into clean training instructions (JSONL format). This enables you to fine-tune local Small Language Models (SLMs) such as Llama 3 8B or Phi-3 so they natively understand your proprietary engineering patterns, internal libraries, and naming conventions.</p></div>
+        </div>
+        <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300">
+          <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between p-6 text-left select-none"><span class="text-base font-bold text-zinc-900 dark:text-white">Does this require an API key or internet connection?</span><span id="faq-icon-5" class="text-zinc-500 transition duration-300"><i class="fa-solid fa-plus"></i></span></button>
+          <div id="faq-content-5" class="max-h-0 overflow-hidden transition-all duration-300 bg-zinc-50/20 dark:bg-zinc-950/40"><p class="p-6 pt-0 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-900/40 transition duration-300">No. Core extraction (<code>okf generate</code>) is fully offline and deterministic — no LLM call is made unless you explicitly enable enrichment with <code>--enrich</code>. All 17 language parsers use tree-sitter or Python\'s stdlib AST and work completely air-gapped.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="install" class="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-950 text-zinc-300 py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+    <div class="absolute top-0 left-1/3 w-96 h-96 bg-brand-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+      <div class="relative">
+        <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-semibold text-brand-200">pip install in 30 seconds</span>
+        </div>
+        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">Start in 30 seconds</h3>
+        <p class="text-brand-200 max-w-2xl mx-auto text-lg leading-relaxed mb-10">Install, generate your bundle, and do your first lookup. No API keys, no signup, fully offline.</p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <div class="inline-flex items-center bg-white/10 border border-white/20 rounded-xl overflow-hidden backdrop-blur-sm shadow-xl shadow-brand-900/50"><span class="font-mono text-base font-medium text-white px-6 py-4">pip install okf-generator</span><button onclick="copyText(this, 'pip install okf-generator')" class="bg-white/15 hover:bg-white/25 text-white px-5 py-4 transition flex items-center gap-2 text-sm font-semibold border-l border-white/20"><i class="fa-regular fa-copy"></i> Copy</button></div>
+          <a href="https://umairbaig8.github.io/okf-generator/docs-site/getting-started/quick-start/" class="bg-white hover:bg-zinc-100 text-brand-900 font-bold px-8 py-4 rounded-xl transition shadow-xl transform hover:-translate-y-0.5">Get Started Free</a>
+        </div>
+        <div class="mt-6 flex items-center justify-center gap-4 text-sm text-brand-300">
+          <span>Or curl: <a href="https://raw.githubusercontent.com/UmairBaig8/okf-generator/main/scripts/install.sh" class="text-white hover:underline font-mono" target="_blank">install.sh</a></span>
+          <span class="text-brand-400/50">|</span>
+          <span>LLM support: <code class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs text-brand-200">pip install "okf-generator[llm]"</code></span>
+          <span class="text-brand-400/50">|</span>
+          <span>Dashboard support: <code class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs text-brand-200">pip install "okf-generator[dashboard]"</code></span>
+        </div>
+        <div class="mt-10 flex items-center justify-center gap-4 flex-wrap">
+          <a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-brands fa-github"></i> GitHub</a>
+          <a href="https://pypi.org/project/okf-generator/" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-solid fa-box"></i> PyPI</a>
+          <a href="https://umairbaig8.github.io/okf-generator/docs-site/getting-started/quick-start/" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-solid fa-book"></i> Documentation</a>
+          <a href="https://www.linkedin.com/pulse/how-do-you-give-ai-agent-understanding-entire-codebase-umair-baig-q7ubf" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-300 hover:text-white border border-white/20 hover:border-white/40 px-5 py-2.5 rounded-lg transition backdrop-blur-sm"><i class="fa-brands fa-linkedin"></i> LinkedIn Article</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main><!-- end #main -->
+  <footer class="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 text-sm border-t border-zinc-200 dark:border-zinc-800 pt-20 pb-12 relative overflow-hidden">
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-600/5 dark:bg-brand-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute -top-12 left-1/3 w-80 h-80 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-left">
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Project</div><ul class="space-y-2 text-xs"><li><a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">GitHub</a></li><li><a href="https://pypi.org/project/okf-generator/" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">PyPI</a></li><li><a href="docs-site/" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Documentation</a></li><li><a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">MIT License</a></li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Docs</div><ul class="space-y-2 text-xs"><li><a href="#cli" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">CLI Reference</a></li><li><a href="#comparison" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Comparison</a></li><li><a href="#enrichment" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">Enrichment</a></li><li><a href="#faq" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition">FAQ</a></li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Languages</div><ul class="space-y-2 text-xs"><li class="text-zinc-500 dark:text-zinc-400">Python, JS, TS, Go, Rust</li><li class="text-zinc-500 dark:text-zinc-400">Java, Kotlin, C, C++, C#</li><li class="text-zinc-500 dark:text-zinc-400">Ruby, Swift, PHP, Dart, Scala</li></ul></div>
+        <div class="space-y-3"><div class="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">Support</div><p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">Open an issue on <a href="https://github.com/UmairBaig8/okf-generator" class="text-brand-600 dark:text-brand-400 hover:underline">GitHub</a> for help.</p></div>
+      </div>
+      <div class="border-t border-zinc-200 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs gap-4">
+        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-[10px]">okf</div><span class="text-zinc-500 dark:text-zinc-400">&copy; 2026 Umair Baig &middot; <a href="https://github.com/UmairBaig8/okf-generator/blob/main/LICENSE" class="text-brand-600 dark:text-brand-400 hover:underline">MIT License</a></span></div>
+        <div class="flex items-center gap-4"><a href="https://github.com/UmairBaig8/okf-generator" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition"><i class="fa-brands fa-github"></i> GitHub</a><a href="https://pypi.org/project/okf-generator/" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition"><i class="fa-solid fa-box"></i> PyPI</a><a href="https://www.linkedin.com/pulse/how-do-you-give-ai-agent-understanding-entire-codebase-umair-baig-q7ubf" target="_blank" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition"><i class="fa-brands fa-linkedin"></i> LinkedIn</a></div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme(){const html=document.documentElement;if(html.classList.contains("dark")){html.classList.remove("dark");localStorage.setItem("theme","light")}else{html.classList.add("dark");localStorage.setItem("theme","dark")}}
+    (function(){const t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}else{document.documentElement.classList.add("dark")}})()
+
+    // Nav scroll effect
+    let lastScroll=0;
+    window.addEventListener('scroll',()=>{
+      const nav=document.querySelector('.nav');
+      const currentScroll=window.scrollY;
+      if(currentScroll>80){nav.classList.add('nav-scrolled')}else{nav.classList.remove('nav-scrolled')}
+      lastScroll=currentScroll;
+    });
+
+    // Live GitHub stars
+    async function fetchStars(){
+      try{
+        const res=await fetch('https://api.github.com/repos/UmairBaig8/okf-generator',{headers:{'Accept':'application/vnd.github.v3+json'}});
+        if(!res.ok)return;
+        const data=await res.json();
+        const stars=data.stargazers_count;
+        if(stars!=null){
+          const el=document.getElementById('gh-stars');
+          if(el)el.textContent='\u2605 '+(stars>=1000?(stars/1000).toFixed(1)+'k':stars)+' Stars';
+        }
+      }catch(e){}
+    }
+    fetchStars();
+
+    // Live version from PyPI
+    fetch('https://pypi.org/pypi/okf-generator/json')
+      .then(r=>r.json())
+      .then(d=>{const v=d.info.version;const el=document.getElementById('version-badge');if(el)el.textContent='v'+v;})
+      .catch(()=>{});
+    function selectInteractiveNode(type){const nodes=["connector","pipeline","manifest"];nodes.forEach(n=>{const btn=document.getElementById("btn-node-"+n);btn.className="w-full flex items-center justify-between p-1.5 rounded text-zinc-600 dark:text-zinc-400 border border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"});const activeBtn=document.getElementById("btn-node-"+type);activeBtn.className="w-full flex items-center justify-between p-1.5 rounded bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition shadow-sm dark:shadow-none";const box=document.getElementById("interactive-content-box");const aAST=document.getElementById("active-ast");const aN=document.getElementById("active-nodes");const aR=document.getElementById("active-resolution");if(type==="connector"){aAST.textContent="tree-sitter-python";aN.textContent="17 classes, 48 methods";aR.textContent="Perfect Cross-Ref";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold text-base">CLASS: WorldBankConnector</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 51-140</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Fetches World Bank development indicators via wbdata API. Caches local payloads to speed up ML training loops.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class WorldBankConnector(BaseConnector)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">get_indicator(), search_index(), validate()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Parameters:</span> <span class="text-zinc-600 dark:text-zinc-400">api_key: str (Optional), cache_ttl: int</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> wbdata.get_indicator</div></div><div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> IngestPipeline.fetch_economic</div></div></div></div>`}else if(type==="pipeline"){aAST.textContent="tree-sitter-python";aN.textContent="4 classes, 26 methods";aR.textContent="Linked callers resolved";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-indigo-600 dark:text-indigo-400 font-bold text-base">CLASS: IngestPipeline</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Line 12-88</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Standard data loading pipeline executing parallel fetch loops across world financial indices.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Signature:</span> <span class="text-amber-600 dark:text-yellow-400 font-semibold">class IngestPipeline(BasePipeline)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Methods:</span> <span class="text-indigo-600 dark:text-indigo-400">fetch_economic(), process_raw(), dump()</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Imports:</span> <span class="text-zinc-600 dark:text-zinc-400 font-semibold">WorldBankConnector, pandas</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Calls Out (Outgoing edges):</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-right text-[10px]"></i> WorldBankConnector.get_indicator</div></div><div class="p-2 rounded bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-100 dark:border-fuchsia-900/30 transition duration-300"><div class="text-zinc-500 mb-1">Called-By (Incoming edges):</div><div class="text-fuchsia-600 dark:text-fuchsia-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> main.py (Entrypoint)</div></div></div></div>`}else if(type==="manifest"){aAST.textContent="json-manifest-scanner";aN.textContent="12 dependencies linked";aR.textContent="Package Registry Match";box.innerHTML=`<div class="bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-900 space-y-3 shadow-sm dark:shadow-inner transition duration-300"><div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-2"><span class="text-amber-600 dark:text-amber-400 font-bold text-base">MANIFEST: package.json</span><span class="text-zinc-400 dark:text-zinc-500 text-xs">Node.js config</span></div><div class="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed"><span class="text-brand-600 dark:text-brand-400 font-semibold">Description:</span> Configuration index referencing dev tools, web visualization assets, and CLI packaging guidelines.</div><div class="text-xs space-y-1 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded border border-zinc-200 dark:border-zinc-900 transition duration-300"><div><span class="text-zinc-400 dark:text-zinc-500">Dependencies:</span> <span class="text-zinc-600 dark:text-zinc-300">d3-force (v3.0.0), tailwindcss (v3.4.0)</span></div><div><span class="text-zinc-400 dark:text-zinc-500">Dev Dependencies:</span> <span class="text-zinc-600 dark:text-zinc-300">typescript (v5.2.2), jest (v29.7.0)</span></div></div><div class="grid grid-cols-2 gap-3 text-xs pt-1"><div class="p-2 rounded bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 col-span-2 transition duration-300"><div class="text-zinc-500 mb-1">Graph Links Created:</div><div class="text-indigo-600 dark:text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> Resolved D3 packages dynamically inside visualizer.py mapping</div></div></div></div>`}}
+    function calculateSavings(){const d=parseInt(document.getElementById("calc-devs").value);const q=parseInt(document.getElementById("calc-queries").value);const m=document.getElementById("calc-model").value;document.getElementById("calc-devs-display").textContent=d+" devs";document.getElementById("calc-queries-display").textContent=q+" queries";let p=3.00;if(m==="opus")p=15.00;else if(m==="haiku")p=0.80;else if(m==="llama")p=0.27;else if(m==="local")p=0.00;const diff=45000-1200;const qpd=d*q;const yr=220;const saved=(qpd*diff*yr/1000000)*p;const fmt=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(saved);document.getElementById("annual-savings").textContent=fmt;if(m==="local"){document.getElementById("pct-saved").textContent="/ year (saved 100%)";document.getElementById("savings-note").textContent="Running fully offline with Llama 3 / Phi-3 local execution skips all public APIs, costing your organization zero dollars in query licensing."}else{const pct=Math.round((1-(1200/45000))*100);document.getElementById("pct-saved").textContent="/ year (saved "+pct+"%)";document.getElementById("savings-note").textContent="Calculated assuming an average raw codebase context load of 45K tokens (naive) versus 1,200 tokens using OKF structured AST lookups."}}
+    calculateSavings()
+    let currentActiveTab="generate";function switchTerminalTab(tab){const oldBtn=document.getElementById("tab-btn-"+currentActiveTab);oldBtn.className="w-full flex items-center justify-between p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400 transition text-left";const oldDot=oldBtn.querySelector("span.rounded-full");oldDot.className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-700";const newBtn=document.getElementById("tab-btn-"+tab);newBtn.className="w-full flex items-center justify-between p-3.5 rounded-xl border bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 transition text-left";const newDot=newBtn.querySelector("span.rounded-full");newDot.className="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400";currentActiveTab=tab;const term=document.getElementById("terminal-content");document.getElementById("copy-text").textContent="Copy Command";
+    if(tab==="generate"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf generate ./my_project ./okf_bundle --enrich deep</span></div><div class="text-zinc-500 mt-2">[1/4] Scanned codebase: 74 python, 12 javascript, 3 manifest files.<br>[2/4] Parsing Tree-Sitter AST nodes for method definitions...<br>[3/4] Resolving cross-references & library import matches...<br>[4/4] Optional LLM enrichment: Enhancing method docstrings (Deep Mode)...</div><div class="text-emerald-400 font-bold mt-2">✓ Generated knowledge bundle at './okf_bundle/' (124 concepts resolved).<br>✓ Code context compressed by 88.4% (avg. concept size 320 tokens).</div></div>`;}else if(tab==="lookup"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf lookup WorldBankConnector</span></div><div class="text-zinc-300 mt-2"><span class="text-emerald-400 font-bold">CLASS:</span> WorldBankConnector<br><span class="text-zinc-500">Source:</span> my_project/connectors/economic_data.py (line 51)<br><span class="text-zinc-500">Description:</span> Fetches World Bank development indicators via wbdata API.<br><span class="text-zinc-500">Methods:</span> get_indicator, search_index, validate<br><span class="text-zinc-500">Signature:</span> class WorldBankConnector(BaseConnector)<br><span class="text-zinc-500">Calls Out:</span> [wbdata.get_indicator, pandas.DataFrame]<br><span class="text-zinc-500">Called-by:</span> [IngestPipeline.fetch_economic]</div><div class="text-zinc-500 text-[10px] mt-2">Lookup resolved in 3.4ms (Cached). Zero network connections used.</div></div>`;}else if(tab==="update"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf update ./src ./okf_bundle</span></div><div class="text-zinc-500 mt-2">[1/3] Manifest diff: 13 files, 1 changed (models.py)<br>[2/3] Re-parsing models.py → 6 updated, +1 new<br>[3/3] Edge-diff: 8 dirty written</div><div class="text-emerald-400 font-bold mt-2">✓ Bundle updated (0.4s vs 4.2s full).<br>✓ 8 of 68 concept files rewritten.</div></div>`;}else if(tab==="mcp"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf mcp ./okf_bundle --port 4567</span></div><div class="text-zinc-500 mt-2">Initializing Model Context Protocol server...<br>Loading 124 concepts from './okf_bundle/'...<br>Establishing SSE transport connection endpoints...</div><div class="text-emerald-400 font-bold mt-2">✓ okf-generator MCP server listening successfully at:<br>&nbsp;&nbsp;&nbsp;&nbsp;http://localhost:4567/sse<br>✓ Ready for Cline, Cursor, or Claude Desktop Client connections.</div></div>`;}else if(tab==="visualize"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf visualize ./okf_bundle docs/index.html</span></div><div class="text-zinc-500 mt-2">Constructing structural dependency matrices...<br>Injecting concept schema templates into D3 force-layout template...<br>Writing static assets...</div><div class="text-emerald-400 font-bold mt-2">✓ Visualization HTML rendered successfully at: 'docs/index.html'.<br>✓ Serve with: "okf serve ./okf_bundle --open"</div></div>`;}else if(tab==="pairs"){term.innerHTML=`<div><div class="flex items-center gap-2 text-zinc-400"><span class="text-brand-400">$</span><span class="text-zinc-100 font-bold">okf pairs ./okf_bundle ./fine_tuning_pairs.jsonl</span></div><div class="text-zinc-500 mt-2">Reconstructing 124 structural AST branches...<br>Synthesizing code architecture instruction-completion pairs...<br>Formatting to JSONLines schema template...</div><div class="text-emerald-400 font-bold mt-2">✓ Successfully extracted 320 high-fidelity fine-tuning instruction lines.<br>✓ Saved JSONL data package to './fine_tuning_pairs.jsonl'.</div></div>`;}}
+    function copyTerminalCommand(){let cmd="okf generate ./my_project ./okf_bundle --enrich deep";if(currentActiveTab==="lookup")cmd="okf lookup WorldBankConnector";else if(currentActiveTab==="update")cmd="okf update ./my_project ./okf_bundle";else if(currentActiveTab==="mcp")cmd="okf mcp ./okf_bundle --port 4567";else if(currentActiveTab==="visualize")cmd="okf visualize ./okf_bundle docs/index.html";else if(currentActiveTab==="pairs")cmd="okf pairs ./okf_bundle ./fine_tuning_pairs.jsonl";navigator.clipboard.writeText(cmd).then(()=>{document.getElementById("copy-text").textContent="Copied!"})}
+    function copyText(btn,text){navigator.clipboard.writeText(text).then(()=>{const orig=btn.innerHTML;btn.innerHTML='<i class="fa-solid fa-check"></i>';setTimeout(()=>{btn.innerHTML=orig},1500)}).catch(()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta)})}
+    function toggleFAQ(idx){const content=document.getElementById("faq-content-"+idx);const icon=document.getElementById("faq-icon-"+idx);const parent=content.parentElement;if(content.style.maxHeight&&content.style.maxHeight!=="0px"){content.style.maxHeight="0px";icon.innerHTML='<i class="fa-solid fa-plus"></i>';parent.className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300"}else{for(let i=1;i<=5;i++){const c=document.getElementById("faq-content-"+i);const ico=document.getElementById("faq-icon-"+i);const p=c.parentElement;if(c)c.style.maxHeight="0px";if(ico)ico.innerHTML='<i class="fa-solid fa-plus"></i>';if(p)p.className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden transition duration-300"}content.style.maxHeight=content.scrollHeight+"px";icon.innerHTML='<i class="fa-solid fa-minus"></i>';parent.className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm dark:shadow-xl transition duration-300"}}
+  </script>
+</body>
+</html>
