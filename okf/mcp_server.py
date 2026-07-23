@@ -28,6 +28,7 @@ Tools:
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -147,7 +148,8 @@ class BundleMCPServer:
         """Build {referenced_cid: [concepts_that_reference_it]} from all concepts."""
         idx: dict[str, list[dict]] = {}
         for c in self.concepts:
-            related_text = c.get("sections", {}).get("related", "")
+            secs = c.get("sections", {})
+            related_text = secs.get("relationships", "") or secs.get("related", "")
             refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
             for ref in refs:
                 idx.setdefault(ref, []).append(c)
@@ -157,7 +159,8 @@ class BundleMCPServer:
         """Build {caller_cid: [concepts_it_references]} from all concepts."""
         idx: dict[str, list[dict]] = {}
         for c in self.concepts:
-            related_text = c.get("sections", {}).get("related", "")
+            secs = c.get("sections", {})
+            related_text = secs.get("relationships", "") or secs.get("related", "")
             refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
             if refs:
                 idx[c["concept_id"]] = [
@@ -865,7 +868,8 @@ class BundleMCPServer:
                 pass
 
         MCPHTTPHandler.server_ref = self
-        server = HTTPServer(("127.0.0.1", port), MCPHTTPHandler)
+        bind = os.environ.get("OKF_MCP_BIND", "127.0.0.1")
+        server = HTTPServer((bind, port), MCPHTTPHandler)
         print(f"MCP server listening on http://127.0.0.1:{port}/mcp", flush=True)
         try:
             server.serve_forever()
