@@ -60,7 +60,7 @@ SKIP_DIRS = {
     "node_modules", ".venv", "venv", "env", ".env", "dist", "build",
     ".tox", "htmlcov", ".eggs", "vendor", "target", "coverage",
     ".next", ".nuxt", "__snapshots__", ".cache", "tmp", "temp", "logs",
-    "static", "media", "assets",
+    "static", "media", "assets", "third_party", "external",
 }
 
 SKIP_DIR_SUFFIXES = (".egg-info", ".dist-info")

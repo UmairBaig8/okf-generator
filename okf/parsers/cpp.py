@@ -117,11 +117,15 @@ class CppParser(TreeSitterParser):
                         for sub in child.children:
                             if sub.type in ("type_identifier", "template_type"):
                                 bases.append(_node_text(sub))
-                methods = [
-                    _node_text(m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")).split("(")[0].strip()
-                    for m in _find_all(node, "function_definition")
-                    if m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")
-                ]
+                methods = []
+                for m in _find_all(node, "function_definition"):
+                    d = m.child_by_field_name("declarator") or m.child_by_field_name("function_declarator")
+                    if d is None:
+                        continue
+                    txt = _node_text(d)
+                    if not txt:
+                        continue
+                    methods.append(txt.split("(")[0].strip())
                 tpl_prefix = self._cpp_template_prefix(node)
                 cc = self._make_concept(ctype, name, doc, f"{tpl_prefix}{node.type.replace('_specifier','')} {name}", resource, ts, parent_id, node.start_point[0]+1, methods=methods, node=node, src_bytes=src_bytes, type_params=tp)
                 cc.inheritance = bases

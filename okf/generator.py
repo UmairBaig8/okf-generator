@@ -61,6 +61,10 @@ import sys
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+try:
+    from concurrent.futures import BrokenExecutor as _BrokenPool
+except ImportError:
+    from concurrent.futures import BrokenProcessPool as _BrokenPool
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1153,11 +1157,18 @@ def scan_codebase(root: Path, exclude: list[str] | None = None,
     git_arg = git or {}
     work_items = [(str(p), str(root), git_arg) for p in source_paths]
     from concurrent.futures import ProcessPoolExecutor
+    results = []
     with ProcessPoolExecutor(max_workers=MAX_PARALLEL_WORKERS) as pool:
-        results = list(tqdm(
-            pool.map(_mp_parse_file, work_items, chunksize=32),
-            total=len(work_items), desc="Parsing", unit="files",
-        ))
+        futures = {pool.submit(_mp_parse_file, item): item for item in work_items}
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Parsing", unit="files"):
+            try:
+                results.append(future.result())
+            except _BrokenPool:
+                log.warning("Worker process crashed — partial results preserved (%d/%d files)", len(results), len(work_items))
+                break
+            except Exception as e:
+                path_str = futures[future][0] if futures[future] else "?"
+                log.warning("Parse failed for %s: %s", path_str, e)
     for file_concepts in results:
         concepts.extend(file_concepts)
     n_parsed = len(source_paths)
