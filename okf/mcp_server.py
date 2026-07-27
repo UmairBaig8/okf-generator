@@ -28,6 +28,7 @@ Tools:
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -147,7 +148,8 @@ class BundleMCPServer:
         """Build {referenced_cid: [concepts_that_reference_it]} from all concepts."""
         idx: dict[str, list[dict]] = {}
         for c in self.concepts:
-            related_text = c.get("sections", {}).get("related", "")
+            secs = c.get("sections", {})
+            related_text = secs.get("relationships", "") or secs.get("related", "")
             refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
             for ref in refs:
                 idx.setdefault(ref, []).append(c)
@@ -157,7 +159,8 @@ class BundleMCPServer:
         """Build {caller_cid: [concepts_it_references]} from all concepts."""
         idx: dict[str, list[dict]] = {}
         for c in self.concepts:
-            related_text = c.get("sections", {}).get("related", "")
+            secs = c.get("sections", {})
+            related_text = secs.get("relationships", "") or secs.get("related", "")
             refs = re.findall(r"\]\(/(.+?)\.md\)", related_text)
             if refs:
                 idx[c["concept_id"]] = [
@@ -194,7 +197,7 @@ class BundleMCPServer:
             "parameters": sections.get("parameters", ""),
             "returns": sections.get("returns", ""),
             "source": sections.get("source", ""),
-            "related": sections.get("related", ""),
+            "related": sections.get("relationships", "") or sections.get("related", ""),
         }
 
     # ── Resource handlers ───────────────────────────────────────────────
@@ -577,7 +580,6 @@ class BundleMCPServer:
                 raise ToolError(f"Concept not found in call graph: {cid}", code=-32001)
 
             edge_key = "calls" if direction == "outbound" else "called_by"
-            reverse_key = "called_by" if direction == "outbound" else "calls"
 
             paths: list[list[dict]] = []
             def _bfs(start: str, max_depth: int):
@@ -636,7 +638,6 @@ class BundleMCPServer:
                 from okf.lookup import load_bundle as _load
                 source_dir = self.bundle_dir.parent
                 try:
-                    old_bundle_dir = self.bundle_dir.parent / f".okf_bundle_{reference.replace('/', '_')}"
                     subprocess.run(
                         ["git", "show", f"{reference}:okf_bundle/"],
                         cwd=source_dir, capture_output=True, timeout=10
@@ -670,7 +671,7 @@ class BundleMCPServer:
                         pass
                 raise ToolError("No reference provided and no manifest snapshot found. Pass a reference bundle path or git ref.", code=-32001)
 
-            from okf.diff import diff_bundles, impact_analysis
+            from okf.diff import diff_bundles
             new_list = self.concepts
             result = diff_bundles(self.bundle_dir, ref_bundle or self.bundle_dir,
                                   old_list=ref_list, new_list=new_list)
@@ -865,8 +866,9 @@ class BundleMCPServer:
                 pass
 
         MCPHTTPHandler.server_ref = self
-        server = HTTPServer(("127.0.0.1", port), MCPHTTPHandler)
-        print(f"MCP server listening on http://127.0.0.1:{port}/mcp", flush=True)
+        bind = os.environ.get("OKF_MCP_BIND", "127.0.0.1")
+        server = HTTPServer((bind, port), MCPHTTPHandler)
+        print(f"MCP server listening on http://{bind}:{port}/mcp", flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
