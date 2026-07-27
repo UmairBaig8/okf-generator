@@ -1,5 +1,9 @@
 """SQLite-backed BundleStore — zero-dependency, embedded, fast."""
-import json, os, re, sqlite3, time
+import json
+import os
+import re
+import sqlite3
+import time
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -227,13 +231,14 @@ class SQLiteBundleStore(BundleStore):
             # FTS5: use MATCH for full-text search
             fts_query = " AND ".join(f'"{w}"' for w in query.split() if w)
             join_part = "JOIN concepts_fts fts ON concepts.rowid = fts.rowid"
-            where_parts.append(f"concepts_fts MATCH ?")
+            where_parts.append("concepts_fts MATCH ?")
             params.append(fts_query)
         elif query:
             # No FTS5: fall back to LIKE
             like_clauses = []
             for w in query.split():
-                if not w: continue
+                if not w:
+                    continue
                 like_clauses.append("(title LIKE ? OR description LIKE ?)")
                 params.extend([f"%{w}%", f"%{w}%"])
             if like_clauses:
@@ -314,7 +319,6 @@ class SQLiteBundleStore(BundleStore):
                 return {"nodes": [], "edges": [], "total": total, "shown": 0}
 
             # Get neighbors via edges
-            neighbor_ids = set()
             edge_rows = self._conn.execute(
                 """SELECT source, target FROM edges
                    WHERE source = ? OR target = ? LIMIT ?""",
@@ -455,7 +459,6 @@ class SQLiteBundleStore(BundleStore):
         tag_rows: list[tuple] = []
         edge_rows: list[tuple] = []
 
-        from pathlib import Path as _P
         md_files = sorted(bundle_dir.rglob("*.md"))
 
         # Pre-scan all md files for fingerprinting (fast)

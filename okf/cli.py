@@ -27,6 +27,7 @@ Commands:
 Run `okf <command> --help` for per-command options.
 """
 
+import json
 import shutil
 import sys
 from pathlib import Path

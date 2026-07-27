@@ -61,10 +61,14 @@ jobs:
           path: okf_bundle
           key: okf-bundle-${{ github.ref_name }}-${{ github.sha }}
 
+      - name: Sanitize ref name for artifact
+        id: sanitize
+        run: echo "name=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
       - name: Upload bundle artifact
         uses: actions/upload-artifact@v4
         with:
-          name: okf-bundle-${{ github.ref_name }}
+          name: okf-bundle-${{ steps.sanitize.outputs.name }}
           path: okf_bundle/
 
       - name: Find existing bot comment

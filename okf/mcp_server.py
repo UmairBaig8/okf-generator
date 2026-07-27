@@ -197,7 +197,7 @@ class BundleMCPServer:
             "parameters": sections.get("parameters", ""),
             "returns": sections.get("returns", ""),
             "source": sections.get("source", ""),
-            "related": sections.get("related", ""),
+            "related": sections.get("relationships", "") or sections.get("related", ""),
         }
 
     # ── Resource handlers ───────────────────────────────────────────────
@@ -580,7 +580,6 @@ class BundleMCPServer:
                 raise ToolError(f"Concept not found in call graph: {cid}", code=-32001)
 
             edge_key = "calls" if direction == "outbound" else "called_by"
-            reverse_key = "called_by" if direction == "outbound" else "calls"
 
             paths: list[list[dict]] = []
             def _bfs(start: str, max_depth: int):
@@ -639,7 +638,6 @@ class BundleMCPServer:
                 from okf.lookup import load_bundle as _load
                 source_dir = self.bundle_dir.parent
                 try:
-                    old_bundle_dir = self.bundle_dir.parent / f".okf_bundle_{reference.replace('/', '_')}"
                     subprocess.run(
                         ["git", "show", f"{reference}:okf_bundle/"],
                         cwd=source_dir, capture_output=True, timeout=10
@@ -673,7 +671,7 @@ class BundleMCPServer:
                         pass
                 raise ToolError("No reference provided and no manifest snapshot found. Pass a reference bundle path or git ref.", code=-32001)
 
-            from okf.diff import diff_bundles, impact_analysis
+            from okf.diff import diff_bundles
             new_list = self.concepts
             result = diff_bundles(self.bundle_dir, ref_bundle or self.bundle_dir,
                                   old_list=ref_list, new_list=new_list)
@@ -870,7 +868,7 @@ class BundleMCPServer:
         MCPHTTPHandler.server_ref = self
         bind = os.environ.get("OKF_MCP_BIND", "127.0.0.1")
         server = HTTPServer((bind, port), MCPHTTPHandler)
-        print(f"MCP server listening on http://127.0.0.1:{port}/mcp", flush=True)
+        print(f"MCP server listening on http://{bind}:{port}/mcp", flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
