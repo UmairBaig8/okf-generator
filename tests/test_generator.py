@@ -1720,6 +1720,49 @@ def test_cpp_template_type_params_still_populated():
     import shutil; shutil.rmtree(tmp)
 
 
+def test_cpp_template_heavy_boost_style_header():
+    """C++ parser handles Boost-style template-heavy headers without crashing."""
+    from okf.generator import scan_codebase
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "spirit.hpp").write_text(
+        "// Boost.Spirit-style: nested templates, variadics, template-template params\n"
+        "template<typename T>\n"
+        "class iterator_range {\n"
+        "public:\n"
+        "    T begin() const { return T(); }\n"
+        "    T end() const { return T(); }\n"
+        "};\n"
+        "\n"
+        "template<typename Derived, typename Iterator>\n"
+        "class lexer_base {\n"
+        "public:\n"
+        "    typedef Iterator iterator_type;\n"
+        "    Derived& derived() { return static_cast<Derived&>(*this); }\n"
+        "};\n"
+        "\n"
+        "template<typename Lexer, typename Tokens, template<typename,typename> class IteratorPolicy>\n"
+        "class lexertl_lexer : public lexer_base<lexertl_lexer<Lexer, Tokens, IteratorPolicy>, typename IteratorPolicy<Lexer, Tokens>::iterator_type> {\n"
+        "public:\n"
+        "    using base_type = lexer_base<lexertl_lexer, typename IteratorPolicy<Lexer, Tokens>::iterator_type>;\n"
+        "    void init() {}\n"
+        "};\n"
+        "\n"
+        "template<typename T, typename U = T, template<typename...> class Container = std::vector>\n"
+        "using alias_template = Container<std::pair<T, U>>;\n"
+        "\n"
+        "template<typename... Args>\n"
+        "void variadic_fn(Args... args) {}\n"
+    )
+    concepts = scan_codebase(tmp)
+    names = [c.title for c in concepts]
+    assert "iterator_range" in names, f"iterator_range not found: {names}"
+    assert "lexer_base" in names, f"lexer_base not found: {names}"
+    assert "lexertl_lexer" in names, f"lexertl_lexer not found: {names}"
+    assert "variadic_fn" in names, f"variadic_fn not found: {names}"
+    import shutil; shutil.rmtree(tmp)
+
+
 def test_get_multi_level():
     """_get traverses arbitrary dot-notation depth."""
     from okf.config import _get
