@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.1.53] — 2026-08-01
+
+### Fixed
+
+- **CI: ruff 0.8.x compatibility** — `isinstance(v, (X, Y))` forms converted to `X | Y` in `okf/frontmatter.py` (UP038). The lint job pins `ruff~=0.8.0` which enforces the newer syntax that newer local ruff releases don't flag.
+- **CI: dashboard test skip when fastapi absent** — `tests/test_security.py::test_dashboard_build_app_rejects_cross_origin` now uses `pytest.importorskip("fastapi")`. FastAPI is a `[dashboard]` extra, not `[dev]`, so the CI test job (which installs `.[dev]`) was failing with `ModuleNotFoundError`.
+
 ## [0.1.52] — 2026-08-01
 
 ### Security
@@ -980,7 +987,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.52...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.53...HEAD
+[0.1.53]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.53
 [0.1.52]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.52
 [0.1.51]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.51
 [0.1.50]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.50
