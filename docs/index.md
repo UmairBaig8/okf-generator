@@ -134,7 +134,7 @@ Agents waste tokens re-reading entire files to find one function signature — 1
   Deterministic, offline-capable. tree-sitter + AST parsers, no API calls required.
   [→ How it works](getting-started/quick-start.md)
 
-- :material-graph:{ .lg } **18 languages, 17 manifest formats**
+- :material-graph:{ .lg } **18 languages, 20 manifest formats**
   Python, JS/TS, Go, Java, Rust, Swift, Kotlin, Ruby, C/C++/C#, SQL, PHP, Dart, Scala, Julia, **YAML**.
   [→ Language coverage](user-guide/languages-and-manifests.md)
 

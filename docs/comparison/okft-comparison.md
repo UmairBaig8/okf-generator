@@ -11,7 +11,7 @@ they compete or complement.
 | Dimension | okf-generator | okft |
 |-----------|--------------|------|
 | **What it is** | Bundle generator + enricher + server | Bundle linter + MCP server |
-| **Version** | v0.1.48 | v0.1.0 |
+| **Version** | v0.1.53 | v0.1.0 |
 | **OKF spec** | v0.2 (extended dialect of Google's v0.1) | v0.1 |
 | **License** | MIT | Apache-2.0 |
 | **Author** | Umair Baig | Poorva |
@@ -25,7 +25,7 @@ they compete or complement.
 
 ### okf-generator — Producer
 
-Scans source code (17 languages via tree-sitter AST parsers) and generates OKF bundles from scratch.
+Scans source code (18 languages via tree-sitter AST parsers) and generates OKF bundles from scratch.
 Also enriches bundles with LSP call graph resolution and optional LLM summaries.
 Serves bundles via MCP, HTTP dashboard, and interactive HTML visualization.
 
@@ -50,8 +50,8 @@ OKF Bundle → [Linter] → [Validated Bundle]
 
 | Feature | okf-generator | okft |
 |---------|:------------:|:----:|
-| **Bundle generation from source** | ✅ 17 languages | ❌ |
-| **Manifest dependency scanning** | ✅ 12 ecosystems | ❌ |
+| **Bundle generation from source** | ✅ 18 languages | ❌ |
+| **Manifest dependency scanning** | ✅ 20 ecosystems | ❌ |
 | **Bundle linting / spec validation** | ❌ | ✅ 11 rules (E001-E004, W001-W007) |
 | **MCP server** | ✅ 11 tools | ✅ 4 tools |
 | **LSP enrichment** | ✅ 4 servers | ❌ |

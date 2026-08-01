@@ -2,7 +2,7 @@
 
 **Bundle:** `dev_wspace/okf_bundle`
 **Generated:** 2026-07-13 (from `dev_wspace/fixtures/realworld/python`)
-**okf-generator version:** v0.1.48 (schema v0.2)
+**okf-generator version:** v0.1.53 (schema v0.2)
 **okft version:** v0.1.0 (schema v0.1)
 
 ---

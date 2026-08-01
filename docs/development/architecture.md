@@ -22,7 +22,7 @@ Source Code
        ▼
 ┌─────────────┐
 │  Manifest   │  Extract dependencies from requirements.txt,
-│  Scanner    │  Cargo.toml, package.json, go.mod, etc. (17 formats)
+│  Scanner    │  Cargo.toml, package.json, go.mod, etc. (20 formats)
 └──────┬──────┘
        │
        ▼
@@ -56,7 +56,7 @@ Source Code
 | `okf/generator.py` | Entry point: `scan_codebase()`, `write_bundle()`, enrichment passes |
 | `okf/parsers/base.py` | `Concept` dataclass, `TreeSitterParser` base class, shared utilities |
 | `okf/parsers/*.py` | One file per language — each extends `TreeSitterParser` |
-| `okf/manifest_scanner.py` | 17 manifest format parsers (pip, npm, cargo, go, maven, etc.) |
+| `okf/manifest_scanner.py` | 20 manifest format parsers (pip, npm, cargo, go, maven, etc.) |
 | `okf/linker.py` | Two-pass linker: imports→dependencies, call graph |
 | `okf/lookup.py` | Bundle loader, search/scoring, CLI |
 | `okf/diff.py` | Bundle comparison + dependency impact analysis |

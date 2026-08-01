@@ -48,7 +48,7 @@ YAML files can be re-classified using data-driven rule sets. See **[domain-class
 
 ## Architectural Query Examples
 
-The dependency cross-referencing across all 17 formats enables queries that would otherwise require grepping multiple build systems:
+The dependency cross-referencing across all 20 formats enables queries that would otherwise require grepping multiple build systems:
 
 ### Find every microservice depending on a deprecated Rust crate
 

@@ -2,7 +2,7 @@
 
 > **Hardware:** Apple Silicon M-series, 8 cores, NVMe SSD  
 > **Dataset:** 23 GB workspace, 18,000 source files, 50+ projects  
-> **Codebase:** `okf-generator` v0.1.50 · July 2026
+> **Codebase:** `okf-generator` v0.1.53 · Aug 2026
 
 **Terms used in this document:** *paths* = every filesystem entry visited (files + dirs); *files* = source files actually parsed; *concepts* = extracted functions, classes, modules, dependencies.
 
@@ -62,7 +62,7 @@ We verified that 221 user-written manifest files are still indexed. Only vendore
 
 ## Stage 2: File parsing — 16.7s → 3.4s (5×)
 
-With the walk done in half a second, parsing emerged as the next bottleneck. The tool supports 16 languages via Python `ast` or tree-sitter grammars. The original code parsed each file sequentially:
+With the walk done in half a second, parsing emerged as the next bottleneck. The tool supports 18 languages via Python `ast` or tree-sitter grammars. The original code parsed each file sequentially:
 
 ```python
 for path in all_paths:

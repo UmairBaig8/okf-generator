@@ -12,13 +12,13 @@
 | Dimension | OKF Generator | OpenWiki |
 |---|---|---|
 | **Purpose** | Codebase → structured knowledge graph for AI agents | Clipboard → personal wiki for humans |
-| **Input** | Source code (13 langs, 20+ manifests) | Clipboard (text, URLs, images) |
+| **Input** | Source code (18 langs, 20+ manifests) | Clipboard (text, URLs, images) |
 | **Output** | Portable markdown bundles, CLI consumable | SQLite DB, desktop GUI |
 | **AI Dependency** | Zero-AI by design (pure AST parsing) | AI-critical (LLM required for every op) |
 | **Delivery** | PyPI package, CLI, MCP server | Tauri desktop app (DMG/MSI) |
 | **Graph** | Typed edges: calls, extends, depends-on | TF-IDF cosine similarity on tag vectors |
 | **Target User** | Developers, AI agents, CI/CD | Information workers, content collectors |
-| **Language** | 10 programming languages | Natural language via LLM |
+| **Language** | 18 programming languages | Natural language via LLM |
 | **Offline** | Fully offline | Needs API keys |
 | **Stars** | ~0 (new) | 513 |
 | **Platform** | Cross-platform (Python) | macOS + Windows (Tauri) |
@@ -30,7 +30,7 @@
 
 | Feature | OKF Generator | OpenWiki |
 |---|---|---|
-| Code parsing (AST) | ✅ 13 languages, tree-sitter | ❌ |
+| Code parsing (AST) | ✅ 18 languages, tree-sitter | ❌ |
 | Dependency/manifest parsing | ✅ 20+ formats | ❌ |
 | Call graph extraction | ✅ Cross-file resolution | ❌ |
 | Cross-reference linking | ✅ imports→deps + calls | ❌ |

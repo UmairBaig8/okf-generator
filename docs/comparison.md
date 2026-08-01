@@ -4,10 +4,10 @@
 
 | | **okf-generator** | RAG / vector search | Manual docs | LLM-only |
 |---|---|---|---|---|
-| **Language coverage** | 17 languages, modular parsers | Any (embedding model dependent) | Manual | Any (context window dependent) |
+| **Language coverage** | 18 languages, modular parsers | Any (embedding model dependent) | Manual | Any (context window dependent) |
 | **Extraction** | Zero-LLM, deterministic, offline | Embedding step (often cloud) | Manual authorship | Full file reading (costly) |
 | **Cross-references** | Imports→deps, calls→callee across all languages | Semantic similarity (approximate) | Manual | Implicit in context |
-| **Dependency parsing** | 17 manifest formats | Not supported | Manual | Not reliable |
+| **Dependency parsing** | 20 manifest formats | Not supported | Manual | Not reliable |
 | **Token efficiency** | One concept card (~200 tokens) | Chunk-based (varies) | Varies | Full files (10K+ tokens) |
 | **Enrichment** | 4 tiers, multi-provider routing | N/A | N/A | Single pass |
 | **CI/CD** | Built-in GitHub Action + impact diff | Vector DB sync needed | Manual review | Not practical |
@@ -26,7 +26,7 @@
 | **CI/CD integration** | ✅ Built-in GitHub Action + impact diff | ❌ External | ❌ Not designed for CI | ✅ Can be scripted |
 | **Cost** | Free, open-source (MIT) | Free tier + Enterprise | Free tier + Enterprise | Free, open-source |
 | **Self-hostable** | ✅ Yes, pip install | ✅ Yes (Docker) | ✅ Yes (Docker) | ✅ Yes |
-| **Language count** | 17 languages | 30+ languages | 10+ languages | Varies |
+| **Language count** | 18 languages | 30+ languages | 10+ languages | Varies |
 | **Enrichment** | 4 LLM tiers, multi-provider | ℹ️ Cody AI assistant | ❌ Not supported | ❌ Not supported |
 
 ### Sourcegraph

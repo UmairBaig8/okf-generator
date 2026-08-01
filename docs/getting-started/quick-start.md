@@ -21,7 +21,7 @@ okf generate ./my_project ./okf_bundle
 
 Auto-detection walks up the directory tree looking for project markers (`pyproject.toml`, `Cargo.toml`, `package.json`, `go.mod`, `.git/`, etc.) across all languages. If nothing is found, it uses the current directory.
 
-This scans all recognized files using tree-sitter AST parsers (17 languages) and writes a structured knowledge bundle to `./okf_bundle/`.
+This scans all recognized files using tree-sitter AST parsers (18 languages) and writes a structured knowledge bundle to `./okf_bundle/`.
 
 **What you get:**
 - Every function, class, method, and module as a concept card

@@ -394,7 +394,7 @@ Show all discovered parser and manifest plugins (built-in + external).
 ```
 okf plugin list
 
-  Parsers (16 languages, 29 extensions):
+  Parsers (18 languages, 29 extensions):
     python            [.py]
     go                [.go]
     ...
