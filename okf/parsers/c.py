@@ -1,6 +1,7 @@
 """C parser (tree-sitter). Extracts: functions, structs, enums, typedefs, comments, calls."""
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment
+
 
 class CParser(TreeSitterParser):
     LANGUAGE   = "c"

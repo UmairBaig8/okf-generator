@@ -13,7 +13,7 @@ import os
 import re
 import sys
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 SESSION_DIR = Path.home() / ".okf" / "sessions"
@@ -21,9 +21,18 @@ SESSION_DIR = Path.home() / ".okf" / "sessions"
 # ── Session persistence ──────────────────────────────────────────────────
 
 
+_SESSION_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
 def _session_path(session_id: str = "") -> Path:
     SESSION_DIR.mkdir(parents=True, exist_ok=True)
     if session_id:
+        # Session IDs become filenames under ~/.okf/sessions; reject anything
+        # that could escape the directory (path traversal).
+        if not _SESSION_ID_RE.match(session_id):
+            raise ValueError(
+                f"invalid session id {session_id!r} — only letters, digits, '-', '_' are allowed"
+            )
         return SESSION_DIR / f"{session_id}.json"
     # generate new id
     return SESSION_DIR / f"ses_{uuid.uuid4().hex[:12]}.json"
@@ -37,7 +46,7 @@ def _load_session(path: Path) -> dict:
 
 
 def _save_session(session: dict):
-    session["updated"] = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    session["updated"] = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     path = _session_path(session.get("id", ""))
     path.write_text(json.dumps(session, indent=2, ensure_ascii=False), encoding="utf-8")
     return path
@@ -74,7 +83,7 @@ def _resolve_name(args: list[str], recent: list[dict]) -> str:
 
 
 def _do_lookup(name: str, concepts: list[dict]) -> str:
-    from okf.lookup import search, fmt_full
+    from okf.lookup import fmt_full, search
     results = search(concepts, tokens=name.split(), limit=5)
     if not results:
         return f"  No concept found for: {name}"
@@ -189,7 +198,8 @@ def main():
         print("Generate one first: okf generate", file=sys.stderr)
         sys.exit(1)
 
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     cfg = load_config()
     api_key = _get(cfg, "llm.api_key", "")
     base_url = _get(cfg, "llm.base_url", "http://localhost:8080/v1")
@@ -207,7 +217,7 @@ def main():
     # ── Session state ──
     session = {
         "id": uuid.uuid4().hex[:12],
-        "created": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "created": datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "updated": "",
         "bundle_path": str(bundle_dir),
         "messages": [],
@@ -215,7 +225,11 @@ def main():
     }
 
     if resume_session:
-        loaded = _load_session(_session_path(resume_session))
+        try:
+            loaded = _load_session(_session_path(resume_session))
+        except ValueError as e:
+            print(f"ERROR: {e}", file=sys.stderr)
+            sys.exit(1)
         if loaded:
             session = loaded
             print(f"  Resumed session {resume_session} ({len(session.get('messages', []))//2} exchanges)")
@@ -288,7 +302,10 @@ def main():
             if not rest:
                 return "  Usage: /resume <session_id>", False
             sid = rest[0]
-            loaded = _load_session(_session_path(sid))
+            try:
+                loaded = _load_session(_session_path(sid))
+            except ValueError as e:
+                return f"  {e}", False
             if not loaded:
                 return f"  Session {sid} not found.", False
             session = loaded
@@ -311,7 +328,7 @@ def main():
         # concept-aware commands
         name = _resolve_name(rest, session.get("recent_concepts", []))
         if not name:
-            return "  Usage: /{cmd} <name> (or mention a concept first)".format(cmd=cmd), False
+            return f"  Usage: /{cmd} <name> (or mention a concept first)", False
 
         if cmd == "lookup":
             return _do_lookup(name, concepts), False
@@ -362,7 +379,7 @@ def main():
             print("  Use /lookup, /source, /related for static queries.\n")
             continue
 
-        from okf.ask import _search_context, _ask_llm
+        from okf.ask import _ask_llm, _search_context
 
         context, results, term_u = _search_context(concepts, line.split(), client, model)
         for k in total_usage:

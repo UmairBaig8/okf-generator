@@ -20,7 +20,6 @@ from pathlib import Path
 from okf._walk import walk_files
 from okf.cli import print_banner
 
-
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 PURPLE = "\033[35m"
@@ -106,7 +105,7 @@ HELP_TEXT = f"""
 
 
 def repl_loop(bundle_path: Path):
-    from okf.lookup import load_bundle, search, fmt_detail
+    from okf.lookup import fmt_detail, load_bundle, search
 
     print(f"\n  {clr('Interactive mode — type /help for commands', CYAN)}\n")
     while True:
@@ -141,7 +140,7 @@ def repl_loop(bundle_path: Path):
 
         elif verb == "/g":
             print(f"  {clr('Regenerating bundle...', CYAN)}")
-            from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs, _git_info
+            from okf.generator import _git_info, _walk_source_dirs, scan_codebase, write_bundle, write_summary
             from okf.linker import link_all
 
             src_path = bundle_path.parent / bundle_path.name.replace("_bundle", "") if bundle_path.name.endswith("_bundle") else bundle_path.parent
@@ -265,7 +264,7 @@ def main():
     print(f"  {clr('Config written →', GREEN)} {dotfile}")
 
     print(f"  {clr('Generating bundle...', CYAN)}")
-    from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
+    from okf.generator import _walk_source_dirs, scan_codebase, write_bundle, write_summary
     from okf.linker import link_all
 
     concepts = scan_codebase(src_path)

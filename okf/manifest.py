@@ -14,8 +14,8 @@ import hashlib
 import json
 import logging
 import os
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
 
 from okf._walk import walk_files
@@ -142,7 +142,7 @@ def read_manifest(bundle_dir: Path) -> Manifest | None:
 def write_manifest(bundle_dir: Path, manifest: Manifest):
     """Write manifest atomically (write to tmp, rename)."""
     path = manifest_path(bundle_dir)
-    manifest.generated_at = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    manifest.generated_at = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     raw = _manifest_to_dict(manifest)
     tmp = path.with_suffix(".tmp.json")
     tmp.write_text(json.dumps(raw, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -176,12 +176,10 @@ def _should_skip(rel_path: Path, exclude: set[str], ignore_pats: list | None = N
             return True
     if any(part.startswith(".") for part in parts):
         return True
-    from okf.parsers.base import SKIP_DIRS, SKIP_DIR_SUFFIXES
+    from okf.parsers.base import SKIP_DIR_SUFFIXES, SKIP_DIRS
     if any(part in SKIP_DIRS for part in parts):
         return True
-    if any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES for part in parts):
-        return True
-    return False
+    return any(part.endswith(sfx) for sfx in SKIP_DIR_SUFFIXES for part in parts)
 
 
 def walk_source_files(source_root: Path, exclude: set[str] | None = None) -> dict[Path, str]:
@@ -189,8 +187,8 @@ def walk_source_files(source_root: Path, exclude: set[str] | None = None) -> dic
     from okf.ignore import load_patterns
     ignore_pats = load_patterns(source_root)
     result: dict[Path, str] = {}
-    from okf.parsers import get_parser
     import okf.manifest_scanner as manifest_scanner
+    from okf.parsers import get_parser
 
     for path in walk_files(source_root, ignore_pats=ignore_pats, exclude=exclude_set):
         rel = path.relative_to(source_root)
@@ -244,13 +242,12 @@ def diff_source(source_root: Path, manifest: Manifest | None,
 
     # Normalize to string keys for comparison
     manifest_files = set(manifest.files.keys())
-    current_files = {str(k).replace(os.sep, "/") for k in current.keys()}
+    current_files = {str(k).replace(os.sep, "/") for k in current}
 
     # Deleted: in manifest but not on disk
     for f in manifest_files - current_files:
         for cid in manifest.files[f].concept_ids:
             changeset.deleted_ids.add(cid)
-
     # Build str→hash lookup from current results (for diffing)
     current_str_map: dict[str, str] = {str(k).replace(os.sep, "/"): v for k, v in current.items()}
 

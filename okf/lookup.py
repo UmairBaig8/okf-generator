@@ -42,74 +42,44 @@ Usage:
 """
 
 import argparse
+import contextlib
 import json
 import os
 import re
 import sys
 from pathlib import Path
 
-import yaml
-
 CACHE_VERSION = 1
 
 
 # ---------------------------------------------------------------------------
-# Bundle loader (self-contained, no dependency on okf_to_pairs)
+# Bundle loader (builds on pairs.parse_okf_file — single canonical reader)
 # ---------------------------------------------------------------------------
 
 def _parse_md(path: Path, bundle_dir: Path) -> dict | None:
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except Exception:
+    from okf.pairs import parse_okf_file
+
+    raw = parse_okf_file(path)
+    if raw is None:
         return None
 
-    if not text.startswith("---"):
+    # Preserve lookup's contract: Index/Log concept files are not searchable
+    if raw["type"] in {"Index", "Log"}:
         return None
-
-    import re as _re
-    m = _re.match(r"^---\s*\n(.*?)\n---", text, _re.DOTALL)
-    if not m:
-        return None
-    fm_text = m.group(1)
-
-    try:
-        fm = yaml.safe_load(fm_text) or {}
-    except Exception:
-        return None
-
-    ctype = fm.get("type", "")
-    if not ctype or ctype in {"Index", "Log"}:
-        return None
-
-    body = text[m.end():].strip()
-
-    # parse sections
-    sections: dict[str, str] = {}
-    cur_key, cur_lines = None, []
-    for line in body.splitlines():
-        if line.startswith("## "):
-            if cur_key:
-                sections[cur_key] = "\n".join(cur_lines).strip()
-            cur_key = line[3:].strip().lower()
-            cur_lines = []
-        elif cur_key is not None:
-            cur_lines.append(line)
-    if cur_key:
-        sections[cur_key] = "\n".join(cur_lines).strip()
 
     rel = path.relative_to(bundle_dir)
     concept_id = str(rel.with_suffix("")).replace(os.sep, "/")
 
     return {
-        "type":        ctype,
-        "title":       fm.get("title", path.stem),
-        "description": fm.get("description", ""),
-        "resource":    fm.get("resource", ""),
-        "tags":        fm.get("tags", []),
-        "timestamp":   fm.get("timestamp", ""),
+        "type":        raw["type"],
+        "title":       raw["title"],
+        "description": raw["description"],
+        "resource":    raw["resource"],
+        "tags":        raw["tags"],
+        "timestamp":   raw["timestamp"],
         "concept_id":  concept_id,
-        "sections":    sections,
-        "raw":         text,          # full file content for --full output
+        "sections":    raw["sections"],
+        "raw":         path.read_text(encoding="utf-8", errors="replace"),  # full file content for --full output
         "_path":       str(path),
     }
 
@@ -155,7 +125,7 @@ def load_bundle(bundle_dir: Path, use_cache: bool = True) -> list[dict]:
             concepts.append(c)
 
     if use_cache:
-        try:
+        with contextlib.suppress(Exception):
             cache_file.write_text(
                 json.dumps(
                     {"version": CACHE_VERSION, "fingerprint": current_fp, "concepts": concepts},
@@ -163,8 +133,6 @@ def load_bundle(bundle_dir: Path, use_cache: bool = True) -> list[dict]:
                 ),
                 encoding="utf-8",
             )
-        except Exception:
-            pass
 
     return concepts
 
@@ -248,7 +216,7 @@ def search(
     tokens:    list[str],
     file_filter: str  = "",
     type_filter: str  = "",
-    tag_filters: list[str] = [],
+    tag_filters: list[str] | None = None,
     limit:     int    = 10,
     min_score: float  = 0.1,
 ) -> list[dict]:
@@ -397,7 +365,8 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=__doc__,
     )
     p.add_argument("query",       nargs="*",           help="Search tokens (name or keywords)")
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     _lcfg = load_config()
     p.add_argument("--bundle",    default=_get(_lcfg, "lookup.bundle", "./okf_bundle"), help="Path to OKF bundle dir")
     p.add_argument("--file",      default="",          help="Filter by source file path (e.g. src/connectors/economic_data.py)")

@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.1.52] — 2026-08-01
+
+### Security
+
+- **`okf serve` remote-bind hardening** — Refuses to bind to a non-loopback host unless `--allow-remote` is passed, and remote binds now require `--token <secret>` (accepted via `?token=` or `Authorization: Bearer`). Prevents accidental public exposure of a knowledge bundle.
+- **`okf serve` git-URL restriction** — Only `https://` git URLs are accepted; `ssh://` and `git@` scp-style URLs are rejected to remove an arbitrary-subprocess/SSRF vector.
+- **`okf dashboard` CORS + token auth** — Added CORS middleware blocking cross-origin reads (localhost CSRF/data-exfiltration) and optional `--token` / `OKF_DASHBOARD_TOKEN` auth for non-loopback binds (incl. the Render deployment).
+- **MCP `detect_changes` option-injection guard** — Git `reference` values starting with `-` are rejected before being passed to `git show`.
+- **Path traversal hardening** — `_concept_output_path` (generator + update) rejects `..`, `.`, empty, and absolute segments; `okf agent` session IDs are restricted to `[A-Za-z0-9_-]`; the filtered walker never follows symlinks out of the source root.
+- **PID file symlink safety** — `okf serve` writes its PID file into a `0700` cache dir and refuses to clobber a pre-existing symlink.
+- **Dependency pinning** — All runtime/dev dependencies pinned to `~=` (compatible-release) ranges; `uv.lock` is now committed for reproducible installs; `pip-audit` added to CI alongside the existing Bumblebee scan.
+
+### Added
+
+- **4 new MCP tools + 14 agent surfaces** — `find_callers`, `find_callees`, `search_by_tag`, `get_related`, `get_manifest_source` MCP tools plus expanded `okf install` agent coverage (TOON-lite comparison doc).
+- **Resilient pool parsing** — C++ parser guards, `third_party` directory skipping, resilient parse pool handling.
+
+### Fixed
+
+- **`okf mcp` section-key mismatch** — `find_callers`/`find_callees` now resolve the correct bundle section keys; MCP bind address is configurable.
+- **Config error handling** — A corrupt `.okfconfig` now emits a warning instead of being silently ignored; `okf config key=value` supports arbitrary-depth dotted keys.
+- **Dead code removed** — `_detect_bundle_name` (unused), watcher no-op branch, redundant `cli.py` branch.
+
+### Changed
+
+- **Unified LLM client resolution** — `enrich/llm.py` now delegates to `generator._resolve_client` (single source of truth; anthropic-provider support applies to both paths).
+- **Unified bundle reader** — `lookup._parse_md` builds on `pairs.parse_okf_file`; the divergent frontmatter/section parser is gone.
+- **Stricter linting** — Ruff now enforces `I` (isort), `UP` (pyupgrade), `B` (bugbear), and `SIM` (simplify) rule sets across `okf/`; added `[tool.ruff]` and `[tool.mypy]` config.
+- **Repo hygiene** — Added `.dockerignore`, non-root `USER` in `Dockerfile.render`, removed nonexistent `requirements.txt` from sdist include; moved benchmark scripts to `scripts/`.
+- **Docs consistency** — README/CLAUDE/AGENTS/OKF_AGENTS/CONTRIBUTING/SKILL/RELEASE/mkdocs all updated to current counts (18 languages, 20 manifest formats, 19 commands, 423 tests).
+
+### Infrastructure
+
+- 423 total tests (415 existing + 8 new security regression tests)
+- `tests/test_security.py` covers serve auth/host gating, https-only git URLs, session-ID traversal, concept-id traversal, and MCP reference injection.
 
 ## [0.1.51] — 2026-07-19
 
@@ -945,7 +980,8 @@ Run `--dry-run` first to preview changes. The migration is idempotent — runnin
 - 32 passing tests
 
 
-[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.51...HEAD
+[Unreleased]: https://github.com/UmairBaig8/okf-generator/compare/v0.1.52...HEAD
+[0.1.52]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.52
 [0.1.51]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.51
 [0.1.50]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.50
 [0.1.49]: https://github.com/UmairBaig8/okf-generator/releases/tag/v0.1.49

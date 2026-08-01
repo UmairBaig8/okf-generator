@@ -213,10 +213,7 @@ def _deep_get(doc: Any, dotted: str) -> Any:
         return _deep_get(item, rest_part)
 
     # dict path
-    if key:
-        val = doc.get(key)
-    else:
-        val = doc
+    val = doc.get(key) if key else doc
 
     if bracket_start >= 0:
         # Extract the index spec
@@ -385,17 +382,16 @@ def classify(concepts: list[Concept], rules: list[dict]) -> list[Concept]:
                     candidate_ids = [c_id for c_id in by_id
                                      if _concept_matches_all(c_id, lookup_values, by_id)]
                     for candidate_id in candidate_ids:
-                        if candidate_id != src_concept.concept_id:
-                            if candidate_id not in src_concept.related:
-                                src_concept.related.append(candidate_id)
+                        if candidate_id != src_concept.concept_id and candidate_id not in src_concept.related:
+                            src_concept.related.append(candidate_id)
 
         elif isinstance(field_val, str):
             for mo in match_on:
                 candidates = link_idx.get((mo, field_val.lower() if mo == "name" else field_val), [])
                 for candidate in candidates:
-                    if candidate is not None and candidate.concept_id != src_concept.concept_id:
-                        if candidate.concept_id not in src_concept.related:
-                            src_concept.related.append(candidate.concept_id)
+                    if candidate is not None and candidate.concept_id != src_concept.concept_id \
+                            and candidate.concept_id not in src_concept.related:
+                        src_concept.related.append(candidate.concept_id)
 
     return concepts
 
@@ -421,9 +417,8 @@ def _concept_matches_all(concept_id: str, lookup_values: list[tuple[str, str]],
         elif attr == "name":
             if c.title.lower() != val.lower():
                 return False
-        elif attr == "group":
-            if c.returns != val:
-                return False
+        elif attr == "group" and c.returns != val:
+            return False
     return True
 
 

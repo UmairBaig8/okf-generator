@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 log = logging.getLogger("okf_gen")
@@ -79,9 +79,9 @@ def _first_line(text: str) -> str:
 def _ts(path: Path) -> str:
     try:
         mtime = path.stat().st_mtime
-        return datetime.fromtimestamp(mtime, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return datetime.fromtimestamp(mtime, tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     except Exception:
-        return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _prev_comment(node, src_bytes: bytes) -> str:

@@ -1,7 +1,8 @@
 """C++ parser (tree-sitter). Extracts: functions, classes, methods, templates/generics, inheritance, visibility, calls."""
 import os
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, _safe_id, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment, _safe_id
+
 
 class CppParser(TreeSitterParser):
     LANGUAGE   = "cpp"
@@ -64,9 +65,7 @@ class CppParser(TreeSitterParser):
                 if decl:
                     name = _node_text(decl.child_by_field_name("declarator") or decl.child_by_field_name("field_identifier") or decl)
             elif node.type in ("class_specifier", "struct_specifier"):
-                if node.parent and node.parent.type in ("template_declaration",):
-                    name = _node_text(node.child_by_field_name("name"))
-                elif not node.parent or node.parent.type not in ("function_definition", "parameter_declaration", "field_declaration"):
+                if node.parent and node.parent.type in ("template_declaration",) or not node.parent or node.parent.type not in ("function_definition", "parameter_declaration", "field_declaration"):
                     name = _node_text(node.child_by_field_name("name"))
             if not name or name in seen:
                 continue

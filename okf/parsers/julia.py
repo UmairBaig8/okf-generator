@@ -1,5 +1,5 @@
 """Julia parser (tree-sitter). Extracts: functions, structs, abstract types, constants."""
-from okf.parsers.base import _prev_comment, _find_all, _node_text, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment
 
 
 class JuliaParser(TreeSitterParser):

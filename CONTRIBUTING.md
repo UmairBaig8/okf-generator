@@ -45,7 +45,7 @@ okf --help
 ## Running Tests
 
 ```bash
-# Run all unit tests (70+ tests)
+# Run all unit tests (415 tests)
 pytest tests/ -v
 
 # Run a specific test file
@@ -71,8 +71,8 @@ New fixture files go in `tests/fixtures/`. Use `tests/fixtures/complex/` to add 
 
 [`TEST.md`](TEST.md) is a step-by-step integration spec that exercises every CLI command against real codebases. It covers:
 
-- All 7 languages (Python, JS, TS, Go, Java, Rust, Ruby)
-- All 12 manifest types (pip, npm, cargo, go, composer, maven, rubygems, gradle, swiftpm, clojars, hex)
+- All 18 languages (Python, JS, TS, Go, Java, Rust, Ruby, C, C++, C#, Swift, Kotlin, PHP, Dart, Scala, Julia, SQL, YAML)
+- All 20 manifest types (pip, npm, cargo, go, composer, maven, rubygems, gradle, swiftpm, clojars, hex, dockerfile, docker-compose, mix)
 - Lookup cache (miss, hit, bypass, corrupt, invalidation)
 - Edge cases (empty dir, non-existent path, unsupported-only files)
 - Static pair generation, summary regeneration
@@ -138,7 +138,7 @@ Adding support for a new language is one of the most impactful contributions.
 
 6. Add a fixture file and test cases in `tests/`
 
-**Good languages to add next:** C/C++, C#, Swift, Kotlin, Scala, PHP
+**Languages already supported:** Python, JS/TS, Go, Rust, Java, C, C++, C#, Swift, Kotlin, PHP, Dart, Scala, Julia, Ruby, SQL, YAML — see `okf/parsers/` for the pattern.
 
 ## Adding a Manifest Parser
 
@@ -154,7 +154,7 @@ Manifest parsers live in `okf/manifest_scanner.py` and follow a simple pattern:
 - Mark `dev=True` for dev/test-only dependencies
 - Handle edge cases: comments, version ranges, platform entries (like `ext-*`, `php`)
 
-**Good manifests to add next:** `Cargo.lock`, `yarn.lock`, `poetry.lock`, `packages.config`, `*.csproj`
+**Good manifests to add next:** `packages.config`, `*.csproj`, `Package.resolved`
 
 ## Releasing
 
@@ -162,7 +162,7 @@ See [`RELEASE.md`](RELEASE.md) for the full release process.
 
 Before a release, run the complete test suite and integration spec:
 ```bash
-pytest tests/ -q      # 70+ unit tests
+pytest tests/ -q      # 415 unit tests
 # Then follow TEST.md  # full integration spec
 ```
 
@@ -198,7 +198,7 @@ chore: bump v0.1.11
 Please use GitHub Issues. Include:
 
 - Python version (`python --version`)
-- Package version (`okf --version` once that's added)
+- Package version (`okf --version`)
 - Minimal reproduction case
 - Full error traceback if applicable
 
@@ -206,10 +206,10 @@ Please use GitHub Issues. Include:
 
 Look for issues tagged `good first issue` on GitHub. Some ideas:
 
-- **New language**: Add parser for C#, Swift, Kotlin, PHP, Scala
+- **New language**: Add a parser for a language not yet in `okf/parsers/` (e.g. Elixir, Haskell)
 - **Fuzzy search**: Improve scoring for camelCase / snake_case queries
-- **Docs**: Add a `docs/` site with mkdocs or sphinx
-- **CLI**: Add `okf --version` flag
+- **Docs**: Expand the `docs/` mkdocs site
+- **Dashboard**: Add auth/UX improvements to the FastAPI dashboard
 - **Performance**: Parallelize the scan phase for large codebases
 
 ## Code of Conduct

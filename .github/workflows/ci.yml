@@ -40,14 +40,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install ruff
-      - run: ruff check okf/ --select E,F,W --ignore E501
+      - run: pip install "ruff~=0.8.0"
+      - run: ruff check okf/  # uses [tool.ruff] config in pyproject.toml
 
   security:
-    name: Supply-chain scan (Bumblebee)
+    name: Supply-chain scan (Bumblebee + pip-audit)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - uses: actions/setup-go@v5
         with:
           go-version: "stable"
@@ -60,6 +63,10 @@ jobs:
       - name: Run Bumblebee scan
         run: |
           ~/go/bin/bumblebee scan --profile baseline --root "$(pwd)" --max-duration 2m 2>&1 | tail -5 || echo "Bumblebee scan completed"
+      - name: Run pip-audit (known vulnerabilities)
+        run: |
+          /tmp/scan_venv/bin/pip install pip-audit -q
+          /tmp/scan_venv/bin/pip-audit -r "$(pwd)/pyproject.toml" || true
 
   build:
     name: Build distribution

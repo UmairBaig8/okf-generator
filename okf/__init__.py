@@ -15,13 +15,13 @@ CLI:
     okf summarize ./okf_bundle
 """
 
-__version__ = "0.1.51"
+__version__ = "0.1.52"
 __author__  = "Umair Baig"
 __license__ = "MIT"
 
 # Public API surface
-from okf.generator import scan_codebase, write_bundle, write_summary, Concept
-from okf.lookup    import load_bundle, search
+from okf.generator import Concept, scan_codebase, write_bundle, write_summary
+from okf.lookup import load_bundle, search
 
 __all__ = [
     "scan_codebase",

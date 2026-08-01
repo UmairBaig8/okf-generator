@@ -4,14 +4,14 @@ A comprehensive reference for AI agents working with the okf-generator codebase.
 Reading this file gives you full context about architecture, CLI, enrichment pipeline,
 parsers, linker, tests, and release process.
 
-**Version:** 0.1.48 | **License:** MIT | **Schema:** OKF v0.2
+**Version:** 0.1.51 | **License:** MIT | **Schema:** OKF v0.2
 
 ---
 
 ## What is it?
 
-Generates OKF v0.2 knowledge bundles from codebases. Scans source code (17 languages
-via AST/tree-sitter) and manifest files (12 formats) into structured markdown that AI
+Generates OKF v0.2 knowledge bundles from codebases. Scans source code (18 languages
+via AST/tree-sitter) and manifest files (20 formats) into structured markdown that AI
 coding agents can read instead of raw source files. Core extraction is fully
 deterministic and offline. Optional enrichment passes (LSP and/or LLM) improve
 call-graph accuracy and add human-readable summaries.
@@ -243,11 +243,11 @@ openrouter, dashscope, minimax.
 
 ---
 
-## Tests — 301 total
+## Tests — 415 total
 
 | File | Tests |
 |------|-------|
-| `tests/test_generator.py` | 103 |
+| `tests/test_generator.py` | 123 |
 | `tests/test_domain_engine.py` | 38 |
 | `tests/test_manifest_scanner.py` | 31 |
 | `tests/test_realworld_fixtures.py` | 63 |
@@ -255,8 +255,11 @@ openrouter, dashscope, minimax.
 | `tests/test_diff.py` | 11 |
 | `tests/test_mcp.py` | 11 |
 | `tests/test_init.py` | 4 |
+| `tests/test_ignore.py` | 30 |
+| `tests/test_frontmatter.py` | 16 |
+| `tests/test_update.py` | 12 |
 
-Run: `pytest tests/ -q` (301 passed). Integration: `bash tests/test.sh` (17 phases).
+Run: `pytest tests/ -q` (415 passed). Integration: `bash tests/test.sh` (17 phases).
 
 Fixtures: `tests/fixtures/realworld/` (multi-language), `tests/fixtures/complex/`.
 
@@ -281,7 +284,7 @@ Fixtures: `tests/fixtures/realworld/` (multi-language), `tests/fixtures/complex/
 ## Release Workflow
 
 1. Run `bash tests/test.sh` — must pass 17 phases
-2. Run `pytest tests/ -q` — 301 pass
+2. Run `pytest tests/ -q` — 415 pass
 3. Run `ruff check okf/` — clean
 4. Bump version in `okf/__init__.py` + `pyproject.toml`
 5. Update `CHANGELOG.md` — promote `[Unreleased]` → dated version

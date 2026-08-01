@@ -70,6 +70,7 @@ Sectional keys: llm.*, providers.*, enrich.*, serve.*, lookup.*, mcp.*, pairs.*
 """
 
 import json
+import sys
 from pathlib import Path
 
 CONFIG_FILES = [
@@ -124,7 +125,11 @@ DEFAULTS = {
 def _load_file(path: Path) -> dict:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
+    except json.JSONDecodeError:
+        print(f"WARNING: config file {path} is not valid JSON — ignoring it.", file=sys.stderr)
+        return {}
+    except OSError as e:
+        print(f"WARNING: could not read config file {path}: {e}", file=sys.stderr)
         return {}
 
 
@@ -205,12 +210,12 @@ def resolve_provider(cfg: dict, mode: str) -> dict:
 
 
 def _set(cfg: dict, key: str, value):
-    """Dot-notation set (creates nested sections as needed)."""
-    parts = key.split(".", 1)
-    if len(parts) == 1:
-        cfg[key] = value
-    else:
-        cfg.setdefault(parts[0], {})[parts[1]] = value
+    """Dot-notation set (creates nested sections as needed, any depth)."""
+    parts = key.split(".")
+    node = cfg
+    for part in parts[:-1]:
+        node = node.setdefault(part, {})
+    node[parts[-1]] = value
 
 
 def dump(cfg: dict, path: Path | None = None) -> str:

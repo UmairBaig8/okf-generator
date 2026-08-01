@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from okf.parsers.base import Concept, log, _ts, _first_line
+from okf.parsers.base import Concept, _first_line, _ts, log
 
 
 class YamlParser:

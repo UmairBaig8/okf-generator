@@ -1,6 +1,7 @@
 """C# parser (tree-sitter). Extracts: classes, interfaces, structs, enums, methods, generics, inheritance, attributes, visibility, fields, imports, calls."""
 
-from okf.parsers.base import _find_all, _node_text, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text
+
 
 class CSharpParser(TreeSitterParser):
     LANGUAGE   = "csharp"

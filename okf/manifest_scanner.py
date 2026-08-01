@@ -21,16 +21,10 @@ from __future__ import annotations
 
 import json
 import re
-import sys
+import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib  # type: ignore[no-redef]
-
 
 # Filenames this scanner knows how to handle. Extend this dict as new
 # manifest types are added (Gemfile, build.gradle, Package.swift, ...).
@@ -112,7 +106,7 @@ def _ts(path: Path) -> str:
     """ISO-8601 timestamp from file mtime."""
     import datetime
     mtime = path.stat().st_mtime
-    return datetime.datetime.fromtimestamp(mtime, tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.datetime.fromtimestamp(mtime, tz=datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _build_concept(dep: dict[str, Any], resource: str, ts: str) -> dict[str, Any]:
@@ -182,7 +176,7 @@ def parse_pyproject_toml(path: Path) -> list[dict[str, Any]]:
         deps.append({"name": name, "ecosystem": "pip", "version": version, "dev": False})
 
     # PEP 621 optional / dev groups
-    for group, entries in project.get("optional-dependencies", {}).items():
+    for _group, entries in project.get("optional-dependencies", {}).items():
         for entry in entries:
             name, version = _split_pep508(entry)
             deps.append({"name": name, "ecosystem": "pip", "version": version, "dev": True})
@@ -582,10 +576,7 @@ def parse_pnpm_lock(path: Path) -> list[dict[str, Any]]:
         at_idx = name_ver.rindex("@")
         name = name_ver[:at_idx]
         version = name_ver[at_idx + 1:]
-        if info and isinstance(info, dict):
-            dev = info.get("dev", False)
-        else:
-            dev = False
+        dev = info.get("dev", False) if info and isinstance(info, dict) else False
         deps.append({"name": name, "ecosystem": "npm", "version": version, "dev": dev})
     return deps
 

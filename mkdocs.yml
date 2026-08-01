@@ -1,5 +1,5 @@
 site_name: OKF Generator
-site_description: High-velocity codebase parser — structured, agent-ready knowledge across 17 languages
+site_description: High-velocity codebase parser — structured, agent-ready knowledge across 18 languages
 site_url: https://umairbaig8.github.io/okf-generator/
 site_dir: build/docs-site
 repo_url: https://github.com/UmairBaig8/okf-generator
@@ -47,7 +47,7 @@ extra:
   version:
     provider: mike
     default: latest
-  announce: 🚀 v0.1.41 shipped — Plugin system, 11 MCP tools, okf mcp --install, LLM-powered Q&A
+  announce: 🚀 v0.1.51 — Incremental updates, git-URL serve, .okfignore, filtered walker
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/UmairBaig8/okf-generator

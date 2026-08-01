@@ -7,3 +7,8 @@ services:
     envVars:
       - key: OKF_BUNDLE_DIR
         value: /app/okf_bundle
+      # Set this to a strong random value to require Authorization: Bearer <token>
+      # on every request. This instance is publicly reachable — do not deploy
+      # without a token if the bundle contains private source code.
+      - key: OKF_DASHBOARD_TOKEN
+        sync: false

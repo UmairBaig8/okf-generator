@@ -80,7 +80,7 @@ def _cmd_resolve(args: list[str]):
         print(f"No LSP server configured for extension {ext!r}")
         sys.exit(1)
 
-    from .enrich.lsp import _EXT_TO_LANG_ID, _JsonRpcClient, _to_uri, LspEnricher
+    from .enrich.lsp import _EXT_TO_LANG_ID, LspEnricher, _JsonRpcClient, _to_uri
 
     lang_id = _EXT_TO_LANG_ID.get(ext, "plaintext")
 

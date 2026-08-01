@@ -1,12 +1,12 @@
 """Python parser using stdlib ast module. Extracts: functions (sync/async), classes, methods, params with annotations+defaults, return types, decorators, inheritance, fields, docstrings, calls."""
+import ast
+import contextlib
 import os
 import re
-
-import ast
-
 from pathlib import Path
 
-from okf.parsers.base import Concept, log, _ts, _safe_id, _first_line
+from okf.parsers.base import Concept, _first_line, _safe_id, _ts, log
+
 
 class PythonParser:
     LANGUAGE   = "python"
@@ -101,10 +101,8 @@ class PythonParser:
     def _py_decorators(self, node) -> list[str]:
         decs = []
         for d in node.decorator_list:
-            try:
+            with contextlib.suppress(Exception):
                 decs.append(ast.unparse(d))
-            except Exception:
-                pass
         return decs
 
     def _parse_function(self, node, resource, ts, parent_id) -> Concept:
@@ -134,19 +132,15 @@ class PythonParser:
         ]
         bases = []
         for b in node.bases:
-            try:
+            with contextlib.suppress(Exception):
                 bases.append(ast.unparse(b))
-            except Exception:
-                pass
         # Extract fields (annotated class-level assignments)
         py_fields = []
         for child in ast.iter_child_nodes(node):
             if isinstance(child, ast.AnnAssign) and isinstance(child.target, ast.Name):
                 ftype = ""
-                try:
+                with contextlib.suppress(Exception):
                     ftype = ast.unparse(child.annotation)
-                except Exception:
-                    pass
                 py_fields.append({"name": child.target.id, "type": ftype, "visibility": ""})
         resource_id = re.sub(r"\.py$", "", resource).replace(os.sep, "/")
         cid     = f"{resource_id}/{_safe_id(node.name)}"
@@ -177,10 +171,8 @@ class PythonParser:
                     default = "..."
             annotation = ""
             if arg.annotation:
-                try:
+                with contextlib.suppress(Exception):
                     annotation = ast.unparse(arg.annotation)
-                except Exception:
-                    pass
             params.append({"name": arg.arg, "annotation": annotation, "default": default})
         return params
 

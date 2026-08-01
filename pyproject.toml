@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name            = "okf-generator"
-version = "0.1.51"
-description     = "Generate OKF v0.1 knowledge bundles from codebases — Claude skill + OpenCode integration"
+version = "0.1.52"
+description     = "Generate OKF knowledge bundles from codebases — Claude skill + OpenCode integration"
 readme          = "README.md"
 license         = { text = "MIT" }
 requires-python = ">=3.11"
@@ -28,47 +28,47 @@ classifiers = [
 ]
 
 dependencies = [
-    "pyyaml>=6.0",
-    "tqdm>=4.0",
-    "watchdog>=4.0",
-    "tree-sitter>=0.25.0",
-    "tree-sitter-python>=0.25.0",
-    "tree-sitter-javascript>=0.23.0",
-    "tree-sitter-typescript>=0.23.0",
-    "tree-sitter-go>=0.23.0",
-    "tree-sitter-java>=0.23.0",
-    "tree-sitter-rust>=0.23.0",
-    "tree-sitter-ruby>=0.23.0",
-    "tree-sitter-c>=0.23.0",
-    "tree-sitter-cpp>=0.23.0",
-    "tree-sitter-c-sharp>=0.23.0",
-    "tree-sitter-sql>=0.3.0",
-    "tree-sitter-swift>=0.7.0",
-    "tree-sitter-kotlin>=1.1.0",
-    "tree-sitter-php>=0.24.0",
-    "tree-sitter-dart>=0.1.0",
-    "tree-sitter-scala>=0.26.0",
-    "tree-sitter-julia>=0.23.0",
+    "pyyaml~=6.0",
+    "tqdm~=4.0",
+    "watchdog~=4.0",
+    "tree-sitter~=0.25.0",
+    "tree-sitter-python~=0.25.0",
+    "tree-sitter-javascript~=0.23.0",
+    "tree-sitter-typescript~=0.23.0",
+    "tree-sitter-go~=0.23.0",
+    "tree-sitter-java~=0.23.0",
+    "tree-sitter-rust~=0.23.0",
+    "tree-sitter-ruby~=0.23.0",
+    "tree-sitter-c~=0.23.0",
+    "tree-sitter-cpp~=0.23.0",
+    "tree-sitter-c-sharp~=0.23.0",
+    "tree-sitter-sql~=0.3.0",
+    "tree-sitter-swift~=0.7.0",
+    "tree-sitter-kotlin~=1.1.0",
+    "tree-sitter-php~=0.24.0",
+    "tree-sitter-dart~=0.1.0",
+    "tree-sitter-scala~=0.26.0",
+    "tree-sitter-julia~=0.23.0",
 ]
 
 [project.optional-dependencies]
 llm = [
-    "openai>=1.0.0",     # for LLM enrichment + training pairs
+    "openai~=1.0",     # for LLM enrichment + training pairs
 ]
 dev = [
-    "pytest>=7.0",
-    "hatch",
-    "build",
-    "twine",
-    "ruff>=0.1",
-    "pre-commit>=3.0",
-    "mkdocs>=1.6.0",
-    "mkdocs-material>=9.5.0",
-    "mike>=2.1.0",
+    "pytest~=7.0",
+    "hatch~=1.12",
+    "build~=1.2",
+    "twine~=6.0",
+    "ruff~=0.8.0",
+    "pre-commit~=4.0",
+    "mkdocs~=1.6.0",
+    "mkdocs-material~=9.5.0",
+    "mike~=2.1.0",
 ]
 dashboard = [
-    "fastapi>=0.139.0",
-    "uvicorn>=0.50.0",
+    "fastapi~=0.139.0",
+    "uvicorn~=0.50.0",
 ]
 all = [
     "okf-generator[llm,dev]",
@@ -136,14 +136,41 @@ packages = ["okf"]
 include = [
     "okf/",
     "tests/",
-    "references/",
     "SKILL.md",
     "README.md",
     "LICENSE",
-    "requirements.txt",
     "pyproject.toml",
 ]
 
 [tool.pytest.ini_options]
 testpaths    = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 110
+
+[tool.ruff.lint]
+extend-select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # bugbear
+    "SIM", # flake8-simplify
+]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B", "SIM"]
+"tests/fixtures/**" = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["okf"]
+check_untyped_defs = true
+disallow_untyped_defs = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true

@@ -1,7 +1,8 @@
 """Tests for okf.generator — scan, write, summary."""
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures" / "realworld" / "python" / "easy"
 REALWORLD_SQL = Path(__file__).parent / "fixtures" / "realworld" / "sql" / "easy"
@@ -10,7 +11,7 @@ REALWORLD_SQL = Path(__file__).parent / "fixtures" / "realworld" / "sql" / "easy
 @pytest.fixture
 def bundle_dir(tmp_path):
     """Generate a fresh OKF bundle into a temp dir."""
-    from okf.generator import scan_codebase, write_bundle, write_summary, _dedup_concept_ids
+    from okf.generator import _dedup_concept_ids, scan_codebase, write_bundle, write_summary
     concepts = scan_codebase(FIXTURES)
     concepts = _dedup_concept_ids(concepts)
     write_bundle(
@@ -150,7 +151,7 @@ def test_bundle_summary_has_domain_map(bundle_dir):
 # ── SUMMARY.md standalone ────────────────────────────────────────────────────
 
 def test_write_summary_standalone(tmp_path):
-    from okf.generator import scan_codebase, write_summary, _dedup_concept_ids
+    from okf.generator import _dedup_concept_ids, scan_codebase, write_summary
     concepts = scan_codebase(FIXTURES)
     concepts = _dedup_concept_ids(concepts)
     out = write_summary("sample", concepts, tmp_path, {})
@@ -204,7 +205,7 @@ def test_scan_nonexistent_directory_returns_empty_list(tmp_path):
 
 
 def test_write_bundle_on_empty_codebase_still_creates_valid_bundle(tmp_path):
-    from okf.generator import scan_codebase, write_bundle, write_summary, _walk_source_dirs
+    from okf.generator import _walk_source_dirs, scan_codebase, write_bundle, write_summary
     source = tmp_path / "src"
     source.mkdir()
     out = tmp_path / "bundle"
@@ -226,7 +227,7 @@ def test_write_bundle_includes_empty_subfolders(tmp_path):
     """A subfolder with no parseable concepts (e.g. only .txt files, or
     genuinely empty) should still get an index.md and show up in its
     parent's subdirectory listing instead of vanishing from the bundle."""
-    from okf.generator import scan_codebase, write_bundle, _walk_source_dirs
+    from okf.generator import _walk_source_dirs, scan_codebase, write_bundle
     source = tmp_path / "src"
     (source / "with_code").mkdir(parents=True)
     (source / "with_code" / "main.py").write_text("def foo():\n    pass\n")
@@ -301,7 +302,7 @@ def test_complex_all_manifest_ecosystems():
 
 def test_complex_bundle_has_dependencies_folder(tmp_path):
     """Generated bundle contains _dependencies/ with per-ecosystem subdirs."""
-    from okf.generator import scan_codebase, write_bundle, _walk_source_dirs
+    from okf.generator import _walk_source_dirs, scan_codebase, write_bundle
     concepts = scan_codebase(COMPLEX)
     write_bundle(
         concepts=concepts,
@@ -344,7 +345,7 @@ def test_complex_summary_domain_map_no_manifest_domains(tmp_path):
 
 def test_complex_deep_directory_structure(tmp_path):
     """Deeply nested source dirs are mirrored in the bundle."""
-    from okf.generator import scan_codebase, write_bundle, _walk_source_dirs
+    from okf.generator import _walk_source_dirs, scan_codebase, write_bundle
     concepts = scan_codebase(COMPLEX)
     write_bundle(
         concepts=concepts,
@@ -408,9 +409,17 @@ def test_complex_dependency_concept_body(tmp_path):
 
 def test_complex_dependency_dev_flag():
     """Dev dependencies are marked correctly across parsers."""
-    from okf.manifest_scanner import parse_package_json, parse_pyproject_toml, parse_cargo_toml, parse_gemfile, parse_build_gradle, parse_go_mod
-    from pathlib import Path
     import tempfile
+    from pathlib import Path
+
+    from okf.manifest_scanner import (
+        parse_build_gradle,
+        parse_cargo_toml,
+        parse_gemfile,
+        parse_go_mod,
+        parse_package_json,
+        parse_pyproject_toml,
+    )
 
     def _write(name, content):
         p = Path(tempfile.mktemp(suffix=name))
@@ -450,8 +459,9 @@ def test_complex_dependency_dev_flag():
 
 def test_c_parser_extracts_functions_and_structs():
     """C parser creates Function and Class concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.c").write_text("/** Adds two ints. */\nint add(int a, int b) { return a + b; }\n\n/** A 2D point. */\nstruct Point { int x; int y; };\n")
     concepts = scan_codebase(tmp)
@@ -467,8 +477,9 @@ def test_c_parser_extracts_functions_and_structs():
 
 def test_cpp_parser_extracts_classes_and_methods():
     """C++ parser creates Class concepts with methods."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text("/** A simple counter. */\nclass Counter {\npublic:\n    int get() const { return val; }\n    void inc() { val++; }\nprivate:\n    int val = 0;\n};\n\nint add(int a, int b) { return a + b; }\n")
     concepts = scan_codebase(tmp)
@@ -483,8 +494,9 @@ def test_cpp_parser_extracts_classes_and_methods():
 
 def test_csharp_parser_extracts_classes_and_methods():
     """C# parser creates Class and Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cs").write_text("using System;\nclass Greeter {\n    public void SayHello(string name) { }\n    public int Add(int a, int b) { return a + b; }\n}\n")
     concepts = scan_codebase(tmp)
@@ -498,8 +510,9 @@ def test_csharp_parser_extracts_classes_and_methods():
 
 def test_swift_parser_extracts_classes_methods_and_functions():
     """Swift parser creates Class and Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.swift").write_text(
         "import Foundation\n"
@@ -523,8 +536,9 @@ def test_swift_parser_extracts_classes_methods_and_functions():
 
 def test_kotlin_parser_extracts_classes_methods_and_functions():
     """Kotlin parser creates Class and Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.kt").write_text(
         "package com.okfgen.test\n"
@@ -548,8 +562,9 @@ def test_kotlin_parser_extracts_classes_methods_and_functions():
 
 def test_typescript_generic_class_and_function():
     """TypeScript generic classes and functions extract type_params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.ts").write_text(
         "export class Box<T> {\n"
@@ -573,8 +588,9 @@ def test_typescript_generic_class_and_function():
 
 def test_java_generic_class_and_method():
     """Java generic classes and methods extract type_params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "DataStore.java").write_text(
         "public class DataStore<T, U extends Comparable> {\n"
@@ -596,8 +612,9 @@ def test_java_generic_class_and_method():
 
 def test_rust_generic_struct_and_fn():
     """Rust generic structs and functions extract type_params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.rs").write_text(
         "pub struct Pair<T, U> {\n"
@@ -625,8 +642,9 @@ def test_rust_generic_struct_and_fn():
 
 def test_go_generic_func_and_type():
     """Go generic functions and types extract type_params (Go 1.18+)."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.go").write_text(
         "package lib\n"
@@ -657,8 +675,9 @@ def test_go_generic_func_and_type():
 
 def test_cpp_template_class_and_function():
     """C++ template classes and functions extract type_params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "template<typename T>\n"
@@ -674,7 +693,7 @@ def test_cpp_template_class_and_function():
     concepts = scan_codebase(tmp)
     container = next((c for c in concepts if c.title == "Container"), None)
     assert container is not None, "Container class not found"
-    assert container.type_params, f"Container type_params should not be empty"
+    assert container.type_params, "Container type_params should not be empty"
     assert any("T" in tp for tp in container.type_params), \
         f"Container should have 'T' param, got {container.type_params}"
     convert_fn = next((c for c in concepts if c.title == "convert"), None)
@@ -686,8 +705,9 @@ def test_cpp_template_class_and_function():
 
 def test_csharp_generic_class_and_method():
     """C# generic classes and methods extract type_params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cs").write_text(
         "using System.Collections.Generic;\n"
@@ -711,6 +731,7 @@ def test_csharp_generic_class_and_method():
 def test_complex_fixture_has_generic_concepts():
     """The complex fixture's TypeScript generic code extracts type_params."""
     from okf.generator import scan_codebase
+
     from .test_generator import COMPLEX
     concepts = scan_codebase(COMPLEX)
     ts_generic = [c for c in concepts if c.type_params and "lang:typescript" in c.tags]
@@ -726,8 +747,9 @@ def test_complex_fixture_has_generic_concepts():
 
 def test_python_class_inheritance():
     """Python class extracts base classes."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "models.py").write_text(
         "class Animal:\n    pass\n"
@@ -747,8 +769,9 @@ def test_python_class_inheritance():
 
 def test_java_class_inheritance():
     """Java class extracts superclass and interfaces."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "Test.java").write_text(
         "interface Pet {}\n"
@@ -765,8 +788,9 @@ def test_java_class_inheritance():
 
 def test_typescript_class_heritage():
     """TypeScript class extracts extends/implements bases."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.ts").write_text(
         "interface Animal {}\n"
@@ -783,8 +807,9 @@ def test_typescript_class_heritage():
 
 def test_cpp_class_inheritance():
     """C++ class extracts base classes."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "class Animal {};\n"
@@ -799,8 +824,9 @@ def test_cpp_class_inheritance():
 
 def test_csharp_class_inheritance():
     """C# class extracts base types from base_list."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cs").write_text(
         "interface Animal {}\n"
@@ -817,8 +843,9 @@ def test_csharp_class_inheritance():
 
 def test_ruby_class_inheritance():
     """Ruby class extracts superclass."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.rb").write_text(
         "class Animal\nend\n"
@@ -835,8 +862,9 @@ def test_ruby_class_inheritance():
 
 def test_python_function_decorators():
     """Python functions extract decorator list."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "app.py").write_text(
         "import functools\n"
@@ -856,8 +884,9 @@ def test_python_function_decorators():
 
 def test_python_class_decorators():
     """Python classes extract decorator list."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "models.py").write_text(
         "from dataclasses import dataclass\n"
@@ -874,8 +903,9 @@ def test_python_class_decorators():
 
 def test_java_annotations():
     """Java classes and methods extract annotations."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "Test.java").write_text(
         "@Deprecated\n"
@@ -897,8 +927,9 @@ def test_java_annotations():
 
 def test_csharp_attributes():
     """C# classes and methods extract attributes."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cs").write_text(
         "[Serializable]\n"
@@ -917,8 +948,9 @@ def test_csharp_attributes():
 
 def test_rust_attributes():
     """Rust structs and functions extract #[attribute] items."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.rs").write_text(
         "#[derive(Debug, Clone)]\n"
@@ -942,8 +974,9 @@ def test_rust_attributes():
 
 def test_java_visibility():
     """Java classes and methods capture visibility modifiers."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "Test.java").write_text(
         "public class Service {\n"
@@ -968,8 +1001,9 @@ def test_java_visibility():
 
 def test_csharp_visibility():
     """C# classes and methods capture visibility modifiers."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cs").write_text(
         "public class Service {\n"
@@ -990,8 +1024,9 @@ def test_csharp_visibility():
 
 def test_typescript_visibility():
     """TypeScript methods capture accessibility modifiers."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "service.ts").write_text(
         "class Service {\n"
@@ -1013,8 +1048,9 @@ def test_typescript_visibility():
 
 def test_rust_visibility():
     """Rust functions and structs capture visibility modifiers."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.rs").write_text(
         "pub struct Service {}\n"
@@ -1034,8 +1070,9 @@ def test_rust_visibility():
 
 def test_cpp_visibility_modifiers():
     """C++ functions capture static/virtual/const modifiers."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "static int run() { return 0; }\n"
@@ -1056,8 +1093,9 @@ def test_cpp_visibility_modifiers():
 
 def test_python_class_fields():
     """Python classes extract annotated fields."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "models.py").write_text(
         "from dataclasses import dataclass\n"
@@ -1077,8 +1115,9 @@ def test_python_class_fields():
 
 def test_typescript_class_fields():
     """TypeScript classes extract field definitions."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "models.ts").write_text(
         "class User {\n"
@@ -1100,8 +1139,9 @@ def test_typescript_class_fields():
 
 def test_java_class_fields():
     """Java classes extract field declarations."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "User.java").write_text(
         "class User {\n"
@@ -1120,8 +1160,9 @@ def test_java_class_fields():
 
 def test_csharp_class_fields():
     """C# classes extract field and property declarations."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "User.cs").write_text(
         "class User {\n"
@@ -1142,8 +1183,9 @@ def test_csharp_class_fields():
 
 def test_typescript_interface():
     """TypeScript interface declarations are extracted."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "types.ts").write_text(
         "interface User {\n"
@@ -1156,7 +1198,7 @@ def test_typescript_interface():
     )
     concepts = scan_codebase(tmp)
     user = next((c for c in concepts if c.type == "Interface" and c.title == "User"), None)
-    assert user is not None, f"Interface 'User' not found"
+    assert user is not None, "Interface 'User' not found"
     assert "name" in user.methods, f"Interface User should list 'name': {user.methods}"
     admin = next((c for c in concepts if c.type == "Interface" and c.title == "Admin"), None)
     assert admin is not None
@@ -1166,8 +1208,9 @@ def test_typescript_interface():
 
 def test_typescript_type_alias():
     """TypeScript type alias declarations are extracted."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "types.ts").write_text(
         "type UserID = string;\n"
@@ -1175,16 +1218,17 @@ def test_typescript_type_alias():
     )
     concepts = scan_codebase(tmp)
     uid = next((c for c in concepts if c.type == "Type" and c.title == "UserID"), None)
-    assert uid is not None, f"Type alias 'UserID' not found"
+    assert uid is not None, "Type alias 'UserID' not found"
     cb = next((c for c in concepts if c.type == "Type" and c.title == "Callback"), None)
-    assert cb is not None, f"Type alias 'Callback' not found"
+    assert cb is not None, "Type alias 'Callback' not found"
     import shutil; shutil.rmtree(tmp)
 
 
 def test_typescript_enum():
     """TypeScript enum declarations are extracted."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "types.ts").write_text(
         "enum Color {\n"
@@ -1195,7 +1239,7 @@ def test_typescript_enum():
     )
     concepts = scan_codebase(tmp)
     color = next((c for c in concepts if c.type == "Class" and c.title == "Color"), None)
-    assert color is not None, f"Enum 'Color' not found"
+    assert color is not None, "Enum 'Color' not found"
     assert "Red" in color.methods, f"Enum Color should list Red: {color.methods}"
     assert "Green" in color.methods, f"Enum Color should list Green: {color.methods}"
     import shutil; shutil.rmtree(tmp)
@@ -1205,8 +1249,9 @@ def test_typescript_enum():
 
 def test_sql_table_columns():
     """SQL CREATE TABLE extracts column definitions with types and constraints."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "schema.sql").write_text(
         "CREATE TABLE users (\n"
@@ -1232,8 +1277,9 @@ def test_sql_table_columns():
 
 def test_sql_table_foreign_key():
     """SQL CREATE TABLE extracts foreign key references."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "schema.sql").write_text(
         "CREATE TABLE orders (\n"
@@ -1254,8 +1300,9 @@ def test_sql_table_foreign_key():
 
 def test_python_methods_emitted():
     """Python class methods are emitted as individual Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "service.py").write_text(
         "class Service:\n"
@@ -1271,8 +1318,9 @@ def test_python_methods_emitted():
 
 def test_typescript_methods_emitted():
     """TypeScript class methods are emitted as individual Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "service.ts").write_text(
         "class Service {\n"
@@ -1289,8 +1337,9 @@ def test_typescript_methods_emitted():
 
 def test_cpp_methods_emitted():
     """C++ class methods are emitted as individual Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "class Counter {\n"
@@ -1310,8 +1359,9 @@ def test_cpp_methods_emitted():
 
 def test_ruby_methods_emitted():
     """Ruby class methods are emitted as individual Function concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.rb").write_text(
         "class Service\n"
@@ -1332,8 +1382,9 @@ def test_ruby_methods_emitted():
 
 def test_java_doc_tags_populate_params_and_returns():
     """Javadoc @param and @return tags populate structured params/returns."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "Test.java").write_text(
         "public class Test {\n"
@@ -1355,8 +1406,9 @@ def test_java_doc_tags_populate_params_and_returns():
 
 def test_jsdoc_params_with_types_populate_annotations():
     """JSDoc @param {Type} tag populates param annotation."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "lib.js").write_text(
         "/**\n"
@@ -1377,8 +1429,9 @@ def test_jsdoc_params_with_types_populate_annotations():
 
 def test_ts_method_doc_tags():
     """TypeScript method JSDoc @param populates method concept params."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "service.ts").write_text(
         "class Service {\n"
@@ -1403,8 +1456,9 @@ def test_ts_method_doc_tags():
 
 def test_go_const_declaration():
     """Go const declarations are extracted as Constant concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "main.go").write_text(
         "package main\n"
@@ -1423,8 +1477,9 @@ def test_go_const_declaration():
 
 def test_go_var_declaration():
     """Go var declarations are extracted as Variable concepts."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "main.go").write_text(
         "package main\n"
@@ -1440,8 +1495,9 @@ def test_go_var_declaration():
 
 def test_go_grouped_const():
     """Go grouped const (with parens) extracts all specs."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "main.go").write_text(
         "package main\n"
@@ -1461,8 +1517,9 @@ def test_go_grouped_const():
 
 def test_ruby_singleton_method():
     """Ruby def self.foo is extracted as a Function concept."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.rb").write_text(
         "class Service\n"
@@ -1486,8 +1543,9 @@ def test_ruby_singleton_method():
 
 def test_ruby_singleton_in_class_methods():
     """Singleton methods appear in the class method listing."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.rb").write_text(
         "class Service\n"
@@ -1507,8 +1565,9 @@ def test_ruby_singleton_in_class_methods():
 
 def test_cpp_template_signature_includes_prefix():
     """C++ template class signature includes 'template<typename T>' prefix."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "template<typename T>\n"
@@ -1529,8 +1588,9 @@ def test_cpp_template_signature_includes_prefix():
 
 def test_cpp_template_function_signature():
     """C++ template function signature includes 'template<...>' prefix."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "template<typename T, typename U>\n"
@@ -1548,7 +1608,8 @@ def test_cpp_template_function_signature():
 
 def _global_cfg_value(key: str, fallback: str) -> str:
     """Read a value from the user's global ~/.config/okf/config.json if it exists."""
-    import json, os
+    import json
+    import os
     p = os.path.expanduser("~/.config/okf/config.json")
     if os.path.exists(p):
         try:
@@ -1568,7 +1629,8 @@ def _global_cfg_value(key: str, fallback: str) -> str:
 def test_okf_config_loads_defaults():
     """Config loader returns defaults when no file or env vars set."""
     import os
-    from okf.config import load, _get
+
+    from okf.config import _get, load
     saved = {}
     for e in ("OKF_API_KEY", "OKF_BASE_URL", "OKF_MODEL", "OKF_MAX_WORKERS"):
         saved[e] = os.environ.pop(e, None)
@@ -1587,7 +1649,8 @@ def test_okf_config_loads_defaults():
 def test_okf_config_env_var_overrides_file(tmp_path):
     """Env vars take precedence over config file values."""
     import os
-    from okf.config import load, _get
+
+    from okf.config import _get, load
     saved = os.environ.get("OKF_MODEL")
     try:
         os.environ["OKF_MODEL"] = "gpt-4"
@@ -1604,7 +1667,7 @@ def test_okf_config_env_var_overrides_file(tmp_path):
 
 def test_okf_config_serve_defaults():
     """Config serve defaults are valid integers."""
-    from okf.config import load, _get
+    from okf.config import _get, load
     cfg = load()
     port = _get(cfg, "serve.port", 0)
     assert isinstance(port, int) and 0 < port < 65536
@@ -1612,10 +1675,32 @@ def test_okf_config_serve_defaults():
     assert isinstance(host, str) and host
 
 
+def test_okf_config_coerces_numeric_values(monkeypatch, tmp_path):
+    """`okf config serve.port=9090` must store an int, not a string."""
+    import okf.config as config
+    # Point config at an isolated file so the test never touches ~/.config/okf
+    fake = tmp_path / "config.json"
+    monkeypatch.setattr(config, "CONFIG_FILES", [fake])
+
+    import sys
+
+    from okf.cli import main as cli_main
+    from okf.config import _get, load
+    monkeypatch.setattr(sys, "argv", ["okf", "config", "serve.port=9090"])
+    try:
+        cli_main()
+    except SystemExit:
+        pass
+
+    assert isinstance(_get(load(), "serve.port", 0), int)
+    assert _get(load(), "serve.port", 0) == 9090
+
+
 def test_okf_config_dump_and_read(tmp_path):
     """Written config file can be read back."""
-    from okf.config import dump, load, _get
     import os
+
+    from okf.config import _get, dump, load
     saved = {e: os.environ.pop(e, None) for e in ("OKF_API_KEY", "OKF_BASE_URL", "OKF_MODEL", "OKF_MAX_WORKERS")}
     try:
         test_cfg = {"llm": {"api_key": "sk-test123", "model": "test-model"}}
@@ -1683,7 +1768,8 @@ def test_pre_commit_hook_config_valid():
 
 def test_generate_accepts_enrich_flag(tmp_path):
     """--enrich flag does not crash (requires API key for actual enrichment)."""
-    import subprocess, sys
+    import subprocess
+    import sys
     src = tmp_path / "src"
     src.mkdir()
     (src / "main.py").write_text("def foo():\n    \"\"\"A test function.\"\"\"\n    pass\n")
@@ -1701,8 +1787,9 @@ def test_generate_accepts_enrich_flag(tmp_path):
 
 def test_cpp_template_type_params_still_populated():
     """C++ template type_params are populated alongside template prefix."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "test.cpp").write_text(
         "template<typename T>\n"
@@ -1714,7 +1801,7 @@ def test_cpp_template_type_params_still_populated():
     concepts = scan_codebase(tmp)
     container = next((c for c in concepts if c.type == "Class" and c.title == "Container"), None)
     assert container is not None
-    assert container.type_params, f"Container should have type_params"
+    assert container.type_params, "Container should have type_params"
     assert any("T" in tp for tp in container.type_params), \
         f"Container type_params should contain 'T': {container.type_params}"
     import shutil; shutil.rmtree(tmp)
@@ -1722,8 +1809,9 @@ def test_cpp_template_type_params_still_populated():
 
 def test_cpp_template_heavy_boost_style_header():
     """C++ parser handles Boost-style template-heavy headers without crashing."""
-    from okf.generator import scan_codebase
     import tempfile
+
+    from okf.generator import scan_codebase
     tmp = Path(tempfile.mkdtemp())
     (tmp / "spirit.hpp").write_text(
         "// Boost.Spirit-style: nested templates, variadics, template-template params\n"
@@ -1788,6 +1876,7 @@ def test_resolve_provider_defaults():
 def test_resolve_provider_per_mode_override():
     """Per-mode enrich.{mode}.provider overrides llm.provider."""
     import copy
+
     from okf.config import DEFAULTS, resolve_provider
     cfg = copy.deepcopy(DEFAULTS)
     cfg["enrich"]["deep"] = {"enabled": True, "provider": "deepseek", "model": "deepseek-chat"}
@@ -1800,6 +1889,7 @@ def test_resolve_provider_per_mode_override():
 def test_resolve_provider_per_mode_key_override():
     """enrich.{mode}.base_url overrides the provider default."""
     import copy
+
     from okf.config import DEFAULTS, resolve_provider
     cfg = copy.deepcopy(DEFAULTS)
     cfg["enrich"]["description"] = {"base_url": "http://myproxy:8080/v1", "model": "proxy-model"}
@@ -1812,6 +1902,7 @@ def test_resolve_provider_per_mode_key_override():
 def test_resolve_provider_named_provider():
     """providers.{name}.base_url is used when no per-mode key overrides."""
     import copy
+
     from okf.config import DEFAULTS, resolve_provider
     cfg = copy.deepcopy(DEFAULTS)
     cfg["llm"]["provider"] = "openai"
@@ -1825,6 +1916,7 @@ def test_resolve_provider_named_provider():
 def test_resolve_provider_anthropic_builtin():
     """Anthropic built-in provider resolves correctly without config overrides."""
     import copy
+
     from okf.config import DEFAULTS, resolve_provider
     cfg = copy.deepcopy(DEFAULTS)
     cfg["llm"]["provider"] = "anthropic"
@@ -1837,6 +1929,7 @@ def test_resolve_provider_anthropic_builtin():
 def test_resolve_provider_mode_cascade():
     """Full cascade: enrich.{mode}.provider → llm.provider → builtin."""
     import copy
+
     from okf.config import DEFAULTS, resolve_provider
     cfg = copy.deepcopy(DEFAULTS)
     cfg["enrich"]["security"] = {"enabled": True, "provider": "anthropic", "api_key": "sk-ant-sec"}
@@ -1940,8 +2033,9 @@ class TestDictToConcept:
 
 class TestLspUri:
     def test_to_uri(self):
-        from okf.enrich.lsp import _to_uri
         from pathlib import Path
+
+        from okf.enrich.lsp import _to_uri
         uri = _to_uri(Path("/foo/bar/baz.py"))
         assert uri.startswith("file:///")
         assert uri.endswith("/baz.py")
@@ -1960,16 +2054,18 @@ class TestLspUri:
 
 class TestCliEnrich:
     def test_bare_enrich_errors(self):
-        from okf.cli import main
         import sys
+
+        from okf.cli import main
         sys.argv = ["okf", "enrich"]
         with pytest.raises(SystemExit) as exc:
             main()
         assert exc.value.code == 1
 
     def test_lsp_status_runs(self):
-        from okf.lsp import main as lsp_main
         import sys
+
+        from okf.lsp import main as lsp_main
         sys.argv = ["okf lsp", "status"]
         try:
             lsp_main()
@@ -1979,15 +2075,17 @@ class TestCliEnrich:
 
 class TestLspEnricher:
     def test_detect_project_root(self):
-        from okf.enrich.lsp import LspEnricher
         from pathlib import Path
+
+        from okf.enrich.lsp import LspEnricher
         enricher = LspEnricher.__new__(LspEnricher)
         root = enricher._detect_project_root(Path("okf/enrich"))
         assert (root / ".git").is_dir() or (root / "pyproject.toml").is_file()
 
     def test_get_source_include(self):
-        from okf.enrich.lsp import LspEnricher
         from pathlib import Path
+
+        from okf.enrich.lsp import LspEnricher
         enricher = LspEnricher.__new__(LspEnricher)
         enricher.source_dir = Path("okf/enrich").resolve()
         enricher._workspace_root = Path.cwd()

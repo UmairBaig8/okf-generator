@@ -20,7 +20,7 @@
 <h3 align="center">The knowledge layer for AI coding agents</h3>
 
 <p align="center">
-  <b>Scan any codebase into structured, agent-ready knowledge — 17 languages, <strong>~100x fewer tokens</strong> than reading whole files, <strong>zero LLM required</strong>.
+  <b>Scan any codebase into structured, agent-ready knowledge — 18 languages, <strong>~100x fewer tokens</strong> than reading whole files, <strong>zero LLM required</strong>.
 </p>
 
 <p align="center">
@@ -89,8 +89,8 @@ No re-reading the file. No guessing. No LLM call required.
 
 | Capability | What it means |
 |---|---|
-| **17 languages** | Native AST extraction for Python, JS/TS, Go, Rust, Java, C++, Swift, Kotlin, Ruby, C/C++/C#, SQL, PHP, Dart, Scala, Julia — one parser file per language, add a new one in minutes |
-| **22 manifest formats** | Automatic cross-indexing of `package.json`, `Cargo.toml`, `Dockerfile`, `go.mod`, `requirements.txt`, `Gemfile`, `pyproject.toml`, and 15 more |
+| **18 languages** | Native AST extraction for Python, JS/TS, Go, Rust, Java, C++, Swift, Kotlin, Ruby, C/C++/C#, SQL, PHP, Dart, Scala, Julia, YAML — one parser file per language, add a new one in minutes |
+| **20 manifest formats** | Automatic cross-indexing of `package.json`, `Cargo.toml`, `Dockerfile`, `go.mod`, `requirements.txt`, `Gemfile`, `pyproject.toml`, and 13 more |
 | **Deterministic & offline** | Core extraction is **100% offline** — zero LLM calls, zero API keys, zero vector infrastructure. Same output every run |
 | **Cross-reference linker** | Resolves imports → dependency edges and function calls → caller/callee across all languages. Multi-hop reasoning without grep |
 | **LSP call-graph enrichment** | Optional LSP pass (`okf enrich --lsp`) uses local language servers for compiler-accurate caller/callee resolution — 4 servers mapped (pyright ✅, gopls, rust-analyzer, typescript-language-server), zero token cost |
@@ -111,7 +111,7 @@ No re-reading the file. No guessing. No LLM call required.
 2. Link  → cross-reference linker resolves imports→deps, calls→callees
 3. Write → OKF v0.2 bundle: structured markdown, mirrors your source tree
 4. Update → incremental: SHA256 manifest detects changes, re-parses only dirty files, re-links, edge-diffs, writes only dirty concepts
-5. Use   → lookup, ask, diff, visualize, mcp, dashboard — 14 commands
+5. Use   → lookup, ask, diff, visualize, mcp, dashboard — 19 commands
 6. Enrich → optional LSP pass (deterministic call-graph refinement) + optional LLM layer: 4 modes, multi-provider routing
 ```
 
@@ -129,9 +129,9 @@ Each language lives in its own file under `okf/parsers/`. Add a new one in minut
 
 Use `--domains crossplane` to re-classify YAML concepts using data-driven rules. Built-in rules for Crossplane (XRD, Composition, Claim, ProviderConfig, ManagedResource). Custom domains via `--domain-rules ./my-rules.yaml`. See **[docs/domain-classification.md](docs/domain-classification.md)**.
 
-### Manifest formats (17)
+### Manifest formats (20)
 
-`requirements.txt` · `pyproject.toml` · `package.json` · `Cargo.toml` · `Cargo.lock` · `yarn.lock` · `pnpm-lock.yaml` · `go.mod` · `go.sum` · `poetry.lock` · `composer.json` · `pom.xml` · `Gemfile` · `build.gradle` / `.kts` · `Package.swift` · `Dockerfile` / `Containerfile` · `docker-compose.yml`
+`requirements.txt` · `pyproject.toml` · `package.json` · `Cargo.toml` · `Cargo.lock` · `yarn.lock` · `pnpm-lock.yaml` · `go.mod` · `go.sum` · `poetry.lock` · `composer.json` · `pom.xml` · `Gemfile` · `build.gradle` / `.kts` · `Package.swift` · `Dockerfile` / `Containerfile` · `docker-compose.yml` · `mix.exs` · `project.clj` · `package.swift`
 
 ![Before and after: 14,000 tokens vs 140 tokens](https://cdn.jsdelivr.net/gh/UmairBaig8/okf-generator@main/docs/images/before_after.svg)
 
@@ -278,7 +278,7 @@ This project has an OKF knowledge bundle at ./okf_bundle/.
 | Cross-reference edges | ✓ Calls / called-by / imports | ✗ Not supported |
 | Privacy | ✓ **100% offline**, no data leaves | ✗ Needs embeddings API (data may egress) |
 | Search speed | ✓ **~3-4ms** (indexed) | ~ 200-500ms (embed + search) |
-| Dependency manifest parsing | ✓ **17 formats** automatically | ✗ Not designed for this |
+| Dependency manifest parsing | ✓ **20 formats** automatically | ✗ Not designed for this |
 | CI/CD integration | ✓ **Built-in GitHub Action** + impact diff | ✗ Custom pipeline required |
 | Training data export | ✓ **Built-in JSONL** pairs | ✗ Not a feature |
 | Context compression | ✓ **~97% reduction** (45K→1.2K tokens) | ~ Varies by chunk strategy |
@@ -358,9 +358,11 @@ okf --version           Show version
 | Command | Usage | Description |
 |---|---|---|
 | `generate` | `okf generate [src] [out] [--enrich]` | Scan codebase (auto-detects project root) |
+| `update` | `okf update [src] [out] [--force] [--watch]` | Incremental re-scan of changed files |
 | `lookup` | `okf lookup <query>` | Instant exact-symbol concept retrieval |
 | `ask` | `okf ask <question>` | AI-powered Q&A about your codebase |
 | `enrich` | `okf enrich <bundle> [--mode]` | LLM-enhance an existing bundle |
+| `lsp` | `okf lsp [bundle]` | LSP call-graph enrichment pass |
 | `diff` | `okf diff <old> <new> [--impact]` | Compare two bundles, show dependency impact |
 | `visualize` | `okf visualize <bundle> [out.html]` | Generate interactive D3 graph |
 | `mcp` | `okf mcp <bundle> [--port]` | Start MCP server with 11 tools |
@@ -371,6 +373,9 @@ okf --version           Show version
 | `init` | `okf init [dir]` | Interactive wizard for bundle setup |
 | `summarize` | `okf summarize <bundle>` | Regenerate SUMMARY.md for agents |
 | `domains` | `okf domains` | List available domain classification rule sets |
+| `config` | `okf config [key=value]` | Read/write .okfconfig settings |
+| `migrate` | `okf migrate <bundle>` | Migrate v0.1 bundles to v0.2 |
+| `agent` | `okf agent [--bundle]` | Interactive REPL over the bundle |
 | `plugin` | `okf plugin [list\|install\|uninstall]` | Manage external parser plugins |
 
 > Full CLI reference: **[docs/cli-reference.md](docs/cli-reference.md)**
@@ -408,7 +413,7 @@ pip install -e ".[dev]"
 pytest tests/ -q
 ```
 
-**242+ tests passing.** See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+**415+ tests passing.** See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
 ---
 

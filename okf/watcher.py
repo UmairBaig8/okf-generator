@@ -19,7 +19,7 @@ DEFAULT_WATCH_EXTENSIONS = {
     ".go", ".rs", ".java", ".rb", ".kt", ".swift",
     ".sql", ".yaml", ".yml", ".json", ".toml",
     ".c", ".cpp", ".h", ".hpp", ".cs", ".dart",
-    ".scala", ".jl", ".php", ".rb",
+    ".scala", ".jl", ".php",
 }
 
 # Editor temp-file patterns to ignore
@@ -50,8 +50,8 @@ def watch_and_update(
     exclude: set[str] | None = None,
     enable_enrich: bool = False,
 ):
-    from watchdog.observers import Observer
     from watchdog.events import PatternMatchingEventHandler
+    from watchdog.observers import Observer
 
     exclude = exclude or set()
     ignore_pats = _load_watch_ignore_patterns(source_root)
@@ -88,9 +88,6 @@ def watch_and_update(
         exts = DEFAULT_WATCH_EXTENSIONS
         if ext and ext not in exts:
             return
-
-        if ext in {".json", ".toml", ".yml", ".yaml"}:
-            pass
 
         with timer_lock:
             nonlocal timer

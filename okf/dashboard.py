@@ -9,9 +9,10 @@ import re
 import sys
 from pathlib import Path
 
-from fastapi import FastAPI, Query
-from fastapi.responses import HTMLResponse
 import uvicorn
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 TEMPLATE_PATH = Path(__file__).parent / "templates" / "viz-template.html"
 
@@ -53,7 +54,7 @@ def _resolve_source(bundle_dir: Path, resource: str, line_range: str) -> str:
     return ""
 
 
-def build_app(bundle_dir: Path, graph_max_nodes: int = 2000):
+def build_app(bundle_dir: Path, graph_max_nodes: int = 2000, token: str | None = None):
     from okf.storage import open_store
 
     store = open_store(bundle_dir)
@@ -62,6 +63,26 @@ def build_app(bundle_dir: Path, graph_max_nodes: int = 2000):
     app.state.concept_count = store.get_info()["total"]
     app.state.store = store
     app.state.graph_max_nodes = graph_max_nodes
+
+    # Block cross-origin reads (localhost CSRF / data exfiltration). Only the
+    # dashboard's own origin (and loopback origins) may fetch the API.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[],  # no external origins
+        allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$",
+        allow_credentials=False,
+        allow_methods=["GET"],
+        allow_headers=[],
+    )
+
+    @app.middleware("http")
+    async def _auth_guard(request, call_next):
+        if token:
+            auth = request.headers.get("Authorization", "")
+            if not (auth.startswith("Bearer ") and auth[7:] == token):
+                from fastapi import HTTPException
+                raise HTTPException(status_code=401, detail="Unauthorized")
+        return await call_next(request)
 
     @app.get("/api/info")
     def bundle_info():
@@ -187,6 +208,8 @@ def main():
     parser.add_argument("bundle_dir", nargs="?", default="./okf_bundle", help="Path to OKF bundle (default: ./okf_bundle)")
     parser.add_argument("--port", "-p", type=int, default=8700, help="Port (default: 8700)")
     parser.add_argument("--host", default="127.0.0.1", help="Host (default: 127.0.0.1)")
+    parser.add_argument("--token", default=None,
+                        help="Require this token (Authorization: Bearer) for all requests")
     parser.add_argument("--open", "-o", action="store_true", help="Open browser automatically")
     parser.add_argument("--memory", action="store_true", help="Force in-memory mode (no SQLite)")
     parser.add_argument("--graph-nodes", type=int, default=2000, help="Max nodes in graph view (default: 2000)")
@@ -197,16 +220,27 @@ def main():
         print(f"ERROR: Bundle not found: {bundle_dir}", file=sys.stderr)
         sys.exit(1)
 
-    app = build_app(bundle_dir, graph_max_nodes=args.graph_nodes)
-    url = f"http://{args.host}:{args.port}"
+    host = args.host
+    if host not in {"127.0.0.1", "localhost", "::1"} and not host.startswith("127.") and not args.token:
+        print(
+            "ERROR: binding to a non-loopback host requires --token <secret> "
+            "so the dashboard is not publicly readable.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    app = build_app(bundle_dir, graph_max_nodes=args.graph_nodes, token=args.token)
+    url = f"http://{host}:{args.port}"
     print(f"  OKF Dashboard: {url}")
     print(f"  Bundle: {bundle_dir.name} ({app.state.concept_count} concepts)")
+    if args.token:
+        print("  Token auth enabled (send Authorization: Bearer <token>).")
 
     if args.open:
         import webbrowser
         webbrowser.open(url)
 
-    uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
+    uvicorn.run(app, host=host, port=args.port, log_level="warning")
 
 
 if __name__ == "__main__":

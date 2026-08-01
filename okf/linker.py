@@ -35,6 +35,7 @@ import logging
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
+
 log = logging.getLogger("okf_gen")
 
 
@@ -93,20 +94,19 @@ _STDLIB_PREFIXES = {
     "urllib", "http", "email", "html", "xml", "configparser", "argparse",
     "tempfile", "weakref", "gc", "platform", "signal", "atexit",
     # Go stdlib prefixes
-    "fmt", "os", "io", "log", "net", "sync", "time", "sort", "math",
-    "strings", "strconv", "errors", "bytes", "bufio", "context",
+    "fmt", "log", "net", "sync", "sort", "strings", "strconv", "errors", "bytes", "bufio", "context",
     "encoding", "runtime", "reflect", "testing",
     # Rust core/std
     "std", "core", "alloc",
     # Java java.* and javax.*
     "java", "javax", "sun", "com.sun",
     # JS/Node built-ins
-    "path", "fs", "os", "url", "http", "https", "crypto", "events",
+    "path", "fs", "url", "https", "crypto", "events",
     "stream", "util", "buffer", "child_process", "cluster", "dns",
-    "net", "tls", "readline", "vm", "assert", "querystring", "zlib",
+    "tls", "readline", "vm", "assert", "querystring", "zlib",
     # Ruby stdlib
-    "json", "csv", "date", "time", "uri", "net", "open", "set",
-    "fileutils", "pathname", "tempfile", "yaml", "logger", "digest",
+    "date", "uri", "open", "set",
+    "fileutils", "pathname", "yaml", "logger", "digest",
     "base64", "erb", "forwardable", "singleton", "observer",
 }
 
@@ -515,9 +515,8 @@ def py_collect_imports(tree) -> list[str]:
     for node in _ast.walk(tree):
         if isinstance(node, _ast.Import):
             names.extend(alias.name for alias in node.names)
-        elif isinstance(node, _ast.ImportFrom):
-            if node.module:
-                names.append(node.module)
+        elif isinstance(node, _ast.ImportFrom) and node.module:
+            names.append(node.module)
     return names
 
 

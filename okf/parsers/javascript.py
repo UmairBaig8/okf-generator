@@ -1,9 +1,17 @@
 """JavaScript/TypeScript parser (tree-sitter). Extracts: functions, arrow fns, methods, classes, interfaces, type aliases, enums, JSDoc, generics, visibility, class fields, decorators, imports, calls."""
 import os
-
 from pathlib import Path
 
-from okf.parsers.base import Concept, _prev_comment, _find_all, _node_text, _parse_doc_tags, _safe_id, TreeSitterParser
+from okf.parsers.base import (
+    Concept,
+    TreeSitterParser,
+    _find_all,
+    _node_text,
+    _parse_doc_tags,
+    _prev_comment,
+    _safe_id,
+)
+
 
 class JSTSParser(TreeSitterParser):
     LANGUAGE   = "javascript"

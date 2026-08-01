@@ -3,7 +3,8 @@ import os
 import re
 from pathlib import Path
 
-from okf.parsers.base import Concept, _prev_comment, _node_text, _safe_id, _first_line, TreeSitterParser
+from okf.parsers.base import Concept, TreeSitterParser, _first_line, _node_text, _prev_comment, _safe_id
+
 
 class SQLParser(TreeSitterParser):
     LANGUAGE   = "sql"

@@ -6,12 +6,11 @@ directories (saves ~95% of syscalls on repos with node_modules / .venv).
 """
 
 import os
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
 from okf.ignore import matches as ignore_matches
-from okf.parsers.base import SKIP_DIRS, SKIP_DIR_SUFFIXES
-
+from okf.parsers.base import SKIP_DIR_SUFFIXES, SKIP_DIRS
 
 # Detect CPU count for worker pool sizing
 _CPU_COUNT = os.cpu_count() or 4
@@ -50,10 +49,14 @@ def walk_files(
     """
     exclude = exclude or set()
     for dirpath_str, dirnames, filenames in os.walk(str(root), topdown=True):
-        # Prune hidden / vendor / excluded directories in-place
+        # Prune hidden / vendor / excluded / symlinked directories in-place
         i = 0
         while i < len(dirnames):
             d = dirnames[i]
+            # Never follow symlinked dirs — they can escape the source root
+            if os.path.islink(os.path.join(dirpath_str, d)):
+                del dirnames[i]
+                continue
             if _skip_dir(d) or d in exclude:
                 del dirnames[i]
                 continue
@@ -63,9 +66,16 @@ def walk_files(
                     del dirnames[i]
                     continue
             i += 1
-        # Yield regular files
+        # Yield regular files (skip symlinked files that point outside root)
         for f in filenames:
-            yield Path(dirpath_str) / f
+            full = Path(dirpath_str) / f
+            if full.is_symlink():
+                try:
+                    target = full.resolve()
+                    target.relative_to(root)
+                except (ValueError, OSError):
+                    continue
+            yield full
 
 
 def walk_dirs(
@@ -83,6 +93,9 @@ def walk_dirs(
         i = 0
         while i < len(dirnames):
             d = dirnames[i]
+            if os.path.islink(os.path.join(dirpath_str, d)):
+                del dirnames[i]
+                continue
             if _skip_dir(d) or d in exclude:
                 del dirnames[i]
                 continue

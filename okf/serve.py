@@ -22,7 +22,9 @@ import sys
 import webbrowser
 from pathlib import Path
 
-from okf.config import load as load_config, _get
+from okf import __version__
+from okf.config import _get
+from okf.config import load as load_config
 
 _cfg = load_config()
 PORT = _get(_cfg, "serve.port", 8000)
@@ -32,17 +34,30 @@ PID_FILE = PID_DIR / "serve.pid"
 REPOS_CACHE = PID_DIR / "repos"
 
 _GIT_URL_RE = re.compile(
-    r"^(?:(https?://|git@|ssh://)|)"  # optional protocol
+    r"^https://"  # https only — never ssh:// or git@ (SSRF / subprocess injection)
     r"([a-zA-Z0-9._-]+(?:\.[a-zA-Z0-9._-]+)+)"  # host
     r"[:/]"  # separator
     r"([a-zA-Z0-9._/-]+?)"  # path
     r"(?:\.git)?$"  # optional .git suffix
 )
 
+_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
+def _is_loopback(host: str) -> bool:
+    return host in _LOOPBACK_HOSTS or host.startswith("127.")
+
 
 def write_pid():
-    PID_DIR.mkdir(parents=True, exist_ok=True)
-    PID_FILE.write_text(str(os.getpid()))
+    PID_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
+    # Refuse to clobber a symlink (pre-existing-file symlink attack in shared cache dir)
+    try:
+        if PID_FILE.is_symlink() or (PID_FILE.exists() and not PID_FILE.is_file()):
+            print("  WARNING: serve.pid exists as a symlink/non-regular file; not writing PID.", file=sys.stderr)
+            return
+        PID_FILE.write_text(str(os.getpid()))
+    except OSError as e:
+        print(f"  WARNING: could not write PID file: {e}", file=sys.stderr)
 
 
 def read_pid() -> int | None:
@@ -67,22 +82,28 @@ def stop_server(silent=False):
 
 
 def _is_git_url(s: str) -> bool:
-    if s.startswith(("https://", "http://", "git@", "ssh://")):
+    if s.startswith(("https://", "http://")):
         return True
     if s.endswith(".git"):
         return True
-    if re.match(r"^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+[:/]", s):
-        return True
-    return False
+    return bool(re.match(r"^[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+[:/]", s))
 
 
 def _parse_git_url(raw: str) -> tuple[str, str]:
-    """Parse a git URL with optional @ref. Returns (clone_url, ref)."""
+    """Parse a git URL with optional @ref. Returns (clone_url, ref).
+
+    Only https:// URLs are accepted; ssh:// and git@ scp-style URLs are
+    rejected to avoid arbitrary-subprocess/SSRF exposure.
+    """
+    if raw.startswith(("git@", "ssh://")):
+        raise ValueError(
+            "Only https:// git URLs are supported (ssh:// and git@ URLs are disabled for security)."
+        )
     ref = "HEAD"
     url = raw
     if "@" in raw:
         parts = raw.rsplit("@", 1)
-        if not parts[0].startswith(("https://", "http://", "git@", "ssh://")):
+        if not parts[0].startswith(("https://", "http://")):
             if "/" not in parts[1]:
                 url, ref = parts
             else:
@@ -90,7 +111,7 @@ def _parse_git_url(raw: str) -> tuple[str, str]:
         else:
             if "/" not in parts[1] and "." not in parts[1]:
                 url, ref = parts
-    if not url.startswith(("https://", "http://", "git@", "ssh://")):
+    if not url.startswith(("https://", "http://")):
         url = f"https://{url}"
     if not url.endswith(".git"):
         url = f"{url}.git"
@@ -168,7 +189,23 @@ def _resolve_bundle(directory: Path, generate: bool) -> Path | None:
 
 
 class VizzHandler(http.server.SimpleHTTPRequestHandler):
+    server_version = "OKF/" + __version__
+
+    def _authorized(self) -> bool:
+        token = getattr(self.server, "auth_token", None)
+        if not token:
+            return True
+        # Accept ?token= query param or Authorization: Bearer <token>
+        from urllib.parse import parse_qs, urlparse
+        if parse_qs(urlparse(self.path).query).get("token", [""])[0] == token:
+            return True
+        auth = self.headers.get("Authorization", "")
+        return auth.startswith("Bearer ") and auth[7:] == token
+
     def do_GET(self):
+        if not self._authorized():
+            self.send_error(401, "Unauthorized")
+            return
         if self.path == "/" and os.path.exists("viz.html"):
             self.send_response(302)
             self.send_header("Location", "/viz.html")
@@ -190,6 +227,10 @@ def main():
                         help="Directory or git URL to serve (default: ./okf_bundle)")
     parser.add_argument("--port", "-p", type=int, default=PORT, help=f"Port (default: {PORT})")
     parser.add_argument("--host", default=HOST, help=f"Host (default: {HOST})")
+    parser.add_argument("--allow-remote", action="store_true",
+                        help="Allow binding to a non-loopback host (requires --token)")
+    parser.add_argument("--token", default=None,
+                        help="Require this token (via ?token= or Authorization: Bearer) for all requests")
     parser.add_argument("--open", "-o", action="store_true", help="Open browser automatically")
     parser.add_argument("--stop", action="store_true", help="Stop a running server")
     parser.add_argument("--update", action="store_true", help="Fetch latest from git remote before serving")
@@ -200,12 +241,32 @@ def main():
         stop_server()
         sys.exit(0)
 
+    if not _is_loopback(args.host) and not args.allow_remote:
+        print(
+            f"ERROR: refusing to bind to non-loopback host {args.host!r} "
+            "without --allow-remote (remote exposure is a security risk).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    if not _is_loopback(args.host) and not args.token:
+        print(
+            "ERROR: binding to a non-loopback host requires --token <secret> "
+            "so the server is not publicly readable.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     stop_server(silent=True)
 
     # Resolve directory — may be a git URL
     raw = args.bundle_dir
     if _is_git_url(raw):
-        url, ref = _parse_git_url(raw)
+        try:
+            url, ref = _parse_git_url(raw)
+        except ValueError as e:
+            print(f"ERROR: {e}", file=sys.stderr)
+            sys.exit(1)
         print(f"  Git repo: {url} @ {ref}")
         directory = _clone_or_update(url, ref, update=args.update)
         if directory is None or not directory.exists():
@@ -255,9 +316,14 @@ def main():
         webbrowser.open(f"http://{args.host}:{args.port}")
 
     print(f"  Serving {directory} on {args.host}:{args.port}")
+    if args.token:
+        print("  Token auth enabled (send ?token=<token> or Authorization: Bearer <token>).")
+
+    class _Server(socketserver.TCPServer):
+        auth_token = args.token
 
     try:
-        with socketserver.TCPServer((args.host, args.port), VizzHandler) as httpd:
+        with _Server((args.host, args.port), VizzHandler) as httpd:
             httpd.serve_forever()
     except KeyboardInterrupt:
         print("\nStopped.")

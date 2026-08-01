@@ -275,7 +275,7 @@ def list_plugins() -> dict:
     }
     # Reverse map: handler_path → label for built-in handlers
     _BUILTIN_LABELS: dict[str, str] = {}
-    for fname, dotted_path in _BUILTIN_MANIFESTS.items():
+    for _fname, dotted_path in _BUILTIN_MANIFESTS.items():
         func_name = dotted_path.rsplit(":", 1)[1]
         label = _MANIFEST_LABELS.get(func_name, func_name.replace("parse_", "").replace("_", " ").title())
         _BUILTIN_LABELS[dotted_path] = label

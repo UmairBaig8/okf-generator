@@ -4,13 +4,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy source first, then install from local — avoids Docker cache pinning old PyPI version
-COPY . /app
+# Copy only what the dashboard + bundle generation need (see .dockerignore)
+COPY pyproject.toml README.md LICENSE run_for_render.py /app/
+COPY okf /app/okf
+COPY tests/fixtures/realworld /app/tests/fixtures/realworld
 WORKDIR /app
 RUN pip install --no-cache-dir "okf-generator[dashboard]"
 
 # Generate a knowledge bundle from the realworld fixture (rich cross-references for graph demo)
 RUN okf generate tests/fixtures/realworld okf_bundle && echo "Bundle generated $(wc -l < okf_bundle/SUMMARY.md) concepts"
+
+# Non-root user (hardening)
+RUN useradd --create-home --uid 10001 appuser \
+    && chown -R appuser:appuser /app
+USER appuser
 
 EXPOSE 8000
 

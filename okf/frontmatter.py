@@ -77,9 +77,7 @@ def _needs_quoting(val: str) -> bool:
         return True
     if _looks_like_number(val):
         return True
-    if _looks_like_date(val):
-        return True
-    return False
+    return _looks_like_date(val)
 
 
 def _quote(val: str) -> str:

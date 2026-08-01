@@ -4,7 +4,7 @@ import os
 import re
 import sqlite3
 import time
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from pathlib import Path
 
 from okf.storage.base import BundleStore
@@ -513,10 +513,8 @@ class SQLiteBundleStore(BundleStore):
 
             # FTS5 rebuild
             if fts5:
-                try:
+                with suppress(Exception):
                     conn.execute("INSERT INTO concepts_fts(concepts_fts) VALUES('rebuild')")
-                except Exception:
-                    pass
 
         # Metadata (use pre-scan counts for reliable fingerprint)
         conn.execute(

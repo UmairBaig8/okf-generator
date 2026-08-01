@@ -1,7 +1,8 @@
 from pathlib import Path
+
 from okf.lookup import load_bundle
-from okf.storage.sqlite import SQLiteBundleStore
 from okf.storage.memory import MemoryBundleStore
+from okf.storage.sqlite import SQLiteBundleStore
 
 
 def open_store(bundle_dir: Path, prefer_memory: bool = False) -> MemoryBundleStore | SQLiteBundleStore:

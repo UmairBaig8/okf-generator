@@ -5,22 +5,22 @@ forwards to :mod:`okf.plugin`.
 """
 
 # Retained for backward compat — external code may import these directly.
-from okf.parsers.python import PythonParser  # noqa: F401
-from okf.parsers.javascript import JSTSParser  # noqa: F401
-from okf.parsers.go import GoParser  # noqa: F401
-from okf.parsers.java import JavaParser  # noqa: F401
-from okf.parsers.rust import RustParser  # noqa: F401
-from okf.parsers.ruby import RubyParser  # noqa: F401
 from okf.parsers.c import CParser  # noqa: F401
 from okf.parsers.cpp import CppParser  # noqa: F401
 from okf.parsers.csharp import CSharpParser  # noqa: F401
-from okf.parsers.sql import SQLParser  # noqa: F401
-from okf.parsers.swift import SwiftParser  # noqa: F401
+from okf.parsers.dart import DartParser  # noqa: F401
+from okf.parsers.go import GoParser  # noqa: F401
+from okf.parsers.java import JavaParser  # noqa: F401
+from okf.parsers.javascript import JSTSParser  # noqa: F401
+from okf.parsers.julia import JuliaParser  # noqa: F401
 from okf.parsers.kotlin import KotlinParser  # noqa: F401
 from okf.parsers.php import PHPParser  # noqa: F401
-from okf.parsers.dart import DartParser  # noqa: F401
+from okf.parsers.python import PythonParser  # noqa: F401
+from okf.parsers.ruby import RubyParser  # noqa: F401
+from okf.parsers.rust import RustParser  # noqa: F401
 from okf.parsers.scala import ScalaParser  # noqa: F401
-from okf.parsers.julia import JuliaParser  # noqa: F401
+from okf.parsers.sql import SQLParser  # noqa: F401
+from okf.parsers.swift import SwiftParser  # noqa: F401
 
 # Deprecated — kept for third-party code that imports EXTENSION_MAP.
 # The plugin registry (okf.plugin.discover_parsers) is the canonical source.

@@ -4,7 +4,9 @@ Usage on Render:
     uvicorn run_for_render:app --host 0.0.0.0 --port 8000
 
 The bundle path is read from the ``OKF_BUNDLE_DIR`` environment variable
-(default: ``./okf_bundle``).
+(default: ``./okf_bundle``). Set ``OKF_DASHBOARD_TOKEN`` to require
+``Authorization: Bearer <token>`` on every request (recommended, since this
+deployment is publicly reachable).
 """
 
 import os
@@ -13,4 +15,5 @@ from pathlib import Path
 from okf.dashboard import build_app
 
 bundle_dir = Path(os.environ.get("OKF_BUNDLE_DIR", "./okf_bundle"))
-app = build_app(bundle_dir)
+token = os.environ.get("OKF_DASHBOARD_TOKEN") or None
+app = build_app(bundle_dir, token=token)

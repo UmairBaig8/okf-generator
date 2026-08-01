@@ -1,7 +1,9 @@
 """Java parser (tree-sitter). Extracts: classes, interfaces, enums, methods, constructors, Javadoc, generics, annotations, visibility, inheritance, fields, imports, calls."""
 
 import re
-from okf.parsers.base import _prev_comment, _find_all, _node_text, _parse_doc_tags, TreeSitterParser
+
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _parse_doc_tags, _prev_comment
+
 
 class JavaParser(TreeSitterParser):
     LANGUAGE   = "java"

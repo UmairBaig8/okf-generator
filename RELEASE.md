@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-- **All unit tests pass:** `pytest tests/ -q` (173+ green)
+- **All unit tests pass:** `pytest tests/ -q` (415+ green)
 - **Canonical test suite passes:** `bash tests/test.sh` (generates `TEST_REPORT.html`, must have 0 failures)
-- **Realworld fixture coverage:** `python -m pytest tests/test_realworld_fixtures.py -q` (43 tests)
+- **Realworld fixture coverage:** `python -m pytest tests/test_realworld_fixtures.py -q` (63 tests)
 - **CHANGELOG.md** has an up-to-date `[Unreleased]` section
-- **Ruff lint passes:** `ruff check okf/ --select E,F,W --ignore E501`
+- **Ruff lint passes:** `ruff check okf/`
 - **`.gitignore` is up to date** — `_build/`, `dist/`, `*.egg-info` must be listed to prevent CI auto-commits from polluting the repo
 - **New languages fully wired** — Every new `tree-sitter-*` dependency is listed in `pyproject.toml`; if it lacks Linux wheels, all CI workflows include a Rust setup step
 
@@ -14,7 +14,7 @@ For a quick confidence check:
 
 ```bash
 bash tests/test.sh        # 17 phases, CLI + unit + edge cases
-pytest tests/ -q          # 173+ unit tests
+pytest tests/ -q          # 415+ unit tests
 ```
 
 ## AI-Assisted Pre-Release Audit
@@ -23,7 +23,7 @@ Hand this prompt to any LLM-powered coding agent before cutting a release:
 
 > **Act as an expert open-source maintainer. Audit this project for release readiness:**
 >
-> 1. **Code quality** — Run `ruff check okf/ --select E,F,W --ignore E501`. Report any errors.
+> 1. **Code quality** — Run `ruff check okf/`. Report any errors.
 > 2. **Test coverage** — Run `pytest tests/ -q`. Report count and any failures.
 > 3. **Changelog completeness** — Read `CHANGELOG.md`. Compare `git log --oneline <last_tag>..HEAD` against the `[Unreleased]` section. Flag any missing entries.
 > 4. **Version consistency** — Verify `okf/__init__.py` and `pyproject.toml` have the same version string.
@@ -104,8 +104,8 @@ If new languages or extraction features were added:
 
 ```bash
 bash tests/test.sh            # 0 failures
-pytest tests/ -q              # 173+ passed
-ruff check okf/ --select E,F,W --ignore E501  # clean
+pytest tests/ -q              # 415+ passed
+ruff check okf/  # clean
 okf config                    # sectioned output, no errors
 ```
 

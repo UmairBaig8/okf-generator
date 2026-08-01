@@ -1,6 +1,7 @@
 """Go parser (tree-sitter). Extracts: functions, methods, structs, interfaces, const/var declarations, generics (1.18+), GoDoc, imports, calls."""
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment
+
 
 class GoParser(TreeSitterParser):
     LANGUAGE   = "go"

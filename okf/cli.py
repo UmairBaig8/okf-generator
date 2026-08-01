@@ -32,7 +32,6 @@ import shutil
 import sys
 from pathlib import Path
 
-
 SKILL_SOURCE = Path(__file__).resolve().parent.parent / "SKILL.md"
 
 
@@ -113,10 +112,7 @@ def _install_agent(agent: str):
     elif agent == "vscode":
         tgt_md = root / ".vscode" / "okf-knowledge.md"
         tgt_json = root / ".vscode" / "extensions.json"
-        if not _maybe_overwrite(tgt_md.parent, "VS Code config"):
-            tgt_md.parent.mkdir(parents=True, exist_ok=True)
-        else:
-            tgt_md.parent.mkdir(parents=True, exist_ok=True)
+        tgt_md.parent.mkdir(parents=True, exist_ok=True)
         tgt_md.write_text(_agent_rules("VS Code (via Cline/Copilot)"))
         ext_cfg = {"recommendations": ["continue.continue"]}
         if tgt_json.exists():
@@ -483,8 +479,8 @@ def main():
         _main()
 
     elif cmd == "enrich":
-        from okf.pairs import load_bundle
         from okf.enrich import run_enrich
+        from okf.pairs import load_bundle
 
         if rest and not rest[0].startswith("--"):
             bundle_dir = Path(rest[0]).resolve()
@@ -611,7 +607,7 @@ def main():
         _lsp_main()
 
     elif cmd == "config":
-        from okf.config import load, dump, CONFIG_FILES, _get
+        from okf.config import CONFIG_FILES, _get, dump, load
         if rest and rest[0] in ("-h", "--help"):
             print("""Usage: okf config [key=value ...]
 
@@ -638,8 +634,22 @@ Examples:
         if rest:
             pairs = dict(kv.split("=", 1) for kv in rest if "=" in kv)
             existing = load()
+            # Numeric config keys are stored as ints (port, max_workers, limit...)
+            _NUMERIC_KEYS = {
+                "serve.port", "llm.max_workers", "enrich.description.max_workers",
+                "enrich.deep.max_workers", "enrich.security.max_workers",
+                "lookup.limit", "lookup.min_score", "mcp.port",
+                "pairs.qa_per_concept", "pairs.max_workers",
+            }
             for k, v in pairs.items():
                 from okf.config import _set
+                if k in _NUMERIC_KEYS:
+                    # Store numeric config values as int/float, not strings
+                    try:
+                        v = float(v)
+                        v = int(v) if v.is_integer() else v
+                    except ValueError:
+                        pass
                 _set(existing, k, v)
             proj_file = CONFIG_FILES[0]
             dump(existing, proj_file)

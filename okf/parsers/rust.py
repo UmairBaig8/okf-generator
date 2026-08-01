@@ -1,6 +1,7 @@
 """Rust parser (tree-sitter). Extracts: functions, methods, structs, enums, traits, impl blocks, generics, attributes (#[derive]), visibility, doc comments (/// //!), imports, calls."""
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment
+
 
 def _rust_vis_node(node):
     """Find visibility_modifier child by iterating children (no field name)."""

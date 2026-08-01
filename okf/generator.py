@@ -61,21 +61,23 @@ import sys
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 try:
     from concurrent.futures import BrokenExecutor as _BrokenPool
 except ImportError:
     from concurrent.futures import BrokenProcessPool as _BrokenPool
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml  # PyYAML
 from tqdm import tqdm
 
 from okf import manifest_scanner
-from okf._walk import walk_files, walk_dirs, MAX_WORKERS, MAX_PARALLEL_WORKERS
-from okf.frontmatter import dump_frontmatter
+from okf._walk import MAX_PARALLEL_WORKERS, MAX_WORKERS, walk_dirs, walk_files
 from okf.enrich._llm_prompts import DEEP_ENRICH_PROMPT, ENRICH_PROMPT, RELATED_PROMPT, SECURITY_PROMPT
-from okf.ignore import load_patterns, matches as ignore_matches
+from okf.frontmatter import dump_frontmatter
+from okf.ignore import load_patterns
+from okf.ignore import matches as ignore_matches
 from okf.parsers import get_parser
 from okf.parsers.base import Concept
 
@@ -465,7 +467,7 @@ def render_log(entries: list[str]) -> str:
         "type": "Log",
         "title": "Change Log",
         "description": "Chronological history of bundle generation",
-        "timestamp": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "timestamp": datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     lines = [
         "---\n" + yaml.dump(fm, default_flow_style=False, allow_unicode=True) + "---\n",
@@ -493,7 +495,7 @@ def render_summary(
     then by module within each domain. Includes concept counts, descriptions,
     and direct links so an AI agent can navigate the whole bundle from one file.
     """
-    ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # ── Separate dependencies from code concepts ──────────────────────────
     code_concepts = [c for c in concepts if c.type != "Dependency"]
@@ -1202,8 +1204,16 @@ def scan_codebase(root: Path, exclude: list[str] | None = None,
 # ---------------------------------------------------------------------------
 
 def _concept_output_path(concept: Concept, output_dir: Path) -> Path:
-    """Map concept_id to output .md path, mirroring the source tree."""
-    return output_dir.joinpath(*concept.concept_id.split("/")).with_suffix(".md")
+    """Map concept_id to output .md path, mirroring the source tree.
+
+    Rejects absolute or ``..``-containing segments so a crafted concept_id
+    cannot escape the bundle directory.
+    """
+    segments = concept.concept_id.split("/")
+    for seg in segments:
+        if seg in ("", ".", "..") or "/" in seg or seg.startswith("~"):
+            raise ValueError(f"unsafe concept_id segment {seg!r} in {concept.concept_id!r}")
+    return output_dir.joinpath(*segments).with_suffix(".md")
 
 
 def write_bundle(
@@ -1219,11 +1229,12 @@ def write_bundle(
     concepts = _dedup_concept_ids(concepts)
     all_map: dict[str, Concept] = {c.concept_id: c for c in concepts}
 
-    ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # ── 1. Write every concept file (skip already-enriched ones) ────────────
     _t_write_start = time.perf_counter()
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     _cfg = load_config()
     enrich_enabled = _get(_cfg, "llm.enabled", False)
     src_dir = Path(source_root) if source_root else None
@@ -1440,7 +1451,7 @@ def enrich_bundle(
                 tags=r2.get("tags", []),
                 signature=s.get("signature", ""),
                 docstring=s.get("docstring", ""),
-                params=[dict(zip(["name", "annotation", "default"], [x.strip().strip("`") for x in p.split("|")[1:4]])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or r2.get("params", []),
+                params=[dict(zip(["name", "annotation", "default"], [x.strip().strip("`") for x in p.split("|")[1:4]])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or r2.get("params", []),  # noqa: B905
                 returns=s.get("returns", "").strip("`").strip(),
                 source_lines=_parse_source_line_range(s.get("source", "")),
                 concept_id=r2.get("concept_id", ""),
@@ -1508,7 +1519,7 @@ def enrich_bundle(
                 tags=r2.get("tags", []),
                 signature=s.get("signature", ""),
                 docstring=s.get("docstring", ""),
-                params=[dict(zip(["name", "annotation", "default"], p.split("|")[1:4])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or r2.get("params", []),
+                params=[dict(zip(["name", "annotation", "default"], p.split("|")[1:4])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or r2.get("params", []),  # noqa: B905
                 returns=s.get("returns", "").strip("`").strip(),
                 methods=[m.strip("`") for m in s.get("methods", "").splitlines() if m.strip().startswith("- `")],
                 source_lines=_parse_source_line_range(s.get("source", "")),
@@ -1543,9 +1554,8 @@ def enrich_bundle(
 def _audit_one(c: Concept, client, model: str, source_dir: Path, path: Path, max_tokens: int = 2000) -> str:
     """Helper for enrich_bundle security mode."""
     enrich_security(c, client, model, source_dir, max_tokens=max_tokens)
-    if c.security or c.complexity:
-        if _patch_security_complexity(path, c.security, c.complexity):
-            return "done"
+    if (c.security or c.complexity) and _patch_security_complexity(path, c.security, c.complexity):
+        return "done"
     return "skipped"
 
 
@@ -1644,9 +1654,8 @@ def main():
         def _audit_and_patch(item):
             c, path = item
             enrich_security(c, client, r["model"], source_dir)
-            if c.security or c.complexity:
-                if _patch_security_complexity(path, c.security, c.complexity):
-                    return "done"
+            if (c.security or c.complexity) and _patch_security_complexity(path, c.security, c.complexity):
+                return "done"
             return "skipped"
         with ThreadPoolExecutor(max_workers=r["max_workers"]) as pool:
             futures = {pool.submit(_audit_and_patch, t): t for t in targets}
@@ -1744,7 +1753,8 @@ def main():
     elif _enrich_mode == "base":
         _do_enrich = {"base": True, "deep": False, "security": False, "semantic": False}
 
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     _cfg = load_config()
     config_enabled = _get(_cfg, "llm.enabled", False)
     desc_enabled = _get(_cfg, "enrich.description.enabled", False)
@@ -1857,7 +1867,7 @@ def main():
 
     # --- Write bundle ---
     log_entries = [
-        f"{datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} — Bundle generated from `{source_dir}`",
+        f"{datetime.now(tz=UTC).strftime('%Y-%m-%dT%H:%M:%SZ')} — Bundle generated from `{source_dir}`",
         f"  Source files scanned: {len(set(c.resource for c in concepts))}",
         f"  Total concepts: {len(concepts)}",
         f"  LLM enrichment: {'enabled' if enrich else 'disabled'}",

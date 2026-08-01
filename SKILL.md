@@ -1,22 +1,21 @@
 ---
 name: okf-generator
 description: >
-  Generate OKF (Open Knowledge Format) v0.1 knowledge bundles from codebases,
+  Generate OKF (Open Knowledge Format) v0.2 knowledge bundles from codebases,
   and look up exact concepts for AI agent context injection. Use this skill
   whenever the user wants to: index a codebase, generate OKF bundles, extract
   code knowledge into structured markdown, convert codebases into training data,
   look up functions/classes/modules by name, prime an AI agent with codebase
-  context, integrate codebase knowledge with OpenCode or other AI coding agents,
-  or run okf_generator.py / okf_lookup.py / okf_to_pairs.py. Also trigger for
-  phrases like "index my code", "generate knowledge bundle", "extract codebase
-  concepts", "what does X class do", or "look up X in OKF".
+  context, or integrate codebase knowledge with OpenCode or other AI coding agents.
+  Also trigger for phrases like "index my code", "generate knowledge bundle",
+  "extract codebase concepts", "what does X class do", or "look up X in OKF".
 ---
 
 # OKF Generator & Lookup Skill
 
-Generates structured OKF v0.2 knowledge bundles from codebases (Python, JS/TS,
-Go, Java, Rust, Ruby via tree-sitter AST), and provides fast concept lookup for
-AI agents like OpenCode.
+Generates structured OKF v0.2 knowledge bundles from codebases (18 languages via
+tree-sitter AST + stdlib ast), and provides fast concept lookup for AI agents
+like OpenCode.
 
 ## Pipeline Overview
 
@@ -62,27 +61,27 @@ okf generate <source_dir> <output_dir>
 ```
 
 ### With LLM enrichment (fills missing docstrings and descriptions)
+
+Configure enrichment in `.okfconfig` (JSON), then run:
+
 ```bash
-OKF_ENRICH=1 \
-OKF_BASE_URL="http://localhost:8080/v1" \
-OKF_API_KEY="llamabarn" \
-OKF_MODEL="ggml-org/gemma-3-4b-it-qat-GGUF:Q4_0" \
-OKF_MAX_WORKERS=2 \
-okf generate <source_dir> <output_dir>
+okf generate <source_dir> <output_dir> --enrich
+# or run enrichment standalone on an existing bundle:
+okf enrich <output_dir>
+```
+
+```jsonc
+// .okfconfig
+{
+  "llm": { "enabled": true, "base_url": "http://localhost:8080/v1", "api_key": "llamabarn" },
+  "providers": {
+    "default": { "model": "ggml-org/gemma-3-4b-it-qat-GGUF:Q4_0", "max_workers": 2 }
+  }
+}
 ```
 
 Enrichment is **resumable** — rerun safely if interrupted. Already-enriched
 concepts are skipped automatically (checks disk on every run).
-
-### Key env vars (enrichment only)
-
-| Var | Default | Purpose |
-|-----|---------|---------|
-| `OKF_ENRICH` | `0` | Set `1` to enable LLM enrichment |
-| `OKF_BASE_URL` | `https://api.anthropic.com/v1` | OpenAI-compat endpoint |
-| `OKF_API_KEY` | `` | API key |
-| `OKF_MODEL` | `claude-sonnet-4-6` | Enrichment model |
-| `OKF_MAX_WORKERS` | `2` | Parallel workers (keep low for local LLMs) |
 
 ### Output layout (mirrors source tree)
 ```
@@ -201,6 +200,12 @@ echo "RUN okf lookup --bundle ./okf_bundle \$NAME" \
 | Java | tree-sitter | classes, methods, constructors, Javadoc |
 | Rust | tree-sitter | fns, structs, enums, traits, impl blocks, doc comments |
 | Ruby | tree-sitter | defs, classes, modules, hash comments |
+| C / C++ / C# | tree-sitter | funcs, structs, classes, headers, XML-doc |
+| Swift / Kotlin | tree-sitter | funcs, classes, protocols, visibility |
+| PHP / Dart | tree-sitter | classes, functions, docblocks |
+| Scala / Julia | tree-sitter | defs, classes, traits, objects |
+| SQL | tree-sitter | tables, views, functions |
+| YAML | PyYAML | documents, keys, anchors |
 
 ---
 
@@ -210,8 +215,7 @@ echo "RUN okf lookup --bundle ./okf_bundle \$NAME" \
 (node_modules, .venv, dist, etc). Leading path components like `/tmp` are
 no longer skipped (fixed in v0.1.3).
 
-**Enrichment slow**: Use `OKF_MAX_WORKERS=1`. Local models process ~1 request
-at a time. At 32 tok/sec expect ~3-5s per concept.
+**Enrichment slow**: Set `max_workers: 1` in the provider config. Local models process ~1 request at a time. At 32 tok/sec expect ~3-5s per concept.
 
 **Enrichment interrupted**: Rerun same command. Enriched files are skipped.
 

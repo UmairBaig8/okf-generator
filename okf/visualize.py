@@ -79,7 +79,7 @@ def build_graph(bundle_dir: Path, max_nodes: int = 800) -> tuple[list[dict], lis
         sub_bundles.add(seg)
     bundles = sorted(sub_bundles)
     bundle_counts: dict[str, int] = {}
-    for nid, b in bundle_of_node.items():
+    for _nid, b in bundle_of_node.items():
         bundle_counts[b] = bundle_counts.get(b, 0) + 1
 
     for n in nodes_raw:

@@ -1,7 +1,8 @@
 """Swift parser (tree-sitter). Extracts: classes, structs, enums, protocols (→Interface), generics, methods, functions, typealiases, doc comments, inheritance, calls."""
 import os
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, _safe_id, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment, _safe_id
+
 
 class SwiftParser(TreeSitterParser):
     LANGUAGE   = "swift"

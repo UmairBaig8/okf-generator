@@ -1,0 +1,18 @@
+# Exclude everything not needed in the image; COPY . /app is used in Dockerfile.render
+.git
+.venv
+dev_wspace
+site
+build
+dist
+media
+session
+articals
+references
+__pycache__
+*.pyc
+.DS_Store
+*.mp4
+*.gif
+tests/benchmark*.py
+tests/verify-release.sh

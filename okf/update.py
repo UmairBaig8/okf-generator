@@ -24,11 +24,11 @@ from __future__ import annotations
 import logging
 import os
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-from okf.parsers.base import Concept
 from okf._walk import walk_dirs
+from okf.parsers.base import Concept
 
 log = logging.getLogger("okf_update")
 
@@ -38,8 +38,16 @@ log = logging.getLogger("okf_update")
 # ---------------------------------------------------------------------------
 
 def _concept_output_path(concept_id: str, bundle_dir: Path) -> Path:
-    """Map concept_id to .md path in the bundle."""
-    return bundle_dir.joinpath(*concept_id.split("/")).with_suffix(".md")
+    """Map concept_id to .md path in the bundle.
+
+    Rejects absolute or ``..``-containing segments so a crafted concept_id
+    cannot escape the bundle directory.
+    """
+    segments = concept_id.split("/")
+    for seg in segments:
+        if seg in ("", ".", "..") or "/" in seg or seg.startswith("~"):
+            raise ValueError(f"unsafe concept_id segment {seg!r} in {concept_id!r}")
+    return bundle_dir.joinpath(*segments).with_suffix(".md")
 
 
 def _load_concepts_from_bundle(bundle_dir: Path) -> dict[str, Concept]:
@@ -309,15 +317,6 @@ def _find_dirty_dirs(concept_ids: set[str]) -> set[str]:
 
 
 # ---------------------------------------------------------------------------
-# Bundle name helper
-# ---------------------------------------------------------------------------
-
-def _detect_bundle_name(source_root: Path) -> str:
-    """Derive bundle name from source root directory name."""
-    return source_root.resolve().name
-
-
-# ---------------------------------------------------------------------------
 # Main update entry point
 # ---------------------------------------------------------------------------
 
@@ -332,11 +331,15 @@ def update_bundle(
 
     Returns number of dirty concepts written (0 if nothing changed).
     """
-    from okf.manifest import (
-        Manifest, read_manifest, write_manifest,
-        diff_source, compute_file_hash, walk_source_files,
-    )
     from okf.linker import link_all
+    from okf.manifest import (
+        Manifest,
+        compute_file_hash,
+        diff_source,
+        read_manifest,
+        walk_source_files,
+        write_manifest,
+    )
 
     source_root = source_root.resolve()
     bundle_dir = bundle_dir.resolve()
@@ -435,7 +438,7 @@ def update_bundle(
 
     # Initialize manifest if needed
     if manifest is None:
-        ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        ts = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
         manifest = Manifest(
             okf_version=bundle_okf_version,
             source_root=str(source_root),
@@ -542,8 +545,8 @@ def update_bundle(
     # ── Step 9b: Auto-enrich dirty concepts ─────────────────────────────────
     if enable_enrich:
         try:
-            from okf.lookup import load_bundle
             from okf.enrich import run_enrich
+            from okf.lookup import load_bundle
             dirty_raw = [c for c in load_bundle(bundle_dir) if c.get("concept_id") in dirty_ids]
             if dirty_raw:
                 log.info(f"Auto-enriching {len(dirty_raw)} dirty concepts (--enrich)")
@@ -661,15 +664,14 @@ def _render_dir_index(dir_path: str, subdirs: set[str], concepts: list[Concept])
 def _write_root_index(bundle_dir: Path, dir_tree: dict, concepts: list[Concept]):
     from okf.generator import render_root_index
     top_dirs = sorted(dir_tree.get("", {}).get("subdirs", set()))
-    ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     bundle_name = bundle_dir.resolve().name
     content = render_root_index(bundle_name, top_dirs, len(concepts), ts)
     (bundle_dir / "index.md").write_text(content, encoding="utf-8")
 
 
 def _write_summary(bundle_dir: Path, concepts: list[Concept], source_root: Path):
-    from okf.generator import _git_info
-    from okf.generator import render_summary
+    from okf.generator import _git_info, render_summary
     bundle_name = bundle_dir.resolve().name
     git = _git_info(source_root)
     content = render_summary(bundle_name, concepts, bundle_dir, git)
@@ -678,7 +680,7 @@ def _write_summary(bundle_dir: Path, concepts: list[Concept], source_root: Path)
 
 def _write_log(bundle_dir: Path, new_count: int, total: int):
     from okf.generator import render_log
-    ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     entries = [
         f"{ts} — Incremental update: {new_count} new/changed, {total} total concepts",
     ]

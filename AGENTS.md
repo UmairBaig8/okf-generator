@@ -13,7 +13,7 @@ okf lookup --bundle ./okf_bundle <ConceptName>
 
 ```bash
 pip install -e ".[dev]"   # editable install
-pytest tests/ -q           # 70+ tests
+pytest tests/ -q           # 415 tests
 ```
 
 ## Key Files
@@ -24,12 +24,12 @@ pytest tests/ -q           # 70+ tests
 | `okf/manifest.py` | SHA256 manifest model, change detection, rename handling |
 | `okf/update.py` | Incremental update pipeline |
 | `okf/watcher.py` | Watchdog file watcher for `--watch` mode |
-| `okf/manifest_scanner.py` | Dependency/manifest parsers (12 formats) |
+| `okf/manifest_scanner.py` | Dependency/manifest parsers (20 formats) |
 | `okf/lookup.py` | Concept search |
 | `okf/diff.py` | Bundle comparison |
 | `okf/pairs.py` | Training data generation |
 | `okf/cli.py` | CLI entry point |
-| `tests/` | 313+ unit tests |
+| `tests/` | 415 unit tests |
 | `tests/fixtures/complex/` | Multi-language test data (7 langs, 12 manifests) |
 
 ## Lookup patterns

@@ -27,6 +27,7 @@ Tools:
 """
 
 import argparse
+import contextlib
 import json
 import os
 import re
@@ -635,15 +636,16 @@ class BundleMCPServer:
 
             if kind == "git" and reference:
                 import subprocess
+
                 from okf.lookup import load_bundle as _load
+                if reference.startswith("-"):
+                    raise ValueError("git reference must not start with '-' (rejected for security)")
                 source_dir = self.bundle_dir.parent
-                try:
+                with contextlib.suppress(Exception):
                     subprocess.run(
                         ["git", "show", f"{reference}:okf_bundle/"],
                         cwd=source_dir, capture_output=True, timeout=10
                     )
-                except Exception:
-                    pass
                 ref_list = _load(self.bundle_dir)
             elif reference:
                 ref_dir = Path(reference).resolve()
@@ -844,7 +846,7 @@ class BundleMCPServer:
 
     def run_http(self, port: int):
         """Simple HTTP+SSE server for MCP over HTTP."""
-        from http.server import HTTPServer, BaseHTTPRequestHandler
+        from http.server import BaseHTTPRequestHandler, HTTPServer
 
         class MCPHTTPHandler(BaseHTTPRequestHandler):
             server_ref = None

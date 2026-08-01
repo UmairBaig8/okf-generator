@@ -39,7 +39,7 @@ def _dict_to_concept(d: dict) -> Concept:
         concept_id=d.get("concept_id", ""),
         signature=s.get("signature", ""),
         docstring=s.get("docstring", ""),
-        params=[dict(zip(["name", "annotation", "default"], [x.strip().strip("`") for x in p.split("|")[1:4]])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or d.get("params", []),
+        params=[dict(zip(["name", "annotation", "default"], [x.strip().strip("`") for x in p.split("|")[1:4]])) for p in s.get("parameters", "").splitlines() if "|" in p and "Name" not in p and "---" not in p] or d.get("params", []),  # noqa: B905
         returns=s.get("returns", "").strip("`").strip(),
         source_lines=source_lines,
         calls=d.get("calls", []),

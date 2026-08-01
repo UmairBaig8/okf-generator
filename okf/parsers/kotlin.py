@@ -1,13 +1,11 @@
 """Kotlin parser (tree-sitter). Extracts: classes, data classes, interfaces, objects, enums, generics, functions, typealiases, constructor params, visibility, inheritance, imports, calls."""
 import os
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, _safe_id, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _prev_comment, _safe_id
+
 
 def _kotlin_is_interface(node) -> bool:
-    for child in node.children:
-        if child.type == "interface":
-            return True
-    return False
+    return any(child.type == "interface" for child in node.children)
 class KotlinParser(TreeSitterParser):
     LANGUAGE   = "kotlin"
     EXTENSIONS = {".kt", ".kts"}

@@ -24,8 +24,7 @@ STOP_WORDS = {
     "it", "its", "what", "where", "when", "why", "which", "who", "that",
     "this", "these", "those", "i", "you", "we", "they", "he", "she",
     "me", "my", "your", "all", "can", "will", "would", "could", "should",
-    "has", "have", "had", "been", "being", "am", "are", "was", "were",
-    "get", "got", "find", "show", "list", "tell", "describe", "explain",
+    "has", "have", "had", "been", "being", "am", "get", "got", "find", "show", "list", "tell", "describe", "explain",
 }
 
 
@@ -137,7 +136,8 @@ def main():
         print("Generate one first: okf generate", file=sys.stderr)
         sys.exit(1)
 
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     cfg = load_config()
     api_key = _get(cfg, "llm.api_key", "")
     base_url = _get(cfg, "llm.base_url", "http://localhost:8080/v1")

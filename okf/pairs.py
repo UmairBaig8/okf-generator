@@ -671,7 +671,8 @@ def main():
         sys.exit(1)
 
     # --- Config (from .okfconfig) ---
-    from okf.config import load as load_config, _get
+    from okf.config import _get
+    from okf.config import load as load_config
     _pcfg = load_config()
     skip_synth  = "--skip-synth" in sys.argv or "-s" in sys.argv
     api_key     = _get(_pcfg, "llm.api_key", "")

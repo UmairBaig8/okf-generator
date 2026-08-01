@@ -18,6 +18,7 @@ v1 scope, deliberately narrow:
 from __future__ import annotations
 
 import atexit
+import contextlib
 import json
 import logging
 import subprocess
@@ -25,10 +26,10 @@ import threading
 from pathlib import Path
 from queue import Empty, Queue
 
-from ..parsers.base import Concept
 from ..generator import _concept_output_path, render_concept
-from .base import EnrichResult, Enricher
+from ..parsers.base import Concept
 from ._lsp_map import LSP_MAP, LspServer, detect
+from .base import Enricher, EnrichResult
 
 log = logging.getLogger("okf_gen")
 
@@ -108,8 +109,8 @@ class _JsonRpcClient:
         try:
             self._proc.stdin.write(header + body)
             self._proc.stdin.flush()
-        except BrokenPipeError:
-            raise RuntimeError("LSP process closed stdin")
+        except BrokenPipeError as e:
+            raise RuntimeError("LSP process closed stdin") from e
 
     def request(self, method: str, params: dict, timeout: float) -> dict:
         with self._lock:
@@ -211,11 +212,9 @@ class LspEnricher(Enricher):
         return result
 
     def _cleanup_configs(self) -> None:
-        for lang, path in self._configs_created.items():
-            try:
+        for _lang, path in self._configs_created.items():
+            with contextlib.suppress(Exception):
                 path.unlink()
-            except Exception:
-                pass
         self._configs_created.clear()
 
     def __init__(self, source_dir: Path):
@@ -249,7 +248,7 @@ class LspEnricher(Enricher):
         seen_langs: dict[str, LspServer] = {}
         self._ensure_configs()
 
-        for ext, server in servers.items():
+        for server in servers.values():
             if server.lang in seen_langs:
                 continue
             seen_langs[server.lang] = server

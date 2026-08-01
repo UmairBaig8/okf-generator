@@ -12,7 +12,6 @@ Covers:
   - No-op (no changes)
 """
 
-import os
 import shutil
 from pathlib import Path
 
@@ -27,7 +26,7 @@ FIXTURES = Path(__file__).parent / "fixtures" / "realworld" / "python" / "easy"
 
 def _generate(bundle_dir: Path, source_dir: Path | None = None):
     """Run a full okf generate into bundle_dir."""
-    from okf.generator import scan_codebase, write_bundle, write_summary, _dedup_concept_ids, _git_info
+    from okf.generator import _dedup_concept_ids, _git_info, scan_codebase, write_bundle, write_summary
     src = source_dir or FIXTURES
     concepts = scan_codebase(src)
     concepts = _dedup_concept_ids(concepts)
@@ -264,9 +263,9 @@ def test_manifest_created_after_update(fresh_bundle):
 
 def test_relink_twice_no_dirty(tmp_path):
     """Run relink twice on unchanged pool → zero dirty concepts."""
-    from okf.manifest import Manifest, ConceptState, compute_content_hash
-    from okf.generator import scan_codebase, render_concept
+    from okf.generator import render_concept, scan_codebase
     from okf.linker import link_all
+    from okf.manifest import compute_content_hash
 
     # Generate concepts
     concepts = scan_codebase(FIXTURES)

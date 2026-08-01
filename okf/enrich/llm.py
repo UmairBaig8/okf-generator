@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Any
 
 from ..parsers.base import Concept
-from .base import EnrichResult, Enricher
 from ._llm_prompts import DEEP_ENRICH_PROMPT, ENRICH_PROMPT, SECURITY_PROMPT
+from .base import Enricher, EnrichResult
 
 log = logging.getLogger("okf_gen")
 
@@ -88,11 +88,13 @@ def _log_usage(resp) -> None:
 
 
 def _resolve_client(cfg: dict, mode: str):
-    from openai import OpenAI
-    from okf.config import resolve_provider
-    r = resolve_provider(cfg, mode)
-    client = OpenAI(base_url=r["base_url"], api_key=r["api_key"] or "no-key")
-    return client, r
+    """Create an LLM client for the given enrich mode.
+
+    Delegates to generator._resolve_client (single source of truth) so the
+    anthropic-provider support and error handling live in one place.
+    """
+    from okf.generator import _resolve_client as _resolve
+    return _resolve(cfg, mode)
 
 
 def _concept_output_path(concept: Concept, output_dir: Path) -> Path:
@@ -146,6 +148,7 @@ class LlmEnricher(Enricher):
 
     def _run_base(self, bundle_dir: Path, concepts: list[Concept]) -> EnrichResult:
         from concurrent.futures import ThreadPoolExecutor, as_completed
+
         from tqdm import tqdm
 
         enriched = 0
@@ -173,6 +176,7 @@ class LlmEnricher(Enricher):
 
     def _run_deep(self, bundle_dir: Path, concepts: list[Concept]) -> EnrichResult:
         from concurrent.futures import ThreadPoolExecutor, as_completed
+
         from tqdm import tqdm
 
         enriched = 0
@@ -202,6 +206,7 @@ class LlmEnricher(Enricher):
 
     def _run_security(self, bundle_dir: Path, concepts: list[Concept]) -> EnrichResult:
         from concurrent.futures import ThreadPoolExecutor, as_completed
+
         from tqdm import tqdm
 
         enriched = 0

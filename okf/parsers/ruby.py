@@ -1,6 +1,7 @@
 """Ruby parser (tree-sitter). Extracts: methods (def), classes, modules, YARD/doc comments, visibility, calls, inheritance."""
 
-from okf.parsers.base import _prev_comment, _find_all, _node_text, _parse_doc_tags, TreeSitterParser
+from okf.parsers.base import TreeSitterParser, _find_all, _node_text, _parse_doc_tags, _prev_comment
+
 
 class RubyParser(TreeSitterParser):
     LANGUAGE   = "ruby"

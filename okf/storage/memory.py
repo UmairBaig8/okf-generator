@@ -1,8 +1,8 @@
 import re
 from pathlib import Path
 
-from okf.storage.base import BundleStore
 from okf.lookup import search as _search
+from okf.storage.base import BundleStore
 
 
 class MemoryBundleStore(BundleStore):
@@ -94,7 +94,7 @@ class MemoryBundleStore(BundleStore):
                 )
                 for c in self._concepts
             ]
-            ranked = [c for _, c in sorted(zip(scored, self._concepts), key=lambda x: (-x[0][0], -x[0][1], x[0][2]))]
+            ranked = [c for _, c in sorted(zip(scored, self._concepts, strict=True), key=lambda x: (-x[0][0], -x[0][1], x[0][2]))]
             selected = {c["concept_id"] for c in ranked[:max_nodes]}
 
         nodes = [

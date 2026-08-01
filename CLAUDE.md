@@ -1,12 +1,12 @@
 # OKF Generator
 
-Generates OKF v0.2 knowledge bundles from codebases. 17 languages, 12 manifest formats, ~100× fewer tokens than raw source.
+Generates OKF v0.2 knowledge bundles from codebases. 18 languages, 20 manifest formats, ~100× fewer tokens than raw source.
 
 ## Quick commands
 
 ```bash
 pip install -e ".[dev]"       # editable install
-pytest tests/ -q               # 301 tests
+pytest tests/ -q               # 415 tests
 okf generate ./src ./bundle    # generate bundle
 okf lookup <Name>              # look up concept
 okf enrich --lsp               # LSP enrichment (needs pyright on $PATH)
@@ -22,10 +22,10 @@ okf/
 │   ├── llm.py       # LlmEnricher — base/deep/security LLM modes
 │   ├── _lsp_map.py  # LSP server registry (pyright, gopls, rust-analyzer, typescript)
 │   └── _llm_prompts.py
-├── cli.py            # 24 commands
+├── cli.py            # 19 commands
 ├── generator.py      # Core scanner + bundle writer
 ├── linker.py          # Cross-reference pass (deps + call graph)
-├── parsers/           # 17 language parsers
+├── parsers/           # 18 language parsers
 │   ├── base.py       # Concept dataclass + TreeSitterParser ABC
 │   └── python.js go java rust ruby c cpp csharp dart kotlin php scala julia swift sql yaml
 ├── domains/           # Domain classification engine
@@ -83,7 +83,7 @@ Runs after scan, before write. Two passes:
 - `RELEASE.md` — release checklist
 - `FUTURE.md` — roadmap (SAST enrichment, MkDocs replacement, IDE plugins)
 - `CHANGELOG.md` — versions
-- `tests/` — 301 tests (pytest), 17-phase test.sh, realworld fixtures
+- `tests/` — 415 tests (pytest), 17-phase test.sh, realworld fixtures
 
 ## Config
 
@@ -91,4 +91,4 @@ Runs after scan, before write. Two passes:
 
 ## Version
 
-0.1.48 — MIT License — OKF v0.2 schema
+0.1.51 — MIT License — OKF v0.2 schema

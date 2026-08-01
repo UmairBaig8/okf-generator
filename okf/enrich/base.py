@@ -74,7 +74,7 @@ class Enricher(ABC):
         """Release any resources. Always safe to call, even after a failed start()."""
         raise NotImplementedError
 
-    def __enter__(self) -> "Enricher":
+    def __enter__(self) -> Enricher:
         return self
 
     def __exit__(self, *exc_info) -> None:
