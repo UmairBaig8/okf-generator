@@ -44,5 +44,5 @@ jobs:
 
       - name: Verify viz content
         run: |
-          grep -c "View Source" /tmp/viz.html && echo "viz has View Source button"
+          grep -ci "view source" /tmp/viz.html && echo "viz has View Source button"
           grep -c '"code":"' /tmp/viz.html && echo "viz has code embeddings"
