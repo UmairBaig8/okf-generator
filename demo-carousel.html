@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ OKF Generator — Supercharge Your Codebases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #040209;
+    --bg-card: #0b0718;
+    --bg-elevated: rgba(14, 9, 30, 0.8);
+    --text: #f3effa;
+    --text-dim: #9d8dbb;
+    --text-muted: #534770;
+    --border: rgba(168, 85, 247, 0.15);
+    --border-hover: rgba(168, 85, 247, 0.4);
+    --accent: #00ffcc;
+    --primary: #a855f7;
+    --primary-glow: rgba(168, 85, 247, 0.3);
+    --accent-glow: rgba(0, 255, 204, 0.2);
+    --badge-bg: rgba(255, 255, 255, 0.07);
+    --arrow-bg: rgba(14, 9, 30, 0.7);
+    --progress-bg: rgba(255, 255, 255, 0.05);
+    --progress-active: rgba(168, 85, 247, 0.2);
+    --btn-border: rgba(255, 255, 255, 0.08);
+    --btn-text: #9d8dbb;
+    --btn-hover-bg: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 255, 204, 0.05));
+    --btn-hover-text: #ffffff;
+    --modal-overlay: rgba(3, 1, 7, 0.85);
+    --modal-bg: #0e091f;
+    --gradient-text: linear-gradient(135deg, #ffffff 0%, #a855f7 50%, #00ffcc 100%);
+    --grid-color: rgba(168, 85, 247, 0.04);
+  }
+
+  .theme-light {
+    --bg: #f8f6fc;
+    --bg-card: #ffffff;
+    --bg-elevated: rgba(255, 255, 255, 0.9);
+    --text: #0f0a1c;
+    --text-dim: #5c5275;
+    --text-muted: #a39bb8;
+    --border: rgba(124, 58, 237, 0.12);
+    --border-hover: rgba(124, 58, 237, 0.35);
+    --accent: #ff007f;
+    --primary: #7c3aed;
+    --primary-glow: rgba(124, 58, 237, 0.15);
+    --accent-glow: rgba(255, 0, 127, 0.15);
+    --badge-bg: rgba(0, 0, 0, 0.05);
+    --arrow-bg: rgba(255, 255, 255, 0.85);
+    --progress-bg: rgba(0, 0, 0, 0.04);
+    --progress-active: rgba(124, 58, 237, 0.1);
+    --btn-border: rgba(0, 0, 0, 0.08);
+    --btn-text: #5c5275;
+    --btn-hover-bg: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(255, 0, 127, 0.05));
+    --btn-hover-text: #0f0a1c;
+    --modal-overlay: rgba(15, 10, 28, 0.6);
+    --modal-bg: #ffffff;
+    --gradient-text: linear-gradient(135deg, #0f0a1c 0%, #7c3aed 60%, #ff007f 100%);
+    --grid-color: rgba(124, 58, 237, 0.03);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 2rem 1rem;
+    overflow-x: hidden; position: relative;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* Cyber Grid & Radiant Blurs */
+  .bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: 
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg::before, .bg::after {
+    content: ''; position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.45; mix-blend-mode: screen; transition: all 0.6s ease;
+  }
+  .bg::before { width: 400px; height: 400px; top: -10%; left: -10%; background: var(--primary-glow); }
+  .bg::after { width: 350px; height: 350px; bottom: -5%; right: -5%; background: var(--accent-glow); }
+  .theme-light .bg::before, .theme-light .bg::after { mix-blend-mode: multiply; opacity: 0.6; }
+
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1000px; }
+
+  /* ---- Header ---- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text);
+  }
+  .brand-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, #a855f7 0%, #00ffcc 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: bold; color: #fff;
+    box-shadow: 0 4px 15px var(--primary-glow);
+    animation: pulseGlow 3s infinite alternate;
+  }
+  @keyframes pulseGlow { 0% { transform: scale(1); } 100% { transform: scale(1.04); box-shadow: 0 4px 25px var(--accent-glow); } }
+  
+  .brand-text {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .brand-text span {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;
+  }
+
+  .topbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+  
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 12px;
+    border: 1px solid var(--btn-border); background: var(--bg-card);
+    color: var(--btn-text); font-size: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none;
+  }
+  .icon-btn:hover {
+    border-color: var(--border-hover); color: var(--btn-hover-text);
+    background: var(--btn-hover-bg); transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--primary-glow);
+  }
+
+  .github-pill {
+    display: flex; align-items: center; gap: 0.5rem; padding: 0 1rem;
+    height: 40px; border-radius: 12px; border: 1px solid var(--primary);
+    background: var(--btn-hover-bg); color: #fff; font-size: 0.85rem;
+    font-weight: 600; text-decoration: none; transition: all 0.25s;
+  }
+  .theme-light .github-pill { color: var(--primary); }
+  .github-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--primary-glow); filter: brightness(1.1); }
+
+  /* ---- The Showcase Stage ---- */
+  .carousel {
+    position: relative; width: 100%; border-radius: 1.5rem; overflow: hidden;
+    background: var(--bg-card); border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    transition: all 0.4s ease;
+  }
+  .carousel:hover { border-color: var(--border-hover); box-shadow: 0 25px 60px var(--primary-glow); }
+  .theme-light .carousel { box-shadow: 0 20px 40px rgba(124, 77, 255, 0.06); }
+
+  .carousel-viewport { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #000; }
+  .slides { position: relative; width: 100%; height: 100%; }
+  
+  .slides .slide {
+    position: absolute; inset: 0; opacity: 0; transform: scale(0.98);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, transform; z-index: 1;
+  }
+  .slides .slide.active { opacity: 1; transform: scale(1); z-index: 2; }
+  .slides .slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  /* Control Overlays */
+  .counter-badge {
+    position: absolute; top: 1.25rem; right: 1.25rem; z-index: 10;
+    background: rgba(11, 7, 24, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 0.4rem 1rem; border-radius: 3rem; border: 1px solid var(--border);
+    color: var(--accent); font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700;
+  }
+
+  .arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--arrow-bg);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: var(--text); font-size: 1.5rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease; opacity: 0; transform: translateY(-50%) scale(0.8);
+  }
+  .carousel:hover .arrow { opacity: 1; transform: translateY(-50%) scale(1); }
+  .arrow:hover { background: var(--primary); border-color: #fff; color: #fff; box-shadow: 0 0 20px var(--primary-glow); }
+  .arrow-prev { left: 1.25rem; }
+  .arrow-next { right: 1.25rem; }
+
+  /* Kinetic Progress Track */
+  .progress { display: flex; gap: 6px; padding: 0.9rem 1.5rem; background: rgba(0, 0, 0, 0.3); }
+  .progress-bar {
+    flex: 1; height: 4px; background: var(--progress-bg);
+    border-radius: 4px; overflow: hidden; cursor: pointer; transition: all 0.3s;
+  }
+  .progress-bar:hover { background: var(--progress-active); height: 6px; }
+  .progress-bar.active { background: var(--progress-active); }
+  .progress-bar .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; }
+  .progress-bar.active .fill.animated { transition: width 4s linear; }
+
+  /* ---- Interactive Controls ---- */
+  .controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+  .controls-left, .controls-right { display: flex; align-items: center; gap: 0.75rem; }
+
+  .ctrl-btn {
+    background: var(--bg-card); border: 1px solid var(--btn-border);
+    color: var(--text-dim); padding: 0.6rem 1.2rem; border-radius: 12px;
+    cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    transition: all 0.2s ease; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .ctrl-btn:hover { border-color: var(--border-hover); color: var(--btn-hover-text); background: var(--btn-hover-bg); transform: translateY(-1px); }
+  .ctrl-btn:active { transform: translateY(1px); }
+
+  .ctrl-btn.primary-action {
+    background: linear-gradient(135deg, var(--primary) 0%, #7c4dff 100%);
+    border-color: transparent; color: #fff; box-shadow: 0 4px 15px var(--primary-glow);
+  }
+  .ctrl-btn.primary-action:hover { filter: brightness(1.15); box-shadow: 0 6px 20px var(--primary-glow); }
+
+  .status-hint { color: var(--text-muted); font-size: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+  .status-hint kbd {
+    display: inline-block; padding: 2px 6px; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 0.65rem; background: rgba(255,255,255,0.02); color: var(--text-dim);
+  }
+
+  /* ---- Viral Share Modal ---- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100; background: var(--modal-overlay);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--modal-bg); border: 1px solid var(--border); border-radius: 1.75rem;
+    padding: 2.25rem; max-width: 440px; width: 100%; position: relative;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+    transform: scale(0.9) translateY(15px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .modal h2 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem;
+    background: linear-gradient(135deg, #fff 0%, var(--primary) 60%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .theme-light .modal h2 { background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .modal p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.4; }
+
+  .qr-container {
+    display: flex; justify-content: center; align-items: center; margin-bottom: 1.75rem; position: relative;
+  }
+  .qr-container::before {
+    content: ''; position: absolute; inset: -8px; border-radius: 1.25rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent)); z-index: 0; opacity: 0.2; filter: blur(8px);
+  }
+  .qr-wrap {
+    position: relative; z-index: 1; background: #fff; padding: 12px; border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  .qr-wrap img { width: 160px; height: 160px; display: block; image-rendering: pixelated; }
+
+  .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .share-grid a, .share-grid button {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.75rem; border-radius: 10px; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02); color: var(--text-dim);
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .share-grid a:hover, .share-grid button:hover {
+    border-color: var(--border-hover); color: #fff; background: var(--btn-hover-bg);
+  }
+  .theme-light .share-grid a:hover, .theme-light .share-grid button:hover { color: var(--text); }
+  
+  .share-grid .copy-btn { grid-column: span 2; background: var(--btn-hover-bg); border-color: var(--primary); color: #fff; }
+  .theme-light .share-grid .copy-btn { color: var(--primary); }
+  .share-grid .copy-btn.copied { background: linear-gradient(135deg, #00ffcc 0%, #00bfa5 100%); border-color: transparent; color: #040209; }
+
+  .modal-close {
+    position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none;
+    color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* ---- Toast Notification ---- */
+  .toast {
+    position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%) translateY(40px);
+    z-index: 200; background: rgba(11, 7, 24, 0.9); border: 1px solid var(--accent);
+    box-shadow: 0 10px 30px var(--accent-glow); backdrop-filter: blur(12px);
+    padding: 0.6rem 1.75rem; border-radius: 3rem; font-size: 0.85rem; font-weight: 600; color: var(--accent);
+    opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .footer-vibe {
+    text-align: center; margin-top: 2rem; color: var(--text-muted);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem 0.5rem; }
+    .topbar { margin-bottom: 1.25rem; }
+    .brand-text { font-size: 1.1rem; }
+    .github-pill { display: none; }
+    .arrow { width: 38px; height: 38px; font-size: 1.2rem; }
+    .controls-left .status-hint { display: none; }
+    .ctrl-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .modal { padding: 1.75rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="content">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <a class="brand" href="https://github.com/UmairBaig8/okf-generator" target="_blank">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">OKF <span>Generator</span></div>
+    </a>
+    <div class="topbar-actions">
+      <a class="github-pill" href="https://github.com/UmairBaig8/okf-generator" target="_blank">
+        <span>★ Star on GitHub</span>
+      </a>
+      <button class="icon-btn" id="themeToggle" title="Toggle Mode">◑</button>
+    </div>
+  </div>
+
+  <!-- Carousel Stage -->
+  <div class="carousel" id="carousel">
+    <div class="carousel-viewport">
+      <div class="slides" id="slides">
+        <div class="slide active"><img src="Demo deck/Slide1.png" alt="Slide 1"></div>
+        <div class="slide"><img src="Demo deck/Slide2.png" alt="Slide 2"></div>
+        <div class="slide"><img src="Demo deck/Slide3.png" alt="Slide 3"></div>
+        <div class="slide"><img src="Demo deck/Slide4.png" alt="Slide 4"></div>
+        <div class="slide"><img src="Demo deck/Slide5.png" alt="Slide 5"></div>
+        <div class="slide"><img src="Demo deck/Slide6.png" alt="Slide 6"></div>
+      </div>
+      <div class="counter-badge" id="counter">01 // 06</div>
+      <button class="arrow arrow-prev" id="prevBtn">‹</button>
+      <button class="arrow arrow-next" id="nextBtn">›</button>
+    </div>
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <!-- Controls Array -->
+  <div class="controls">
+    <div class="controls-left">
+      <button class="ctrl-btn" id="playBtn">
+        <span id="playIcon">⏸</span>
+        <span id="playLabel">Pause</span>
+      </button>
+      <button class="ctrl-btn" id="fullscreenBtn">⛶ Go Big</button>
+      <span class="status-hint"><kbd>←</kbd> <kbd>→</kbd> keys spin it</span>
+    </div>
+    <div class="controls-right">
+      <button class="ctrl-btn primary-action" id="shareBtn">🚀 Share the Intel</button>
+    </div>
+  </div>
+
+  <!-- Footer Info -->
+  <div class="footer-vibe">Codebases into Context // Driven by OKF Generator</div>
+</div>
+
+<!-- Viral Activation Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>⚡ Spread the Vibe</h2>
+    <p>Help other devs bridge the gap between human repos and agentic AI architectures.</p>
+    
+    <div class="qr-container">
+      <div class="qr-wrap">
+        <img id="qrImg" src="" alt="Scan Me">
+      </div>
+    </div>
+    
+    <div class="share-grid">
+      <a id="shareTwitter" href="#" target="_blank">𝕏 Tweet This</a>
+      <a id="shareLinkedin" href="#" target="_blank">in Share Update</a>
+      <a href="https://github.com/UmairBaig8/okf-generator" target="_blank">★ Star Repo</a>
+      <a href="https://pypi.org/project/okf-generator/" target="_blank">📦 PyPI Core</a>
+      <button class="copy-btn" id="copyLinkBtn">🔗 Copy Express Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- Kinetic Toast Alert -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Theme Toggle Engine
+  const themeToggle = document.getElementById('themeToggle');
+  let isLight = localStorage.getItem('okf-theme') === 'light';
+
+  function applyTheme() {
+    document.body.classList.toggle('theme-light', isLight);
+    themeToggle.innerHTML = isLight ? '☾' : '◑';
+    localStorage.setItem('okf-theme', isLight ? 'light' : 'dark');
+  }
+  applyTheme();
+  themeToggle.addEventListener('click', () => { isLight = !isLight; applyTheme(); });
+
+  // Carousel Mechanics
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  let idx = 0, playing = true, animating = false, progressTimer = null;
+
+  for (let i = 0; i < total; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'progress-bar' + (i === 0 ? ' active' : '');
+    bar.innerHTML = '<div class="fill"></div>';
+    bar.addEventListener('click', () => go(i));
+    progress.appendChild(bar);
+  }
+
+  function go(i) {
+    if (animating || i === idx) return;
+    animating = true;
+    const prev = idx;
+    idx = (i + total) % total;
+    
+    slides[prev].classList.remove('active');
+    slides[idx].classList.add('active');
+    
+    setTimeout(() => { animating = false; }, 500);
+    
+    counter.textContent = String(idx + 1).padStart(2, '0') + ' // ' + String(total).padStart(2, '0');
+    document.querySelectorAll('.progress-bar').forEach((b, j) => b.classList.toggle('active', j === idx));
+    resetProgress();
+  }
+
+  function resetProgress() {
+    if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
+    document.querySelectorAll('.fill').forEach(f => {
+      f.classList.remove('animated'); f.style.width = '0%';
+    });
+    if (!playing) return;
+    requestAnimationFrame(() => {
+      const activeFill = document.querySelectorAll('.fill')[idx];
+      if(activeFill) {
+        activeFill.classList.add('animated');
+        activeFill.style.width = '100%';
+        progressTimer = setTimeout(() => go(idx + 1), 4000);
+      }
+    });
+  }
+
+  requestAnimationFrame(() => resetProgress());
+
+  document.getElementById('prevBtn').addEventListener('click', () => go(idx - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => go(idx + 1));
+  
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') go(idx - 1);
+    if (e.key === 'ArrowRight') go(idx + 1);
+  });
+
+  let startX = 0;
+  const viewport = document.querySelector('.carousel-viewport');
+  viewport.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50) go(idx - Math.sign(diff));
+  }, { passive: true });
+
+  // Playback Operations
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const playLabel = document.getElementById('playLabel');
+
+  function togglePlay() {
+    playing = !playing;
+    playIcon.innerHTML = playing ? '⏸' : '▶';
+    playLabel.textContent = playing ? 'Pause' : 'Play';
+    if (playing) {
+      resetProgress();
+    } else {
+      if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
+      document.querySelectorAll('.fill').forEach(f => {
+        f.classList.remove('animated'); f.style.width = '0%';
+      });
+    }
+  }
+  playBtn.addEventListener('click', togglePlay);
+
+  document.getElementById('carousel').addEventListener('mouseenter', () => {
+    if (playing && progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
+  });
+  document.getElementById('carousel').addEventListener('mouseleave', () => {
+    if (playing) resetProgress();
+  });
+
+  // Display Sizing
+  document.getElementById('fullscreenBtn').addEventListener('click', () => {
+    const el = document.getElementById('carousel');
+    if (!document.fullscreenElement) {
+      el.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  // Viral Matrix & Share Mechanics
+  const shareModal = document.getElementById('shareModal');
+  const shareBtn = document.getElementById('shareBtn');
+  const modalClose = document.getElementById('modalClose');
+  const qrImg = document.getElementById('qrImg');
+  const copyBtn = document.getElementById('copyLinkBtn');
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  shareBtn.addEventListener('click', () => {
+    const url = window.location.href;
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(url);
+    document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent('Turn codebases into agentic ecosystem knowledge in seconds with OKF Generator. Absolute game changer! ⚡') + '&url=' + encodeURIComponent(url);
+    document.getElementById('shareLinkedin').href = 'https://linkedin.com/sharing/share-offscreen/?url=' + encodeURIComponent(url);
+    shareModal.classList.add('open');
+  });
+
+  modalClose.addEventListener('click', () => shareModal.classList.remove('open'));
+  shareModal.addEventListener('click', e => { if (e.target === shareModal) shareModal.classList.remove('open'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') shareModal.classList.remove('open'); });
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      copyBtn.classList.add('copied');
+      copyBtn.innerHTML = '✓ Copied to System Clipboard!';
+      showToast('Link intercepted and copied! ⚡');
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.innerHTML = '🔗 Copy Express Link';
+      }, 2000);
+    }).catch(() => {
+      showToast('Manual intercept required: Press Ctrl+C / Cmd+C');
+    });
+  });
+</script>
+
+</body>
+</html>

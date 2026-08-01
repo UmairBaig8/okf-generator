@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1100 480" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f14"/>
+      <stop offset="100%" stop-color="#11161d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1100" height="480" fill="url(#bg)"/>
+
+  <text x="550" y="42" font-size="22" font-weight="700" fill="#f0f6fc" text-anchor="middle">
+    What your AI agent gets, before vs. after
+  </text>
+
+  <!-- BEFORE panel -->
+  <g transform="translate(40,70)">
+    <rect width="480" height="380" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <rect width="480" height="40" rx="12" fill="#21262d"/>
+    <rect width="480" height="20" y="20" fill="#21262d"/>
+    <circle cx="24" cy="20" r="6" fill="#f85149"/>
+    <circle cx="44" cy="20" r="6" fill="#d29922"/>
+    <circle cx="64" cy="20" r="6" fill="#3fb950"/>
+    <text x="240" y="25" font-size="12" fill="#8b949e" text-anchor="middle">economic_data.py — 640 lines</text>
+
+    <text x="20" y="68" font-size="13" font-weight="700" fill="#f85149">BEFORE: entire file as context</text>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#6e7681">
+      <rect x="20" y="82" width="440" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="98" width="380" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="114" width="420" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="130" width="300" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="146" width="440" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="162" width="360" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="178" width="410" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="194" width="280" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="210" width="440" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="226" width="320" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="242" width="400" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="258" width="370" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="274" width="440" height="9" rx="2" fill="#21262d"/>
+      <rect x="20" y="290" width="290" height="9" rx="2" fill="#21262d"/>
+    </g>
+    <text x="20" y="330" font-size="12" fill="#f85149">~14,000 tokens consumed</text>
+    <text x="20" y="350" font-size="12" fill="#8b949e">to find one 12-line method</text>
+  </g>
+
+  <!-- arrow between panels -->
+  <g transform="translate(530,250)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#58a6ff" stroke-width="3"/>
+    <path d="M40,-8 L56,0 L40,8 Z" fill="#58a6ff"/>
+  </g>
+
+  <!-- AFTER panel -->
+  <g transform="translate(580,70)">
+    <rect width="480" height="380" rx="12" fill="#0f1a2b" stroke="#1f6feb" stroke-opacity="0.5" stroke-width="1.5"/>
+    <rect width="480" height="40" rx="12" fill="#15233a"/>
+    <rect width="480" height="20" y="20" fill="#15233a"/>
+    <circle cx="24" cy="20" r="6" fill="#f85149"/>
+    <circle cx="44" cy="20" r="6" fill="#d29922"/>
+    <circle cx="64" cy="20" r="6" fill="#3fb950"/>
+    <text x="240" y="25" font-size="12" fill="#79c0ff" text-anchor="middle">okf lookup WorldBankConnector</text>
+
+    <text x="20" y="68" font-size="13" font-weight="700" fill="#56d364">AFTER: exact concept only</text>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#9ecbff">
+      <text x="20" y="92">CLASS: WorldBankConnector</text>
+      <text x="20" y="112">Source: economic_data.py  line 51</text>
+      <text x="20" y="132">Description: Fetches World Bank</text>
+      <text x="20" y="148">  development indicators via</text>
+      <text x="20" y="164">  wbdata API.</text>
+      <text x="20" y="188">Methods: get_indicator, search</text>
+      <text x="20" y="208">Signature: class WorldBankConnector</text>
+    </g>
+    <text x="20" y="330" font-size="12" fill="#56d364">~140 tokens consumed</text>
+    <text x="20" y="350" font-size="12" fill="#8b949e">exact answer, zero guessing</text>
+  </g>
+</svg>

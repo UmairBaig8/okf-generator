@@ -1,0 +1,43 @@
+/* docs/stylesheets/extra.css */
+
+/* --- Mike version selector polish --- */
+.md-version {
+  font-weight: 500;
+}
+
+.md-version__current {
+  border-radius: 0.2rem;
+  padding: 0.1rem 0.5rem;
+  background-color: var(--md-accent-fg-color--transparent);
+}
+
+.md-version__list {
+  border-radius: 0.4rem;
+  box-shadow: var(--md-shadow-z2);
+}
+
+.md-version__link[href*="latest"]::after {
+  content: " (recommended)";
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+/* --- Announcement bar --- */
+.md-banner {
+  background: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+}
+
+.md-banner__inner {
+  font-weight: 500;
+}
+
+/* --- Code block polish --- */
+.md-typeset .highlight .filename {
+  border-radius: 0.4rem 0.4rem 0 0;
+}
+
+/* --- Admonition accent tweak to match brand palette --- */
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-color: var(--md-accent-fg-color);
+}
