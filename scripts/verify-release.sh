@@ -47,8 +47,11 @@ check_url "Viz demo"      "https://umairbaig8.github.io/okf-generator/viz.html"
 check_url "Docs-site"     "https://umairbaig8.github.io/okf-generator/getting-started/"
 check_url "Render app"    "https://okf-generator.onrender.com"
 
-# 7. Local CLI
-CLI_VER=$(pip install "okf-generator==$VER_NUM" -q 2>/dev/null && okf --version 2>&1 || echo "")
+# 7. Local CLI (install into a scratch venv so `okf` is guaranteed on PATH)
+CLI_VENV=$(mktemp -d)
+python3 -m venv "$CLI_VENV" 2>/dev/null
+CLI_VER=$("$CLI_VENV/bin/pip" install "okf-generator==$VER_NUM" -q 2>/dev/null && "$CLI_VENV/bin/okf" --version 2>&1 || echo "")
+rm -rf "$CLI_VENV"
 if echo "$CLI_VER" | grep -q "$VER_NUM"; then
     pass "Local CLI"
 else
@@ -68,9 +71,14 @@ else
 fi
 
 # 9. TEST_REPORT from release
-TEST_HTML=$(mktemp)
-if gh release download "$VER" -p "TEST_REPORT.html" -o "$TEST_HTML" 2>/dev/null; then
-    if grep -q "0 failures" "$TEST_HTML" 2>/dev/null; then
+TEST_DIR=$(mktemp -d)
+if gh release download "$VER" -p "TEST_REPORT.html" -D "$TEST_DIR" --clobber 2>/dev/null; then
+    TEST_HTML="$TEST_DIR/TEST_REPORT.html"
+    # The report is HTML: failures render as `<div class="fail"><div class="n">N</div>`.
+    # Accept when N is 0, or when the plain-text md summary says FAIL: 0.
+    if grep -qE 'class="fail"><div class="n">0</div>' "$TEST_HTML" 2>/dev/null; then
+        pass "Test report"
+    elif grep -qE "FAIL: *0" "$TEST_HTML" 2>/dev/null; then
         pass "Test report"
     else
         fail "Test report" "has failures"
@@ -78,7 +86,7 @@ if gh release download "$VER" -p "TEST_REPORT.html" -o "$TEST_HTML" 2>/dev/null;
 else
     fail "Test report" "download failed"
 fi
-rm -f "$TEST_HTML"
+rm -rf "$TEST_DIR"
 
 # Summary
 echo ""
