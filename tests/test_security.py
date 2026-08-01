@@ -77,8 +77,11 @@ def test_serve_handler_requires_token(tmp_path):
 # ── okf dashboard ────────────────────────────────────────────────────────────
 
 def test_dashboard_build_app_rejects_cross_origin(tmp_path):
-    """The FastAPI app must refuse cross-origin API reads (no CORS allowance)."""
+    """The FastAPI app must refuse cross-origin API reads (no CORS allowance).
 
+    Skipped when fastapi isn't installed (it's a `[dashboard]` extra, not `[dev]`).
+    """
+    pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient
 
     from okf.dashboard import build_app

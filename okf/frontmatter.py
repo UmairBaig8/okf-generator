@@ -101,7 +101,7 @@ def _serialize_value(val) -> str:
         return val
     if isinstance(val, bool):
         return "true" if val else "false"
-    if isinstance(val, (int, float)):
+    if isinstance(val, int | float):
         return str(val)
     # Fallback for unsupported types
     return yaml.safe_dump(val, default_flow_style=False).strip()
@@ -119,7 +119,7 @@ def dump_frontmatter(metadata: dict) -> str:
 
     # Check if all values are supported types — fallback otherwise
     for v in metadata.values():
-        if v is not None and not isinstance(v, (str, list, int, float, bool)):
+        if v is not None and not isinstance(v, str | list | int | float | bool):
             return "---\n" + yaml.safe_dump(metadata, default_flow_style=False, allow_unicode=True) + "---\n"
 
     lines = ["---"]
