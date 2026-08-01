@@ -90,11 +90,11 @@ def _prev_comment(node, src_bytes: bytes) -> str:
         begin = chunk.rfind(b"/*")
         if begin >= 0:
             raw = chunk[begin:].decode(errors="replace").strip()
-            lines = raw.lstrip("/").lstrip("*").rstrip("*/").strip().splitlines()
-            cleaned = [x.strip().lstrip("*").strip() for x in lines]
+            block_lines = raw.lstrip("/").lstrip("*").rstrip("*/").strip().splitlines()
+            cleaned = [x.strip().lstrip("*").strip() for x in block_lines]
             return "\n".join(x for x in cleaned if x)
-    lines = chunk.splitlines()
-    comment_lines = []
+    lines: list[bytes] = chunk.splitlines()
+    comment_lines: list[str] = []
     for line in reversed(lines):
         s = line.strip()
         if s.startswith(b"///") or s.startswith(b"//"):
@@ -183,8 +183,10 @@ class TreeSitterParser:
 
     def _lang(self):
         self._init_lock()
+        lock = self.__class__._lang_lock
+        assert lock is not None  # guaranteed by _init_lock()
         if self.__class__._lang_obj is None:
-            with self.__class__._lang_lock:
+            with lock:
                 if self.__class__._lang_obj is None:
                     import importlib
                     mod = importlib.import_module(self._TS_MODULE)

@@ -174,3 +174,9 @@ disallow_untyped_defs = false
 warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = true
+# Third-party libs without stubs are common here (yaml, tqdm, anthropic, tree_sitter).
+# Keep them as untyped Any instead of erroring on the missing stub.
+ignore_missing_imports = true
+# Don't descend into site-packages (avoids numpy stub syntax errors on 3.14).
+follow_imports = "normal"
+mypy_path = "okf"

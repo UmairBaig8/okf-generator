@@ -7,84 +7,29 @@ contract so okf/enrich/__init__.py can run it alongside LspEnricher.
 
 from __future__ import annotations
 
-import json
 import logging
-import os
-import re
 from pathlib import Path
 from typing import Any
 
 from ..parsers.base import Concept
-from ._llm_prompts import DEEP_ENRICH_PROMPT, ENRICH_PROMPT, SECURITY_PROMPT
 from .base import Enricher, EnrichResult
 
 log = logging.getLogger("okf_gen")
 
-_MAX_BODY_LINES = 120
-_DEPRECATED_RE = re.compile(r"@deprecated|\bdeprecated\b", re.IGNORECASE)
-
 
 def _read_source_root(bundle_dir: Path) -> Path | None:
-    try:
-        raw = (bundle_dir / "index.md").read_text(encoding="utf-8")
-        parts = raw.split("---", 2)
-        if len(parts) >= 2:
-            import yaml
-            fm = yaml.safe_load(parts[1]) or {}
-            src = fm.get("source_root")
-            if src:
-                return Path(str(src)).resolve()
-    except Exception:
-        pass
-    return None
+    from ..generator import _read_source_root as _read
+    return _read(bundle_dir)
 
 
 def _read_body(concept: Concept, source_dir: Path | None = None, bundle_dir: Path | None = None) -> str:
-    if not concept.resource or not concept.source_lines:
-        return ""
-    start, end = concept.source_lines
-    if not start or not end or end < start:
-        return ""
-    if source_dir is None and bundle_dir is not None:
-        src = _read_source_root(bundle_dir)
-        if src is None:
-            return ""
-        source_dir = src
-    if source_dir is None:
-        return ""
-    try:
-        path = (source_dir / concept.resource).resolve()
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-        snippet = lines[start - 1:end]
-        if len(snippet) > _MAX_BODY_LINES:
-            snippet = snippet[:_MAX_BODY_LINES] + ["# ... truncated ..."]
-        return "\n".join(snippet)
-    except Exception as e:
-        log.debug(f"Could not read body for {concept.title}: {e}")
-        return ""
+    from ..generator import _read_body as _read
+    return _read(concept, source_dir, bundle_dir)
 
 
 def _detect_deprecation(concept: Concept) -> str:
-    haystack = " ".join([concept.docstring or "", " ".join(concept.decorators or [])])
-    if _DEPRECATED_RE.search(haystack):
-        for line in (concept.docstring or "").splitlines():
-            if _DEPRECATED_RE.search(line):
-                return line.strip()
-        return "Marked deprecated (see decorators)."
-    return ""
-
-
-_log_usage_calls: list[int] = []
-_ENRICH_TOKENS: dict[str, int] = {}
-
-
-def _log_usage(resp) -> None:
-    try:
-        u = resp.usage
-        name = u.model or "unknown"
-        _ENRICH_TOKENS[name] = _ENRICH_TOKENS.get(name, 0) + (u.total_tokens or 0)
-    except Exception:
-        pass
+    from ..generator import _detect_deprecation as _detect
+    return _detect(concept)
 
 
 def _resolve_client(cfg: dict, mode: str):
@@ -98,8 +43,8 @@ def _resolve_client(cfg: dict, mode: str):
 
 
 def _concept_output_path(concept: Concept, output_dir: Path) -> Path:
-    cid = concept.concept_id.replace("/", os.sep) if hasattr(concept, "concept_id") else concept.title
-    return (output_dir / cid).with_suffix(".md")
+    from ..generator import _concept_output_path as _path
+    return _path(concept, output_dir)
 
 
 
@@ -246,128 +191,20 @@ class LlmEnricher(Enricher):
 
 
 # ---------------------------------------------------------------------------
-# Standalone enrichment functions (also called from generator.py for compat)
+# Standalone enrichment functions — delegated to generator.py (single source
+# of truth; generator's versions carry the JSON-fallback + robustness fixes).
 # ---------------------------------------------------------------------------
 
 def enrich_concept(concept: Concept, client, model: str, max_tokens: int = 2000) -> Concept:
-    needs_desc = not concept.description or len(concept.description) <= 120
-    needs_doc = not concept.docstring or len(concept.docstring) <= 80
-    if not needs_desc and not needs_doc:
-        return concept
-    if concept.type not in {"Function", "Class", "Method"}:
-        if needs_desc and concept.docstring:
-            concept.description = concept.docstring.strip().splitlines()[0][:120]
-        return concept
-
-    dep_note = _detect_deprecation(concept)
-    if dep_note:
-        concept.deprecation_notes = dep_note
-
-    params_summary = ", ".join(
-        f"{p.get('name', '?')}: {p.get('annotation', '?')}" for p in (concept.params or [])[:6]
-    )
-    try:
-        prompt = ENRICH_PROMPT.format(
-            type=concept.type, title=concept.title,
-            docstring=concept.docstring or "(none)",
-            signature=concept.signature or "(none)",
-            params=params_summary or "(none)",
-            returns=concept.returns or "(none)",
-            inheritance=", ".join(concept.inheritance) if concept.inheritance else "(none)",
-        )
-        resp = client.chat.completions.create(
-            model=model, messages=[{"role": "user", "content": prompt}],
-            max_tokens=max_tokens, temperature=0.1,
-        )
-        raw = (resp.choices[0].message.content or "").strip()
-        _log_usage(resp)
-        raw = re.sub(r"^```(?:json)?\s*", "", raw)
-        raw = re.sub(r"\s*```$", "", raw).strip()
-        data = json.loads(raw)
-        if data.get("description"):
-            concept.description = str(data["description"]).strip()
-        if data.get("docstring"):
-            concept.docstring = str(data["docstring"]).strip()
-        if data.get("tags"):
-            existing = set(concept.tags)
-            for t in data["tags"]:
-                if t and str(t).strip() not in existing:
-                    concept.tags.append(str(t).strip())
-        if data.get("design_pattern"):
-            concept.design_pattern = str(data["design_pattern"]).strip()
-    except (json.JSONDecodeError, Exception) as e:
-        log.debug(f"Enrichment failed for {concept.title}: {e}")
-
-    return concept
+    from ..generator import enrich_concept as _enrich
+    return _enrich(concept, client, model, max_tokens=max_tokens)
 
 
 def enrich_concept_deep(concept: Concept, client, model: str, source_dir: Path, max_tokens: int = 2000) -> Concept:
-    if concept.type not in {"Function", "Class", "Method"}:
-        return concept
-    if concept.usage_example and concept.side_effects and concept.security and concept.complexity:
-        return concept
-
-    body = _read_body(concept, source_dir)
-    if not body:
-        log.debug(f"No body available for {concept.title}, skipping deep enrichment")
-        return concept
-
-    prompt = DEEP_ENRICH_PROMPT.format(
-        type=concept.type, title=concept.title,
-        signature=concept.signature or "none", body=body,
-    )
-    try:
-        resp = client.chat.completions.create(
-            model=model, messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000, temperature=0.1,
-        )
-        raw = (resp.choices[0].message.content or "").strip()
-        _log_usage(resp)
-        raw = re.sub(r"^```(?:json)?\s*", "", raw)
-        raw = re.sub(r"\s*```$", "", raw).strip()
-        data = json.loads(raw)
-        if data.get("usage_example"):
-            concept.usage_example = str(data["usage_example"]).strip()
-        if data.get("side_effects"):
-            concept.side_effects = str(data["side_effects"]).strip()
-        if data.get("security"):
-            concept.security = str(data["security"]).strip()
-        if data.get("complexity"):
-            concept.complexity = str(data["complexity"]).strip()
-    except (json.JSONDecodeError, Exception) as e:
-        log.debug(f"Deep-enrich failed for {concept.title}: {e}")
-
-    return concept
+    from ..generator import enrich_concept_deep as _enrich
+    return _enrich(concept, client, model, source_dir, max_tokens=max_tokens)
 
 
 def enrich_security(concept: Concept, client, model: str, source_dir: Path, max_tokens: int = 2000) -> Concept:
-    if concept.type not in {"Function", "Class", "Method"}:
-        return concept
-
-    body = _read_body(concept, source_dir)
-    if not body:
-        log.debug(f"No body available for {concept.title}, skipping security audit")
-        return concept
-
-    prompt = SECURITY_PROMPT.format(
-        type=concept.type, title=concept.title,
-        signature=concept.signature or "none", body=body,
-    )
-    try:
-        resp = client.chat.completions.create(
-            model=model, messages=[{"role": "user", "content": prompt}],
-            max_tokens=300, temperature=0.1,
-        )
-        raw = (resp.choices[0].message.content or "").strip()
-        _log_usage(resp)
-        raw = re.sub(r"^```(?:json)?\s*", "", raw)
-        raw = re.sub(r"\s*```$", "", raw).strip()
-        data = json.loads(raw)
-        if data.get("security"):
-            concept.security = str(data["security"]).strip()
-        if data.get("complexity"):
-            concept.complexity = str(data["complexity"]).strip()
-    except (json.JSONDecodeError, Exception) as e:
-        log.debug(f"Security audit failed for {concept.title}: {e}")
-
-    return concept
+    from ..generator import enrich_security as _enrich
+    return _enrich(concept, client, model, source_dir, max_tokens=max_tokens)

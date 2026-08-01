@@ -43,6 +43,19 @@ jobs:
       - run: pip install "ruff~=0.8.0"
       - run: ruff check okf/  # uses [tool.ruff] config in pyproject.toml
 
+  typecheck:
+    name: Typecheck (mypy, core modules)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install mypy
+      # Scoped to the well-typed core; legacy modules (cli, init, mcp_server,
+      # generator internals) are not yet fully annotated and are excluded.
+      - run: mypy okf/config.py okf/_walk.py okf/frontmatter.py okf/ignore.py okf/parsers/base.py okf/storage/base.py okf/enrich/base.py okf/enrich/_llm_prompts.py --no-site-packages --follow-imports=skip
+
   security:
     name: Supply-chain scan (Bumblebee + pip-audit)
     runs-on: ubuntu-latest

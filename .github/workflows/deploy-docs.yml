@@ -56,6 +56,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: /tmp/deploy
           publish_branch: gh-pages
+          # Fresh deploy each time; the gh-pages branch is excluded from the
+          # repo "Protect" ruleset so force-pushing the generated site is allowed.
           force_orphan: true
 
       - name: Mike deploy (versioned, tag pushes only)

@@ -646,8 +646,8 @@ Examples:
                 if k in _NUMERIC_KEYS:
                     # Store numeric config values as int/float, not strings
                     try:
-                        v = float(v)
-                        v = int(v) if v.is_integer() else v
+                        fv = float(v)
+                        v = int(fv) if fv.is_integer() else fv
                     except ValueError:
                         pass
                 _set(existing, k, v)

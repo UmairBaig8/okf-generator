@@ -159,7 +159,7 @@ def _get(cfg: dict, key: str, default=None):
     """Dot-notation get: cfg['llm.base_url'] → cfg['llm']['base_url'].
     Supports arbitrary depth: cfg['enrich.deep.provider'] → cfg['enrich']['deep']['provider']."""
     parts = key.split(".")
-    current = cfg
+    current: object = cfg
     for part in parts:
         if not isinstance(current, dict):
             return default
