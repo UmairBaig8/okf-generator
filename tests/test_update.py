@@ -297,3 +297,46 @@ def test_manifest_excludes_source_root(fresh_bundle):
     m = read_manifest(bdir)
     assert m is not None
     assert str(sdir.resolve()) in m.source_root or m.source_root.endswith("source")
+
+
+# ---------------------------------------------------------------------------
+# Dotfiles (empty concept_id segment)
+# ---------------------------------------------------------------------------
+
+def _dotfile_repo(tmp_path: Path) -> Path:
+    src = tmp_path / "repo"
+    (src / "tests" / "e2e").mkdir(parents=True)
+    (src / "tests" / "e2e" / ".detoxrc.js").write_text(
+        "const build = (a) => a + 1;\nmodule.exports = { build };\n"
+    )
+    (src / "app.py").write_text("def run():\n    return 1\n")
+    return src
+
+
+def test_dotfile_symbols_have_no_empty_segment(tmp_path):
+    from okf.generator import scan_codebase
+    concepts = scan_codebase(_dotfile_repo(tmp_path))
+    detox = [c for c in concepts if ".detoxrc" in c.concept_id]
+    assert detox
+    for c in concepts:
+        assert "" not in c.concept_id.split("/"), c.concept_id
+    assert "tests/e2e/.detoxrc/build" in {c.concept_id for c in detox}
+
+
+def test_generate_then_update_on_dotfile(tmp_path):
+    from okf.update import update_bundle
+    src = _dotfile_repo(tmp_path)
+    bundle = tmp_path / "bundle"
+    _generate(bundle, src)
+    (src / "app.py").write_text("def run():\n    return 2\n")
+    update_bundle(src, bundle)
+    for md in bundle.rglob("*.md"):
+        assert "//" not in str(md.relative_to(bundle))
+
+
+def test_okfignore_excludes_dotfile(tmp_path):
+    from okf.generator import scan_codebase
+    src = _dotfile_repo(tmp_path)
+    (src / ".okfignore").write_text(".*\n")
+    ids = {c.concept_id for c in scan_codebase(src)}
+    assert not any(".detoxrc" in i for i in ids)

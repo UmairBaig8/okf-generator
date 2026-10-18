@@ -253,7 +253,9 @@ class TreeSitterParser:
                       lineno: int = 0, methods: list[str] | None = None,
                       node=None, src_bytes: bytes = b"",
                       type_params: list[str] | None = None) -> Concept:
-        res_id = re.sub(r"\.[^/]+$", "", resource).replace(os.sep, "/")
+        # The lookbehind keeps a leading dot (".detoxrc.js" -> ".detoxrc") so a
+        # dotfile never collapses to an empty path segment.
+        res_id = re.sub(r"(?<=[^/])\.[^/]+$", "", resource).replace(os.sep, "/")
         cid    = f"{res_id}/{_safe_id(name)}"
         calls_raw = self._collect_calls(node, src_bytes) if node is not None else []
         end_lineno = (node.end_point[0] + 1) if node is not None else 0
